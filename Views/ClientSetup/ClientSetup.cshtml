@@ -1,5 +1,8 @@
 ﻿@{
     Layout = "~/Views/Shared/_LayoutNew.cshtml";
+    var userName = Context.Session.GetString("user_name");
+    var userRole = Context.Session.GetString("user_role");
+    var roleName = Context.Session.GetString("role_name");
 }
 <!DOCTYPE html>
 <html>  
@@ -24,16 +27,16 @@
 <body class="hold-transition skin-blue sidebar-mini fixed">
     <div class="content-wrapper">
         <div class="container-xxl flex-grow-1 container-p-y">
-            <div class="card-body" style="margin-top:5px;height: 358px;width: 103%;margin-left: -18px;box-shadow: 0px 6px 7px -1px rgba(67, 89, 113, 0.12);">
+            <div class="card-body" style="margin-top:5px;height: 400px;width: 103%;margin-left: -18px;box-shadow: 0px 6px 7px -1px rgba(67, 89, 113, 0.12);">
                 <div class="row">
                     <div class="col-sm-2">
-                        <input type="text" id="createedit" class="form-control" readonly value="@ViewBag.Mode" />
+                        <input type="text" id="createedit" class="form-control" readonly/>
                     </div>
                     <div class="col-sm-2">
-                        <input type="text" id="clientcode" class="form-control" readonly value="@ViewBag.ClientCode" />
+                        <input type="text" id="clientcode" class="form-control" readonly />
                     </div>
                     <div class="col-sm-2">
-                        <input type="text" id="clientstatus" class="form-control" readonly value="@ViewBag.Status" />
+                        <input type="text" id="clientstatus" class="form-control" readonly />
                     </div>
                     <div class="col-sm-6">
                         <img style="width:20px; height:20px; margin-bottom:-9px; cursor:pointer;float:right;" onclick="location.href='@Url.Action("Dashboard", "Dashboard")?tab=client'"  src="/Assets/images/toplist.png">
@@ -42,40 +45,49 @@
                 <div class="row" style="margin-top:20px;">
                     <div class="col-sm-3">
                         <input type="hidden" id="iponame"/>
+                        <input hidden type="number" id="client_gid" value="0" class="form-control" />
                         <label class="form-label" for="ReferredBy" data-field="ReferredBy">Client Name</label>&nbsp;<span style="font-size: 12px;color:red;font-weight: bold;">*</span>
-                        <input type="text" id="clientname" class="form-control" value="@ViewBag.ClientName" />
+                        <input type="text" id="clientname" class="form-control" />
+                        <span id="queryClientname" style="color: red; font-size: 12px;position:relative;"></span>
                     </div>
                     <div class="col-sm-3">
                         <label class="form-label" for="ctype" data-field="ctype">Client Type</label>&nbsp;<span style="font-size: 12px;color:red;font-weight: bold;">*</span>
                         <select name="ctype" id="ctype" class="form-control" >                            
                         </select>
+                        <span id="queryClienttype" style="color: red; font-size: 12px;position:relative;"></span>
                     </div>
                     <div class="col-sm-3">
                         <label class="form-label" for="cin" data-field="cin">CIN</label>&nbsp;<span style="font-size: 12px;color:red;font-weight: bold;">*</span>
-                        <input type="text" id="cin" name="cin" class="form-control" value="@ViewBag.CIN"  />
+                        <input type="text" id="cin" name="cin" class="form-control"  />
+                        <span id="queryCin" style="color: red; font-size: 12px;position:relative;"></span>
                     </div>
                     <div class="col-sm-3">
-                        <label class="form-label" for="cperson" data-field="cperson">Contact Person</label>
-                        <input type="text" id="cperson" name="cperson" class="form-control" value="@ViewBag.Person"  />
+                        <label class="form-label" for="cperson" data-field="cperson">Contact Person</label>&nbsp;<span style="font-size: 12px;color:red;font-weight: bold;">*</span>
+                        <input type="text" id="cperson" name="cperson" class="form-control"  />
+                        <span id="queryContactperson" style="color: red; font-size: 12px;position:relative;"></span>
                     </div>
                 </div>
                 <div class="row" style="margin-top:20px;">
                     <div class="col-sm-3">
                         <label class="form-label" for="mobno" data-field="mobno">Mobile No</label>&nbsp;<span style="font-size: 12px;color:red;font-weight: bold;">*</span>
-                        <input type="text" id="mobno" name="mobno" class="form-control" value="@ViewBag.Mob"  />
+                        <input type="text" id="mobno" name="mobno" class="form-control"  />
+                        <span id="querymobno" style="color: red; font-size: 12px;position:relative;"></span>
                     </div>
                     <div class="col-sm-3">
                         <label class="form-label" for="email" data-field="email">Email ID</label>&nbsp;<span style="font-size: 12px;color:red;font-weight: bold;">*</span>
-                        <input type="text" id="email" name="email" class="form-control" value="@ViewBag.Email"  />
+                        <input type="text" id="email" name="email" class="form-control"  />
+                        <span id="queryemail" style="color: red; font-size: 12px;position:relative;"></span>
                     </div>
                     <div class="col-sm-3">
                         <label class="form-label" for="address" data-field="address">Address</label>&nbsp;<span style="font-size: 12px;color:red;font-weight: bold;">*</span>
-                        <textarea id="address" class="form-control" cols="10" rows="2" >@ViewBag.Address</textarea>
+                        <textarea id="address" class="form-control" cols="10" rows="2" ></textarea>
+                        <span id="queryaddress" style="color: red; font-size: 12px;position:relative;"></span>
                     </div>
                     <div class="col-sm-3">
                         <label class="form-label" for="country" data-field="country">Country</label>&nbsp;<span style="font-size: 12px;color:red;font-weight: bold;">*</span>
                         <select name="country" id="country" class="form-control" >                           
                         </select>
+                        <span id="querycountry" style="color: red; font-size: 12px;position:relative;"></span>
                     </div>
                 </div>
                 <div class="row" style="margin-top:20px;">
@@ -83,18 +95,21 @@
                         <label class="form-label" for="state" data-field="state">State</label>&nbsp;<span style="font-size: 12px;color:red;font-weight: bold;">*</span>
                         <select name="state" id="state" class="form-control" >                           
                         </select>
+                        <span id="querystate" style="color: red; font-size: 12px;position:relative;"></span>
                     </div>
                     <div class="col-sm-3">
                         <label class="form-label" for="city" data-field="city">City</label>&nbsp;<span style="font-size: 12px;color:red;font-weight: bold;">*</span>
                         <select name="city" id="city" class="form-control" >                           
                         </select>
+                        <span id="querycity" style="color: red; font-size: 12px;position:relative;"></span>
                     </div>
                     <div class="col-sm-3">
                         <label class="form-label" for="pin" data-field="pin">Pincode</label>&nbsp;<span style="font-size: 12px;color:red;font-weight: bold;">*</span>
-                        <input type="text" id="pin" name="pin" class="form-control" value="@ViewBag.PIN"   />
+                        <input type="text" id="pin" name="pin" class="form-control"  />
+                        <span id="querypin" style="color: red; font-size: 12px;position:relative;"></span>
                     </div>
                     <div class="col-sm-3">
-                        <center><button type="button" class="btn btn-primary" id="btnSave"  style="padding: 3px 25px;margin-top:28px;width:40%">Save</button></center>
+                        <center><button type="button" class="btn btn-primary" id="btnSave"  onclick="saveclient()" style="padding: 3px 25px;margin-top:28px;width:40%">Save</button></center>
                     </div>
                 </div>
             </div>
@@ -105,34 +120,55 @@
 
 </html>
 <script>
-     $( document ).ready(function() {
-          $('#navhead').text('Client Master');
-          $("#iponame").val("");
-            loadMasterDropdown("QCD_MAST_CLIENT_TYPE", "ctype",null);
-            loadMasterDropdown("QCD_MAST_COUNTRY", "country", null);
-          var selectedType = '@ViewBag.ClientType';
-        if (selectedType) {
-            $("#ctype").val(selectedType);
-        }
-        var selectedState =  '@ViewBag.State';
-        if (selectedState) {
-            $("#state").val(selectedState);
-        }
-         var selectedCity =  '@ViewBag.City';
-        if (selectedCity) {
-            $("#city").val(selectedCity);
-        }
-        var selectedCountry =  '@ViewBag.Country';
-        if (selectedCountry) {
-            $("#country").val(selectedCountry);
-        }
+  $(document).ready(function () {
+        $('#navhead').text('Client Master');
+        $("#iponame").val("");
+        loadMasterDropdown("QCD_MAST_CLIENT_TYPE", "ctype");
+        loadMasterDropdown("QCD_MAST_COUNTRY", "country");
+        setTimeout(function () {
+            var client_gid = sessionStorage.getItem("edit_client_gid");
+            if (client_gid) {
+                loadClientDetails(client_gid);
+                sessionStorage.removeItem("edit_client_gid");
+            }
+        }, 500);
+
     });
 
+ function loadClientDetails(client_gid) {
+        $.ajax({
+            type: "POST",
+            url: '@Url.Action("GetClientList", "Dashboard")',
+                data: JSON.stringify({ p_client_gid: client_gid,p_action: "I" }),
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            success: function (response) {
+                console.log("responses:", response);
+                var data = JSON.parse(response._data)[0];
+                $("#client_gid").val(data.client_gid);
+                $("#clientname").val(data.client_name);
+                $("#ctype").val(data.client_type);
+                $("#cin").val(data.client_cin);
+                $("#cperson").val(data.client_contact_person);
+                $("#mobno").val(data.client_mob_no);
+                $("#email").val(data.client_email_id);
+                $("#address").val(data.client_addr);
+                $("#country").val(data.client_country);
+                $("#state").val(data.client_state);
+                $("#city").val(data.client_city);
+                $("#pin").val(data.client_pincode);
+            },
 
-     function loadMasterDropdown(masterCode, dropdownId, dependValue, selectedValue) {
+            error: function (xhr) {
+                console.log("Error:", xhr.responseText);
+            }
+        });
+    }
+
+     function loadMasterDropdown(masterCode, dropdownId, selectedValue) {
         var mymodel = {
-            mastercode: masterCode,
-            dependvalue: dependValue
+            in_master_code: masterCode,
+            in_user_code: ""
         };
         $.ajax({
             type: "POST",
@@ -140,10 +176,10 @@
             data: JSON.stringify(mymodel),
             dataType: "json",
             contentType: 'application/json; charset=utf-8',
-            success: function (response) {
+                   success: function (response) {
                     if (response.authExpired) {
                         $.alert({
-                             title: 'Unauthorized',
+                            title: 'Unauthorized',
                             content: response.message || 'Unauthorized User',
                             type: 'red',
                             buttons: {
@@ -157,25 +193,25 @@
                         });
                         return;
                     }
-                var result = JSON.parse(response.data);
 
-                var $ddl = $("#" + dropdownId);
-                $ddl.empty();
-                $ddl.append('<option value="">--- Select ---</option>');
+                    var result = JSON.parse(response.data);
 
-                $.each(result.Table, function (index, item) {
-                    $ddl.append(
-                        '<option value="' + item.master_gid + '">' +
+                    var $ddl = $("#" + dropdownId);
+                    $ddl.empty();
+                    $ddl.append('<option value="">--- Select ---</option>');
+
+                    $.each(result, function (index, item) {
+                        $ddl.append(
+                            '<option value="' + item.master_gid + '">' +
                             item.master_name +
-                        '</option>'
-                    );
-                });
+                            '</option>'
+                        );
+                    });
 
-                // bind selected value (edit scenario)
-                if (selectedValue) {
-                    $ddl.val(selectedValue).trigger("change");
-                }
-            },
+                    if (selectedValue) {
+                        $ddl.val(selectedValue).trigger("change");
+                    }
+                },
             error: function (xhr) {
                 console.log("Dropdown load error:", xhr.responseText);
             }
@@ -193,4 +229,126 @@ $("#state").on("change", function () {
     $("#city").empty();
     loadMasterDropdown("QCD_MAST_CITY", "city", state);
 });
+
+    function saveclient() {
+            var isValid = true;
+            var clientname = $("#clientname").val();
+            var ctype = $("#ctype").val();
+            var cin = $("#cin").val();
+            var cperson = $("#cperson").val();
+            var mobno = $("#mobno").val();
+            var email = $("#email").val();
+            var address = $("#address").val();
+            var country = $("#country").val();
+            var state = $("#state").val();
+            var city = $("#city").val();
+             var pin = $("#pin").val();
+                if(clientname === "") {
+                    $("#queryClientname").text("Please Enter Client Name");
+                isValid = false;
+                } else {
+                    $("#queryClientname").text("");
+                }
+                if(ctype === "") {
+                    $("#queryClienttype").text("Please Select Client Type");
+                     isValid = false;
+                } else {
+                        $("#queryClienttype").text("");
+                }
+                if(cin === "") {
+                        $("#queryCin").text("Please Enter CIN");
+                        isValid = false;
+                } else {
+                         $("#queryCin").text("");
+                }
+                if(cperson === "") {
+                        $("#queryContactperson").text("Please Enter Contact Name");
+                    isValid = false;
+                    } else {
+                        $("#queryContactperson").text("");
+                  }
+                if(mobno === "") {
+                    $("#querymobno").text("Please Enter Mobile Number");
+                     isValid = false;
+                 } else {
+                    $("#querymobno").text("");
+                }
+                 if(email === "") {
+                         $("#queryemail").text("Please Enter Email ID");
+                         isValid = false;
+                  } else {
+                            $("#queryemail").text("");
+                 }
+                if(address === "") {
+                        $("#queryaddress").text("Please Enter Address");
+                    isValid = false;
+                  } else {
+                        $("#queryaddress").text("");
+                }
+                  if(country === "") {
+                      $("#querycountry").text("Please Select Country");
+                      isValid = false;
+                } else {
+                       $("#querycountry").text("");
+                  }
+                 if(state === "") {
+                         $("#querystate").text("Please Select State");
+                          isValid = false;
+                } else {
+                            $("#querystate").text("");
+                 }
+                 if(city === "") {
+                         $("#querycity").text("Please Select City");
+                          isValid = false;
+                    } else {
+                          $("#querycity").text("");
+                  }
+                if(pin === "") {
+                            $("#querypin").text("Please Enter Pincode");
+                        isValid = false;
+                } else {
+                            $("#querypin").text("");
+                }
+                 if (isValid) {
+                    var mymodel = {
+                            in_client_gid: $("#client_gid").val(),
+                            in_client_name: clientname,
+                            in_client_type:ctype,
+                            in_client_cin:cin,
+                            in_client_contact_person:cperson,
+                            in_client_mob_no:mobno,
+                            in_client_email_id:email,
+                            in_client_addr:address,
+                            in_client_country:country,
+                            in_client_state:state,
+                            in_client_city:city,
+                            in_client_pincode:pin,
+                            in_insert_by:"@userName",
+                            in_update_by:"@userName",
+                            in_action: (Number($("#client_gid").val()) === 0 ? "I" : "U")
+                        }
+                            console.log("Model being sent:", mymodel);
+                     $.ajax({
+                            type: "Post",
+                            url: '@Url.Action("IudClient", "ClientSetup")',
+                            data: JSON.stringify(mymodel),
+                            dataType: "json",
+                            contentType: 'application/json; charset=utf-8',
+                            success: function (response) {
+                                console.log("IUD Response :", response);
+                                     var result = JSON.parse(response._data);
+                                            if (result.length > 0) {
+                                            $.alert({
+                                            title: 'STA Web',
+                                            content: result[0].result,
+                                            type: 'green',
+                                        });
+                                       setTimeout(() => {
+                                              window.location.href = "../ClientSetup/ClientSetup";
+                                        }, 3000);
+                                    }                                   
+                            }
+                     });
+                }
+    }
 </script>

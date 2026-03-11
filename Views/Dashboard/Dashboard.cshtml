@@ -36,6 +36,7 @@
         #clientListGrid .k-grid-content tr td {
             background-color: #ffffff;
             border-bottom: 1px solid #dcdcdc;
+            color:#000;
         }
 
         /* Alternate rows */
@@ -89,7 +90,7 @@
         }
 
         #clientListGrid .k-grid-content {
-            height: 330px !important;
+            height: 288px !important;
         }
 
             /* Normal rows */
@@ -405,90 +406,121 @@
     $('button[data-bs-target="#navs-top-client"]').on('shown.bs.tab', function () {
 
         if (!clientGridLoaded) {
-
-            $("#clientListGrid").kendoGrid({
-                dataSource: {
-                    transport: {
-                        read: {
-                            url: "@Url.Action("GetClientList", "ClientSetup")",
-                            dataType: "json"
-                        }
-                    },
-                    pageSize: 5
-                },
-                pageable: true,
-                sortable: true,
-                filterable: true,
-                height: 400,
-                columns: [
-                    { field: "issueCode", title: "Client Code" },
-                    { field: "clientName", title: "Client Name" },
-                    { field: "cin", title: "CIN" },
-                    { field: "city", title: "City" },
-                    { field: "state", title: "State" },
-                    { field: "clientStatus", title: "Client Status" },
-                    {
-                        title: "Action",
-                        template:
-                           "<center>" +
-                            "<img src='../Assets/images/editicons.png' " +
-                            "style='cursor:pointer;' " +
-                            "onclick='editGrid(this)' /> &nbsp;&nbsp;" +
-                              "<img src='../Assets/images/viewicons.png' " +
-                            "style='cursor:pointer;' " +
-                            "onclick='viewGrid(this)' /> &nbsp;&nbsp;" +
-                             "<img src='../Assets/images/del.png' " +
-                            "style='cursor:pointer;' " +
-                            "onclick='delGrid(this)' />" +
-                            "</center>"
-                    }
-                ]
-            });
-
+            showclientGrid();
             clientGridLoaded = true; // so it doesn't reinitialize
         }
 
     });
 
+    function showclientGrid() {
+        var mymodel = {
+            p_client_gid: 0,
+            p_action: "A"
+         };
+         $.ajax({ 
+              type: "POST",
+                 url: '@Url.Action("GetClientList", "Dashboard")',
+                 data: JSON.stringify(mymodel),
+                 dataType: "json",
+                 contentType: 'application/json; charset=utf-8',
+                success: function (data) {
+                 console.log("Responses:", data);
+                         if (data.authExpired) {
+                            $.alert({
+                                 title: 'Unauthorized',
+                                content: response.message || 'Unauthorized User',
+                                type: 'red',
+                                buttons: {
+                                    ok: {
+                                        text: 'OK',
+                                        action: function () {
+                                            window.location.href = '/login/logout';
+                                        }
+                                    }
+                                }
+                            });
+                            return;
+                        }
+                     let columns = [
+                             {
+                                title: "Action",
+                                width: 70,
+                                template: `
+                                    <img src='../Assets/images/editicons.png'
+                                         onclick="editGrid(this)"
+                                         style="height:12px;width:12px;cursor:pointer;margin-right:10px;" />
 
-     function editGrid(e) {
+                                    <img src='../Assets/images/del.png'
+                                         onclick="deleteGrid(this)"
+                                         style="height:12px;width:12px;cursor:pointer;" />
+                                `
+                            },
+                         {
+                             field: "client_gid",
+                             title: "ID",
+                             hidden: true
+                         },                       
+                         {
+                             field: "client_code",
+                             title: "Client Code"
+                         },
+                         {
+                             field: "client_name",
+                             title: "Client Name"
+                         },
+                         {
+                             field: "client_type",
+                             title: "Client Type"
+                         },
+                         {
+                                field: "client_country",
+                                title: "Client Country"
+                         },
+                         {
+                                field: "client_state",
+                                 title: "Client State"
+                         },
+                        {
+                                field: "client_city",
+                                title: "Client City"
+                        }                      
 
-        var grid = $("#clientListGrid").data("kendoGrid");
-        var row = $(e).closest("tr");
-        var dataItem = grid.dataItem(row);
-
-        var form = $('<form>', {
-            action: '@Url.Action("ClientSetupList", "ClientSetup")',
-            method: 'POST'
-        });
-
-        form.append($('<input>', {
-            type: 'hidden',
-            name: 'id',
-            value: dataItem.id
-        }));
-
-        form.appendTo('body').submit();        
+                     ];
+                     $('#clientListGrid').append('<div id="example" class="table-responsive text-nowrap" id="chk1"><table id="grid" data-bind="source: gridRows" class="table table-sm" style="width:100%;height: 358px;line-height:1em;font-size:12px;border-bottom: 1px solid #e1e1e1;"></table></div>');
+                     var gridData = JSON.parse(data._data);                    
+                     $("#grid").kendoGrid({
+                         dataSource: {
+                         data: gridData,
+                             pageSize: 10
+                         },
+                         height: 358,
+                         pageable: {
+                             pageSizes: [10, 20, 30],
+                             refresh: true
+                         },
+                         sortable: true,
+                         filterable: true,
+                         resizable: true,
+                         columns: columns,
+                             dataBound: function () {
+                                var grid = this;
+                                grid.columns.forEach(function (col, index) {
+                                    // grid.autoFitColumn(index);
+                                });
+                            }
+                     });
+                 }
+         });
     }
 
-    function editIssueGrid(e) {
-
-        var grid = $("#issueListGrid").data("kendoGrid");
+    function editGrid(e) {
+        var grid = $("#grid").data("kendoGrid");
         var row = $(e).closest("tr");
         var dataItem = grid.dataItem(row);
-
-        var form = $('<form>', {
-            action: '@Url.Action("IssueSetupList", "IssueSetup")',
-            method: 'POST'
-        });
-
-        form.append($('<input>', {
-            type: 'hidden',
-            name: 'id',
-            value: dataItem.id
-        }));
-
-        form.appendTo('body').submit();
+        var client_gid = dataItem.client_gid;
+        console.log("Edit client_gid:", client_gid);        
+        sessionStorage.setItem("edit_client_gid", client_gid);
+        window.location.href = "../ClientSetup/ClientSetup";
     }
 
 </script>
