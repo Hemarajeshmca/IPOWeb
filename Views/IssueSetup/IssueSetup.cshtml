@@ -1,5 +1,6 @@
 ﻿@{
     Layout = "~/Views/Shared/_LayoutNew.cshtml";
+    var userName = Context.Session.GetString("user_name");
 }
 <!DOCTYPE html>
 <html>  
@@ -79,8 +80,8 @@
                         <input type="text" id="clientcode" class="form-control" readonly value="@ViewBag.IssueCode" />
                     </div>                   
                     <div class="col-sm-3">
-                        <label class="form-label" for="issuetype" data-field="issuetype">Offer Type</label>&nbsp;<span style="font-size: 12px;color:red;font-weight: bold;">*</span>
-                        <select name="issuetype" id="issuetype" class="form-control">                                                     
+                        <label class="form-label" for="offer_type" data-field="offer_type">Offer Type</label>&nbsp;<span style="font-size: 12px;color:red;font-weight: bold;">*</span>
+                        <select name="offer_type" id="offer_type" class="form-control">                                                     
                         </select>
                     </div>
                     <div class="col-sm-3">
@@ -107,7 +108,7 @@
                         <input type="text" id="remarks" name="remarks" class="form-control" />
                     </div>
                     <div class="col-sm-2">
-                        <center><button type="button" class="btn btn-primary" id="btnSave" style="padding: 3px 25px;margin-top:30px;width:58%">Save</button></center>
+                        <center><button type="button" onclick="offerHeaderSave()" class="btn btn-primary" id="btnSave" style="padding: 3px 25px;margin-top:30px;width:58%">Save</button></center>
                     </div>
                 </div>  
                 <div class="row" style="margin-top:20px;">
@@ -603,10 +604,10 @@
 
 </html>
 <script>
-     $( document ).ready(function() {
-          $('#navhead').text('Issue Setup');      
-          loadMasterDropdown("QCD_MAST_OFFER_TYPE", "issuetype");
-         loadMasterDropdown("QCD_MAST_LISTING", "listing");
+  $( document ).ready(function() {
+      $('#navhead').text('Issue Setup');      
+          loadMasterDropdown("QCD_MAST_OFFER_TYPE", "offer_type");
+          loadMasterDropdown("QCD_MAST_LISTING", "listing");
          
           $("#status").change(function () {
         var selectedValue = $(this).val();
@@ -631,10 +632,8 @@
         }
     });
 
-        $("#pricetype").change(function () {
-
+    $("#pricetype").change(function () {
         var value = $(this).val();
-
         if (value == "1") {  // Fixed
             $("#fprice").prop("disabled", false);
             $("#minprice").prop("disabled", true).val("");
@@ -651,7 +650,6 @@
             $("#fprice").prop("disabled", true).val("");
             $("#minprice").prop("disabled", true).val("");
         }      
-
     });
 
      function loadMasterDropdown(masterCode, dropdownId,selectedValue) {
@@ -713,4 +711,68 @@
 $('button[data-bs-target="#navs-top-sh"]').on('shown.bs.tab', function () {
         loadMasterDropdown("QCD_MAST_STAKEHOLDER_TYPE", "sh");
 });
+
+ function offerHeaderSave() {
+     var payload = {}
+            payload.in_offer_header_gid = '0';
+        payload.client_name = $("#clientname").val();
+            payload.in_client_code = $("#clientcode").val();
+            payload.in_offer_type = $("#offer_type").val();
+            payload.in_offer_listing = $("#listing").val();
+            payload.in_offer_isin = $("#isin").val();
+            payload.in_offer_status = $("#status").val();
+            payload.in_offer_remarks = $("#remarks").val();
+            payload.in_user_code = '@userName';
+            payload.in_action = in_offer_header_gid == '0' ? "INSERT": "UPDATE";
+    try {
+        $.ajax({
+            type: "POST",
+            url: '../IssueSetup/IssueSetup',
+            dataType: 'json',
+            data: JSON.stringify(payload),
+            contentType: 'application/json; charset=utf-8',
+            success: function (response) {
+                if (response ) {
+                      
+                }
+                else {
+                 
+                }
+            },
+            error: function (er) {
+                alert(er)
+                console.log(er)
+            }
+        });
+    }
+        catch (e) {
+            console.log(e)
+        }
+    }
+
+    function fetchIssuesetup(){
+        var client_code = $("#clientcode").val();
+            try {
+            $.ajax({
+                type: "POST",
+                url: '../IssueSetup/IssueSetup',
+                dataType: 'json',
+                data: JSON.stringify(payload),
+                contentType: 'application/json; charset=utf-8',
+                success: function (response) {
+                    if (response ) {
+                    }
+                    else {
+                    }
+                },
+                error: function (er) {
+                    alert(er)
+                    console.log(er)
+                }
+            });
+        }
+            catch (e) {
+                console.log(e)
+            }
+    }
 </script>

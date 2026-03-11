@@ -81,9 +81,9 @@ namespace IPOWeb.Controllers
         }
 
         [HttpPost]
-        public JsonResult OfferType_old([FromBody] IssueSetupModel mymodel)
+        public JsonResult OfferHeaderSave([FromBody] OfferHeaderModel objOfferHeader)
         {
-            urlstring = Convert.ToString(_configuration.GetSection("Appsettings")["apiurl"]) + "OfferType";
+            urlstring = Convert.ToString(_configuration.GetSection("Appsettings")["apiurl"]) + "offerheader";
             try
             {
                 using (var client = new HttpClient())
@@ -93,10 +93,8 @@ namespace IPOWeb.Controllers
                     string token = Request.Cookies[APIcookieName];
                     client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
                     client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
-
-                    var json = JsonConvert.SerializeObject(mymodel);
+                    var json = JsonConvert.SerializeObject(objOfferHeader);
                     var content = new StringContent(json, Encoding.UTF8, "application/json");
-
                     var response = client.PostAsync(urlstring, content).Result;
                     if (response.StatusCode == HttpStatusCode.Unauthorized)
                     {
@@ -107,19 +105,12 @@ namespace IPOWeb.Controllers
                             authExpired = true
                         });
                     }
-
                     if (response.IsSuccessStatusCode)
                     {
                         string resultMessage = response.Content.ReadAsStringAsync().Result;
-
-                        // Deserialize the JSON string into an object
                         var companyData = JsonConvert.DeserializeObject<object>(resultMessage);
-
-                        // Return that object directly, not as a string
                         return Json(new { success = true, data = companyData });
                     }
-
-
                     else
                     {
                         return Json(new { success = false, message = "API call failed: " + response.StatusCode });
@@ -131,43 +122,8 @@ namespace IPOWeb.Controllers
                 return Json(new { success = false, message = ex.Message });
             }
         }
-        public IActionResult GetIssueList()
-        {
-            var data = new List<object>
-                {
-                    new { Id = 1,IssueCode = "ISSIPO001", ClientName = "LG Electronics", IssueType = "MB IPO", Listing = "BSE", IssueStatus = "Active" },
-                    new { Id = 2, IssueCode = "ISSIPO002", ClientName = "ICICI Prudential", IssueType = "SME IPO", Listing = "NSE",  IssueStatus = "Inactive" },
-                    new { Id = 3, IssueCode = "ISSIPO003", ClientName = "HBD Finance Groups", IssueType = "DEB", Listing = "BSE & NSE",   IssueStatus = "Active" }
-                };
 
-            return Json(data);
-        }
 
-        [HttpPost]
-        public IActionResult IssueSetupList(int id)
-        {
-            ViewBag.Mode = "Edit";
-
-            var data = new List<dynamic>
-                {
-                    new { Id = 1, IssueCode = "ISSIPO001",  ClientName = "LG Electronics", IssueType = "MB IPO", Listing = "BSE", IssueStatus = "Active" },
-                    new { Id = 2, IssueCode = "ISSIPO002", ClientName = "ICICI Prudential", IssueType = "SME IPO", Listing = "NSE",  IssueStatus = "Inactive" },
-                    new { Id = 3, IssueCode = "ISSIPO003", ClientName = "HBD Finance Groups", IssueType = "DEB", Listing = "BSE & NSE",   IssueStatus = "Active" }
-                };
-
-            var client = data.FirstOrDefault(x => x.Id == id);
-
-            if (client != null)
-            {
-                ViewBag.IssueCode = client.IssueCode;               
-                ViewBag.ClientName = client.ClientName;
-                ViewBag.IssueType = client.IssueType;
-                ViewBag.Listing = client.Listing;
-                ViewBag.IssueStatus = client.IssueStatus;              
-            }
-
-            return View("IssueSetup");   // 👈 IMPORTANT
-        }
     }
 
 }
