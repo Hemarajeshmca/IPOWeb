@@ -1,0 +1,137 @@
+{
+  "Version": 1,
+  "WorkspaceRootPath": "E:\\user\\hema\\IPOProject\\IPOProject_Web\\IPOProject\\IPOWeb\\",
+  "Documents": [
+    {
+      "AbsoluteMoniker": "D:0:0:{43F32BE5-FDC7-4CC0-A7D6-B0BF449EDE53}|IPOWeb.csproj|e:\\user\\hema\\ipoproject\\ipoproject_web\\ipoproject\\ipoweb\\controllers\\qcdmastercontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{43F32BE5-FDC7-4CC0-A7D6-B0BF449EDE53}|IPOWeb.csproj|solutionrelative:controllers\\qcdmastercontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{43F32BE5-FDC7-4CC0-A7D6-B0BF449EDE53}|IPOWeb.csproj|e:\\user\\hema\\ipoproject\\ipoproject_web\\ipoproject\\ipoweb\\appsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}",
+      "RelativeMoniker": "D:0:0:{43F32BE5-FDC7-4CC0-A7D6-B0BF449EDE53}|IPOWeb.csproj|solutionrelative:appsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{43F32BE5-FDC7-4CC0-A7D6-B0BF449EDE53}|IPOWeb.csproj|e:\\user\\hema\\ipoproject\\ipoproject_web\\ipoproject\\ipoweb\\controllers\\logincontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{43F32BE5-FDC7-4CC0-A7D6-B0BF449EDE53}|IPOWeb.csproj|solutionrelative:controllers\\logincontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{43F32BE5-FDC7-4CC0-A7D6-B0BF449EDE53}|IPOWeb.csproj|e:\\user\\hema\\ipoproject\\ipoproject_web\\ipoproject\\ipoweb\\controllers\\jobsstatuscontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{43F32BE5-FDC7-4CC0-A7D6-B0BF449EDE53}|IPOWeb.csproj|solutionrelative:controllers\\jobsstatuscontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{43F32BE5-FDC7-4CC0-A7D6-B0BF449EDE53}|IPOWeb.csproj|e:\\user\\hema\\ipoproject\\ipoproject_web\\ipoproject\\ipoweb\\views\\jobsstatus\\jobsstatus.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{43F32BE5-FDC7-4CC0-A7D6-B0BF449EDE53}|IPOWeb.csproj|solutionrelative:views\\jobsstatus\\jobsstatus.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{43F32BE5-FDC7-4CC0-A7D6-B0BF449EDE53}|IPOWeb.csproj|e:\\user\\hema\\ipoproject\\ipoproject_web\\ipoproject\\ipoweb\\controllers\\issuesetupcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{43F32BE5-FDC7-4CC0-A7D6-B0BF449EDE53}|IPOWeb.csproj|solutionrelative:controllers\\issuesetupcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{43F32BE5-FDC7-4CC0-A7D6-B0BF449EDE53}|IPOWeb.csproj|e:\\user\\hema\\ipoproject\\ipoproject_web\\ipoproject\\ipoweb\\views\\issuesetup\\issuesetup.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{43F32BE5-FDC7-4CC0-A7D6-B0BF449EDE53}|IPOWeb.csproj|solutionrelative:views\\issuesetup\\issuesetup.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    }
+  ],
+  "DocumentGroupContainers": [
+    {
+      "Orientation": 0,
+      "VerticalTabListWidth": 256,
+      "DocumentGroups": [
+        {
+          "DockedWidth": 200,
+          "SelectedChildIndex": 0,
+          "Children": [
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "QCDmasterController.cs",
+              "DocumentMoniker": "E:\\user\\hema\\IPOProject\\IPOProject_Web\\IPOProject\\IPOWeb\\Controllers\\QCDmasterController.cs",
+              "RelativeDocumentMoniker": "Controllers\\QCDmasterController.cs",
+              "ToolTip": "E:\\user\\hema\\IPOProject\\IPOProject_Web\\IPOProject\\IPOWeb\\Controllers\\QCDmasterController.cs",
+              "RelativeToolTip": "Controllers\\QCDmasterController.cs",
+              "ViewState": "AgIAAGQAAAAAAAAAAAAWwLYAAAAuAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-03-11T04:52:10.115Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "LoginController.cs",
+              "DocumentMoniker": "E:\\user\\hema\\IPOProject\\IPOProject_Web\\IPOProject\\IPOWeb\\Controllers\\LoginController.cs",
+              "RelativeDocumentMoniker": "Controllers\\LoginController.cs",
+              "ToolTip": "E:\\user\\hema\\IPOProject\\IPOProject_Web\\IPOProject\\IPOWeb\\Controllers\\LoginController.cs",
+              "RelativeToolTip": "Controllers\\LoginController.cs",
+              "ViewState": "AgIAALkAAAAAAAAAAAAswMQAAABAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-03-10T13:22:10.868Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 3,
+              "Title": "JobsStatusController.cs",
+              "DocumentMoniker": "E:\\user\\hema\\IPOProject\\IPOProject_Web\\IPOProject\\IPOWeb\\Controllers\\JobsStatusController.cs",
+              "RelativeDocumentMoniker": "Controllers\\JobsStatusController.cs",
+              "ToolTip": "E:\\user\\hema\\IPOProject\\IPOProject_Web\\IPOProject\\IPOWeb\\Controllers\\JobsStatusController.cs",
+              "RelativeToolTip": "Controllers\\JobsStatusController.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAGYAAAAUAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-03-10T11:01:37.524Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "appsettings.json",
+              "DocumentMoniker": "E:\\user\\hema\\IPOProject\\IPOProject_Web\\IPOProject\\IPOWeb\\appsettings.json",
+              "RelativeDocumentMoniker": "appsettings.json",
+              "ToolTip": "E:\\user\\hema\\IPOProject\\IPOProject_Web\\IPOProject\\IPOWeb\\appsettings.json",
+              "RelativeToolTip": "appsettings.json",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAA4AAAAlAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001642|",
+              "WhenOpened": "2026-03-10T11:01:07.6Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 4,
+              "Title": "JobsStatus.cshtml",
+              "DocumentMoniker": "E:\\user\\hema\\IPOProject\\IPOProject_Web\\IPOProject\\IPOWeb\\Views\\JobsStatus\\JobsStatus.cshtml",
+              "RelativeDocumentMoniker": "Views\\JobsStatus\\JobsStatus.cshtml",
+              "ToolTip": "E:\\user\\hema\\IPOProject\\IPOProject_Web\\IPOProject\\IPOWeb\\Views\\JobsStatus\\JobsStatus.cshtml",
+              "RelativeToolTip": "Views\\JobsStatus\\JobsStatus.cshtml",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAMAAAABAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2026-03-10T10:48:50.551Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 6,
+              "Title": "IssueSetup.cshtml",
+              "DocumentMoniker": "E:\\user\\hema\\IPOProject\\IPOProject_Web\\IPOProject\\IPOWeb\\Views\\IssueSetup\\IssueSetup.cshtml",
+              "RelativeDocumentMoniker": "Views\\IssueSetup\\IssueSetup.cshtml",
+              "ToolTip": "E:\\user\\hema\\IPOProject\\IPOProject_Web\\IPOProject\\IPOWeb\\Views\\IssueSetup\\IssueSetup.cshtml",
+              "RelativeToolTip": "Views\\IssueSetup\\IssueSetup.cshtml",
+              "ViewState": "AgIAAIwCAAAAAAAAAAAAAJUCAAAQAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2026-03-10T10:48:36.488Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 5,
+              "Title": "IssueSetupController.cs",
+              "DocumentMoniker": "E:\\user\\hema\\IPOProject\\IPOProject_Web\\IPOProject\\IPOWeb\\Controllers\\IssueSetupController.cs",
+              "RelativeDocumentMoniker": "Controllers\\IssueSetupController.cs",
+              "ToolTip": "E:\\user\\hema\\IPOProject\\IPOProject_Web\\IPOProject\\IPOWeb\\Controllers\\IssueSetupController.cs",
+              "RelativeToolTip": "Controllers\\IssueSetupController.cs",
+              "ViewState": "AgIAABkAAAAAAAAAAAAkwCMAAAAMAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-03-10T10:48:27.747Z",
+              "EditorCaption": ""
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

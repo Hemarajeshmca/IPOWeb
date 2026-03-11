@@ -1,0 +1,536 @@
+﻿@*@model DMS.Model.Login_Model*@
+
+@{
+    Layout = null;
+}
+@{
+    var userEmail = Context.Session.GetString("UserEmail");
+}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>IPO Login Page</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+    <script src="https://www.google.com/recaptcha/api.js" async defer></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/3.1.2/rollups/aes.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/3.1.2/rollups/pbkdf2.js"></script>
+
+    @*Css and Js for Jquery alert box*@
+    <script src="~/Scripts/jquery-confirm.min.js"></script>
+    <link href="~/Content/css/jquery-confirm.min.css" rel="stylesheet" />
+    <style>
+        body {
+            background-image: url('@Url.Content("~/Assets/images/loginbanneripoupdated.jpg")');
+            /* background-size: cover; /* Ensures it covers the full screen */ 
+            background-position: center center; /* Centers the image 
+            background-repeat: no-repeat; /* Prevents tiling */
+            background-attachment: fixed; /* Optional: for parallax effect */
+            min-height: 100vh; /* Ensures it fills viewport */
+            width: 100%;
+            margin: 0;
+            padding: 0;
+
+        }
+
+        .footer {
+            position: fixed;
+            left: 0;
+            bottom: 0;
+            width: 100%;
+            background-color: #e4e4e4;
+            color: white;
+            text-align: center;
+        }
+        /* ===== PAGE BACKGROUND ===== */
+
+
+        /* ===== HEADER ===== */
+        .header-bar {
+            background: linear-gradient(135deg, #0e9ac8, #1f3c88);
+            padding: 15px 30px;
+        }
+
+            .header-bar img {
+                height: 55px;
+            }
+
+        /* ===== LOGIN CARD ===== */
+
+
+        .login-card {
+            background: linear-gradient( 135deg, #0e9ac8 0%, #0e9ac8 35%, #ffffff 35%, #ffffff 100% );
+            color: #fff;
+            /* animation: slideFade 0.9s ease forwards; */
+        }
+
+            .login-card input,
+            .login-card select {
+                background: #fff;
+            }
+
+
+
+            /* Decorative animated shape */
+            .login-card::before {
+                content: "";
+                position: absolute;
+                width: 240px;
+                height: 240px;
+                /* background: linear-gradient( 135deg, rgba(14,154,200,0.35), rgba(31,60,136,0.35) ); */
+                border-radius: 50%;
+                top: -90px;
+                right: -90px;
+                /* animation: floatBlob 6s infinite ease-in-out; */
+            }
+
+
+            /* Keep form above animation */
+            .login-card form {
+                position: relative;
+                z-index: 2;
+            }
+
+        /* ===== INPUTS ===== */
+        .form-control {
+            height: 42px;
+            border-radius: 10px;
+            transition: all 0.3s ease;
+        }
+
+            .form-control:focus {
+                border-color: #0e9ac8;
+                box-shadow: 0 0 0 3px rgba(14,154,200,0.25);
+            }
+
+        /* ===== BUTTONS ===== */
+        #btnsubmit,
+        #ForgetPwd {
+            border-radius: 30px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+            #btnsubmit:hover {
+                transform: translateY(-2px);
+                box-shadow: 0 10px 20px rgba(14,154,200,0.4);
+            }
+
+        #ForgetPwd {
+            background: transparent;
+            color: #0e9ac8;
+        }
+
+        /* ===== FOOTER ===== */
+        .modern-footer {
+            text-align: center;            
+            background: #ffffff;
+            box-shadow: 0 -2px 10px rgba(0,0,0,0.1);
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+        }
+
+        /* @@keyframes slideFade {
+            from {
+                opacity: 0;
+                transform: translateY(40px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @@keyframes floatBlob {
+            0%, 100% {
+                transform: translateY(0);
+            }
+
+            50% {
+                transform: translateY(18px);
+            }
+        } */
+
+        /* ===== CURSOR GLOW ===== */
+        /* Splash circle */
+        .cursor-glow {
+            position: fixed;
+            width: 180px;
+            height: 180px;
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 9999;
+            background: radial-gradient( circle, rgba(14,154,200,0.35), rgba(14,154,200,0.20), transparent 70% );
+            transform: translate(-50%, -50%);
+            transition: transform 0.05s linear;
+        }
+
+    </style>
+
+</head>
+<body>
+
+    <!-- Cursor Glow -->
+    <div class="cursor-glow"></div>
+
+    <div class="container-fluid">
+        <div class="row" style="height:35px;background:#fff">
+            <div class="col-sm-4">
+                <img src="~/Assets/images/ipologos.png" style="height:35px;">
+            </div>
+        </div>
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-sm-4">
+                </div>
+                <div class="col-sm-4 login-card" style="animation: floatBlob 6s infinite ease-in-out;border: 1px solid #6967676e;margin: 20px;float:right;overflow:hidden;border-radius: 45px;background:#fff;height: 273px;margin-top:140px;box-shadow: 0 4px 8px 0 rgb(0 0 0 / 90%), 0 6px 20px 0 rgb(0 0 0 / 83%); ">
+
+                    <form action="" method="post" style="margin-top: 36px;">
+                        <div class="form-group input-group">
+                            <span class="input-group-addon"><i class="glyphicon glyphicon-user"></i></span>
+                            <input class="form-control" type="text" name="txtusername" maxlength="150" id="txtusername" placeholder="Employee Code" required>
+                        </div>
+                        <div class="form-group input-group" id="otpdiv" style="">
+                            <span class="input-group-addon"><i class="glyphicon glyphicon-lock"></i></span>
+                            <input class="form-control" type="password" name="txtpwd" id="txtpwd" placeholder="Password">
+
+                        </div>                    
+
+                        <div class="form-group" id="loginbtn" style="margin-top:10px;">
+                            @*  commented by hari for dev env*@
+                            <center>
+                                <button onclick="return CheckLogin();" id="btnsubmit"
+                                        type="button"
+                                        style="background-color:#0e9ac8;color:white;"
+                                        class="btn btn-def btn-block">
+                                    Login
+                                </button>
+                            </center>
+                        </div>
+                        <div class="form-group" id="OTPbtn" style="margin-top:10px;">
+                            <center>
+                                @* <button id="btnGenerateOtp" type="button" style="background-color:#0e9ac8;color:white;" class="btn btn-def btn-block" data-toggle="modal" data-target="#changePasswordModal"> Change Password </button> *@
+                                <button onclick="return ForgotPassword();" id="ForgetPwd" type="button" style="background-color:#0e9ac8;color:white;" class="btn btn-def btn-block"> Forgot Password </button>
+                            </center>
+                        </div>
+                        <div class="form-group text-center" style="color:red">
+                            <span class="errormessage" style="color: red;"></span>
+                        </div>
+                        <div class="form-group text-center" style="display:none" id="resendOtp">
+                            <a href="#" style="color:#e9400b" onclick="GenerateOtp()">Resend OTP</a><br>
+                        </div>
+
+                    </form>
+                </div>
+                <div class="col-sm-4">
+                </div>
+            </div>
+
+        </div>
+
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-sm-12 footer modern-footer">
+                    <h5 class="copyright" style="color:#000;">Copyright &#169; by GNSA Infotech </h5>
+                </div>
+            </div>
+        </div>
+
+        <!-- Change Password Modal -->
+        <div class="modal fade" id="changePasswordModal" tabindex="-1" role="dialog" aria-labelledby="changePasswordModalLabel" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content" style="border-radius:10px">
+                    <div class="modal-header" style="background-color:#0e9ac8;color:white;">
+                        <h5 class="modal-title" id="changePasswordModalLabel" style="margin-bottom:-16px;">Change Password</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close" style="color:white">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <form id="changePasswordForm">
+                            <input type="hidden" id="changePasswordEmail" />
+                            <div class="form-group">
+                                @* <span class="input-group-addon"><i class="glyphicon glyphicon-user"></i></span> *@
+                                <label for="oldPassword">Old Password</label>
+                                <input type="password" class="form-control" id="oldPassword" required>
+                                <span id="queryErrorOldPwd" style="color: red; font-size: 12px;position:relative;"></span>
+                            </div>
+                            <span id="oldError" style="color: red; font-size: 12px;position:relative;top:-14px;"></span>
+                            <div class="form-group">
+                                @* <span class="input-group-addon"><i class="glyphicon glyphicon-user"></i></span> *@
+                                <label for="newPassword">New Password</label>
+                                <input type="password" class="form-control" id="newPassword" required>
+                                @* <small id="oldPwdError" class="form-text text-danger"></small> *@
+                            </div>
+                            <span id="newError" style="color: red; font-size: 12px;position:relative;top:-14px;"></span>
+                            <div class="form-group">
+                                @* <span class="input-group-addon"><i class="glyphicon glyphicon-user"></i></span> *@
+                                <label for="confirmPassword">Confirm New Password</label>
+                                <input type="password" class="form-control" id="confirmPassword" required>
+                                <span id="queryErrorAllEmpty" style="color: red; font-size: 12px;position:relative;"></span>
+                                <span id="queryErrorNewCnfPwd" style="color: red; font-size: 12px;position:relative;"></span>
+                            </div>
+                            <span id="conError" style="color: red; font-size: 12px;position:relative;top:-14px;"></span>
+                            <div class="text-center">
+                                <button type="button" class="btn btn-success" onclick="saveNewPassword()">Save</button>
+                            </div>
+
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+    </div>
+</body>
+</html>
+
+<script type="text/javascript">
+
+    const glow = document.querySelector('.cursor-glow');
+
+    document.addEventListener('mousemove', (e) => {
+        glow.style.left = e.clientX + 'px';
+        glow.style.top = e.clientY + 'px';
+    });
+
+
+    var encryptionKey = "encryptionkey123";
+
+    function generateEncryptionKey() {
+        const keyArray = new Uint8Array(32); // 256 bits = 32 bytes
+        crypto.getRandomValues(keyArray);
+        return keyArray;
+    }
+
+    function removeSpaces(string) {
+        return string.split(' ').join('');
+    }
+
+</script>
+<script>
+    function generate16DigitRandomNumber() {
+        let randomNumber = '';
+        for (let i = 0; i < 16; i++) {
+            randomNumber += Math.floor(Math.random() * 10); // Concatenate a random digit (0-9)
+        }
+        return randomNumber;
+    }
+
+    function saveNewPassword() {
+        debugger;
+        var isValid = true;
+        var empcode = $('#changePasswordEmail').val();
+        var oldPwd = $("#oldPassword").val();
+        var newPwd = $("#newPassword").val();
+        var confirmPwd = $("#confirmPassword").val();
+        var txt_pwd = $("#txtpwd").val();
+        const minLength = 6;
+
+        var data = {
+            old_pwd: oldPwd,
+            new_pwd: newPwd,
+            empCode: empcode,
+            con_pwd: confirmPwd
+        };
+
+        if (oldPwd === "" || newPwd === "" || confirmPwd === "") {
+            queryErrorAllEmpty.textContent = "All Fields Required";
+            isValid = false;
+        }else {
+            queryErrorAllEmpty.textContent = ""; // Clear any previous error
+        }
+
+        if (oldPwd!= "" && oldPwd != txt_pwd){
+            queryErrorOldPwd.textContent = "Old Password Not Same";
+            isValid = false;
+        }else {
+            queryErrorOldPwd.textContent = ""; // Clear any previous error
+        }
+
+        if (newPwd != confirmPwd){
+            queryErrorNewCnfPwd.textContent = "New Password And Confirm Password Not Same";
+            isValid = false;
+        }else if (newPwd != "" && confirmPwd != "" &&(newPwd.length < minLength || confirmPwd < minLength)) {
+            queryErrorNewCnfPwd.textContent = "New And Confirm Password must be at least " + minLength + " characters long";
+            isValid = false;
+        }else {
+            queryErrorNewCnfPwd.textContent = ""; // Clear any previous error
+        }
+
+
+        if(isValid) {
+            $.ajax({
+                url: '@Url.Action("ChangePassword", "Login")',
+                type: 'POST',
+                data: JSON.stringify(data),
+                contentType: 'application/json',
+                success: function (response) {
+                    console.log("Response:", response);
+
+                    if (response.success) {
+                        $.dialog({
+                            title: 'Success',
+                            content: response.message,
+                            type: 'green',
+                            onClose: function () {
+                                $("#changePasswordForm")[0].reset();
+                                location.reload();
+                            }
+                        });
+                    } else {
+                        $.dialog({
+                            title: 'Error',
+                            content: response.message,
+                            type: 'red'
+                        });
+                    }
+                },
+                error: function (error) {
+                    console.error("Error:", error);
+                    alert("Error changing password");
+                }
+            });
+        }
+    }
+    function CheckLogin() {
+        var empCode = $("#txtusername").val();
+        var txt_pwd = $("#txtpwd").val();
+        if (empCode == "") {
+            $(".errormessage").html('<span class="errormessage"  id="mess">Please Enter Username...!!</span>');
+            $("#erridmsg").show();
+            return false;
+        }
+        if (txt_pwd == "") {
+            $(".errormessage").html('<span class="errormessage"  id="mess">Please Enter Password...!!</span>');
+            $("#erridmsg").show();
+            return false;
+        }
+
+            $.ajax({
+                url: '@Url.Action("ChkLogin", "Login")?empCode=' + empCode + '&txt_pwd=' + txt_pwd,
+                type: 'POST',
+                dataType: 'json',              // ⭐ REQUIRED
+                success: function (response) {
+
+                  if (typeof response === "string") {
+                    response = JSON.parse(response);
+                }
+
+                // SAFETY CHECK
+                if (!response.Table || response.Table.length === 0) {
+                    console.error("Table missing or empty", response);
+                    return;
+                }
+
+                var data = response.Table[0];
+                console.log("USER NAME:", data.user_name);
+
+                    // FAILURE
+                    if (data.success === 0) {
+                        $(".errormessage").html(
+                            `<span class="errormessage">${data.message}</span>`
+                        );
+                        $("#erridmsg").show();
+                        return;
+                    }
+
+                    // SUCCESS ✅
+                    if (data.success === 1) {
+                        sessionStorage.setItem("user_id", data.user_id);
+                        sessionStorage.setItem("user_name", data.user_name);
+                        sessionStorage.setItem("role_code", data.role_code);
+
+                        window.location.href = '@Url.Action("Dashboard", "Dashboard")';
+                    }
+                },
+                error: function () {
+                    $.alert({
+                        title: 'Error',
+                        content: 'Login request failed',
+                        type: 'red'
+                    });
+                }
+            });
+    }
+
+    function ForgotPassword() {
+        debugger;
+        var url = '@Url.Action("ForgotPassword", "Login")'
+        window.location.href = url;
+        //window.location.href = '../login/ForgetPassword';
+    }
+
+    function GenerateOtp() {
+        debugger;
+        $("#OTPbtn").css('display', 'none');
+        $("#resendOtp").css('display', '');
+        $("#loginbtn").css('display', '');
+        $("#otpdiv").css('display', '');
+        $.ajax({
+            url: '@Url.Action("generateOTP", "Login")?empCode=' + $("#txtusername").val(),
+            type: 'POST',
+            contentType: 'application/json',
+            // data: JSON.stringify({ selectedData: getModel }),// JSON.stringify({ jsonArray: jsonArray }),
+            success: function (response) {
+                console.log(response);
+                var _data = JSON.parse(response);
+                if (_data[0].Clear == 1) {
+                    $("#OTPbtn").css('display', 'none');
+                    $("#resendOtp").css('display', '');
+                    $("#loginbtn").css('display', '');
+                    $("#otpdiv").css('display', '');
+
+                    // Handle success
+                    $.alert({
+                        title: 'Success',
+                        content: _data[0].Msg,
+                        type: 'green',
+                    });
+                } else {
+                    $("#OTPbtn").css('display', '');
+                    $("#resendOtp").css('display', 'none');
+                    $("#loginbtn").css('display', 'none');
+                    $("#otpdiv").css('display', 'none');
+                    $.alert({
+                        title: 'Error',
+                        content: _data[0].Msg,
+                        type: 'red',
+                    });
+                }
+
+            },
+            error: function (xhr, status, error) {
+                $("#OTPbtn").css('display', '');
+                $("#resendOtp").css('display', 'none');
+                $("#loginbtn").css('display', 'none');
+                // Handle error
+                $.alert({
+                    title: ' ',
+                    content: "RowFilters Failed to Save.!",
+                    type: 'red',
+                });
+            }
+        });
+    }
+    $(document).ready(function () {
+
+        $("#OTPbtn").css('display', ''); // commented by hari for dev env
+
+        if ("@ViewBag.isMultiDatabase" == "true") {
+            $("#divEntity").show();
+        }
+        else {
+            $("#divEntity").hide();
+        }
+    });
+
+
+
+</script>

@@ -1,0 +1,716 @@
+﻿@{
+    Layout = "~/Views/Shared/_LayoutNew.cshtml";
+}
+<!DOCTYPE html>
+<html>  
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>Client Setup</title>
+    <style>
+        .content-wrapper {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        h5#navhead {
+            position: relative;
+            right: 129px;
+            width: 23%;
+        }
+        .col-md-2-4 {
+            flex: 0 0 auto;
+            width: 20%;
+        }
+        .nav-align-top .nav-tabs ~ .tab-content {           
+            border: 1px solid #e3dcdc;
+            height:auto;
+        }
+        .nav-tabs .nav-item .nav-link:not(.active) {
+            background-color: #716969;
+            color: #fff;
+        }
+        .nav-tabs .nav-link.active, .nav-tabs .nav-item.show .nav-link {
+            background-color: #027ed1 !important;
+            color: #fff !important;
+        }
+        table tbody tr:nth-child(odd) {
+            /* background-color: #5997bb !important; */
+            color: #566a7f;
+        }
+
+        table tbody tr:nth-child(even) {
+            background-color: #ffffff;
+            color: #566a7f;
+        }
+
+        .table tbody tr td {
+            padding: 2px 8px; /* reduce padding */
+            font-size: 12px; /* smaller text */
+        }
+    </style>
+</head>
+
+<body class="hold-transition skin-blue sidebar-mini fixed">
+    <div class="content-wrapper">
+        <div class="container-xxl flex-grow-1 container-p-y">
+            <div class="card-body" style="margin-top:5px;height: 556px;width: 103%;margin-left: -18px;">
+                <div class="row" style="margin-top: -15px;">
+                    <div class="col-sm-2">
+                        <input type="text" id="createedit" class="form-control" readonly value="@ViewBag.Mode" />
+                    </div>
+                    <div class="col-sm-2">
+                        <input type="text" id="issuecode" class="form-control" readonly value="@ViewBag.IssueCode" />
+                    </div>
+                    <div class="col-sm-2">
+                        <input type="text" id="issuestatus" class="form-control" readonly value="@ViewBag.IssueStatus" />
+                    </div>
+                    <div class="col-sm-6">
+                        <img style="width:20px; height:20px; margin-bottom:-9px; cursor:pointer;float:right;" onclick="location.href='@Url.Action("Dashboard", "Dashboard")?tab=issue'"  src="/Assets/images/toplist.png">
+                    </div>
+                </div>
+                <div class="row" style="margin-top:5px;">
+                    <div class="col-sm-3">
+                        <label class="form-label" for="ReferredBy" data-field="ReferredBy">Client Name</label>
+                        <input type="text" id="clientname" class="form-control" value="@ViewBag.ClientName" />
+                    </div>
+                    <div class="col-sm-3">
+                        <label class="form-label" for="ReferredBy" data-field="ReferredBy">Client Code</label>
+                        <input type="text" id="clientcode" class="form-control" readonly value="@ViewBag.IssueCode" />
+                    </div>                   
+                    <div class="col-sm-3">
+                        <label class="form-label" for="issuetype" data-field="issuetype">Offer Type</label>&nbsp;<span style="font-size: 12px;color:red;font-weight: bold;">*</span>
+                        <select name="issuetype" id="issuetype" class="form-control">                                                     
+                        </select>
+                    </div>
+                    <div class="col-sm-3">
+                        <label class="form-label" for="listing" data-field="listing">Listing</label>&nbsp;<span style="font-size: 12px;color:red;font-weight: bold;">*</span>
+                        <select name="listing" id="listing" class="form-control">                          
+                        </select>
+                    </div>                 
+                </div>
+                <div class="row" style="margin-top:5px;">
+                    <div class="col-sm-3">
+                        <label class="form-label" for="isin" data-field="isin">ISIN No.</label>&nbsp;<span style="font-size: 12px;color:red;font-weight: bold;">*</span>
+                        <input type="text" id="isin" name="isin" class="form-control"  />
+                    </div>
+                    <div class="col-sm-3">
+                        <label class="form-label" for="isin" data-field="isin">Status</label>
+                        <select name="status" id="status" class="form-control">
+                            <option value="">---- Select Status ---</option>
+                            <option value="closed">Closed</option>
+                            <option value="inactive">Inactive</option>
+                        </select>
+                    </div>
+                    <div class="col-sm-4">
+                        <label class="form-label" for="isin" data-field="isin">Remarks</label>                        
+                        <input type="text" id="remarks" name="remarks" class="form-control" />
+                    </div>
+                    <div class="col-sm-2">
+                        <center><button type="button" class="btn btn-primary" id="btnSave" style="padding: 3px 25px;margin-top:30px;width:58%">Save</button></center>
+                    </div>
+                </div>  
+                <div class="row" style="margin-top:20px;">
+                    <div class="col-sm-12">
+                        <div class="nav-align-top mb-4">
+                            <ul class="nav nav-tabs" role="tablist">
+                                <li class="nav-item">
+                                    <button type="button"
+                                            class="nav-link active"
+                                            role="tab"
+                                            data-bs-toggle="tab"
+                                            data-bs-target="#navs-top-ids"
+                                            aria-controls="navs-top-ids"
+                                            aria-selected="true">
+                                        Offer Details
+                                    </button>
+                                </li>
+                                <li class="nav-item">
+                                    <button type="button"
+                                            class="nav-link"
+                                            role="tab"
+                                            data-bs-toggle="tab"
+                                            data-bs-target="#navs-top-bank"
+                                            aria-controls="navs-top-bank"
+                                            aria-selected="false">
+                                        Bankers
+                                    </button>
+                                </li>
+                                <li class="nav-item">
+                                    <button type="button"
+                                            class="nav-link"
+                                            role="tab"
+                                            data-bs-toggle="tab"
+                                            data-bs-target="#navs-top-sh"
+                                            aria-controls="navs-top-sh"
+                                            aria-selected="false">
+                                        Stake Holders
+                                    </button>
+                                </li>
+                                <li class="nav-item">
+                                    <button type="button"
+                                            class="nav-link"
+                                            role="tab"
+                                            data-bs-toggle="tab"
+                                            data-bs-target="#navs-top-cat"
+                                            aria-controls="navs-top-cat"
+                                            aria-selected="false">
+                                        Category
+                                    </button>
+                                </li>
+                                <li class="nav-item">
+                                    <button type="button"
+                                            class="nav-link"
+                                            role="tab"
+                                            data-bs-toggle="tab"
+                                            data-bs-target="#navs-top-mile"
+                                            aria-controls="navs-top-mile"
+                                            aria-selected="false">
+                                        Milestones
+                                    </button>
+                                </li>                               
+                            </ul>
+                            <div class="tab-content">
+                                <div class="tab-pane fade show active" id="navs-top-ids" role="tabpanel">
+                                    <div class="row">
+                                        <div class="col-sm-2">
+                                            <label class="form-label" for="isin" data-field="isin">Pre Offer Capital</label>
+                                            <input type="number" id="preissue" class="form-control"/>
+                                        </div>
+                                        <div class="col-sm-2">
+                                            <label class="form-label" for="isin" data-field="isin">Issue Size</label>
+                                            <input type="number" id="issuesize" class="form-control" />
+                                        </div>
+                                        <div class="col-sm-2">
+                                            <label class="form-label" for="isin" data-field="isin">Post Offer Capital</label>
+                                            <input type="number" id="postissue" class="form-control"  readonly/>
+                                        </div>
+                                        <div class="col-sm-2">
+                                            <label class="form-label" for="isin" data-field="isin">Lot Size</label>
+                                            <input type="number" id="lotsize" class="form-control" />
+                                        </div>
+                                        <div class="col-sm-2">
+                                            <label class="form-label" for="isin" data-field="isin">Face Value</label>
+                                            <input type="number" id="facevalue" class="form-control" />
+                                        </div>
+                                        <div class="col-sm-2">
+                                            <label class="form-label" for="isin" data-field="isin">Premium</label>
+                                            <input type="number" id="premium" class="form-control" />
+                                        </div>
+                                    </div>
+                                    <div class="row" style="margin-top:20px;">
+                                        <div class="col-sm-2">
+                                            <label class="form-label" for="isin" data-field="isin"> Price Type</label>
+                                            <select name="pricetype" id="pricetype" class="form-control">
+                                                <option value="">---- Select Type---</option>
+                                                <option value="1">Fixed</option>
+                                                <option value="2">Price Band</option>                                                
+                                            </select>
+                                        </div>
+                                        <div class="col-sm-2">
+                                            <label class="form-label" for="isin" data-field="isin">Fixed Price</label>
+                                            <input type="number" id="fprice" class="form-control"  disabled/>
+                                        </div>
+                                        <div class="col-sm-2">
+                                            <label class="form-label" for="isin" data-field="isin">Minimum Price</label>
+                                            <input type="number" id="minprice" class="form-control" disabled />
+                                        </div>
+                                        <div class="col-sm-2">
+                                            <label class="form-label" for="isin" data-field="isin">Maximum Price</label>
+                                            <input type="number" id="maxprice" class="form-control" disabled />
+                                        </div>
+                                        <div class="col-sm-2">
+                                            <label class="form-label" for="isin" data-field="isin">Cut Off Price</label>
+                                            <input type="number" id="cutoffprice" class="form-control" disabled />
+                                        </div>
+                                        <div class="col-sm-2">
+                                            <center><button type="button" class="btn btn-primary" id="btnIssueSave" style="padding: 3px 25px;margin-top:28px;width:60%">Save</button></center>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="tab-pane fade" id="navs-top-bank" role="tabpanel" style="overflow-y: scroll;height: 235px;overflow-x: hidden;">
+                                  <div class="row">
+                                      <div class="col-sm-2">
+                                            <label class="form-label" for="banktype" data-field="banktype">Bank Type</label>
+                                            <select name="banktype" id="banktype" class="form-control">                                                
+                                            </select>
+                                      </div>
+                                        <div class="col-sm-3">
+                                            <label class="form-label" for="isin" data-field="isin">Bank Name</label>
+                                            <input type="text" id="bankname" class="form-control" />
+                                        </div>
+                                        <div class="col-sm-3">
+                                            <label class="form-label" for="isin" data-field="isin">Address</label>
+                                            <textarea id="address" class="form-control" cols="10" rows="2"></textarea>
+                                        </div>
+                                        <div class="col-sm-2">
+                                            <label class="form-label" for="banktype" data-field="banktype">City</label>
+                                            <select name="city" id="city" class="form-control">
+                                                <option value="">---- Select City ---</option>
+                                                <option value="CB">Chennai</option>
+                                                <option value="RB">Kilpauk</option>
+                                                <option value="UPI">Anna Nagar</option>
+                                            </select>
+                                        </div>
+                                        <div class="col-sm-2">
+                                            <label class="form-label" for="banktype" data-field="banktype">State</label>
+                                            <select name="state" id="state" class="form-control">
+                                                <option value="">---- Select State ---</option>
+                                                <option value="CB">Tamilnadu</option>
+                                                <option value="RB">Kerala</option>
+                                                <option value="UPI">Karnataka</option>
+                                            </select>
+                                        </div>
+                                  </div>
+                                  <div class="row">
+                                        <div class="col-sm-2">
+                                            <label class="form-label" for="isin" data-field="isin">Pincode</label>
+                                            <input type="text" id="pin" class="form-control" />
+                                        </div>
+                                        <div class="col-sm-3">
+                                            <label class="form-label" for="isin" data-field="isin">Account No.</label>
+                                            <input type="text" id="acno" class="form-control" />
+                                        </div>
+                                        <div class="col-sm-3">
+                                            <label class="form-label" for="isin" data-field="isin">Account Name</label>
+                                            <input type="text" id="acname" class="form-control" />
+                                        </div>
+                                        <div class="col-sm-2">
+                                            <label class="form-label" for="isin" data-field="isin">IFSC Code</label>
+                                            <input type="text" id="ifsc" class="form-control" />
+                                        </div>
+                                        <div class="col-sm-2">
+                                            <center><button type="button" class="btn btn-primary" id="btnBankSave" style="padding: 3px 25px;margin-top:28px;width:60%">Save</button></center>
+                                        </div>
+                                  </div>
+                                  <div class="row" style="margin-top:10px;">
+                                      <div class="col-sm-12">
+                                            <table class="table table-bordered table-sm">
+                                                <thead>
+                                                    <tr>
+                                                        <th style="font-size:12px;width: 9%;">Bank Type</th>
+                                                        <th style="font-size:12px;">Bank Name</th>
+                                                        <th style="font-size:12px;width: 23%;">Address</th>
+                                                        <th style="font-size:12px;width: 20%;">Account Name</th>
+                                                        <th style="font-size:12px;">Account No.</th>
+                                                        <th style="font-size:12px;">IFSC Code</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    <tr>
+                                                        <td style="font-size:13px;">Collection Bank</td>
+                                                        <td></td>
+                                                        <td></td>
+                                                        <td></td>
+                                                        <td></td>
+                                                        <td></td>
+                                                    </tr>     
+                                                    <tr>
+                                                        <td style="font-size:13px;">Refund Bank</td>
+                                                        <td></td>
+                                                        <td></td>
+                                                        <td></td>
+                                                        <td></td>
+                                                        <td></td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td style="font-size:13px;">UPI Sponsor</td>
+                                                        <td></td>
+                                                        <td></td>
+                                                        <td></td>
+                                                        <td></td>
+                                                        <td></td>
+                                                    </tr>                                                         
+                                                </tbody>
+                                            </table>
+                                      </div>
+                                  </div>
+                                </div>
+                                <div class="tab-pane fade" id="navs-top-sh" role="tabpanel" style="overflow-y: scroll;height: 235px;overflow-x: hidden;">
+                                    <div class="row">
+                                        <div class="col-sm-2">
+                                            <label class="form-label" for="sh" data-field="sh">Stake Holder Type</label>
+                                            <select name="sh" id="sh" class="form-control">                                               
+                                            </select>
+                                        </div>
+                                        <div class="col-sm-2">
+                                            <label class="form-label" for="isin" data-field="isin">Stake Holder Name</label>
+                                            <input type="text" id="shname" class="form-control" />
+                                        </div>
+                                        <div class="col-sm-3">
+                                            <label class="form-label" for="isin" data-field="isin">Address</label>
+                                            <textarea id="address" class="form-control" cols="10" rows="2"></textarea>
+                                        </div>
+                                        <div class="col-sm-2">
+                                            <label class="form-label" for="banktype" data-field="banktype">City</label>
+                                            <select name="city" id="city" class="form-control">
+                                                <option value="">---- Select City ---</option>
+                                                <option value="CB">Chennai</option>
+                                                <option value="RB">Kilpauk</option>
+                                                <option value="UPI">Anna Nagar</option>
+                                            </select>
+                                        </div>
+                                        <div class="col-sm-3">
+                                            <label class="form-label" for="banktype" data-field="banktype">State</label>
+                                            <select name="state" id="state" class="form-control">
+                                                <option value="">---- Select State ---</option>
+                                                <option value="CB">Tamilnadu</option>
+                                                <option value="RB">Kerala</option>
+                                                <option value="UPI">Karnataka</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-sm-2">
+                                            <label class="form-label" for="isin" data-field="isin">Pincode</label>
+                                            <input type="text" id="pin" class="form-control" />
+                                        </div>
+                                        <div class="col-sm-2">
+                                            <label class="form-label" for="isin" data-field="isin">Contact Name</label>
+                                            <input type="text" id="cname" class="form-control" />
+                                        </div>
+                                        <div class="col-sm-3">
+                                            <label class="form-label" for="isin" data-field="isin">Designation</label>
+                                            <input type="text" id="designation" class="form-control" />
+                                        </div>
+                                        <div class="col-sm-2">
+                                            <label class="form-label" for="isin" data-field="isin">Email</label>
+                                            <input type="text" id="email" class="form-control" />
+                                        </div>                                       
+                                        <div class="col-sm-2">
+                                            <label class="form-label" for="isin" data-field="isin">Mobile</label>
+                                            <input type="text" id="mob" class="form-control" style="width:80%"/>
+                                        </div>
+                                        <div class="col-sm-1">
+                                            <center><button type="button" class="btn btn-primary" id="btnShSave" style="padding: 3px 25px;margin-top:28px;margin-left:-40px;">Save</button></center>
+                                        </div>
+                                    </div>
+                                    <div class="row" style="margin-top:10px;">
+                                        <div class="col-sm-12">
+                                            <table class="table table-bordered table-sm">
+                                                <thead>
+                                                    <tr>
+                                                        <th style="font-size:12px;width: 10%">Type</th>
+                                                        <th style="font-size:12px;width: 15%;">Name</th>
+                                                        <th style="font-size:12px;width: 22%;">Address</th>
+                                                        <th style="font-size:12px;">Contact</th>
+                                                        <th style="font-size:12px;">Designation</th>
+                                                        <th style="font-size:12px;width: 23%;">Email</th>
+                                                        <th style="font-size:12px;">Mobile</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    <tr>
+                                                        <td style="font-size:13px;">Merchant Banker</td>
+                                                        <td></td>
+                                                        <td></td>
+                                                        <td></td>
+                                                        <td></td>
+                                                        <td></td>
+                                                        <td></td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td style="font-size:13px;">RTA</td>
+                                                        <td></td>
+                                                        <td></td>
+                                                        <td></td>
+                                                        <td></td>
+                                                        <td></td>
+                                                        <td></td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td style="font-size:13px;">Lead Manager</td>
+                                                        <td></td>
+                                                        <td></td>
+                                                        <td></td>
+                                                        <td></td>
+                                                        <td></td>
+                                                        <td></td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td style="font-size:13px;">Company Officials</td>
+                                                        <td></td>
+                                                        <td></td>
+                                                        <td></td>
+                                                        <td></td>
+                                                        <td></td>
+                                                        <td></td>
+                                                    </tr>                                                                                          
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="tab-pane fade" id="navs-top-cat" role="tabpanel" style="overflow-y: scroll;height: 235px;overflow-x: hidden;">
+                                    <div class="row">
+                                        <div class="col-sm-12">
+                                            <table class="table table-bordered table-sm">
+                                                <thead>
+                                                    <tr style="position: sticky;top: 0;background: #ffffff;z-index: 10;">
+                                                        <th style="font-size:12px;width:9%"><input type="checkbox" id="selectAll" />&nbsp;Select</th>
+                                                        <th style="font-size:12px;">Cat Code</th>
+                                                        <th style="font-size:12px;">Category Name</th>
+                                                        <th style="font-size:12px;text-align:center;">Shares</th>                                                       
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    <tr>
+                                                        <td><input type="checkbox" class="rowCheckbox" /></td>
+                                                        <td>FIL</td>
+                                                        <td>FOREIGN INSTITUTIONAL INVESTOR</td>
+                                                        <td style="float: right;border-left: none;">0</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td><input type="checkbox" class="rowCheckbox" /></td>
+                                                        <td>MF</td>
+                                                        <td>MUTUAL FUNDS</td>
+                                                        <td style="float: right;border-left: none;">51,000</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td><input type="checkbox" class="rowCheckbox" /></td>
+                                                        <td>IC</td>
+                                                        <td>INSURANCE COMPANIES</td>
+                                                        <td style="float: right;border-left: none;">0</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td><input type="checkbox" class="rowCheckbox" /></td>
+                                                        <td>FI</td>
+                                                        <td>BANK AND FINANCIAL INSTITUTIONS</td>
+                                                        <td style="float: right;border-left: none;">0</td>
+                                                    </tr>
+                                                      <tr>
+                                                        <td><input type="checkbox" class="rowCheckbox" /></td>
+                                                        <td>OTH</td>
+                                                        <td>OTHER QIBS</td>
+                                                        <td style="float: right;border-left: none;">10,17,000</td>
+                                                    </tr>
+                                                      <tr>
+                                                        <td><input type="checkbox" class="rowCheckbox" /></td>
+                                                        <td>CO</td>
+                                                        <td>BODIES CORPORATE</td>
+                                                        <td style="float: right;border-left: none;">0</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td><input type="checkbox" class="rowCheckbox" /></td>
+                                                        <td>NOH</td>
+                                                        <td>NII'S'</td>
+                                                        <td style="float: right;border-left: none;">0</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td><input type="checkbox" class="rowCheckbox" /></td>
+                                                        <td>IND-RI</td>
+                                                        <td>INDIVIDUAL RETAIL 2 LOT</td>
+                                                        <td style="float: right;border-left: none;">17,86,000</td>
+                                                    </tr>                                                  
+                                                    <tr>
+                                                        <td><input type="checkbox" class="rowCheckbox" /></td>
+                                                        <td>IND-NRI</td>
+                                                        <td>INDIVIDUALS (HNI) < Rs.1000000</td>
+                                                        <td style="float: right;border-left: none;">2,58,000</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td><input type="checkbox" class="rowCheckbox" /></td>
+                                                        <td>BIG-HNI</td>
+                                                        <td>INDIVIDUALS (HNI) >= Rs.1000000</td>
+                                                        <td style="float: right;border-left: none;">5,16,000</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td><input type="checkbox" class="rowCheckbox" /></td>
+                                                        <td>EMP</td>
+                                                        <td>EMPLOYEES</td>
+                                                        <td style="float: right;border-left: none;">0</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td><input type="checkbox" class="rowCheckbox" /></td>
+                                                        <td>MM</td>
+                                                        <td>MARKET MAKER</td>
+                                                        <td style="float: right;border-left: none;">2,98,000</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td></td>
+                                                        <td></td>
+                                                        <td style="font-weight:900;">Total</td>
+                                                        <td style="float: right;border-left: none;font-weight:900">39,26,000</td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>        
+                                    <div class="row" style="margin-top:-30px;">
+                                        <div class="col-sm-4">
+
+                                        </div>
+                                        <div class="col-sm-4">
+                                            <center><button type="button" class="btn btn-primary" id="btnCatSave" style="padding: 3px 25px;margin-top:28px;width:35%">Save</button></center>
+                                        </div>
+                                        <div class="col-sm-4">
+
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="tab-pane fade" id="navs-top-mile" role="tabpanel">
+                                    <div class="row">
+                                        <div class="col-md-2-4">
+                                            <label class="form-label" for="sh" data-field="sh">Offer Opening Date	</label>
+                                            <input type="date" id="iod" class="form-control"/>
+                                        </div>
+                                        <div class="col-md-2-4">
+                                            <label class="form-label" for="sh" data-field="sh">Offer closing Date	</label>
+                                            <input type="date" id="icd" class="form-control" />
+                                        </div>
+                                        <div class="col-md-2-4">
+                                            <label class="form-label" for="sh" data-field="sh">Allotment Date	</label>
+                                            <input type="date" id="alotdate" class="form-control" />
+                                        </div>
+                                        <div class="col-md-2-4">
+                                            <label class="form-label" for="sh" data-field="sh">Approval Date	</label>
+                                            <input type="date" id="apdate" class="form-control" />
+                                        </div>
+                                        <div class="col-md-2-4">
+                                            <label class="form-label" for="sh" data-field="sh">Listing Date	</label>
+                                            <input type="date" id="ldate" class="form-control" />
+                                        </div>
+                                    </div>
+                                    <div class="row" style="margin-top:15px;">
+
+                                        <div class="col-md-2-4">
+                                            <label class="form-label" for="sh" data-field="sh">NSDL CA Date	</label>
+                                            <input type="date" id="nsdldate" class="form-control" />
+                                        </div>
+                                        <div class="col-md-2-4">
+                                            <label class="form-label" for="sh" data-field="sh">CDSL CA Date	</label>
+                                            <input type="date" id="cdsldate" class="form-control" />
+                                        </div>
+                                        <div class="col-md-2-4">
+                                            <label class="form-label" for="sh" data-field="sh">Refund Date	</label>
+                                            <input type="date" id="refunddare" class="form-control" />
+                                        </div>                                 
+                                        <div class="col-md-2-4">
+                                            <center><button type="button" class="btn btn-primary" id="btnSave" style="padding: 3px 25px;margin-top:30px;width:50%">Save</button></center>
+                                        </div>
+                                    </div>    
+                                 
+                                </div>                                
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>      
+   
+</body>
+
+</html>
+<script>
+     $( document ).ready(function() {
+          $('#navhead').text('Issue Setup');      
+          loadMasterDropdown("QCD_MAST_OFFER_TYPE", "issuetype");
+         loadMasterDropdown("QCD_MAST_LISTING", "listing");
+         
+          $("#status").change(function () {
+        var selectedValue = $(this).val();
+        if (selectedValue === "inactive") {
+            $("#remarks").prop("readonly", false);
+        } else {
+            $("#remarks").prop("readonly", true);
+        }
+    });
+    });
+    $("#selectAll").on("change", function () {
+        $(".rowCheckbox").prop("checked", $(this).prop("checked"));
+    });
+
+    // If one checkbox is unchecked → uncheck Select All
+    $(".rowCheckbox").on("change", function () {
+        if (!$(this).prop("checked")) {
+            $("#selectAll").prop("checked", false);
+        }
+        else if ($(".rowCheckbox:checked").length === $(".rowCheckbox").length) {
+            $("#selectAll").prop("checked", true);
+        }
+    });
+
+        $("#pricetype").change(function () {
+
+        var value = $(this).val();
+
+        if (value == "1") {  // Fixed
+            $("#fprice").prop("disabled", false);
+            $("#minprice").prop("disabled", true).val("");
+            $("#maxprice").prop("disabled", true).val("");
+            $("#cutoffprice").prop("disabled", true).val("");
+
+        } else if (value == "2") {  // Price Band
+            $("#minprice").prop("disabled", false);
+            $("#fprice").prop("disabled", true).val("");
+             $("#maxprice").prop("disabled", false);
+            $("#cutoffprice").prop("disabled", false);
+
+        } else {  // Default
+            $("#fprice").prop("disabled", true).val("");
+            $("#minprice").prop("disabled", true).val("");
+        }      
+
+    });
+
+     function loadMasterDropdown(masterCode, dropdownId,selectedValue) {
+        var mymodel = {
+            in_master_code: masterCode,
+            in_user_code: ""
+        };
+        $.ajax({
+            type: "POST",
+            url: '@Url.Action("OfferType", "IssueSetup")',
+            data: JSON.stringify(mymodel),
+            dataType: "json",
+            contentType: 'application/json; charset=utf-8',
+                success: function (response) {
+                    if (response.authExpired) {
+                        $.alert({
+                            title: 'Unauthorized',
+                            content: response.message || 'Unauthorized User',
+                            type: 'red',
+                            buttons: {
+                                ok: {
+                                    text: 'OK',
+                                    action: function () {
+                                        window.location.href = '/login/logout';
+                                    }
+                                }
+                            }
+                        });
+                        return;
+                    }
+
+                    var result = JSON.parse(response.data);
+
+                    var $ddl = $("#" + dropdownId);
+                    $ddl.empty();
+                    $ddl.append('<option value="">--- Select ---</option>');
+
+                    $.each(result, function (index, item) {
+                        $ddl.append(
+                            '<option value="' + item.master_gid + '">' +
+                            item.master_name +
+                            '</option>'
+                        );
+                    });
+
+                    if (selectedValue) {
+                        $ddl.val(selectedValue).trigger("change");
+                    }
+                },
+            error: function (xhr) {
+                console.log("Dropdown load error:", xhr.responseText);
+            }
+        });
+    }
+
+ $('button[data-bs-target="#navs-top-bank"]').on('shown.bs.tab', function () {        
+     loadMasterDropdown("QCD_MAST_BANK_TYPE", "banktype");        
+ });
+$('button[data-bs-target="#navs-top-sh"]').on('shown.bs.tab', function () {
+        loadMasterDropdown("QCD_MAST_STAKEHOLDER_TYPE", "sh");
+});
+</script>

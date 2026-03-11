@@ -1,0 +1,416 @@
+﻿@{
+    Layout = "~/Views/Shared/_LayoutNew.cshtml";
+}
+<!DOCTYPE html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>Report Generation</title>
+    <style>
+        .content-wrapper {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .nav-tabs .nav-link.active, .nav-tabs .nav-item.show .nav-link {
+            background-color: #027ed1 !important;
+            color: #fff !important;
+        }
+
+        .nav-tabs .nav-item .nav-link:not(.active) {
+            background-color: #716969;
+            color: #fff;
+        }
+
+        .k-grid td {
+            padding: 2px 2px;
+            font-size: 13px;
+        }
+
+        td {
+            font-size: 13px;
+        }
+        /* Alternate row color */
+        #reportGrid .k-grid-content tr.k-alt td {
+            background-color: #fff;
+            color: #000;
+        }
+
+        /* Consistent borders */
+        #reportGrid .k-grid-header th,
+        #reportGrid .k-grid-content td {
+            border-right: 1px solid #ddd;
+        }
+
+            /* Remove last border */
+            #reportGrid .k-grid-header th:last-child,
+            #reportGrid .k-grid-content td:last-child {
+                border-right: none;
+            }
+
+        #reportGrid .k-grid-content tr:last-child td {
+            border-bottom: 1px solid #dcdcdc !important;
+        }
+        /* Fixed layout for alignment */
+        #reportGrid .k-grid-header table,
+        #reportGrid .k-grid-content table {
+            table-layout: fixed;
+            width: 100%;
+        }
+
+        /* Prevent wrapping */
+        #reportGrid .k-grid-header th,
+        #reportGrid .k-grid-content td {
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        /* Compact size */
+        #reportGrid .k-grid-content td {
+            padding: 3px 6px;
+            font-size: 12px;
+            line-height: 18px;
+            background: #fff;
+        }
+
+        #reportGrid .k-grid-header th {
+            padding: 4px 6px;
+            font-size: 12px;
+            line-height: 18px;
+        }
+
+        /* Compact row height */
+        #reportGrid .k-grid-content tr {
+            height: 26px;
+        }
+
+        #reportGrid .k-grid-header tr {
+            height: 28px;
+        }
+
+        h5#navhead {
+            position: relative;
+            right: 340px;
+            width: 29%;
+        }
+        /* Alternate row color */
+        #searchGrid .k-grid-content tr.k-alt td {
+            background-color: #fff;
+            color: #000;
+        }
+
+        /* Consistent borders */
+        #searchGrid .k-grid-header th,
+        #searchGrid .k-grid-content td {
+            border-right: 1px solid #ddd;
+        }
+
+            /* Remove last border */
+            #searchGrid .k-grid-header th:last-child,
+            #searchGrid .k-grid-content td:last-child {
+                border-right: none;
+            }
+
+        #searchGrid .k-grid-content tr:last-child td {
+            border-bottom: 1px solid #dcdcdc !important;
+        }
+        /* Fixed layout for alignment */
+        #searchGrid .k-grid-header table,
+        #searchGrid .k-grid-content table {
+            table-layout: fixed;
+            width: 100%;
+        }
+
+        /* Prevent wrapping */
+        #searchGrid .k-grid-header th,
+        #searchGrid .k-grid-content td {
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        /* Compact size */
+        #searchGrid .k-grid-content td {
+            padding: 3px 6px;
+            font-size: 12px;
+            line-height: 18px;
+            background: #fff;
+        }
+
+        #searchGrid .k-grid-header th {
+            padding: 4px 6px;
+            font-size: 12px;
+            line-height: 18px;
+        }
+
+        /* Compact row height */
+        #searchGrid .k-grid-content tr {
+            height: 26px;
+        }
+
+        #searchGrid .k-grid-header tr {
+            height: 28px;
+        }
+        .k-grid-content {
+            height:221px;
+        }
+    </style>
+</head>
+
+<body class="hold-transition skin-blue sidebar-mini fixed">
+    <div class="content-wrapper">
+        <div class="container-xxl flex-grow-1 container-p-y">
+            <div class="card-body" style="margin-top:5px;height: 556px;width: 103%;margin-left: -18px;">
+                <div id="list">
+                    <div class="row" style="margin-top: -17px;">
+                        <div class="col-sm-3">
+                            <label class="form-label" for="ctype" data-field="ctype">IPO Name</label>&nbsp;<span style="font-size: 12px;color:red;font-weight: bold;">*</span>
+                            <input type="text" class="form-control" id="iponame" readonly />
+                        </div>
+                    </div>
+                    <div class="row" style="margin-top:10px;">
+                        <div class="col-sm-12">
+                            <div id="reportGrid"></div>
+                        </div>
+                    </div>
+                </div>
+                <div id="form" style="display:none;">
+                    <div class="row">
+                        <div class="col-sm-3">
+                            <label class="form-label" for="ReferredBy" data-field="ReferredBy">Report Name</label>
+                            <input type="text" id="reportname" class="form-control" readonly />
+                        </div>
+                        <div class="col-sm-3">
+                            <label class="form-label" for="ReferredBy" data-field="ReferredBy">IPO Name</label>
+                            <input type="text" id="ipo" class="form-control" readonly/>
+                        </div>
+                        <div class="col-sm-3">
+                            <label class="form-label" for="ReferredBy" data-field="ReferredBy">Result Name</label>
+                            <input type="text" id="ipo" class="form-control" readonly/>
+                        </div>
+                        <div class="col-sm-1">
+                            <label class="form-label" for="ReferredBy" data-field="ReferredBy">Multiple Result</label><br />
+                            <center><img id="img_xlsx" style="cursor:pointer;height: 20px;width: 20px;" class="img_enable" src="/Assets/images/xlsx.png" title="Excel Report"></center>
+                        </div>
+                        <div class="col-sm-1">
+                            <label class="form-label" for="ReferredBy" data-field="ReferredBy">Single Result</label><br />
+                            <center>
+                                <img id="img_csv" style="cursor:pointer;height: 20px;width: 20px;" class="img_enable" src="/Assets/images/csv.png" title="CSV Report">
+                            <img id="img_preview" style="cursor:pointer;height: 20px;width: 20px;" class="img_enable" src="/Assets/images/preview.png" title="Preview Report">
+                        </center>
+                        </div>
+                        <div class="col-sm-1">
+                            <img style="width:20px; height:20px;cursor:pointer;float:right;margin-top:30px;" class="list" src="/Assets/images/toplist.png">
+                        </div>
+                    </div>
+                    <div class="row" style="margin-top:10px;">
+                        <div class="col-sm-12">
+                            <img style="width:11px; height:11px;cursor:pointer;" class="plus" src="/Assets/images/plus.png">
+                            <div id="searchGrid"></div>
+                        </div>
+                    </div>
+                </div> 
+            </div>
+        </div>
+    </div> 
+
+
+</body>
+
+</html>
+<script>
+             $(document).ready(function () {
+
+        $('#navhead').text('Report Generation');
+
+        var ipoName = localStorage.getItem("selectedIPOText");
+        $("#iponame").val(ipoName);        
+
+    });
+
+        $("#reportGrid").kendoGrid({
+        dataSource: {
+            data: [
+                {
+                    customreportname: "Bendem Request NSDL",
+                    reportname: "Bendem Request NSDL",
+                    reporttype: "Standard",
+                    status: "Completed"                  
+                },
+                {
+                    customreportname: "Bendem Request CDSL",
+                    reportname: "Bendem Request CDSL",
+                    reporttype: "Standard",
+                    status: "Completed"
+                },
+                {
+                    customreportname: "PAN Validation NSE",
+                    reportname: "PAN Validation NSE",
+                    reporttype: "Standard",
+                    status: "Completed"
+                },
+                 {
+                    customreportname: "PAN Validation BSE",
+                    reportname: "PAN Validation BSE",
+                    reporttype: "Standard",
+                    status: "Completed"
+                },
+                 {
+                    customreportname: "Recon Bank Vs Bid",
+                    reportname: "Recon Bank Vs Bid",
+                    reporttype: "Standard",
+                    status: "Completed"
+                },
+                 {
+                    customreportname: "Rejection Details & Summary",
+                    reportname: "Rejection Details & Summary",
+                    reporttype: "Standard",
+                    status: "Completed"
+                },
+                 {
+                    customreportname: "Basis of allotment",
+                    reportname: "Basis of allotment",
+                    reporttype: "Standard",
+                    status: "Completed"
+                },
+                 {
+                    customreportname: "Minutes",
+                    reportname: "Minutes",
+                    reporttype: "Standard",
+                    status: "Completed"
+                },
+                 {
+                    customreportname: "Allotment Register",
+                    reportname: "Allotment Register",
+                    reporttype: "Standard",
+                    status: "Completed"
+                },
+                 {
+                    customreportname: "Refund Register",
+                    reportname: "Refund Register",
+                    reporttype: "Standard",
+                    status: "Completed"
+                },
+                 {
+                    customreportname: "NSDL CA File",
+                    reportname: "NSDL CA File",
+                    reporttype: "Standard",
+                    status: "Completed"
+                },
+                 {
+                    customreportname: "CDSL CA File",
+                    reportname: "CDSL CA File",
+                    reporttype: "Standard",
+                    status: "Completed"
+                }
+            ],
+            pageSize: 25
+        },
+
+        height: 390,
+        sortable: true,
+        pageable: true,
+
+        columns: [
+             {
+            title: "Action",
+            width: 80,
+            template: "<img src='/Assets/images/arrow.png' class='action-info' style='width:18px;cursor:pointer;' />",
+            attributes: { style: "text-align:center;" },
+            headerAttributes: { style: "text-align:center;" }
+        },
+            { field: "customreportname", title: "Custom Report Name" },
+            { field: "reportname", title: "Report Name" },
+            { field: "reporttype", title: "Report Type" },
+            { field: "status", title: "Status" }                 
+        ]
+    });
+
+   $(document).on("click", ".action-info", function () {
+          var grid = $("#reportGrid").data("kendoGrid");   // get grid
+         var row = $(this).closest("tr");                 // get clicked row
+         var dataItem = grid.dataItem(row);               // get row data
+
+         // pass reportname to textbox
+         $("#reportname").val(dataItem.reportname);
+          var ipoName = localStorage.getItem("selectedIPOText");
+         $("#ipo").val(ipoName);
+          $("#form").show();
+         $("#list").hide();
+     });
+
+      $(document).on("click", ".list", function () {
+         $("#form").hide();   // show the form
+          $("#list").show();
+      });
+
+      $("#searchGrid").kendoGrid({
+         dataSource: {
+             data: [               
+                 {
+                      resultset: "1",                     
+                       filterfield: "Tran Id-INTEGER",
+                       filtercriteria: "Is greater than",
+                      filtervalue:"0",                      
+                      joins:""
+                 },
+                 {
+                       resultset: "2",                      
+                        filterfield: "Parent Dataset Code-TEXT",
+                       filtercriteria: "Is not equal to",
+                      filtervalue:"",                      
+                      joins:""
+                 }                  
+             ],
+             pageSize: 25
+         },
+
+         height: 290,
+         sortable: true,
+         pageable: true,
+
+         columns: [
+              {
+             title: "Action",
+             width: 80,
+             template: "<img src='/Assets/images/del.png' class='' style='width:13px;cursor:pointer;' />",
+             attributes: { style: "text-align:center;" },
+             headerAttributes: { style: "text-align:center;" }
+         },
+            { field: "resultset", title: "Result Set" , width:90},
+                {
+                title: "(",
+                width: 60,
+                template: "<input type='checkbox' class='open-check' />",
+                attributes: { style: "text-align:center;" }
+            },
+             { field: "filterfield", title: "Filter Field" , width:270},
+             { field: "filtercriteria", title: "Filter Criteria", width:270},
+             { field: "filtervalue", title: "Filter Value",width:270},
+               {
+                title: ")",
+                width: 60,
+                template: "<input type='checkbox' class='close-check' />",
+                attributes: { style: "text-align:center;" }
+            },
+              { field: "joins", title: "Joins", width:150},
+         ]
+     });
+     $(".plus").click(function () {
+
+        var grid = $("#searchGrid").data("kendoGrid");
+
+        grid.dataSource.add({
+            resultset: "",
+            open: "",
+            filterfield: "",
+            filtercriteria: "",
+            filtervalue: "",
+            close: "",
+            joins: ""
+        });
+
+    });
+</script>

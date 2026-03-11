@@ -1,0 +1,429 @@
+﻿@{
+    Layout = "~/Views/Shared/_LayoutNew.cshtml";
+}
+<!DOCTYPE html>
+<html>  
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>File Import</title>
+    <style>
+        .content-wrapper {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .nav-tabs .nav-link.active, .nav-tabs .nav-item.show .nav-link {
+            background-color: #027ed1 !important;
+            color: #fff !important;
+        }
+
+        .nav-tabs .nav-item .nav-link:not(.active) {
+            background-color: #716969;
+            color: #fff;
+        }
+
+
+        /* Alternate row color */
+        #datasetList .k-grid-content tr.k-alt td {
+            background-color: #fff;
+            color: #000;
+        }
+
+        /* Consistent borders */
+        #datasetList .k-grid-header th,
+        #datasetList .k-grid-content td {
+            border-right: 1px solid #ddd;
+        }
+
+            /* Remove last border */
+            #datasetList .k-grid-header th:last-child,
+            #datasetList .k-grid-content td:last-child {
+                border-right: none;
+            }
+
+        /* Fixed layout for alignment */
+        #datasetList .k-grid-header table,
+        #datasetList .k-grid-content table {
+            table-layout: fixed;
+            width: 100%;
+        }
+
+        #datasetList .k-grid-content tr:last-child td {
+            border-bottom: 1px solid #dcdcdc !important;
+        }
+        /* Prevent wrapping */
+        #datasetList .k-grid-header th,
+        #datasetList .k-grid-content td {
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        /* Compact size */
+        #datasetList .k-grid-content td {
+            padding: 3px 6px;
+            font-size: 12px;
+            line-height: 18px;
+            background: #fff;
+        }
+
+        #datasetList .k-grid-header th {
+            padding: 4px 6px;
+            font-size: 12px;
+            line-height: 18px;
+        }
+
+        /* Compact row height */
+        #datasetList .k-grid-content tr {
+            height: 26px;
+        }
+
+        #datasetList .k-grid-header tr {
+            height: 28px;
+        }
+
+        .k-grid td {
+            padding: 2px 2px;
+            font-size: 13px;
+        }
+        td {
+            font-size: 13px;
+        }
+        /* Alternate row color */
+        #infoGrid .k-grid-content tr.k-alt td {
+            background-color: #fff;
+            color: #000;
+        }
+
+        /* Consistent borders */
+        #infoGrid .k-grid-header th,
+        #infoGrid .k-grid-content td {
+            border-right: 1px solid #ddd;
+        }
+
+            /* Remove last border */
+            #infoGrid .k-grid-header th:last-child,
+            #infoGrid .k-grid-content td:last-child {
+                border-right: none;
+            }
+
+        /* Fixed layout for alignment */
+        #infoGrid .k-grid-header table,
+        #infoGrid .k-grid-content table {
+            table-layout: fixed;
+            width: 100%;
+        }
+
+        /* Prevent wrapping */
+        #infoGrid .k-grid-header th,
+        #infoGrid .k-grid-content td {
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        /* Compact size */
+        #infoGrid .k-grid-content td {
+            padding: 3px 6px;
+            font-size: 12px;
+            line-height: 18px;
+            background: #fff;
+        }
+
+        #infoGrid .k-grid-header th {
+            padding: 4px 6px;
+            font-size: 12px;
+            line-height: 18px;
+        }
+
+        /* Compact row height */
+        #infoGrid .k-grid-content tr {
+            height: 26px;
+        }
+
+        #infoGrid .k-grid-header tr {
+            height: 28px;
+        }
+    </style>
+</head>
+
+<body class="hold-transition skin-blue sidebar-mini fixed">
+    <div class="content-wrapper">
+        <div class="container-xxl flex-grow-1 container-p-y">
+            <div class="card-body" style="margin-top:5px;height: 556px;width: 103%;margin-left: -18px;">
+                <div class="row" style="margin-top: -17px;">
+                    <div class="col-sm-3">
+                        <label class="form-label" for="ctype" data-field="ctype">IPO Name</label>&nbsp;<span style="font-size: 12px;color:red;font-weight: bold;">*</span>
+                        <input type="text" class="form-control" id="iponame" readonly/>
+                    </div>
+                </div>
+               <div class="row" style="margin-top:20px;">
+                   <div class="col-sm-12">
+                        <div class="nav-align-top mb-4">
+                            <ul class="nav nav-tabs" role="tablist">
+                                <li class="nav-item">
+                                    <button type="button"
+                                            class="nav-link active"
+                                            role="tab"
+                                            data-bs-toggle="tab"
+                                            data-bs-target="#navs-top-list"
+                                            aria-controls="navs-top-list"
+                                            aria-selected="true">
+                                        Dataset List
+                                    </button>
+                                </li>
+                                <li class="nav-item">
+                                    <button type="button"
+                                            class="nav-link"
+                                            role="tab"
+                                            data-bs-toggle="tab"
+                                            data-bs-target="#navs-top-progress"
+                                            aria-controls="navs-top-progress"
+                                            aria-selected="false">
+                                        Dataset Progress
+                                    </button>
+                                </li>                               
+                            </ul>
+                            <div class="tab-content">
+                                <div class="tab-pane fade show active" id="navs-top-list" role="tabpanel">
+                                    <div class="row">
+                                        <div class="col-sm-12">
+                                            <div id="datasetList"></div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-sm-6">
+
+                                        </div>
+                                        <div class="col-sm-6">
+                                            <button type="button" class="btn btn-primary" id="btnNext" onclick="nextprocess()" style="float:right;padding: 3px 25px;margin-top:28px;width:25%">Next</button>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="tab-pane fade" id="navs-top-progress" role="tabpanel">    
+                                    <div class="row">
+                                        <div class="col-sm-3">
+                                            <label class="form-label" for="ds" data-field="ds">Selected Dataset : <span id="datasetname"></span></label>
+                                        </div>
+                                    </div>
+                                   <div class="row">
+                                       <div class="col-sm-3">                                            
+                                           <label class="form-label" for="pipeline" data-field="pipeline">Pipeline</label>&nbsp;<span style="font-size: 12px;color:red;font-weight: bold;">*</span>
+                                            <input type="text" id="pipeline" class="form-control" readonly/>
+                                       </div>
+                                       <div class="col-sm-2">
+                                          <img style="margin-top: 35px; height: 25px; width: 25px; cursor:pointer;" src="~/Assets/images/download.png" />
+                                       </div>
+                                       <div class="col-sm-3">
+                                           <label class="form-label" for="pipeline" data-field="pipeline">Choose Excel</label>&nbsp;<span style="font-size: 12px;color:red;font-weight: bold;">*</span>
+                                           <input class="form-control" type="file" id="MultipleFile" multiple>
+                                       </div>
+                                       <div class="col-sm-4">
+                                           <button type="button" class="btn btn-primary" id="btnPre" style="float:right;padding: 3px 25px;margin-top:28px;width:40%">Previous</button>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<button type="button" class="btn btn-primary" id="btnSave" style="float:right;padding: 3px 25px;margin-top:28px;width:40%;margin-right:10px;">Start</button>
+                                       </div>
+                                   </div>
+                                    </div>
+                                </div>                             
+                            </div>
+                        </div>
+                   </div>
+               </div>
+            </div>
+        </div>
+
+    <div class="modal" id="myModal" tabindex="-1">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <!-- Modal body -->
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-sm-4">
+                            
+                        </div>
+                        <div class="col-sm-4">
+                            <h4 style="font-size: 15px;text-align: center;">Info</h4>                          
+                        </div>
+                        <div class="col-sm-4">
+                            <i class="bx bx-x cursor-pointer" data-bs-dismiss="modal" style="color: #000000;float:right"></i>
+                        </div>
+                    </div>
+                    <hr />
+                    <div class="row">
+                        <div class="col-sm-12">
+                            <div id="infoGrid"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Modal footer -->
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" data-bs-dismiss="modal" style="width:18%">Close</button>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+
+</body>
+
+</html>
+<script>
+             $(document).ready(function () {
+
+        $('#navhead').text('File Import');
+
+        var ipoName = localStorage.getItem("selectedIPOText");
+        $("#iponame").val(ipoName);
+
+        showgrid();
+
+        $("#infoGrid").kendoGrid({
+        dataSource: {
+            data: [
+                {
+                    jobDescription: "Bid NSE File",
+                    jobDate: "07-01-2026 16:40:53",
+                    jobBy: "Admin",
+                    jobStatus: "Completed",
+                    jobRemarks: "Imported 1 record(s)"
+                },
+                {
+                    jobDescription: "Bid NSE File",
+                    jobDate: "18-01-2026 12:40:53",
+                    jobBy: "Admin",
+                    jobStatus: "Completed",
+                    jobRemarks: "Imported 1 record(s)"
+                },
+                {
+                    jobDescription: "Bid NSE File",
+                    jobDate: "22-01-2026 02:40:53",
+                    jobBy: "Admin",
+                    jobStatus: "Completed",
+                    jobRemarks: "Imported 3 record(s)"
+                },
+                {
+                    jobDescription: "Bid NSE File",
+                    jobDate: "12-02-2026 12:30:53",
+                    jobBy: "Admin",
+                    jobStatus: "Completed",
+                    jobRemarks: "Imported 5 record(s)"
+                },
+                 {
+                    jobDescription: "Bid NSE File",
+                    jobDate: "16-02-2026 12:30:53",
+                    jobBy: "Admin",
+                    jobStatus: "Completed",
+                    jobRemarks: "Imported 15 record(s)"
+                },
+                 {
+                    jobDescription: "Bid NSE File",
+                    jobDate: "24-02-2026 12:30:53",
+                    jobBy: "Admin",
+                    jobStatus: "Completed",
+                    jobRemarks: "Imported 1 record(s)"
+                }
+            ],
+            pageSize: 10
+        },
+
+        height: 225,
+        sortable: true,
+        pageable: true,
+
+        columns: [
+            { field: "jobDescription", title: "Job Description" },
+            { field: "jobDate", title: "Job Initiated Date" },
+            { field: "jobBy", title: "Job Initiated By" },
+            { field: "jobStatus", title: "Job Status" },
+            { field: "jobRemarks", title: "Job Remarks" }
+        ]
+    });       
+
+    $("#btnPre").click(function () {
+
+        var tabTrigger = document.querySelector('button[data-bs-target="#navs-top-list"]');
+        var tab = new bootstrap.Tab(tabTrigger);
+        tab.show();
+        $("#datasetList").show();
+    });
+});
+
+  function showgrid() {
+        $.ajax({
+        type: "GET",
+        url: '@Url.Action("GetDatasetList", "FileImport")',
+        dataType: "json",
+        success: function (response) {
+            if (!response.success) {
+                console.log(response.message);
+                return;
+            }
+            var data = response.data;
+         $("#datasetList").kendoGrid({
+                    dataSource: {
+                        data: data,
+                        pageSize: 10
+                    },
+                    height: 300,
+                    pageable: true,
+                    sortable: true,
+                    filterable: true,
+                        columns: [
+                            {
+                                title: "Select",
+                                width: 70,
+                                template: "<div style='display:flex; justify-content:center'>\
+                                            <input type='radio' name='clientSelect' value='#=dataset_gid#' data-code='#=dataset_code#'>\
+                                           </div>"
+                            },
+                            { field: "dataset_gid", title: "Dataset ID", hidden: true },
+                            { field: "dataset_code", title: "Dataset Code" },
+                            { field: "dataset_category", title: "Category" },
+                            { field: "dataset_table_name", title: "Dataset Table Name" },
+                            { field: "system_flag", hidden: true }
+                            ]
+                });
+        },
+        error: function (xhr) {
+            console.log("Error:", xhr.responseText);
+        }
+    });
+
+    }
+
+ function nextprocess() {
+        var selected = $("input[name='clientSelect']:checked");
+        if (selected.length === 0) {
+            alert("Please select a dataset");
+            return;
+        }
+        var dataset_gid = selected.val();
+        var dataset_code = selected.data("code");
+        console.log("Dataset GID:", dataset_gid);
+        console.log("Dataset Code:", dataset_code);
+        $("#datasetname").text(dataset_code);
+        var tabTrigger = document.querySelector('button[data-bs-target="#navs-top-progress"]');
+        var tab = new bootstrap.Tab(tabTrigger);
+        tab.show();
+
+        $.ajax({
+            type: "POST",
+            url: '@Url.Action("GetPipelinetList", "FileImport")',
+            data: { dataset: dataset_code },   // ✅ pass dataset
+            dataType: "json",
+            success: function (response) {
+                if (!response.success) {
+                    console.log(response.message);
+                    return;
+                }
+                var data = response.data;
+                console.log(data);
+            },
+            error: function (xhr) {
+                console.log("Error:", xhr.responseText);
+            }
+        });
+    }
+</script>

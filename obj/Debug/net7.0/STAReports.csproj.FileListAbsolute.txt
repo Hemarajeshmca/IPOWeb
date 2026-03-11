@@ -1,0 +1,294 @@
+D:\Hariharan\server migration files\Data Needed\STAReports\bin\Debug\net7.0\appsettings.Development.json
+D:\Hariharan\server migration files\Data Needed\STAReports\bin\Debug\net7.0\appsettings.json
+D:\Hariharan\server migration files\Data Needed\STAReports\bin\Debug\net7.0\STAReports.staticwebassets.runtime.json
+D:\Hariharan\server migration files\Data Needed\STAReports\bin\Debug\net7.0\STAReports.exe
+D:\Hariharan\server migration files\Data Needed\STAReports\bin\Debug\net7.0\STAReports.deps.json
+D:\Hariharan\server migration files\Data Needed\STAReports\bin\Debug\net7.0\STAReports.runtimeconfig.json
+D:\Hariharan\server migration files\Data Needed\STAReports\bin\Debug\net7.0\STAReports.dll
+D:\Hariharan\server migration files\Data Needed\STAReports\bin\Debug\net7.0\STAReports.pdb
+D:\Hariharan\server migration files\Data Needed\STAReports\obj\Debug\net7.0\STAReports.csproj.AssemblyReference.cache
+D:\Hariharan\server migration files\Data Needed\STAReports\obj\Debug\net7.0\STAReports.GeneratedMSBuildEditorConfig.editorconfig
+D:\Hariharan\server migration files\Data Needed\STAReports\obj\Debug\net7.0\STAReports.AssemblyInfoInputs.cache
+D:\Hariharan\server migration files\Data Needed\STAReports\obj\Debug\net7.0\STAReports.AssemblyInfo.cs
+D:\Hariharan\server migration files\Data Needed\STAReports\obj\Debug\net7.0\STAReports.csproj.CoreCompileInputs.cache
+D:\Hariharan\server migration files\Data Needed\STAReports\obj\Debug\net7.0\STAReports.MvcApplicationPartsAssemblyInfo.cache
+D:\Hariharan\server migration files\Data Needed\STAReports\obj\Debug\net7.0\STAReports.RazorAssemblyInfo.cache
+D:\Hariharan\server migration files\Data Needed\STAReports\obj\Debug\net7.0\STAReports.RazorAssemblyInfo.cs
+D:\Hariharan\server migration files\Data Needed\STAReports\obj\Debug\net7.0\staticwebassets\msbuild.STAReports.Microsoft.AspNetCore.StaticWebAssets.props
+D:\Hariharan\server migration files\Data Needed\STAReports\obj\Debug\net7.0\staticwebassets\msbuild.build.STAReports.props
+D:\Hariharan\server migration files\Data Needed\STAReports\obj\Debug\net7.0\staticwebassets\msbuild.buildMultiTargeting.STAReports.props
+D:\Hariharan\server migration files\Data Needed\STAReports\obj\Debug\net7.0\staticwebassets\msbuild.buildTransitive.STAReports.props
+D:\Hariharan\server migration files\Data Needed\STAReports\obj\Debug\net7.0\staticwebassets.pack.json
+D:\Hariharan\server migration files\Data Needed\STAReports\obj\Debug\net7.0\staticwebassets.build.json
+D:\Hariharan\server migration files\Data Needed\STAReports\obj\Debug\net7.0\staticwebassets.development.json
+D:\Hariharan\server migration files\Data Needed\STAReports\obj\Debug\net7.0\scopedcss\Views\Shared\_Layout.cshtml.rz.scp.css
+D:\Hariharan\server migration files\Data Needed\STAReports\obj\Debug\net7.0\scopedcss\bundle\STAReports.styles.css
+D:\Hariharan\server migration files\Data Needed\STAReports\obj\Debug\net7.0\scopedcss\projectbundle\STAReports.bundle.scp.css
+D:\Hariharan\server migration files\Data Needed\STAReports\obj\Debug\net7.0\STAReports.dll
+D:\Hariharan\server migration files\Data Needed\STAReports\obj\Debug\net7.0\refint\STAReports.dll
+D:\Hariharan\server migration files\Data Needed\STAReports\obj\Debug\net7.0\STAReports.pdb
+D:\Hariharan\server migration files\Data Needed\STAReports\obj\Debug\net7.0\STAReports.genruntimeconfig.cache
+D:\Hariharan\server migration files\Data Needed\STAReports\obj\Debug\net7.0\ref\STAReports.dll
+D:\Hariharan\STA Core\STAReports\obj\Debug\net7.0\STAReports.csproj.AssemblyReference.cache
+D:\Hariharan\STA Core\STAReports\obj\Debug\net7.0\STAReports.GeneratedMSBuildEditorConfig.editorconfig
+D:\Hariharan\STA Core\STAReports\obj\Debug\net7.0\STAReports.AssemblyInfoInputs.cache
+D:\Hariharan\STA Core\STAReports\obj\Debug\net7.0\STAReports.AssemblyInfo.cs
+D:\Hariharan\STA Core\STAReports\obj\Debug\net7.0\STAReports.csproj.CoreCompileInputs.cache
+D:\Hariharan\STA Core\STAReports\obj\Debug\net7.0\STAReports.MvcApplicationPartsAssemblyInfo.cache
+D:\Hariharan\STA Core\STAReports\obj\Debug\net7.0\STAReports.RazorAssemblyInfo.cache
+D:\Hariharan\STA Core\STAReports\obj\Debug\net7.0\STAReports.RazorAssemblyInfo.cs
+D:\Hariharan\STA Core\STAReports\bin\Debug\net7.0\appsettings.Development.json
+D:\Hariharan\STA Core\STAReports\bin\Debug\net7.0\appsettings.json
+D:\Hariharan\STA Core\STAReports\bin\Debug\net7.0\STAReports.staticwebassets.runtime.json
+D:\Hariharan\STA Core\STAReports\bin\Debug\net7.0\STAReports.exe
+D:\Hariharan\STA Core\STAReports\bin\Debug\net7.0\STAReports.deps.json
+D:\Hariharan\STA Core\STAReports\bin\Debug\net7.0\STAReports.runtimeconfig.json
+D:\Hariharan\STA Core\STAReports\bin\Debug\net7.0\STAReports.dll
+D:\Hariharan\STA Core\STAReports\bin\Debug\net7.0\STAReports.pdb
+D:\Hariharan\STA Core\STAReports\obj\Debug\net7.0\staticwebassets\msbuild.STAReports.Microsoft.AspNetCore.StaticWebAssets.props
+D:\Hariharan\STA Core\STAReports\obj\Debug\net7.0\staticwebassets\msbuild.build.STAReports.props
+D:\Hariharan\STA Core\STAReports\obj\Debug\net7.0\staticwebassets\msbuild.buildMultiTargeting.STAReports.props
+D:\Hariharan\STA Core\STAReports\obj\Debug\net7.0\staticwebassets\msbuild.buildTransitive.STAReports.props
+D:\Hariharan\STA Core\STAReports\obj\Debug\net7.0\staticwebassets.pack.json
+D:\Hariharan\STA Core\STAReports\obj\Debug\net7.0\staticwebassets.build.json
+D:\Hariharan\STA Core\STAReports\obj\Debug\net7.0\staticwebassets.development.json
+D:\Hariharan\STA Core\STAReports\obj\Debug\net7.0\scopedcss\Views\Shared\_Layout.cshtml.rz.scp.css
+D:\Hariharan\STA Core\STAReports\obj\Debug\net7.0\scopedcss\bundle\STAReports.styles.css
+D:\Hariharan\STA Core\STAReports\obj\Debug\net7.0\scopedcss\projectbundle\STAReports.bundle.scp.css
+D:\Hariharan\STA Core\STAReports\obj\Debug\net7.0\STAReports.dll
+D:\Hariharan\STA Core\STAReports\obj\Debug\net7.0\refint\STAReports.dll
+D:\Hariharan\STA Core\STAReports\obj\Debug\net7.0\STAReports.pdb
+D:\Hariharan\STA Core\STAReports\obj\Debug\net7.0\STAReports.genruntimeconfig.cache
+D:\Hariharan\STA Core\STAReports\obj\Debug\net7.0\ref\STAReports.dll
+D:\Flexi\STA\Hari\STAReports\bin\Debug\net7.0\STAReports.dll
+D:\Flexi\STA\Hari\STAReports\bin\Debug\net7.0\appsettings.Development.json
+D:\Flexi\STA\Hari\STAReports\bin\Debug\net7.0\appsettings.json
+D:\Flexi\STA\Hari\STAReports\bin\Debug\net7.0\STAReports.staticwebassets.runtime.json
+D:\Flexi\STA\Hari\STAReports\bin\Debug\net7.0\STAReports.exe
+D:\Flexi\STA\Hari\STAReports\bin\Debug\net7.0\STAReports.deps.json
+D:\Flexi\STA\Hari\STAReports\bin\Debug\net7.0\STAReports.runtimeconfig.json
+D:\Flexi\STA\Hari\STAReports\bin\Debug\net7.0\BouncyCastle.Crypto.dll
+D:\Flexi\STA\Hari\STAReports\bin\Debug\net7.0\ClosedXML.dll
+D:\Flexi\STA\Hari\STAReports\bin\Debug\net7.0\ClosedXML.Extensions.WebApi.dll
+D:\Flexi\STA\Hari\STAReports\bin\Debug\net7.0\DocumentFormat.OpenXml.dll
+D:\Flexi\STA\Hari\STAReports\bin\Debug\net7.0\ExcelNumberFormat.dll
+D:\Flexi\STA\Hari\STAReports\bin\Debug\net7.0\itextsharp.dll
+D:\Flexi\STA\Hari\STAReports\bin\Debug\net7.0\System.Web.Razor.dll
+D:\Flexi\STA\Hari\STAReports\bin\Debug\net7.0\System.Web.Helpers.dll
+D:\Flexi\STA\Hari\STAReports\bin\Debug\net7.0\System.Web.WebPages.Deployment.dll
+D:\Flexi\STA\Hari\STAReports\bin\Debug\net7.0\System.Web.WebPages.Razor.dll
+D:\Flexi\STA\Hari\STAReports\bin\Debug\net7.0\System.Web.WebPages.dll
+D:\Flexi\STA\Hari\STAReports\bin\Debug\net7.0\Microsoft.Web.Infrastructure.dll
+D:\Flexi\STA\Hari\STAReports\bin\Debug\net7.0\Microsoft.Win32.SystemEvents.dll
+D:\Flexi\STA\Hari\STAReports\bin\Debug\net7.0\Newtonsoft.Json.dll
+D:\Flexi\STA\Hari\STAReports\bin\Debug\net7.0\System.Drawing.Common.dll
+D:\Flexi\STA\Hari\STAReports\bin\Debug\net7.0\System.IO.Packaging.dll
+D:\Flexi\STA\Hari\STAReports\bin\Debug\net7.0\runtimes\win\lib\netcoreapp2.0\Microsoft.Win32.SystemEvents.dll
+D:\Flexi\STA\Hari\STAReports\bin\Debug\net7.0\runtimes\unix\lib\netcoreapp2.0\System.Drawing.Common.dll
+D:\Flexi\STA\Hari\STAReports\bin\Debug\net7.0\runtimes\win\lib\netcoreapp2.0\System.Drawing.Common.dll
+D:\Flexi\STA\Hari\STAReports\obj\Debug\net7.0\STAReports.csproj.AssemblyReference.cache
+D:\Flexi\STA\Hari\STAReports\obj\Debug\net7.0\STAReports.GeneratedMSBuildEditorConfig.editorconfig
+D:\Flexi\STA\Hari\STAReports\obj\Debug\net7.0\STAReports.AssemblyInfoInputs.cache
+D:\Flexi\STA\Hari\STAReports\obj\Debug\net7.0\STAReports.AssemblyInfo.cs
+D:\Flexi\STA\Hari\STAReports\obj\Debug\net7.0\STAReports.csproj.CoreCompileInputs.cache
+D:\Flexi\STA\Hari\STAReports\obj\Debug\net7.0\STAReports.MvcApplicationPartsAssemblyInfo.cache
+D:\Flexi\STA\Hari\STAReports\obj\Debug\net7.0\STAReports.RazorAssemblyInfo.cache
+D:\Flexi\STA\Hari\STAReports\obj\Debug\net7.0\STAReports.RazorAssemblyInfo.cs
+D:\Flexi\STA\Hari\STAReports\obj\Debug\net7.0\staticwebassets\msbuild.STAReports.Microsoft.AspNetCore.StaticWebAssets.props
+D:\Flexi\STA\Hari\STAReports\obj\Debug\net7.0\staticwebassets\msbuild.build.STAReports.props
+D:\Flexi\STA\Hari\STAReports\obj\Debug\net7.0\staticwebassets\msbuild.buildMultiTargeting.STAReports.props
+D:\Flexi\STA\Hari\STAReports\obj\Debug\net7.0\staticwebassets\msbuild.buildTransitive.STAReports.props
+D:\Flexi\STA\Hari\STAReports\obj\Debug\net7.0\staticwebassets.pack.json
+D:\Flexi\STA\Hari\STAReports\obj\Debug\net7.0\staticwebassets.build.json
+D:\Flexi\STA\Hari\STAReports\obj\Debug\net7.0\staticwebassets.development.json
+D:\Flexi\STA\Hari\STAReports\obj\Debug\net7.0\scopedcss\Views\Shared\_Layout.cshtml.rz.scp.css
+D:\Flexi\STA\Hari\STAReports\obj\Debug\net7.0\scopedcss\bundle\STAReports.styles.css
+D:\Flexi\STA\Hari\STAReports\obj\Debug\net7.0\scopedcss\projectbundle\STAReports.bundle.scp.css
+D:\Flexi\STA\Hari\STAReports\obj\Debug\net7.0\STAReports.csproj.CopyComplete
+D:\Flexi\STA\Hari\STAReports\obj\Debug\net7.0\STAReports.dll
+D:\Flexi\STA\Hari\STAReports\obj\Debug\net7.0\refint\STAReports.dll
+D:\Flexi\STA\Hari\STAReports\obj\Debug\net7.0\STAReports.pdb
+D:\Flexi\STA\Hari\STAReports\obj\Debug\net7.0\STAReports.genruntimeconfig.cache
+D:\Flexi\STA\Hari\STAReports\bin\Debug\net7.0\STAReports.pdb
+D:\Flexi\STA\Hari\STAReports\obj\Debug\net7.0\ref\STAReports.dll
+D:\Hariharan\STA Core\STAReports\bin\Debug\net7.0\BouncyCastle.Crypto.dll
+D:\Hariharan\STA Core\STAReports\bin\Debug\net7.0\ClosedXML.dll
+D:\Hariharan\STA Core\STAReports\bin\Debug\net7.0\ClosedXML.Extensions.WebApi.dll
+D:\Hariharan\STA Core\STAReports\bin\Debug\net7.0\DocumentFormat.OpenXml.dll
+D:\Hariharan\STA Core\STAReports\bin\Debug\net7.0\ExcelNumberFormat.dll
+D:\Hariharan\STA Core\STAReports\bin\Debug\net7.0\itextsharp.dll
+D:\Hariharan\STA Core\STAReports\bin\Debug\net7.0\System.Web.Razor.dll
+D:\Hariharan\STA Core\STAReports\bin\Debug\net7.0\System.Web.Helpers.dll
+D:\Hariharan\STA Core\STAReports\bin\Debug\net7.0\System.Web.WebPages.Deployment.dll
+D:\Hariharan\STA Core\STAReports\bin\Debug\net7.0\System.Web.WebPages.Razor.dll
+D:\Hariharan\STA Core\STAReports\bin\Debug\net7.0\System.Web.WebPages.dll
+D:\Hariharan\STA Core\STAReports\bin\Debug\net7.0\Microsoft.Web.Infrastructure.dll
+D:\Hariharan\STA Core\STAReports\bin\Debug\net7.0\Microsoft.Win32.SystemEvents.dll
+D:\Hariharan\STA Core\STAReports\bin\Debug\net7.0\Newtonsoft.Json.dll
+D:\Hariharan\STA Core\STAReports\bin\Debug\net7.0\System.Drawing.Common.dll
+D:\Hariharan\STA Core\STAReports\bin\Debug\net7.0\System.IO.Packaging.dll
+D:\Hariharan\STA Core\STAReports\bin\Debug\net7.0\runtimes\win\lib\netcoreapp2.0\Microsoft.Win32.SystemEvents.dll
+D:\Hariharan\STA Core\STAReports\bin\Debug\net7.0\runtimes\unix\lib\netcoreapp2.0\System.Drawing.Common.dll
+D:\Hariharan\STA Core\STAReports\bin\Debug\net7.0\runtimes\win\lib\netcoreapp2.0\System.Drawing.Common.dll
+D:\Hariharan\STA Core\STAReports\obj\Debug\net7.0\STAReports.csproj.CopyComplete
+D:\STA\STA Core_web_api\STAReports\obj\Debug\net7.0\STAReports.dll
+D:\STA\STA Core_web_api\STAReports\obj\Debug\net7.0\refint\STAReports.dll
+D:\STA\STA Core_web_api\STAReports\obj\Debug\net7.0\STAReports.pdb
+D:\STA\STA Core_web_api\STAReports\bin\Debug\net7.0\appsettings.Development.json
+D:\STA\STA Core_web_api\STAReports\bin\Debug\net7.0\appsettings.json
+D:\STA\STA Core_web_api\STAReports\bin\Debug\net7.0\STAReports.staticwebassets.runtime.json
+D:\STA\STA Core_web_api\STAReports\bin\Debug\net7.0\STAReports.exe
+D:\STA\STA Core_web_api\STAReports\bin\Debug\net7.0\STAReports.deps.json
+D:\STA\STA Core_web_api\STAReports\bin\Debug\net7.0\STAReports.runtimeconfig.json
+D:\STA\STA Core_web_api\STAReports\bin\Debug\net7.0\STAReports.dll
+D:\STA\STA Core_web_api\STAReports\bin\Debug\net7.0\STAReports.pdb
+D:\STA\STA Core_web_api\STAReports\bin\Debug\net7.0\BouncyCastle.Crypto.dll
+D:\STA\STA Core_web_api\STAReports\bin\Debug\net7.0\ClosedXML.dll
+D:\STA\STA Core_web_api\STAReports\bin\Debug\net7.0\ClosedXML.Extensions.WebApi.dll
+D:\STA\STA Core_web_api\STAReports\bin\Debug\net7.0\DocumentFormat.OpenXml.dll
+D:\STA\STA Core_web_api\STAReports\bin\Debug\net7.0\ExcelNumberFormat.dll
+D:\STA\STA Core_web_api\STAReports\bin\Debug\net7.0\itextsharp.dll
+D:\STA\STA Core_web_api\STAReports\bin\Debug\net7.0\System.Web.Razor.dll
+D:\STA\STA Core_web_api\STAReports\bin\Debug\net7.0\System.Web.Helpers.dll
+D:\STA\STA Core_web_api\STAReports\bin\Debug\net7.0\System.Web.WebPages.Deployment.dll
+D:\STA\STA Core_web_api\STAReports\bin\Debug\net7.0\System.Web.WebPages.Razor.dll
+D:\STA\STA Core_web_api\STAReports\bin\Debug\net7.0\System.Web.WebPages.dll
+D:\STA\STA Core_web_api\STAReports\bin\Debug\net7.0\Microsoft.Web.Infrastructure.dll
+D:\STA\STA Core_web_api\STAReports\bin\Debug\net7.0\Microsoft.Win32.SystemEvents.dll
+D:\STA\STA Core_web_api\STAReports\bin\Debug\net7.0\Newtonsoft.Json.dll
+D:\STA\STA Core_web_api\STAReports\bin\Debug\net7.0\System.Drawing.Common.dll
+D:\STA\STA Core_web_api\STAReports\bin\Debug\net7.0\System.IO.Packaging.dll
+D:\STA\STA Core_web_api\STAReports\bin\Debug\net7.0\runtimes\win\lib\netcoreapp2.0\Microsoft.Win32.SystemEvents.dll
+D:\STA\STA Core_web_api\STAReports\bin\Debug\net7.0\runtimes\unix\lib\netcoreapp2.0\System.Drawing.Common.dll
+D:\STA\STA Core_web_api\STAReports\bin\Debug\net7.0\runtimes\win\lib\netcoreapp2.0\System.Drawing.Common.dll
+D:\STA\STA Core_web_api\STAReports\obj\Debug\net7.0\STAReports.csproj.AssemblyReference.cache
+D:\STA\STA Core_web_api\STAReports\obj\Debug\net7.0\STAReports.GeneratedMSBuildEditorConfig.editorconfig
+D:\STA\STA Core_web_api\STAReports\obj\Debug\net7.0\STAReports.AssemblyInfoInputs.cache
+D:\STA\STA Core_web_api\STAReports\obj\Debug\net7.0\STAReports.AssemblyInfo.cs
+D:\STA\STA Core_web_api\STAReports\obj\Debug\net7.0\STAReports.csproj.CoreCompileInputs.cache
+D:\STA\STA Core_web_api\STAReports\obj\Debug\net7.0\STAReports.MvcApplicationPartsAssemblyInfo.cache
+D:\STA\STA Core_web_api\STAReports\obj\Debug\net7.0\STAReports.RazorAssemblyInfo.cache
+D:\STA\STA Core_web_api\STAReports\obj\Debug\net7.0\STAReports.RazorAssemblyInfo.cs
+D:\STA\STA Core_web_api\STAReports\obj\Debug\net7.0\staticwebassets\msbuild.STAReports.Microsoft.AspNetCore.StaticWebAssets.props
+D:\STA\STA Core_web_api\STAReports\obj\Debug\net7.0\staticwebassets\msbuild.build.STAReports.props
+D:\STA\STA Core_web_api\STAReports\obj\Debug\net7.0\staticwebassets\msbuild.buildMultiTargeting.STAReports.props
+D:\STA\STA Core_web_api\STAReports\obj\Debug\net7.0\staticwebassets\msbuild.buildTransitive.STAReports.props
+D:\STA\STA Core_web_api\STAReports\obj\Debug\net7.0\staticwebassets.pack.json
+D:\STA\STA Core_web_api\STAReports\obj\Debug\net7.0\staticwebassets.build.json
+D:\STA\STA Core_web_api\STAReports\obj\Debug\net7.0\staticwebassets.development.json
+D:\STA\STA Core_web_api\STAReports\obj\Debug\net7.0\scopedcss\Views\Shared\_Layout.cshtml.rz.scp.css
+D:\STA\STA Core_web_api\STAReports\obj\Debug\net7.0\scopedcss\bundle\STAReports.styles.css
+D:\STA\STA Core_web_api\STAReports\obj\Debug\net7.0\scopedcss\projectbundle\STAReports.bundle.scp.css
+D:\STA\STA Core_web_api\STAReports\obj\Debug\net7.0\STAReports.genruntimeconfig.cache
+D:\STA\STA Core_web_api\STAReports\obj\Debug\net7.0\ref\STAReports.dll
+D:\STA\STA Core_web_api\STAReports\obj\Debug\net7.0\STAReports.csproj.Up2Date
+D:\Mangai\GNSA\STAReports\obj\Debug\net7.0\STAReports.dll
+D:\Mangai\GNSA\STAReports\obj\Debug\net7.0\refint\STAReports.dll
+D:\Mangai\GNSA\STAReports\obj\Debug\net7.0\STAReports.pdb
+D:\Mangai\GNSA\STAReports\bin\Debug\net7.0\appsettings.Development.json
+D:\Mangai\GNSA\STAReports\bin\Debug\net7.0\appsettings.json
+D:\Mangai\GNSA\STAReports\bin\Debug\net7.0\STAReports.staticwebassets.runtime.json
+D:\Mangai\GNSA\STAReports\bin\Debug\net7.0\STAReports.staticwebassets.endpoints.json
+D:\Mangai\GNSA\STAReports\bin\Debug\net7.0\STAReports.exe
+D:\Mangai\GNSA\STAReports\bin\Debug\net7.0\STAReports.deps.json
+D:\Mangai\GNSA\STAReports\bin\Debug\net7.0\STAReports.runtimeconfig.json
+D:\Mangai\GNSA\STAReports\bin\Debug\net7.0\STAReports.dll
+D:\Mangai\GNSA\STAReports\bin\Debug\net7.0\STAReports.pdb
+D:\Mangai\GNSA\STAReports\bin\Debug\net7.0\BouncyCastle.Crypto.dll
+D:\Mangai\GNSA\STAReports\bin\Debug\net7.0\ClosedXML.dll
+D:\Mangai\GNSA\STAReports\bin\Debug\net7.0\ClosedXML.Extensions.Mvc.dll
+D:\Mangai\GNSA\STAReports\bin\Debug\net7.0\ClosedXML.Parser.dll
+D:\Mangai\GNSA\STAReports\bin\Debug\net7.0\DocumentFormat.OpenXml.dll
+D:\Mangai\GNSA\STAReports\bin\Debug\net7.0\DocumentFormat.OpenXml.Framework.dll
+D:\Mangai\GNSA\STAReports\bin\Debug\net7.0\ExcelNumberFormat.dll
+D:\Mangai\GNSA\STAReports\bin\Debug\net7.0\itextsharp.dll
+D:\Mangai\GNSA\STAReports\bin\Debug\net7.0\System.Web.Razor.dll
+D:\Mangai\GNSA\STAReports\bin\Debug\net7.0\System.Web.Helpers.dll
+D:\Mangai\GNSA\STAReports\bin\Debug\net7.0\System.Web.WebPages.Deployment.dll
+D:\Mangai\GNSA\STAReports\bin\Debug\net7.0\System.Web.WebPages.Razor.dll
+D:\Mangai\GNSA\STAReports\bin\Debug\net7.0\System.Web.WebPages.dll
+D:\Mangai\GNSA\STAReports\bin\Debug\net7.0\Microsoft.Web.Infrastructure.dll
+D:\Mangai\GNSA\STAReports\bin\Debug\net7.0\Newtonsoft.Json.dll
+D:\Mangai\GNSA\STAReports\bin\Debug\net7.0\RBush.dll
+D:\Mangai\GNSA\STAReports\bin\Debug\net7.0\SixLabors.Fonts.dll
+D:\Mangai\GNSA\STAReports\bin\Debug\net7.0\System.IO.Packaging.dll
+D:\Mangai\GNSA\STAReports\obj\Debug\net7.0\STAReports.csproj.AssemblyReference.cache
+D:\Mangai\GNSA\STAReports\obj\Debug\net7.0\STAReports.GeneratedMSBuildEditorConfig.editorconfig
+D:\Mangai\GNSA\STAReports\obj\Debug\net7.0\STAReports.AssemblyInfoInputs.cache
+D:\Mangai\GNSA\STAReports\obj\Debug\net7.0\STAReports.AssemblyInfo.cs
+D:\Mangai\GNSA\STAReports\obj\Debug\net7.0\STAReports.csproj.CoreCompileInputs.cache
+D:\Mangai\GNSA\STAReports\obj\Debug\net7.0\STAReports.MvcApplicationPartsAssemblyInfo.cs
+D:\Mangai\GNSA\STAReports\obj\Debug\net7.0\STAReports.MvcApplicationPartsAssemblyInfo.cache
+D:\Mangai\GNSA\STAReports\obj\Debug\net7.0\STAReports.RazorAssemblyInfo.cache
+D:\Mangai\GNSA\STAReports\obj\Debug\net7.0\STAReports.RazorAssemblyInfo.cs
+D:\Mangai\GNSA\STAReports\obj\Debug\net7.0\scopedcss\Views\Shared\_Layout.cshtml.rz.scp.css
+D:\Mangai\GNSA\STAReports\obj\Debug\net7.0\scopedcss\bundle\STAReports.styles.css
+D:\Mangai\GNSA\STAReports\obj\Debug\net7.0\scopedcss\projectbundle\STAReports.bundle.scp.css
+D:\Mangai\GNSA\STAReports\obj\Debug\net7.0\staticwebassets.build.json
+D:\Mangai\GNSA\STAReports\obj\Debug\net7.0\staticwebassets.development.json
+D:\Mangai\GNSA\STAReports\obj\Debug\net7.0\staticwebassets.build.endpoints.json
+D:\Mangai\GNSA\STAReports\obj\Debug\net7.0\staticwebassets\msbuild.STAReports.Microsoft.AspNetCore.StaticWebAssets.props
+D:\Mangai\GNSA\STAReports\obj\Debug\net7.0\staticwebassets\msbuild.STAReports.Microsoft.AspNetCore.StaticWebAssetEndpoints.props
+D:\Mangai\GNSA\STAReports\obj\Debug\net7.0\staticwebassets\msbuild.build.STAReports.props
+D:\Mangai\GNSA\STAReports\obj\Debug\net7.0\staticwebassets\msbuild.buildMultiTargeting.STAReports.props
+D:\Mangai\GNSA\STAReports\obj\Debug\net7.0\staticwebassets\msbuild.buildTransitive.STAReports.props
+D:\Mangai\GNSA\STAReports\obj\Debug\net7.0\staticwebassets.pack.json
+D:\Mangai\GNSA\STAReports\obj\Debug\net7.0\staticwebassets.upToDateCheck.txt
+D:\Mangai\GNSA\STAReports\obj\Debug\net7.0\STAReports.csproj.Up2Date
+D:\Mangai\GNSA\STAReports\obj\Debug\net7.0\STAReports.genruntimeconfig.cache
+D:\Mangai\GNSA\STAReports\obj\Debug\net7.0\ref\STAReports.dll
+E:\Venkatesh\STAReports\bin\Debug\net7.0\appsettings.Development.json
+E:\Venkatesh\STAReports\bin\Debug\net7.0\appsettings.json
+E:\Venkatesh\STAReports\bin\Debug\net7.0\STAReports.staticwebassets.runtime.json
+E:\Venkatesh\STAReports\bin\Debug\net7.0\STAReports.staticwebassets.endpoints.json
+E:\Venkatesh\STAReports\bin\Debug\net7.0\STAReports.exe
+E:\Venkatesh\STAReports\bin\Debug\net7.0\STAReports.deps.json
+E:\Venkatesh\STAReports\bin\Debug\net7.0\STAReports.runtimeconfig.json
+E:\Venkatesh\STAReports\bin\Debug\net7.0\STAReports.dll
+E:\Venkatesh\STAReports\bin\Debug\net7.0\STAReports.pdb
+E:\Venkatesh\STAReports\bin\Debug\net7.0\BouncyCastle.Crypto.dll
+E:\Venkatesh\STAReports\bin\Debug\net7.0\ClosedXML.dll
+E:\Venkatesh\STAReports\bin\Debug\net7.0\ClosedXML.Extensions.Mvc.dll
+E:\Venkatesh\STAReports\bin\Debug\net7.0\ClosedXML.Parser.dll
+E:\Venkatesh\STAReports\bin\Debug\net7.0\DocumentFormat.OpenXml.dll
+E:\Venkatesh\STAReports\bin\Debug\net7.0\DocumentFormat.OpenXml.Framework.dll
+E:\Venkatesh\STAReports\bin\Debug\net7.0\ExcelNumberFormat.dll
+E:\Venkatesh\STAReports\bin\Debug\net7.0\itextsharp.dll
+E:\Venkatesh\STAReports\bin\Debug\net7.0\System.Web.Razor.dll
+E:\Venkatesh\STAReports\bin\Debug\net7.0\System.Web.Helpers.dll
+E:\Venkatesh\STAReports\bin\Debug\net7.0\System.Web.WebPages.Deployment.dll
+E:\Venkatesh\STAReports\bin\Debug\net7.0\System.Web.WebPages.Razor.dll
+E:\Venkatesh\STAReports\bin\Debug\net7.0\System.Web.WebPages.dll
+E:\Venkatesh\STAReports\bin\Debug\net7.0\Microsoft.Web.Infrastructure.dll
+E:\Venkatesh\STAReports\bin\Debug\net7.0\Newtonsoft.Json.dll
+E:\Venkatesh\STAReports\bin\Debug\net7.0\RBush.dll
+E:\Venkatesh\STAReports\bin\Debug\net7.0\SixLabors.Fonts.dll
+E:\Venkatesh\STAReports\bin\Debug\net7.0\System.IO.Packaging.dll
+E:\Venkatesh\STAReports\obj\Debug\net7.0\STAReports.csproj.AssemblyReference.cache
+E:\Venkatesh\STAReports\obj\Debug\net7.0\STAReports.GeneratedMSBuildEditorConfig.editorconfig
+E:\Venkatesh\STAReports\obj\Debug\net7.0\STAReports.AssemblyInfoInputs.cache
+E:\Venkatesh\STAReports\obj\Debug\net7.0\STAReports.AssemblyInfo.cs
+E:\Venkatesh\STAReports\obj\Debug\net7.0\STAReports.csproj.CoreCompileInputs.cache
+E:\Venkatesh\STAReports\obj\Debug\net7.0\STAReports.MvcApplicationPartsAssemblyInfo.cs
+E:\Venkatesh\STAReports\obj\Debug\net7.0\STAReports.MvcApplicationPartsAssemblyInfo.cache
+E:\Venkatesh\STAReports\obj\Debug\net7.0\STAReports.RazorAssemblyInfo.cache
+E:\Venkatesh\STAReports\obj\Debug\net7.0\STAReports.RazorAssemblyInfo.cs
+E:\Venkatesh\STAReports\obj\Debug\net7.0\scopedcss\Views\Shared\_Layout.cshtml.rz.scp.css
+E:\Venkatesh\STAReports\obj\Debug\net7.0\scopedcss\bundle\STAReports.styles.css
+E:\Venkatesh\STAReports\obj\Debug\net7.0\scopedcss\projectbundle\STAReports.bundle.scp.css
+E:\Venkatesh\STAReports\obj\Debug\net7.0\staticwebassets.build.json
+E:\Venkatesh\STAReports\obj\Debug\net7.0\staticwebassets.development.json
+E:\Venkatesh\STAReports\obj\Debug\net7.0\staticwebassets.build.endpoints.json
+E:\Venkatesh\STAReports\obj\Debug\net7.0\staticwebassets\msbuild.STAReports.Microsoft.AspNetCore.StaticWebAssets.props
+E:\Venkatesh\STAReports\obj\Debug\net7.0\staticwebassets\msbuild.STAReports.Microsoft.AspNetCore.StaticWebAssetEndpoints.props
+E:\Venkatesh\STAReports\obj\Debug\net7.0\staticwebassets\msbuild.build.STAReports.props
+E:\Venkatesh\STAReports\obj\Debug\net7.0\staticwebassets\msbuild.buildMultiTargeting.STAReports.props
+E:\Venkatesh\STAReports\obj\Debug\net7.0\staticwebassets\msbuild.buildTransitive.STAReports.props
+E:\Venkatesh\STAReports\obj\Debug\net7.0\staticwebassets.pack.json
+E:\Venkatesh\STAReports\obj\Debug\net7.0\staticwebassets.upToDateCheck.txt
+E:\Venkatesh\STAReports\obj\Debug\net7.0\STAReports.csproj.Up2Date
+E:\Venkatesh\STAReports\obj\Debug\net7.0\STAReports.dll
+E:\Venkatesh\STAReports\obj\Debug\net7.0\refint\STAReports.dll
+E:\Venkatesh\STAReports\obj\Debug\net7.0\STAReports.pdb
+E:\Venkatesh\STAReports\obj\Debug\net7.0\STAReports.genruntimeconfig.cache
+E:\Venkatesh\STAReports\obj\Debug\net7.0\ref\STAReports.dll

@@ -1,0 +1,14 @@
+﻿@{
+    ViewBag.Title = "Session Expired Page";
+    Layout = null;
+}
+
+<h2 style="color:red; font-weight:bold;">Session Expired !! </h2>
+
+<div id="sessionStatus" style="color:black; font-weight:bold;">
+    <span>"Please login to continue..."</span>
+    <span>
+        <a href="@Url.Content("~/Login/Login")">Login</a>
+    </span>
+</div>
+

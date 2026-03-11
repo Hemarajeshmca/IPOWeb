@@ -1,0 +1,315 @@
+﻿@model dynamic
+<!Doctype html>
+<html>
+<head> 
+  <style>
+        #new_uploadModal .modal-content {
+            position: relative;
+            top: 103px;            
+        }
+
+       .modal-backdrop.show {
+            z-index: -99 !important;
+        }
+
+        #new_grid_documentList .k-grid-content tr.k-alt td {
+            background-color: #5997bb !important;
+            color: white; /* Optional for contrast */
+        }
+
+        #new_grid_documentList {
+            width: 100% !important;
+        }
+
+        /* Optional: consistent cell styling */
+        #new_grid_documentList td {
+            border: 1px solid #ccc;
+            padding: 4px;
+        }
+
+        #new_grid_documentList .k-grid-content td {
+            padding-top: 1px;
+            padding-bottom: 1px;
+        }
+
+        #new_grid_documentList .k-grid-header table,
+        #new_grid_documentList .k-grid-content table {
+            table-layout: fixed;
+            width: 100% !important;
+        }
+
+        #new_grid_documentList .k-grid-header th,
+        #new_grid_documentList .k-grid-content td {
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container-fluid" style="border: 1px solid #cbc1c1; margin-top: 10px;border-radius: 6px;">
+        <div class="row" style="margin-top:10px">
+            <div class="col-sm-2" style="display:none;">
+                <label for="sectype_name" class="form-label">Security Type &nbsp;<span class="reqStar"></span></label>
+                @* <input type="text" id="sectype_name" name="sectype_name" class="form-control" value="@Model?.sectype_name" /> *@
+                <select id="sectype_security_type" name="sectype_name" class="form-control" data-bind="value:sectype_security_type" >
+                    <option value="">-- Select --</option>
+                    <option value="Equity">Equity</option>
+                    <option value="Debentures">Debentures</option>
+                    <option value="Preference">Preference</option>
+                </select>
+                <span id="queryErrorqueryErrorSectype" style="color: red; font-size: 12px;position:relative;"></span>
+            </div>
+            <div class="col-sm-2">
+                <label for="face_value" data-field="sectype_face_value" class="form-label">Face Value &nbsp;<span class="reqStar"></span></label>
+                <input type="number" id="sectype_face_value" name="face_value" class="form-control" data-bind="value:sectype_face_value" oninput="calculatePaidUpCapital()"   />
+                <span id="queryErrorsectype_face_value" style="color: red; font-size: 12px;position:relative;"></span>
+            </div>
+            <div class="col-sm-2">
+                <label for="sectype_no_of_shares" data-field="sectype_no_of_shares" class="form-label">No. of Shares &nbsp;<span class="reqStar"></span></label>
+                <input type="number" id="sectype_no_of_shares" name="no_of_shares" class="form-control" data-bind="value:sectype_no_of_shares" oninput="calculatePaidUpCapital()"   />
+                <span id="queryErrorsectype_no_of_shares" style="color: red; font-size: 12px;position:relative;"></span>
+            </div>
+            <div class="col-sm-2">
+                <label for="sectype_paidup_captital" data-field="sectype_paidup_captital" class="form-label">Paid-up Capital &nbsp;<span class="reqStar"></span></label>
+                <input type="number" id="sectype_paidup_captital" name="paidup_capital" value="sectype_face_value * sectype_no_of_shares" readonly class="form-control" data-bind="value:sectype_paidup_captital" />
+                <span id="queryErrorsectype_paidup_captital" style="color: red; font-size: 12px;position:relative;"></span>
+            </div>
+            <div class="col-sm-2">
+                <label for="sectype_no_of_shareholders" data-field="sectype_no_of_shareholders" class="form-label">No. of Shareholders &nbsp;<span class="reqStar"></span></label>
+                <input type="number" id="sectype_no_of_shareholders" name="no_of_share_holders" class="form-control" data-bind="value:sectype_no_of_shareholders" />
+                <span id="queryErrorsectype_no_of_shareholders" style="color: red; font-size: 12px;position:relative;"></span>
+            </div>
+            <div class="col-sm-2">
+                <label for="sectype_tenure" data-field="sectype_tenure" class="form-label">Tenure &nbsp;<span class="reqStar"></span></label>
+                <input type="number" id="sectype_tenure" name="tenure" class="form-control" onchange="calcAnnualGst(this)"  data-bind="value:sectype_tenure" />
+                <span id="queryErrorsectype_tenure" style="color: red; font-size: 12px;position:relative;"></span>
+            </div>
+        </div>
+        <div class="row" style="margin-top:10px">           
+            <div class="col-sm-2">
+                <label for="sectype_service_start_month" data-field="sectype_service_start_month" class="form-label">Service Start Month &nbsp;<span class="reqStar"></span></label>
+                <input type="date" id="sectype_service_start_month" name="service_start_month" class="form-control" data-bind="value:sectype_service_start_month" />
+                <span id="queryErrorsectype_service_start_month" style="color: red; font-size: 12px;position:relative;"></span>
+            </div>
+            <div class="col-sm-2" id="serviceEndMonthWrapper" style="display:none;">
+                <label for="sectype_service_end_month" data-field="sectype_service_end_month" class="form-label">Service End Month &nbsp;<span class="reqStar"></span></label>
+                <input type="date" id="sectype_service_end_month" name="service_end_month" class="form-control" data-bind="value:sectype_service_end_month" readonly />
+                <span id="queryErrorsectype_service_end_month" style="color: red; font-size: 12px;position:relative;"></span>
+            </div>
+            <div class="col-sm-2">
+                <label for="sectype_amount" data-field="sectype_amount" class="form-label">Amount &nbsp;<span class="reqStar"></span></label>
+                <input type="number" id="sectype_amount" name="amount" class="form-control" data-bind="value:sectype_amount"  readonly />
+                <span id="queryErrorsectype_amount" style="color: red; font-size: 12px;position:relative;"></span>
+            </div>
+            <div class="col-sm-2" style="display:none;">
+                <label class="form-label" for="listingstatus">
+                    Status &nbsp;<span style="font-size: 12px;color: red;font-weight: bold;"></span>
+                </label>
+                <select id="queuestatus" name="Queue_status" class="form-control" data-bind="value:queuestatus">
+                    <option value="">-- Select --</option>
+                    <option value="DROPPED">DROPPED</option>
+                    <option value="Proposal sent"> Proposal sent</option>
+                </select>
+            </div>
+         </div>
+         <div class="row">
+            <table class="table table-bordered table-sm">
+                <thead>
+                    <tr>
+                        <th style="display:none">Payment GID</th>
+                        <th style="width:10%">Payment Name</th>
+                        <th>Amount&nbsp;<span class="asterisk"></span></th>
+                        <th style="width:7%">GST %</th>
+                        <th>GST Amount</th>
+                        <th>Payable Amount</th>
+                        <th>Received Amount</th>
+                        <th>Due Amount</th>
+                        <th>Received Date</th>
+                        <th style="width:30%">Remarks</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td style="display:none">
+                            <input type="hidden" name="payment_gid1" value="0" />
+                        </td>
+                        <td>
+                            <span style="font-size:13px;">Annual Fee</span>
+                        </td>
+                        <td>
+                            <input type="number" class="form-control" style="text-align:right" id="annualFee" step="0.01" onchange="calcAnnualGst(this); calcAnnualFeeDue();" data-bind="value:annualFee" />
+                        </td>
+                        <td>
+                            <input type="number" class="form-control" style="text-align:right" id="annualFeeGstpercent" step="0.01" value="18.00"  readonly data-bind="value:annualFeeGstpercent" />
+                        </td>
+                        <td>
+                            <input type="number" class="form-control" style="text-align:right" id="annualFeeGstAmount" step="0.01" readonly data-bind="value:annualFeeGstAmount" />
+                        </td>
+                        <td>
+                            <input type="number" class="form-control" style="text-align:right" id="annualFeePayable" step="0.01" readonly data-bind="value:annualFeePayable" />
+                        </td>
+                        <td>
+                            <input type="number" class="form-control" style="text-align:right" id="annualFeeReceived" step="0.01" onchange="calcAnnualFeeDue()" data-bind="value:annualFeeReceived" />
+                        </td>
+                        <td>
+                            <input type="number" class="form-control" style="text-align:right" id="annualFeeDueamount" step="0.01" readonly data-bind="value:annualFeeDueamount" />
+                        </td>
+                        <td>
+                            <input type="date" id="annualDate" name="annualDate" class="form-control" data-bind="value:annualDate"  />
+                        </td>
+                        <td>
+                            <textarea class="form-control" id="annualRemarks" data-bind="value: annualRemarks" rows="1" style="resize: vertical;"></textarea>
+                        </td>
+                       
+                    </tr>
+                    <tr>
+                        <td style="display:none">
+                            <input type="hidden" name="payment_gid2" value="0" />
+                        </td>
+                        <td>
+                            <span style="font-size:13px;">Security Deposit</span>
+
+                        </td>
+                        <td>
+                            <input type="number" class="form-control" style="text-align:right" id="SecDepAmount" step="0.01" onchange="calcGstSecDep(this); calcSecurityFeeDue();" data-bind="value:SecDepAmount" />
+                        </td>
+                        <td>
+                            <input type="number" class="form-control" style="text-align:right" id="SecDepGstpercent" step="0.01" value="0.00"  readonly data-bind="value:SecDepGstpercent" />
+                        </td>
+                        <td>
+                            <input type="number" class="form-control" style="text-align:right" id="SecDepGstamount" step="0.01" readonly data-bind="value:SecDepGstamount" />
+                        </td>
+                        <td>
+                            <input type="number" class="form-control" style="text-align:right" id="SecDepPayableamount" step="0.01" readonly data-bind="value:SecDepPayableamount" />
+                        </td>
+                        <td>
+                            <input type="number" class="form-control" style="text-align:right" id="SecDepRecievedamount" step="0.01" onchange="calcSecurityFeeDue()" data-bind="value:SecDepRecievedamount" />
+                        </td>
+                        <td>
+                            <input type="number" class="form-control" style="text-align:right" id="SecDepDueamount" step="0.01" readonly data-bind="value:SecDepDueamount" />
+                        </td>
+                        <td>
+                            <input type="date" id="SecDepDate" name="SecDepDate" class="form-control" data-bind="value:SecDepDate" />
+                        </td>
+                        <td>                           
+                            <textarea class="form-control" id="SecDepRemarks" data-bind="value: SecDepRemarks" rows="1" style="resize: vertical;"></textarea>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td style="display:none">
+                            <input type="hidden" name="payment_gid3" value="0" />
+                        </td>
+                        <td>
+                            <span style="font-size:13px;">Isin Creation Fee</span>
+
+                        </td>
+                        <td>
+                            <input type="number" class="form-control" style="text-align:right" id="IsinFeeamount" step="0.01" onchange="calcGstIsin(this); calcIsinFeeDue();" data-bind="value:IsinFeeamount" />
+                        </td>
+                        <td>
+                            <input type="number" class="form-control" style="text-align:right" id="IsinFeeGstpercent" step="0.01" readonly value="18.00" data-bind="value:IsinFeeGstpercent" />
+                        </td>
+                        <td>
+                            <input type="number" class="form-control" style="text-align:right" id="IsinFeeGstamount" step="0.01" readonly data-bind="value:IsinFeeGstamount" />
+                        </td>
+                        <td>
+                            <input type="number" class="form-control" style="text-align:right" id="IsinFeePayableamount" step="0.01" readonly data-bind="value:IsinFeePayableamount" />
+                        </td>
+                        <td>
+                            <input type="number" class="form-control" style="text-align:right" id="IsinFeeRecievedamount" step="0.01" onchange="calcIsinFeeDue()" data-bind="value:IsinFeeRecievedamount" />
+                        </td>
+                        <td>
+                            <input type="number" class="form-control" style="text-align:right" id="IsinFeeDueamount" step="0.01" readonly data-bind="value:IsinFeeDueamount" />
+                        </td>
+                        <td>
+                            <input type="date" id="IsinFeeDate" name="IsinFeeDate" class="form-control" data-bind="value:IsinFeeDate" />
+                        </td>
+                        <td>                            
+                            <textarea class="form-control" id="IsinFeeRemarks" data-bind="value: IsinFeeRemarks" rows="1" style="resize: vertical;"></textarea>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td style="display:none">
+                            <input type="hidden" name="payment_gid4" value="0" />
+                        </td>
+                        <td>
+                            <span style="font-size:13px;">Stamp Duty</span>
+
+                        </td>
+                        <td>
+                            <input type="number" class="form-control" style="text-align:right" id="StampDutyAmount" step="0.01" onchange="calcGstStampduty(this); calcStampFeeDue();" data-bind="value:StampDutyAmount" />
+                        </td>
+                        <td>
+                            <input type="number" class="form-control" style="text-align:right" id="StampDutyGstpercent" step="0.01" value="0.00" readonly data-bind="value:StampDutyGstpercent" />
+                        </td>
+                        <td>
+                            <input type="number" class="form-control" style="text-align:right" id="StampDutyGstamount" step="0.01" readonly data-bind="value:StampDutyGstamount" />
+                        </td>
+                        <td>
+                            <input type="number" class="form-control" style="text-align:right" id="StampDutyPayableamount" step="0.01" readonly data-bind="value:StampDutyPayableamount" />
+                        </td>
+                        <td>
+                            <input type="number" class="form-control" style="text-align:right" id="StampDutyRecievedamount" step="0.01" onchange="calcStampFeeDue()" data-bind="value:StampDutyRecievedamount" />
+                        </td>
+                        <td>
+                            <input type="number" class="form-control" style="text-align:right" id="StampDutyDueamount" step="0.01" readonly data-bind="value:StampDutyDueamount" />
+                        </td>
+                        <td>
+                            <input type="date" id="StampDutyDate" name="StampDutyDate" class="form-control" data-bind="value:StampDutyDate" />
+                        </td> 
+                        <td>                            
+                            <textarea class="form-control" id="StampDutyRemarks" data-bind="value: StampDutyRemarks" rows="1" style="resize: vertical;"></textarea>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+         </div>
+        <div class="row" style="margin-top: 10px;">            
+            <div class="col-sm-4">
+                
+            </div>
+            <div class="col-sm-4">
+               
+            </div>
+            <div class="col-sm-4">
+                <center><span id="amountvalueError" style="color: red; font-size: 12px;position:relative;top: -18px;"></span></center>
+                <center><span id="queryErrordate" style="color: red; font-size: 12px;position:relative;top: -18px;left:-172px;"></span></center>
+            </div>
+         </div>
+        <div class="row" style="margin-top: 10px;">
+            <div class="col-sm-4">
+               
+            </div>
+            <div class="col-sm-4"  style="position: fixed; bottom: 52px; left: 50%; transform: translateX(-50%); z-index: 9999;">
+                <center>
+                    <button type="button" class="btn btn-primary" id="DetailsSave" style="padding: 3px 25px;" onclick="onboardingHeaderSave();">
+                         Save
+                    </button>&nbsp;&nbsp;&nbsp;&nbsp;
+                
+                    <button type="button" class="btn btn-danger" id="drpd" style="padding:3px 25px;display:none" onclick='deletepresale($(this))'>Drop</button>
+                    @* <button type="button" class="btn btn-danger" id="cancelAll" style="padding:3px 25px;display:none" onclick="cancelpresale('#grid_presale_all_list')">Cancel</button>
+                    <button type="button" class="btn btn-danger" id="cancelRenewal" style="padding:3px 25px;display:none" onclick="cancelpresale('#grid_presale_renewal_list')">Cancel</button> *@
+                </center>
+            </div>
+            <div class="col-sm-4">
+            </div>
+        </div>
+        <div class="row" style="display:none">
+            <div class="col-sm-4">
+
+            </div>
+            <div class="col-sm-4">
+                <center><button type="button" class="btn btn-primary" id="DetailSave" style="padding:2px 15px;" onclick="SecurityTypeDtlSave();">Detail Save</button></center>
+            </div>
+            <div class="col-sm-4">
+            </div>        
+        </div>
+        
+    </div>      
+</body>
+</html>
+
+
+

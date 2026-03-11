@@ -1,0 +1,547 @@
+﻿@*@model DMS.Model.Login_Model*@
+
+@{
+    Layout = null;
+}
+@{
+    var userEmail = Context.Session.GetString("UserEmail");
+}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>STA Login Page</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+    <script src="https://www.google.com/recaptcha/api.js" async defer></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/3.1.2/rollups/aes.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/3.1.2/rollups/pbkdf2.js"></script>
+
+    @*Css and Js for Jquery alert box*@
+    <script src="~/Scripts/jquery-confirm.min.js"></script>
+    <link href="~/Content/css/jquery-confirm.min.css" rel="stylesheet" />
+    <style>
+        .footer {
+            position: fixed;
+            left: 0;
+            bottom: 0;
+            width: 100%;
+            background-color: #e4e4e4;
+            color: white;
+            text-align: center;
+        }
+    </style>
+
+</head>
+<body>
+    @*<body onload="generateCaptcha();">*@
+    <div class="container-fluid">
+        <div class="row" style="background:#70b5ddd9">
+            <div class="col-sm-4">
+                <img src="~/Assets/images/logoinvestornew.png">
+            </div>
+        </div>
+        <div class="container-fluid" style="border: 1px solid #6967676e;margin: 20px;border-radius: 5px;height: 484px;box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);">
+            <div class="row" style="margin-top:100px;">
+                <div class="col-sm-8">
+                    <img src="~/Assets/images/LoginImage.jpg" class="img-responsive" style="border-radius:10px;margin-top:-58px;">
+                </div>
+                <div class="col-sm-4" style="margin-top:30px;margin-left:-30px;border: 1px solid #e2e2e2;padding: 30px;border-radius: 5px;">
+                    <form action="" method="post">
+                        <div class="form-group input-group">
+                            <span class="input-group-addon"><i class="glyphicon glyphicon-user"></i></span>
+                            <input class="form-control" type="text" name="txtusername" maxlength="150" id="txtusername" placeholder="Employee Code" required>
+                        </div>
+                        @*<div class="form-group input-group" id="otpdiv">*@
+                        @*<div class="form-group input-group" id="otpdiv">*@
+                        <div class="form-group input-group" id="otpdiv" style="">
+                            @*commented by hari for dev env*@
+                            <span class="input-group-addon"><i class="glyphicon glyphicon-lock"></i></span>
+                            <input class="form-control" type="password" name="txtpwd" maxlength="8" id="txtpwd" placeholder="Password">
+
+                        </div>
+                        <div class="form-group input-group" style="display:none" id="divEntity">
+                            <span class="input-group-addon"><i class="glyphicon glyphicon-user"></i></span>
+                            <select class="form-control" id="Entity" name="Entitydb">
+                                <option>Select Entity</option>
+                                <option value="ConnectionString_e1">Hospital</option>
+                                <option value="ConnectionString_e2">College</option>
+                                <option value="ConnectionString_e3">School</option>
+                            </select>
+                        </div>
+                        @* <input type="text" id="mainCaptcha" readonly="readonly" style="border: 1px solid #ccc;border-radius: 5px;color:#fff;font-size: 18px;width: 47%;font-weight: bold;background-image: url(assets/images/captcha.jpg);" />
+                        <img src="~/Assets/images/login-refresh.png" onclick="generateCaptcha();"><input style="float:right;width:40%;border: 1px solid #ccc;border-radius: 5px;" type="text" id="txtInput" placeholder="" />*@
+                        @* <div class="form-group" id="OTPbtn" style="margin-top:10px;display:none">
+                            <center><button onclick="return GenerateOtp();" id="btnGenerateOtp" type="button" style="background-color:#0e9ac8;color:white;" class="btn btn-def btn-block"> Generate OTP </button></center>
+                        </div> *@
+                        @* <div class="form-group" id="loginbtn" style="margin-top:10px;">*@
+
+                        <div class="form-group" id="loginbtn" style="margin-top:10px;">
+                            @*  commented by hari for dev env*@
+                            <center><button onclick="return CheckLogin();" id="btnsubmit" type="button" style="background-color:#0e9ac8;color:white;" class="btn btn-def btn-block"> Login </button></center>
+                        </div>
+                        @* <div class="form-group" id="OTPbtn" style="margin-top:10px;">
+                            <center><button onclick="window.location.href='/Registration/Registration';" id="btnGenerateOtp" type="button" style="background-color:#0e9ac8;color:white;" class="btn btn-def btn-block"> New User Register Here... </button></center>
+                        </div> *@
+                        <div class="form-group" id="OTPbtn" style="margin-top:10px;">
+                            <center>
+                               @* <button id="btnGenerateOtp" type="button" style="background-color:#0e9ac8;color:white;" class="btn btn-def btn-block" data-toggle="modal" data-target="#changePasswordModal"> Change Password </button> *@
+                                <button onclick="return ForgotPassword();" id="ForgetPwd" type="button" style="background-color:#0e9ac8;color:white;" class="btn btn-def btn-block"> Forget Password </button>
+                            </center>
+                        </div>
+                        <div class="form-group text-center" style="color:red">
+                            <span class="errormessage" style="color: red;"></span>
+                        </div>
+                        <div class="form-group text-center" style="display:none" id="resendOtp">
+                            <a href="#" style="color:#e9400b" onclick="GenerateOtp()">Resend OTP</a><br>
+                        </div>
+
+                    </form>
+                </div>
+            </div>
+
+        </div>
+
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-sm-12 footer">
+                    <h5 class="copyright" style="color:#000;">Copyright &#169; by Flexicode Technologies (P) Ltd. </h5>
+                </div>
+            </div>
+        </div>
+
+        <!-- Change Password Modal -->
+        <div class="modal fade" id="changePasswordModal" tabindex="-1" role="dialog" aria-labelledby="changePasswordModalLabel" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content" style="border-radius:10px">
+                    <div class="modal-header" style="background-color:#0e9ac8;color:white;">
+                        <h5 class="modal-title" id="changePasswordModalLabel">Change Password</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close" style="color:white">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <form id="changePasswordForm">
+                            <input type="hidden" id="changePasswordEmail" />
+                            <div class="form-group">
+                                @* <span class="input-group-addon"><i class="glyphicon glyphicon-user"></i></span> *@
+                                <label for="oldPassword">Old Password</label>
+                                <input type="password" class="form-control" id="oldPassword" required>
+                                @* <small id="oldPwdError" class="form-text text-danger"></small> *@
+                            </div>
+                            <span id="oldError" style="color: red; font-size: 12px;position:relative;top:-14px;"></span>
+                            <div class="form-group">
+                                @* <span class="input-group-addon"><i class="glyphicon glyphicon-user"></i></span> *@
+                                <label for="newPassword">New Password</label>
+                                <input type="password" class="form-control" id="newPassword" required>
+                                @* <small id="oldPwdError" class="form-text text-danger"></small> *@
+                            </div>
+                            <span id="newError" style="color: red; font-size: 12px;position:relative;top:-14px;"></span>
+                            <div class="form-group">
+                                @* <span class="input-group-addon"><i class="glyphicon glyphicon-user"></i></span> *@
+                                <label for="confirmPassword">Confirm New Password</label>
+                                <input type="password" class="form-control" id="confirmPassword" required>
+                                @* <small id="oldPwdError" class="form-text text-danger"></small> *@
+                            </div>
+                            <span id="conError" style="color: red; font-size: 12px;position:relative;top:-14px;"></span>
+                            <div class="text-center">
+                                <button type="button" class="btn btn-success" onclick="saveNewPassword()">Save</button>
+                            </div>
+                            
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+    </div>
+</body>
+</html>
+
+<script type="text/javascript">
+    var encryptionKey = "encryptionkey123";
+
+    function generateEncryptionKey() {
+        const keyArray = new Uint8Array(32); // 256 bits = 32 bytes
+        crypto.getRandomValues(keyArray);
+        return keyArray;
+    }
+    //function generateCaptcha() {
+    //	debugger;
+    //	var alpha = new Array('A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z', 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z');
+    //	var i;
+    //	for (i = 0; i < 6; i++) {
+    //		var a = alpha[Math.floor(Math.random() * alpha.length)];
+    //		var b = alpha[Math.floor(Math.random() * alpha.length)];
+    //		var c = alpha[Math.floor(Math.random() * alpha.length)];
+    //		var d = alpha[Math.floor(Math.random() * alpha.length)];
+    //		var e = alpha[Math.floor(Math.random() * alpha.length)];
+    //		var f = alpha[Math.floor(Math.random() * alpha.length)];
+    //	}
+    //	var code = a + '' + b + '' + '' + c + '' + d + '' + e + '' + f;
+    //	document.getElementById("mainCaptcha").value = code
+    //}
+    //function CheckValidCaptcha() {
+    //	debugger;
+    //	var string1 = removeSpaces(document.getElementById('mainCaptcha').value);
+    //	var string2 = removeSpaces(document.getElementById('txtInput').value);
+    //	if (string1 == string2) {
+    //		document.getElementById('success').innerHTML = "Form is validated Successfully";
+    //		//alert("Form is validated Successfully");
+    //		return true;
+    //	}
+    //	else {
+    //		document.getElementById('error').innerHTML = "Please enter a valid captcha.";
+    //		//alert("Please enter a valid captcha.");
+    //		return false;
+
+    //	}
+    //}
+    function removeSpaces(string) {
+        return string.split(' ').join('');
+    }
+
+</script>
+<script>
+    function generate16DigitRandomNumber() {
+        let randomNumber = '';
+        for (let i = 0; i < 16; i++) {
+            randomNumber += Math.floor(Math.random() * 10); // Concatenate a random digit (0-9)
+        }
+        return randomNumber;
+    }
+
+        function saveNewPassword() {
+        debugger;
+
+        var empcode = $('#changePasswordEmail').val();
+        var oldPwd = $("#oldPassword").val();
+        var newPwd = $("#newPassword").val();
+        var confirmPwd = $("#confirmPassword").val();
+        var txt_pwd = $("#txtpwd").val();
+
+        var data = {
+            old_pwd: oldPwd,
+            new_pwd: newPwd,
+            empCode: empcode,
+            con_pwd: confirmPwd
+        };
+
+        $.ajax({
+            url: '@Url.Action("ChangePassword", "Login")',
+            type: 'POST',
+            data: JSON.stringify(data),
+            contentType: 'application/json',
+            success: function (response) {
+                console.log("Response:", response);
+
+                    if (response.success) {
+                        $.dialog({
+                            title: 'Success',
+                            content: response.message,
+                            type: 'green',
+                            onClose: function () {
+                                $("#changePasswordForm")[0].reset();
+                                location.reload();
+                            }
+                        });
+                    } else {
+                        $.dialog({
+                            title: 'Error',
+                            content: response.message,
+                            type: 'red'
+                        });
+                    }
+            },
+            error: function (error) {
+                console.error("Error:", error);
+                alert("Error changing password");
+            }
+        });
+    }
+
+
+    function CheckLogin() {
+        debugger;
+        var empCode = $("#txtusername").val();
+        var txt_pwd = $("#txtpwd").val();
+
+        if (empCode == "") {
+            $(".errormessage").html('<span class="errormessage"  id="mess">Please Enter Employee Code...!!</span>');
+            $("#erridmsg").show();
+            return false;
+        }
+        if (txt_pwd == "") {
+            $(".errormessage").html('<span class="errormessage"  id="mess">Please Enter Password...!!</span>');
+            $("#erridmsg").show();
+            return false;
+        }
+        
+
+        $.ajax({
+            url: '@Url.Action("GetChngPwdFlag", "Login")?empCode=' + empCode,
+            type: 'POST',
+            contentType: 'application/json',
+            success: function (response) {
+                debugger;
+                var _data = JSON.parse(response).Table;
+                console.log(_data);
+
+                let url = ''; // Declare outside to avoid scope issues
+
+                if (_data.length == 0){
+                    $.alert({
+                            title: 'Error',
+                            content: 'Please Enter Correct Employee Code',
+                            type: 'red'
+                        });
+                        return;
+                }
+
+                if (_data.length > 0) {
+                    var flag = _data[0].password_changed_flag;
+                    var pwd = _data[0].password;
+
+                    if (pwd !== txt_pwd) {
+                        $.alert({
+                            title: 'Error',
+                            content: 'Please Enter Correct Password',
+                            type: 'red'
+                        });
+                        return; // Prevent further execution
+                    } else if (flag === "Y") {
+                        $('#changePasswordEmail').val(empCode);
+                        $('#changePasswordModal').modal('show');
+                            var oldlength = $('#oldPassword').val().length;
+                            var newlength = $('#newPassword').val().length;
+                            var conlength = $('#confirmPassword').val().length;
+
+                            var oldpwd = document.getElementById("oldPassword").value.trim();
+                            var newpwd = document.getElementById("newPassword").value.trim();
+                            var conpwd = document.getElementById("confirmPassword");
+                            var isValid = true;
+
+                            
+                            oldError.textContent = "";
+                            newError.textContent = "";
+                            conError.textContent = "";
+
+                            if (oldlength < 6 || newlength < 6 ||conlength < 6) {
+                                $('#errorMsg').text("Minimum 6 characters required.");
+                            } else {
+                                $('#errorMsg').text("");
+                            }
+
+
+                            // if(oldpwd === "" || newpwd === "" || conpwd === ""){
+                            //     allerror.textContent = "All fields required";
+                            //     return;
+                            // }
+                                return;
+                            
+
+                         // Prevent redirect
+                    } else {
+                        url = '@Url.Action("Registration", "Registration")';
+                    }
+
+                    // Move this inside else so it only executes if url is set
+                    window.location.href = url;
+                }
+                else {
+                    $("#OTPbtn").css('display', '');
+                    $("#resendOtp").css('display', 'none');
+                    $("#loginbtn").css('display', '');
+                    $("#btnGenerateOtp").css('display','none');
+                    $("#otpdiv").css('display', '');
+                    $.alert({
+                        title: 'Error',
+                        content: _data[0].Msg,
+                        type: 'red',
+                    });
+                }
+
+            },
+            error: function (xhr, status, error) {
+                $("#OTPbtn").css('display', '');
+                $("#resendOtp").css('display', 'none');
+                $("#loginbtn").css('display', 'none');
+                // Handle error
+                $.alert({
+                    title: ' ',
+                    content: "RowFilters Failed to Save.!",
+                    type: 'red',
+                });
+            }
+        });
+
+
+        // Function to populate dropdown
+        function populateDropdown(data,id,value = 'default',text = 'default') {
+            debugger;
+            var dropdown = $('#'+id);
+
+            // Clear existing options
+            dropdown.empty();
+
+            // Add default option if needed
+            dropdown.append('<option value="0" selected>--Select--</option>');
+
+            // Add options based on data
+            $.each(data, function (index, item) {
+                if(data.count == 1){
+                    dropdown.append($('<option selected></option>').attr('value', item.entity_id).text(item.entity_name));
+                }else{
+                    dropdown.append($('<option></option>').attr('value', item.entity_id).text(item.entity_name));
+                }
+            });
+        }
+
+        /* if (Usercaptcha == "" || Usercaptcha == "undefined" || Usercaptcha == null) {
+             $(".errormessage").html('<span class="errormessage"  id="mess">Please Enter Captcha...!!</span>');
+             $("#erridmsg").show();
+             //$.alert({
+             //    title: 'DMS',
+             //    content: "Please Enter Captcha...!!",
+             //    type: 'blue',
+             //});
+             return false;
+         }
+         if (Usercaptcha != Maincaptcha) {
+             $(".errormessage").html('<span class="errormessage"  id="mess">Invalid Captcha...!!</span>');
+             $("#erridmsg").show();
+             //$.alert({
+             //    title: 'DMS',
+             //    content: "Invalid Captcha...!!",
+             //    type: 'blue',
+             //});
+             return false;
+         }
+        else
+        {
+
+
+
+             //debugger;
+             //var suser = $("#txtusername").val();
+             //var spass = $("#txtpwd").val();
+
+             //var key = CryptoJS.enc.Utf8.parse("encryptionkey123");
+             //var randomnum = generate16DigitRandomNumber();
+             //var iv = CryptoJS.enc.Utf8.parse(randomnum);
+             //var encryptedUser = CryptoJS.AES.encrypt(CryptoJS.enc.Utf8.parse(suser),
+             //    key,
+             //    {
+             //        keySize: 128 / 8,
+             //        iv: iv,
+             //        mode: CryptoJS.mode.CBC,
+             //        padding: CryptoJS.pad.Pkcs7
+             //    });
+             //var encryptedPass = CryptoJS.AES.encrypt(CryptoJS.enc.Utf8.parse(spass),
+             //    key,
+             //    {
+             //        keySize: 128 / 8,
+             //        iv: iv,
+             //        mode: CryptoJS.mode.CBC,
+             //        padding: CryptoJS.pad.Pkcs7
+             //    });
+             //var form = new FormData();
+             //var userName = encryptedUser.toString();
+             //var password = encryptedPass.toString();
+             //form.append("UserName", userName);
+             //form.append("Password", password);
+             //form.append("iv", randomnum);
+             //var url1 = '@Url.Action("login", "login")'
+
+             //$.ajax({
+             //    url: url1,
+             //    type: 'POST',
+             //    processData: false,
+             //    contentType: false,
+             //    data: form,
+             //    success: function (response) {
+             //        // Handle success
+             //        var url = '@Url.Action("Dashboard", "Dashboard")'
+             //        window.location.href = url;
+             //    },
+             //    error: function (xhr, status, error) {
+             //        // Handle error
+             //    }
+             //});
+
+         }*/
+    }
+    function ForgotPassword() {
+        debugger;
+        var url = '@Url.Action("ForgetPassword", "login")'
+        window.location.href = url;
+        //window.location.href = '../login/ForgetPassword';
+    }
+
+    function GenerateOtp() {
+        debugger;
+        $("#OTPbtn").css('display', 'none');
+        $("#resendOtp").css('display', '');
+        $("#loginbtn").css('display', '');
+        $("#otpdiv").css('display', '');
+        $.ajax({
+            url: '@Url.Action("generateOTP", "Login")?empCode=' + $("#txtusername").val(),
+            type: 'POST',
+            contentType: 'application/json',
+            // data: JSON.stringify({ selectedData: getModel }),// JSON.stringify({ jsonArray: jsonArray }),
+            success: function (response) {
+                console.log(response);
+                var _data = JSON.parse(response);
+                if (_data[0].Clear == 1) {
+                    $("#OTPbtn").css('display', 'none');
+                    $("#resendOtp").css('display', '');
+                    $("#loginbtn").css('display', '');
+                    $("#otpdiv").css('display', '');
+
+                    // Handle success
+                    $.alert({
+                        title: 'Success',
+                        content: _data[0].Msg,
+                        type: 'green',
+                    });
+                } else {
+                    $("#OTPbtn").css('display', '');
+                    $("#resendOtp").css('display', 'none');
+                    $("#loginbtn").css('display', 'none');
+                    $("#otpdiv").css('display', 'none');
+                    $.alert({
+                        title: 'Error',
+                        content: _data[0].Msg,
+                        type: 'red',
+                    });
+                }
+
+            },
+            error: function (xhr, status, error) {
+                $("#OTPbtn").css('display', '');
+                $("#resendOtp").css('display', 'none');
+                $("#loginbtn").css('display', 'none');
+                // Handle error
+                $.alert({
+                    title: ' ',
+                    content: "RowFilters Failed to Save.!",
+                    type: 'red',
+                });
+            }
+        });
+    }
+    $(document).ready(function () {
+
+        $("#OTPbtn").css('display', ''); // commented by hari for dev env
+
+        if ("@ViewBag.isMultiDatabase" == "true") {
+            $("#divEntity").show();
+        }
+        else {
+            $("#divEntity").hide();
+        }
+    });
+</script>
