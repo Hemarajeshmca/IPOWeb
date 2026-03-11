@@ -1,5 +1,8 @@
 ﻿@{
     Layout = "~/Views/Shared/_LayoutNew.cshtml";
+    var userName = Context.Session.GetString("user_name");
+    var userRole = Context.Session.GetString("user_role");
+    var roleName = Context.Session.GetString("role_name");
 }
 <!DOCTYPE html>
 <html>  
@@ -220,7 +223,7 @@
                                            <input class="form-control" type="file" id="MultipleFile" multiple>
                                        </div>
                                        <div class="col-sm-4">
-                                           <button type="button" class="btn btn-primary" id="btnPre" style="float:right;padding: 3px 25px;margin-top:28px;width:40%">Previous</button>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<button type="button" class="btn btn-primary" id="btnSave" style="float:right;padding: 3px 25px;margin-top:28px;width:40%;margin-right:10px;">Start</button>
+                                           <button type="button" class="btn btn-primary" id="btnPre" style="float:right;padding: 3px 25px;margin-top:28px;width:40%">Previous</button>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<button type="button" class="btn btn-primary" id="btnStart" onclick="startprocess()" style="float:right;padding: 3px 25px;margin-top:28px;width:40%;margin-right:10px;">Start</button>
                                        </div>
                                    </div>
                                     </div>
@@ -248,18 +251,13 @@
                             <i class="bx bx-x cursor-pointer" data-bs-dismiss="modal" style="color: #000000;float:right"></i>
                         </div>
                     </div>
-                    <hr />
+                    <hr style="margin-top:-6px;"/>
                     <div class="row">
                         <div class="col-sm-12">
                             <div id="infoGrid"></div>
                         </div>
                     </div>
-                </div>
-
-                <!-- Modal footer -->
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-primary" data-bs-dismiss="modal" style="width:18%">Close</button>
-                </div>
+                </div>             
 
             </div>
         </div>
@@ -270,6 +268,8 @@
 
 </html>
 <script>
+     var selectedPipeline = "";
+    var selectedDataset = "";
              $(document).ready(function () {
 
         $('#navhead').text('File Import');
@@ -379,10 +379,16 @@
                                            </div>"
                             },
                             { field: "dataset_gid", title: "Dataset ID", hidden: true },
-                            { field: "dataset_code", title: "Dataset Code" },
+                            { field: "dataset_code", title: "Dataset Code" ,hidden: true },
+                            { field: "dataset_name", title: "Dataset Name" },
                             { field: "dataset_category", title: "Category" },
-                            { field: "dataset_table_name", title: "Dataset Table Name" },
-                            { field: "system_flag", hidden: true }
+                            { field: "dataset_table_name", title: "Dataset Table Name", hidden: true },
+                            { field: "system_flag", hidden: true },
+                            {
+                                title: "Info",
+                                width: 80,
+                                template: '<img src="/Assets/images/topnotes.png" style="cursor:pointer;width:18px;" data-bs-toggle="modal" data-bs-target="\\#myModal" />'
+                            }
                             ]
                 });
         },
@@ -393,7 +399,7 @@
 
     }
 
- function nextprocess() {
+  function nextprocess() {
         var selected = $("input[name='clientSelect']:checked");
         if (selected.length === 0) {
             alert("Please select a dataset");
@@ -401,28 +407,81 @@
         }
         var dataset_gid = selected.val();
         var dataset_code = selected.data("code");
+        selectedDataset = selected.data("code");
         console.log("Dataset GID:", dataset_gid);
         console.log("Dataset Code:", dataset_code);
-        $("#datasetname").text(dataset_code);
+        $("#datasetname").text(selectedDataset );
         var tabTrigger = document.querySelector('button[data-bs-target="#navs-top-progress"]');
         var tab = new bootstrap.Tab(tabTrigger);
         tab.show();
-
         $.ajax({
             type: "POST",
             url: '@Url.Action("GetPipelinetList", "FileImport")',
-            data: { dataset: dataset_code },   // ✅ pass dataset
+            data: { dataset: dataset_code }, 
             dataType: "json",
             success: function (response) {
                 if (!response.success) {
                     console.log(response.message);
                     return;
                 }
-                var data = response.data;
-                console.log(data);
+               var data = response.data;
+               $("#pipeline").val(data[0].pipeline_name);
+               selectedPipeline = data[0].pipeline_code;
+               console.log(data);
             },
             error: function (xhr) {
                 console.log("Error:", xhr.responseText);
+            }
+        });
+    }
+
+    function startprocess() {
+
+        var fileInput = document.getElementById("MultipleFile");
+
+        if (fileInput.files.length === 0) {
+            alert("Please choose a file");
+            return;
+        }
+
+        var formData = new FormData();
+
+        formData.append("file", fileInput.files[0]);
+        formData.append("pipeline_code", selectedPipeline);
+            formData.append("initiated_by",'@userName' );
+        formData.append("dataset_code", selectedDataset);
+        formData.append("reference_no", "REF4321");
+
+        $.ajax({
+            type: "POST",
+            url: '@Url.Action("ImportData", "FileImport")',
+            data: formData,
+            processData: false,
+            contentType: false,
+                    success: function (data) {
+
+        console.log(data);
+
+        var res = JSON.parse(data.data);
+
+        if (res.result) {
+            $.alert({
+                title: 'IPO',
+                content: "File Imported Successfully!",
+                type: 'green',
+            });
+        }
+        else {
+            $.alert({
+                title: 'IPO',
+                content: res.message,
+                type: 'red',
+            });
+        }
+
+    },
+            error: function (err) {
+                console.log(err);
             }
         });
     }

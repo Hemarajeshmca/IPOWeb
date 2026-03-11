@@ -1,0 +1,210 @@
+﻿@{
+    Layout = "~/Views/Shared/_LayoutNew.cshtml";
+}
+<!DOCTYPE html>
+<html>  
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>Category Master</title>
+    <style>
+        .content-wrapper {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        h5#navhead {
+            position: relative;
+            right: 340px;
+            width: 30%;
+        }
+        .nav-tabs .nav-link.active, .nav-tabs .nav-item.show .nav-link {
+            background-color: #027ed1 !important;
+            color: #fff !important;
+        }
+
+        .nav-tabs .nav-item .nav-link:not(.active) {
+            background-color: #716969;
+            color: #fff;
+        }
+
+        #bankGrid .k-grid-content tr.k-alt td {
+            background-color: #fff;
+            color: #000;
+        }
+
+        /* Consistent borders */
+        #bankGrid .k-grid-header th,
+        #bankGrid .k-grid-content td {
+            border-right: 1px solid #ddd;
+        }
+
+            /* Remove last border */
+            #bankGrid .k-grid-header th:last-child,
+            #bankGrid .k-grid-content td:last-child {
+                border-right: none;
+            }
+
+        #bankGrid .k-grid-content tr:last-child td {
+            border-bottom: 1px solid #dcdcdc !important;
+        }
+        /* Fixed layout for alignment */
+        #bankGrid .k-grid-header table,
+        #bankGrid .k-grid-content table {
+            table-layout: fixed;
+            width: 100%;
+        }
+
+        /* Prevent wrapping */
+        #bankGrid .k-grid-header th,
+        #bankGrid .k-grid-content td {
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        /* Compact size */
+        #bankGrid .k-grid-content td {
+            padding: 3px 6px;
+            font-size: 12px;
+            line-height: 18px;
+            background: #fff;
+        }
+
+        #bankGrid .k-grid-header th {
+            padding: 4px 6px;
+            font-size: 12px;
+            line-height: 18px;
+        }
+
+        /* Compact row height */
+        #bankGrid .k-grid-content tr {
+            height: 26px;
+        }
+
+        #bankGrid .k-grid-header tr {
+            height: 28px;
+        }
+    </style>
+</head>
+
+<body class="hold-transition skin-blue sidebar-mini fixed">
+    <div class="content-wrapper">
+        <div class="container-xxl flex-grow-1 container-p-y">
+            <div class="card-body" style="margin-top:5px;height: 556px;width: 103%;margin-left: -18px;">
+                <div id="list">
+                <div class="row">
+                    <div class="col-sm-6">
+                            <img id="plusIcon"
+                                 data-bs-toggle="modal"
+                                 data-bs-target="#myModal"
+                                 style="width:11px; height:11px;margin-bottom:12px;cursor:pointer"
+                                 src="/Assets/images/plus.png">
+                    </div>
+                    <div class="col-sm-6">
+                       
+                    </div>
+                </div>
+                <div class="row">
+                  <div class="col-sm-12">
+                       <div id="bankGrid"></div>
+                  </div>
+                </div>    
+                </div>               
+               </div>
+            </div>
+        </div>
+    <div class="modal fade" id="myModal" tabindex="-1">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">             
+
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-sm-4">
+                        </div>
+                        <div class="col-sm-4">
+                            <h4 style="font-size: 15px;text-align: center;">Category Master</h4>
+                        </div>
+                        <div class="col-sm-4">
+                            <i class="bx bx-x cursor-pointer" data-bs-dismiss="modal" style="color: #000000;float:right"></i>
+                        </div>
+                    </div>
+                   <div class="row">
+                       <div class="col-sm-4">
+                            <label class="form-label" for="pipeline" data-field="pipeline">Category Code</label>
+                            <input type="text" id="ccode" class="form-control"  />
+                       </div>
+                        <div class="col-sm-4">
+                            <label class="form-label" for="pipeline" data-field="pipeline">Category Name</label>
+                            <input type="text" id="cname" class="form-control" />
+                       </div>
+                        <div class="col-sm-2">
+                            <button type="button" class="btn btn-primary" id="btnSave" style="padding: 3px 25px;margin-top: 28px;width: 105%;">Save</button>
+                        </div>
+                   </div>                  
+                </div>            
+
+            </div>
+        </div>
+    </div>
+</body>
+</html>
+<script>
+    
+    $(document).ready(function () {
+        $('#navhead').text('Category Master');    
+
+ $("#bankGrid").kendoGrid({
+            dataSource: {
+                data: [
+                    {
+                                categorycode: "FIL",
+                                categoryname: "FOREIGN INSTITUTIONAL INVESTOR"
+                            },
+                    {
+                                    categorycode: "MF",
+                                    categoryname: "MUTUAL FUNDS"
+                         },
+                    {
+                                    categorycode: "IC",
+                                    categoryname: "	INSURANCE COMPANIES"
+                           },
+                    {
+                                   categorycode: "FI",
+                                    categoryname: "BANK AND FINANCIAL INSTITUTIONS"
+                           },
+                    {
+                                    categorycode: "OTH",
+                                    categoryname: "OTHER QIBS"
+                        }                   
+                ],
+                pageSize: 10
+            },
+            height: 300,
+            sortable: true,
+            pageable: true,
+            columns: [
+                     {
+                            title: "Action",
+                            width:100,
+                            template:
+                               "<center>" +
+                                "<img src='../Assets/images/editicons.png' " +
+                                "style='cursor:pointer;' " +
+                                "onclick='editGrid(this)' /> &nbsp;&nbsp;" +
+                                  "<img src='../Assets/images/viewicons.png' " +
+                                "style='cursor:pointer;' " +
+                                "onclick='viewGrid(this)' /> &nbsp;&nbsp;" +
+                                 "<img src='../Assets/images/del.png' " +
+                                "style='cursor:pointer;' " +
+                                "onclick='delGrid(this)' />" +
+                                "</center>"
+                        },
+                        { field: "categorycode", title: "Category Code" },
+                        { field: "categoryname", title: "Category Name" }                   
+                ]
+        });
+});
+
+
+</script>
