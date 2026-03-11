@@ -235,7 +235,7 @@ namespace IPOWeb.Controllers
                 using (var client = new HttpClient())
                 {
                     string Urlcon = "Utility/";
-                    client.BaseAddress = new Uri(urlstring + Urlcon);
+                    client.BaseAddress = new Uri(urlstring );
                     client.DefaultRequestHeaders.Accept.Clear();
                     client.Timeout = Timeout.InfiniteTimeSpan;
                     APIcookieName = "APItoken-" + User.FindFirst(ClaimTypes.Name)?.Value.ToString() + "_" + User.FindFirst(ClaimTypes.Role)?.Value.ToString();
