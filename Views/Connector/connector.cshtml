@@ -1,0 +1,44 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+    ViewBag.title = "Connector";
+    Layout = "~/Views/Shared/_LayoutNew.cshtml";
+}
+<!DOCTYPE html>
+<html>
+    <head>
+    <style>
+        .k-header,
+        .k-grid-header {
+            background: #337ab7 !important;
+            border-color: #fff !important;
+        }
+
+        h5#navhead {
+            position: relative;
+            right: 129px;
+            width: 23%;
+        }
+    </style>
+</head>
+<body>
+    @* <div>
+        <embed src=@ViewBag.pipe title="description" style="height: 99vh;width: 98%;padding-left: 23px;padding-bottom: -5px;margin-top: -13px;border:1px white">
+    </div> *@
+    <div style="height: 99vh;width: 98%;padding-left: 23px;padding-bottom: -5px;margin-top: 10px;border:1px white">
+        @* <embed src=@ViewBag.pipe title="description" style="height: 99vh;width: 98%;padding-left: 23px;padding-bottom: -5px;margin-top: -13px;border:1px white"> *@
+        <iframe src="@ViewBag.pipe"
+                width="100%"
+                height="100%"
+                frameborder="0">
+        </iframe>
+    </div>
+    <script>
+        $(document).ready(function () {
+        $("#navhead").text("Connector");
+            $("#contextdiv").hide();
+        });
+    </script>
+</body>
+</html>

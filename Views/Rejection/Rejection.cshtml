@@ -1,0 +1,226 @@
+﻿@{
+    Layout = "~/Views/Shared/_LayoutNew.cshtml";
+}
+<!DOCTYPE html>
+<html>  
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>Run Rejection</title>
+    <style>
+        .content-wrapper {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .nav-tabs .nav-link.active, .nav-tabs .nav-item.show .nav-link {
+            background-color: #027ed1 !important;
+            color: #fff !important;
+        }
+
+        .nav-tabs .nav-item .nav-link:not(.active) {
+            background-color: #716969;
+            color: #fff;
+        }
+
+        /* Alternate row color */
+        #rejectionList .k-grid-content tr.k-alt td {
+            background-color: #fff;
+            color: #000;
+        }
+
+        /* Consistent borders */
+        #rejectionList .k-grid-header th,
+        #rejectionList .k-grid-content td {
+            border-right: 1px solid #ddd;
+        }
+
+        /* Remove last border */
+        #rejectionList .k-grid-header th:last-child,
+        #rejectionList .k-grid-content td:last-child {
+            border-right: none;
+        }
+
+        /* Fixed layout for alignment */
+        #rejectionList .k-grid-header table,
+        #rejectionList .k-grid-content table {
+            table-layout: fixed;
+            width: 100%;
+        }
+
+        /* Prevent wrapping */
+        #rejectionList .k-grid-header th,
+        #rejectionList .k-grid-content td {
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        /* Compact size */
+        #rejectionList .k-grid-content td {
+            padding: 3px 6px;
+            font-size: 12px;
+            line-height: 18px;
+            background:#fff;
+        }
+
+        #rejectionList .k-grid-header th {
+            padding: 4px 6px;
+            font-size: 12px;
+            line-height: 18px;
+        }
+
+        /* Compact row height */
+        #rejectionList .k-grid-content tr {
+            height: 26px;
+        }
+
+        #rejectionList .k-grid-header tr {
+            height: 28px;
+        }
+
+        .k-grid td { 
+            padding: 2px 2px;
+            font-size:13px;
+        }
+    </style>
+</head>
+
+<body class="hold-transition skin-blue sidebar-mini fixed">
+    <div class="content-wrapper">
+        <div class="container-xxl flex-grow-1 container-p-y">
+            <div class="card-body" style="margin-top:5px;height: 556px;width: 103%;margin-left: -18px;">
+                <div class="row" style="margin-top:-17px;">
+                    <div class="col-sm-3">
+                        <label class="form-label" for="ctype" data-field="ctype">IPO Name</label>&nbsp;<span style="font-size: 12px;color:red;font-weight: bold;">*</span>
+                        <input type="text" class="form-control" id="iponame" readonly />
+                    </div>
+                    <div class="col-sm-2">
+                        <button type="button" class="btn btn-primary" id="btnSave" onclick="runrecon()" style="padding: 3px 25px;margin-top:28px;">Run Rejection</button>
+                    </div>
+                    <div class="col-sm-2">
+                        <button type="button" class="btn btn-primary" id="btnExport"  style="padding: 3px 53px;margin-top:28px;">Export</button>
+                    </div>
+                </div>
+               <div class="row" style="margin-top:20px;">
+                    <div class="col-sm-12">
+                        <div id="rejectionList"></div>
+                    </div>
+                   </div>
+               </div>
+            </div>
+        </div>  
+   
+</body>
+
+</html>
+<script>
+         $(document).ready(function () {
+
+        $('#navhead').text('Run Rejection');
+         var ipoName = localStorage.getItem("selectedIPOText");
+
+    $("#iponame").val(ipoName);
+
+        $("#rejectionList").hide();   // Hide grid container
+
+           $("#rejectionList").kendoGrid({
+
+        autoBind: false,
+
+        dataSource: {
+            transport: {
+                read: {
+                    url: "@Url.Action("GetRejectionList", "Rejection")",
+                    dataType: "json"
+                }
+            },
+            pageSize: 100
+        },
+
+        pageable: true,
+        sortable: true,
+        filterable: true,
+            scrollable: {
+                virtual: false
+            },
+        height: 450,   
+        resizable: true,           
+        columns: [
+            {
+                title: "Select",
+                width: 45,
+                locked: true,
+                headerAttributes: { style: "text-align:center;" },
+                attributes: { style: "text-align:center;" },
+                headerTemplate:
+                    "<div style='text-align:center;'>" +
+                    "<input type='checkbox' id='selectAll' /> " +
+                    "<label for='selectAll' style='cursor:pointer;'>All</label>" +
+                    "</div>",
+                template: "<input type='checkbox' class='client-checkbox' value='#= bankName #' />"
+            },
+            {
+                field: "bankName",
+                title: "Reject Reason",
+                width: 260,
+                locked: true
+            },
+            {
+                title: "Original Rejections",
+                headerAttributes: { style: "text-align:center;font-weight:bold;" },
+                columns: [
+                    { field: "bidNoOfAppl", title: "No.of Appl", width: 120, attributes:{style:"text-align:right;"} },
+                    { field: "bidNoOfShares", title: "No.of Shares", width: 130, attributes:{style:"text-align:right;"} },
+                    { field: "bidAmount", title: "Amount", width: 120, attributes:{style:"text-align:right;"} }
+                ]
+            },
+
+            {
+                title: "Additions",
+                headerAttributes: { style: "text-align:center;font-weight:bold;" },
+                columns: [
+                    { field: "bankNoOfAppl", title: "No.of Appl", width: 120, attributes:{style:"text-align:right;"} },
+                    { field: "bankNoOfShares", title: "No.of Shares", width: 130, attributes:{style:"text-align:right;"} },
+                    { field: "bankAmount", title: "Amount", width: 120, attributes:{style:"text-align:right;"} }
+                ]
+            },
+
+             {
+                title: "Rejections",
+                headerAttributes: { style: "text-align:center;font-weight:bold;" },
+                columns: [
+                    { field: "bankNoOfAppl", title: "No.of Appl", width: 120, attributes:{style:"text-align:right;"} },
+                    { field: "bankNoOfShares", title: "No.of Shares", width: 130, attributes:{style:"text-align:right;"} },
+                    { field: "bankAmount", title: "Amount", width: 120, attributes:{style:"text-align:right;"} }
+                ]
+            },
+
+            {
+                title: "Final Rejections",
+                headerAttributes: { style: "text-align:center;font-weight:bold;" },
+                columns: [
+                    { field: "diffNoOfAppl", title: "No.of Appl", width: 120, attributes:{style:"text-align:right;color:red;"} },
+                    { field: "diffNoOfShares", title: "No.of Shares", width: 130, attributes:{style:"text-align:right;color:red;"} },
+                    { field: "diffAmount", title: "Amount", width: 120, attributes:{style:"text-align:right;color:red;"} }
+                ]
+            }           
+        ]
+    });
+
+    });
+
+       function runrecon() {
+        var grid = $("#rejectionList").data("kendoGrid");
+        $("#btnGen").show();
+        $("#rejectionList").show();
+        grid.dataSource.read();
+    }
+     $(document).on("click", "#selectAll", function () {
+        var isChecked = this.checked;
+
+        $(".client-checkbox").each(function () {
+            $(this).prop("checked", isChecked);
+        });
+    });
+</script>

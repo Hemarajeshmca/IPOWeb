@@ -1,0 +1,1908 @@
+﻿@using System.Configuration;
+@using IPOWeb.Controllers;
+@inject Microsoft.AspNetCore.Http.IHttpContextAccessor HttpContextAccessor
+@{
+    List<LoginModel.menu> asidemenuList = new List<LoginModel.menu>();
+    List<LoginModel.menu> navmenuList = new List<LoginModel.menu>();
+    var userGroupid = HttpContextAccessor.HttpContext.Session.GetString("userGroupid");
+    //asidemenuList = LoginController.getMenu(Convert.ToInt16(userGroupid), "aside", 0);
+    //navmenuList = LoginController.getMenu(Convert.ToInt16(userGroupid), "nav", 2);
+}
+@{
+    var userEmail = Context.Session.GetString("UserEmail");
+    var userRole = Context.Session.GetString("UserRole");
+    var userName = Context.Session.GetString("userName");
+    var userCode = Context.Session.GetString("userCode");
+    //var userEmail = Context.Session.GetString("userEmail");
+}
+<!DOCTYPE html>
+<html lang="en"
+class="light-style layout-navbar-fixed layout-menu-fixed layout-menu-collapsed"
+dir="ltr"
+data-theme="theme-default"
+data-assets-path="~/Assets/assets/"
+data-template="vertical-menu-template">
+<head>
+    <style type="text/css">
+        .k-grid td {
+        border-style: solid;
+        border-width: 0 0 0 1px;
+        padding: 0.4em 0.6em;
+        overflow: hidden;
+        line-height: 1.6em;
+        vertical-align: middle;
+        text-overflow: ellipsis;
+        }
+
+        i.bx.bxs-notepad {
+        color: #fff !important;
+        font-size: 20px;
+        }
+
+        .footer {
+        position: fixed;
+        left: 0;
+        bottom: 0;
+        width: 100%;
+        background-color: #e4e4e4;
+        color: white;
+        text-align: center;
+        z-index: 2;
+        height: 30px;
+        }
+
+        .content-wrapper {
+        min-height: 1px !important
+        }
+
+        .k-grid td {
+        white-space: nowrap;
+        background-color: #eceef1;
+        border-color: inherit;
+        /* text-align: center; */
+        }
+
+
+        #overlayy {
+        background-color: transparent;
+        z-index: 999;
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        display: none;
+        }
+
+
+        li {
+        display: block;
+        }
+
+        i.bx.bxs-file {
+            color: #5490ff;
+        }
+
+        .ms-options {
+        min-height: 100px;
+        max-height: 100px;
+        }
+
+        ul {
+        padding-left: 0rem;
+        }
+
+        #loader {
+        position: absolute;
+        background: url('http://sampsonresume.com/labs/pIkfp.gif') no-repeat center center;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        }
+
+        div#spinner {
+        width: 100%;
+        height: 100%;
+        top: 0px;
+        left: 0px;
+        position: fixed;
+        display: block;
+        opacity: 0.6;
+        background: #aaaaaa url('~/Content/themes/base/images/ui-bg_flat_0_aaaaaa_40x100.png');
+        z-index: 1006;
+        text-align: center;
+        display: none;
+        filter: Alpha(Opacity=30); /*{opacityOverlay}*/
+        }
+
+        div#spinner img {
+        position: absolute;
+        /*width: 100px;
+        height: 100px;*/
+        top: 40%;
+        left: 42%;
+        opacity: 4.5;
+        z-index: 1007;
+        }
+
+        div#spinner span {
+        font-family: Arial Tahoma;
+        font-size: large;
+        font-weight: bold;
+        opacity: 4.5;
+        margin-top: 100px;
+        color: white;
+        }
+
+        .layout-navbar-fixed .layout-wrapper:not(.layout-horizontal) .layout-page:before {
+        content: "";
+        width: 100%;
+        height: 0.75rem;
+        position: fixed;
+        top: 0px;
+        z-index: 10;
+        background: #83bee0 !important;
+        }
+
+        .card-body {
+        margin: -34px !important;
+        margin-top: 10px !important;
+        }
+
+        /*grid content should not be wrap*/
+
+        .k-grid td {
+        white-space: nowrap;
+        border-style: solid;
+        border-width: 1px 0px 0px 1px !important;
+        padding: -3.6em 5.6em;
+        overflow: hidden;
+        line-height: -1.4em;
+        vertical-align: middle;
+        text-overflow: ellipsis;
+        border-color: #80808040;
+        }
+        /*grid header should not be wrap*/
+        /*.k-grid-header table {
+        width: 100% !important;
+        }*/
+
+        .k-grid.k-widget {
+        height: 360px;
+        overflow-y: auto;
+        }
+
+        body {
+        overflow-y: hidden !important;
+        background: #efefef !important;
+        }
+
+        .layout-navbar-fixed.layout-menu-collapsed .layout-navbar.navbar-detached {
+        width: calc(100% - calc(-1.375rem * 2) - 5.25rem) !important;
+        }
+
+        li#liUserManagement {
+            display: block !important;
+        }
+    </style>
+
+    <meta charset="utf-8" />
+    <meta name="viewport"
+    content="width=device-width, initial-scale=1.0, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0" />
+    @*<title id="ttl">Dashboard</title>*@
+    <meta name="description" content="" />
+    @*<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.1/dist/css/bootstrap.min.css">*@
+    @*hariharan uncoment following three line to test spinner start*@
+    @*<script src="https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.1/dist/js/bootstrap.bundle.min.js"></script>*@
+    @*hariharan uncoment following three line to test spinner end*@
+    <!-- Bootstrap 3.3.7 -->
+    @*<link href="~/Content/css/bower_components/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet" />*@
+    <!-- Ionicons -->
+    <link href="~/Content/css/bower_components/Ionicons/css/ionicons.min.css" rel="stylesheet" />
+    <!-- Morris chart -->
+    <!-- jvectormap -->
+    <!-- Date Picker -->
+    <link href="~/Content/css/bower_components/bootstrap-datepicker/dist/css/bootstrap-datepicker.min.css" rel="stylesheet" />
+    <!-- Daterange picker -->
+    <link href="~/Content/css/bower_components/bootstrap-daterangepicker/daterangepicker.css" rel="stylesheet" />
+    <!-- bootstrap wysihtml5 - text editor -->
+    <link href="~/Content/css/plugins/bootstrap-wysihtml5/bootstrap3-wysihtml5.min.css" rel="stylesheet" />
+    <link href="~/Content/css/dist/css/dms.css" rel="stylesheet" />
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+    <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
+    <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+    <![endif]-->
+    <!-- Google Font -->
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,600,700,300italic,400italic,600italic">
+
+    <link href="@Url.Content("~/Content/kendo1/2015.1.318/kendo.common.min.css")" rel="stylesheet" type="text/css" />
+    <link href="@Url.Content("~/Content/kendo1/2015.1.318/kendo.mobile.all.min.css")" rel="stylesheet" type="text/css" />
+    <link href="@Url.Content("~/Content/kendo1/2015.1.318/kendo.dataviz.min.css")" rel="stylesheet" type="text/css" />
+    <link href="@Url.Content("~/Content/kendo1/2015.1.318/kendo.default.min.css")" rel="stylesheet" type="text/css" />
+    <link href="@Url.Content("~/Content/kendo1/2015.1.318/kendo.dataviz.default.min.css")" rel="stylesheet" type="text/css" />
+    <link href="~/content/css/jquery-ui-datepicker.css" rel="stylesheet" />
+    <link href="@Url.Content("~/Content/css/jquery-ui-datepicker.css")" rel="stylesheet" type="text/css" />
+    @*<link href="@Url.Content("~/Content/jquery-ui.css")" rel="stylesheet" type="text/css" />*@
+    <script src="@Url.Content("~/Scripts/kendo1/2015.1.318/jquery.min.js")"></script>
+    <script src="@Url.Content("~/Scripts/kendo1/2015.1.318/jszip.min.js")"></script>
+    <script src="@Url.Content("~/Scripts/kendo1/2015.1.318/kendo.all.min.js")"></script>
+    <script src="@Url.Content("~/Scripts/kendo1/2015.1.318/kendo.aspnetmvc.min.js")"></script>
+    <script src="@Url.Content("~/Scripts/kendo.modernizr.custom.js")"></script>
+    <script src="@Url.Content("~/Scripts/jquery-ui-datepicker.js")" type="text/javascript"></script>
+    <script src="https://kendo.cdn.telerik.com/2024.1.319/js/kendo.ooxml.min.js"></script>
+    @*<script src="~/Content/css/dist/js/pages/dashboard.js"></script>*@
+    @*<script src="~/Scripts/bootstrap.js"></script>*@
+    @*@Scripts.Render("~/bundles/app")*@
+
+    @*side doggle bar script*@
+    <script src="~/Content/css/dist/js/adminlte.min.js"></script>
+
+    @*Css and Js for Jquery alert box*@
+    <script src="~/Scripts/jquery-confirm.min.js"></script>
+    <link href="~/Content/css/jquery-confirm.min.css" rel="stylesheet" />
+
+    @*/*dashboard chart*/*@
+    @*<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>*@
+    <script type="text/javascript" src="https://www.google.com/jsapi"></script>
+    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link id="load-css-0" rel="stylesheet" type="text/css" href="https://www.gstatic.com/charts/51/css/core/tooltip.css">
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/x-icon" href="~/Assets/assets/img/favicon/favicon.ico" />
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Public+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500;1,600;1,700&display=swap"
+    rel="stylesheet" />
+    <!-- Icons -->
+    <link rel="stylesheet" href="~/Assets/assets/vendor/fonts/boxicons.css" />
+    <link rel="stylesheet" href="~/Assets/assets/vendor/fonts/fontawesome.css" />
+    <link rel="stylesheet" href="~/Assets/assets/vendor/fonts/flag-icons.css" />
+    <!-- Core CSS -->
+    <link rel="stylesheet" href="~/Assets/assets/vendor/css/rtl/core.css" class="template-customizer-core-css" />
+    <link rel="stylesheet" href="~/Assets/assets/vendor/css/rtl/theme-default.css" class="template-customizer-core-css" />
+    <link rel="stylesheet" href="~/Assets/assets/css/demo.css" />
+    <link rel="stylesheet" href="~/Assets/assets/css/styles.css" />
+    <!-- Vendors CSS -->
+    <link rel="stylesheet" href="~/Assets/assets/vendor/libs/perfect-scrollbar/perfect-scrollbar.css" />
+    <link rel="stylesheet" href="~/Assets/assets/vendor/libs/typeahead-js/typeahead.css" />
+    <link rel="stylesheet" href="~/Assets/assets/vendor/libs/apex-charts/apex-charts.css" />
+    <!-- Page CSS -->
+    <!-- Helpers -->
+    <script src="~/Assets/assets/vendor/js/helpers.js"></script>
+    <!--! Template customizer & Theme config files MUST be included after core stylesheets and helpers.js in the <head> section -->
+    <!--? Template customizer: To hide customizer set displayCustomizer value false in config.js.  -->
+    @*<script src="~/Assets/assets/vendor/js/template-customizer.js"></script>*@
+    <!--? Config:  Mandatory theme config file contain global vars & default theme options, Set your preferred theme option in this file.  -->
+    <script src="~/Assets/assets/js/config.js"></script>
+    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+    @*<script src="//code.jquery.com/jquery-1.11.0.min.js"></script>*@
+    <script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.2/js/bootstrap.min.js"></script>
+
+
+    @*<script type="text/javascript" src="~/Assets/assets/js/multiselect-dropdown.js"></script>*@
+    @*<script src="~/Assets/assets/js/jquery.multi-select.js"></script>*@
+    <script src="~/Assets/assets/js/jquery.multiselect.js"></script>
+    <link rel="stylesheet" href="~/Assets/assets/css/jquery.multiselect.css" />
+
+
+
+</head>
+
+
+<body>    
+    <div class="container-fluid" style="margin-bottom:43px;padding-right: 15px; padding-left: 15px; margin-right: auto; margin-left: auto;">
+        <div class="row" style="background:#70b5ddd9">
+            <div class="col-sm-4">
+                <img src="~/Assets/images/newbillinglogo.png">
+            </div>
+        </div>
+    </div>
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-sm-12">
+                <nav class="layout-navbar container-xxl navbar navbar-expand-xl navbar-detached align-items-center bg-navbar-theme"
+                id="layout-navbar" style="margin-top: 75px;height: 30px;">
+
+                    <div class="layout-menu-toggle navbar-nav align-items-xl-center me-3 me-xl-0 d-xl-none">
+                        <a class="nav-item nav-link px-0 me-xl-4" href="javascript:void(0)">
+                            <i class="bx bx-menu bx-sm"></i>
+                        </a>
+                    </div>
+                    <div class="navbar-nav-right d-flex align-items-center" id="navbar-collapse">
+                        <!-- Search -->
+                        <!-- /Search -->
+                        @*<li class="nav-item me-2 me-xl-50" style="margin-right: 24rem !important;">
+                        <h5 class="card-header" id="navhead">Dashboard</h5>
+                        </li>*@
+
+                        @* <center>  <h5 class="card-header" id="navhead" style="margin-left: 31.5vw !important;"></h5></center> *@
+                        <div style="display: flex; justify-content: center; width: 100%;">
+                            <h5 id="navhead" style="text-align: center; width: 100%;" class="card-header"></h5>
+                        </div>
+
+                        <!-- Place this tag where you want the button to render. -->
+                        @* <li class="nav-item dropdown-language dropdown me-2 me-xl-0">
+                        @*<a class="nav-link dropdown-toggle hide-arrow" href="javascript:void(0);" data-bs-toggle="dropdown">
+                        <button type="button" class="btn btn-sm btn-outline-success" onclick="loaddynamiccolumns()" data-bs-toggle="modal" data-bs-target="#searchorg">ORG</button>
+                        </a>*@
+                        @*<ul class="dropdown-menu dropdown-menu-end">
+                        <li>
+                        <a class="dropdown-item" href="javascript:void(0);" data-language="fr">
+                        <i class="flag-icon flag-icon-fr flag-icon-squared rounded-circle fs-4 me-1"></i>
+                        <span class="align-middle">हिंदी</span>
+                        </a>
+                        </li>
+                        </ul>
+                        </li>*@
+                        <ul class="navbar-nav flex-row align-items-center ms-auto">                          
+                           
+                            @if (ViewBag.userRole == "Admin")
+                            {
+                                <li class="nav-item lh-1 me-1" id="liUserManagement">
+                                    <a class="nav-link hide-arrow" href="@Url.Action("Registration", "Registration")">
+                                        <i class="bx bxs-home" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Admin" aria-label="Home" style="margin-right: -7px;"></i>
+                                    </a>
+                                </li>
+                                <li class="nav-item lh-1 me-1" id="liUserManagement">
+                                    <a class="nav-link hide-arrow" href="~/Reports/Reports" data-language="fr">
+                                        <i class="bx bxs-file" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Report" aria-label="Report" style="margin-right: -7px;"></i>
+                                    </a>
+                                </li>
+								<li class="nav-item lh-1 me-1" id="liAIChat">
+                                    <a class="nav-link hide-arrow" href="~/Reports/AI">
+                                        <i class="fa-solid fa-comment" data-bs-toggle="tooltip" title="Billing Recon" aria-label="Billing Recon" style="margin-right: -7px;"></i>
+                                    </a>
+                                </li>
+                                <li class="nav-item dropdown-language dropdown lh-1 me-1" id="liUserManagement">
+
+                                    <a class="nav-link dropdown-toggle hide-arrow" href="javascript:void(0);" data-bs-toggle="dropdown">
+                                        <i class="bx bxs-user-plus" data-bs-toggle="tooltip" data-bs-placement="bottom" title="" data-bs-original-title="Admin" aria-label="Admin"></i>
+                                    </a>
+                                    <ul class="dropdown-menu dropdown-menu-end">
+                                        <li>
+                                            <a class="dropdown-item" href="~/UserManagement/UserManagement" data-language="fr">
+                                                <i class="bx bxs-user-pin fs-4 me-1"></i>
+                                                <span class="align-middle">User Management</span>
+                                            </a>
+                                        </li>
+
+
+                                    </ul>
+                                </li>
+                            }else {
+                                <li class="nav-item lh-1 me-1" id="liUserManagement">
+                                    <a class="nav-link hide-arrow" href="@Url.Action("Registration", "Registration")">
+                                        <i class="bx bxs-home" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Admin" aria-label="Home" style="margin-right: -7px;"></i>
+                                    </a>
+                                </li>
+                                <li class="nav-item lh-1 me-1" id="liUserManagement">
+                                    <a class="nav-link hide-arrow" href="~/Reports/Reports" data-language="fr">
+                                        <i class="bx bxs-file" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Report" aria-label="Report" style="margin-right: -7px;"></i>
+                                    </a>
+                                </li>
+
+                            }
+                           
+
+
+
+                            @*<li class="nav-item lh-1 me-3">
+                            <i class='bx bxs-bell' data-bs-toggle="tooltip" data-bs-placement="bottom" title="Notifications"></i>
+                            </li>*@
+                            <!-- User -->
+                            <li class="nav-item navbar-dropdown dropdown-user dropdown">
+                                <a class="nav-link dropdown-toggle hide-arrow" href="javascript:void(0);" data-bs-toggle="dropdown">
+                                    <div class="avatar avatar-online">
+                                        <i class='bx bxs-group' data-bs-toggle="tooltip" data-bs-placement="bottom" title="Profile"></i>
+                                    </div>
+                                </a>
+                                <ul class="dropdown-menu dropdown-menu-end">
+                                    <li style="margin-bottom:-22px;margin-top:23px;margin-left:80px;">
+                                        <a class="dropdown-item" href="#">
+                                            <div class="d-flex">
+                                                <div class="flex-shrink-0 me-3">
+                                                    <center>
+                                                        <div class="avatar avatar-online">
+                                                            <img style="width: 52px !important;" src="~/Assets/images/profile.jpg" alt class="w-px-40 h-auto rounded-circle" />
+                                                        </div>
+                                                    </center>
+                                                </div>
+                                            </div>
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <div class="dropdown-divider"></div>
+                                    </li>
+                                    <li>
+                                        <a class="dropdown-item" href="#">
+                                            <i class="bx bxs-smile me-2"></i>
+                                            <span class="align-middle" id="empname">@ViewBag.userName</span>
+                                        </a>
+                                        <a class="dropdown-item" href="#">
+                                            <i class="flex-shrink-0 bx bx-credit-card me-2"></i>
+                                            <span class="align-middle" id="empcode">@ViewBag.userCode</span>
+                                        </a>
+                                        <a class="dropdown-item" href="#">
+                                            <i class="bx bx-envelope me-2"></i>
+                                            <span class="align-middle" id="empemail">@ViewBag.userEmail</span>
+                                        </a>                                        
+                                        <a class="dropdown-item" href="#">
+                                            <i class="bx bx-user me-2"></i>
+                                            <span class="align-middle" id="emprole">@ViewBag.userRole</span>
+                                        </a>
+                                    </li>
+
+                                    <li>
+                                        <div class="dropdown-divider"></div>
+                                    </li>
+                                    <li>
+                                        @*<a class="dropdown-item" href="#" onclick="showchangepasswordscreen();">
+                                        <i class="bx bxs-lock-alt me-2"></i>
+                                        <span class="align-middle">Change Password</span>
+                                        </a>*@
+                                        <a class="dropdown-item" href="../Login/Login">
+                                            <i class="bx bx-power-off me-2"></i>
+                                            <span class="align-middle">Log Out</span>
+                                        </a>
+                                    </li>
+                                </ul>
+                            </li>
+                            @*<li class="nav-item dropdown-language dropdown lh-1 me-1">
+                            <a class="nav-link dropdown-toggle hide-arrow" href="javascript:void(0);" data-bs-toggle="dropdown">
+                            <i class='bx bxs-notepad' data-bs-toggle="tooltip" data-bs-placement="bottom" title="Help" style="margin-left: -27px;"></i>
+                            </a>
+                            </li>*@
+                            <!--/ User -->
+                        </ul>
+                    </div>
+
+                </nav>
+            </div>
+        </div>
+        <div class="row">
+            <div class="content-wrapper">
+                @RenderBody()
+
+            </div>
+        </div>
+    </div>
+    <!-- Layout wrapper -->
+    <div id="spinner">
+        @* <img src="~/Content/images/spinner.gif" /> <br /><span>Please Wait...</span> *@
+        @* <img src="~/content/images/spinner.gif" /> <br /><span>Please Wait...</span> *@
+        <img src="~/spinner.gif" /> <br /><span>Please Wait...</span>
+    </div>
+    <div class="layout-wrapper layout-content-navbar">
+
+        <div class="layout-container">
+
+            <footer class="footer">
+                <img src="../Assets/images/footerlogo.png" style="float: right;margin-right: 23px;margin-top: -6px;">
+                <h6 class="copyright" style="color:#000;font-family:inherit;font-size:14px">Copyright &#169;  Flexicode Technologies (P) Ltd. </h6>
+                <img src="../Assets/images/footerlogo.png" style="float: left;margin-top: -39px;margin-left: 109px;">
+            </footer>
+            <div class="layout-page">
+                <!-- Navbar -->
+                <!-- Content wrapper -->
+            </div>
+            <!-- / Layout page -->
+        </div>
+
+
+    </div>
+
+
+    @*<link href="https://kendo.cdn.telerik.com/2022.2.802/styles/kendo.default-main.min.css" rel="stylesheet" />*@
+    @*<script src="https://code.jquery.com/jquery-1.12.3.min.js"></script>*@
+    @*<script src="https://kendo.cdn.telerik.com/2022.2.802/js/kendo.all.min.js"></script>*@
+
+
+    <!-- Core JS -->
+    <!-- build:js assets/vendor/js/core.js -->
+    @*<script src="~/Assets/assets/vendor/libs/jquery/jquery.js"></script>*@
+    <script src="~/Assets/assets/vendor/libs/popper/popper.js"></script>
+    <script src="~/Assets/assets/vendor/js/bootstrap.js"></script>
+    <script src="~/Assets/assets/vendor/libs/perfect-scrollbar/perfect-scrollbar.js"></script>
+    <script src="~/Assets/assets/vendor/libs/hammer/hammer.js"></script>
+    <script src="~/Assets/assets/vendor/js/menu.js"></script>
+    <!-- endbuild -->
+    <!-- Vendors JS -->
+    <script src="~/Assets/assets/vendor/libs/apex-charts/apexcharts.js"></script>
+    <!-- Main JS -->
+    <script src="~/Assets/assets/js/main.js"></script>
+    <!-- Page JS -->
+    <script src="~/Assets/assets/js/dashboards-analytics.js"></script>
+    <!-- Place this tag in your head or just before your close body tag. -->
+    <script async defer src="https://buttons.github.io/buttons.js"></script>
+
+    <script>
+        $(document).ready(function () {
+            role = '@ViewBag.userRole';//localStorage.getItem("userRole");
+            id = '@ViewBag.userid';//localStorage.getItem("userRole");
+            console.log("User Role in layoutnew:", role);
+
+        });
+        function openNav() {
+            $(document).ready(function () {
+                $('#layout-menu').toggleClass('active');
+                $('[data-toggle="tooltip"]').tooltip();
+                
+
+            });
+        }
+
+
+    </script>
+
+    <script>
+        var maxorglvl;
+        var isMapAttribute = 'N';
+        var cDocgroup = ""; var cDocName = "";
+        function funLoadIsin()
+        {
+             populateDropdownchild(JSON.parse(localStorage.getItem("SetContextData")), 'Isin');
+        }
+        // Function to populate child dropdown filtered
+        function populateDropdownchild(data, id, value = 'default', text = 'default') {
+            ;
+            var dropdown = $('#' + id);
+
+            // Clear existing options
+            dropdown.empty();
+            var subgrpGid =$("#Entity").val();
+            // Add default option if needed
+            dropdown.append('<option value="0" selected>--Select--</option>');
+            var i = 0;
+            var entityId = 0;
+            // Add options based on data
+            $.each(data, function (index, item) {
+                if (id == 'Isin' && item.entity_id == subgrpGid) {
+                    if (index == 0) {
+                        dropdown.append($('<option selected></option>').attr('value', item.isin_id).text(item.isin_number));
+                      //  localStorage.setItem("isinNumber", item.isin_number);
+                    } else {
+                        dropdown.append($('<option></option>').attr('value', item.isin_id).text(item.isin_number));
+                    }
+                }
+                //;
+
+            });
+            ;
+           var itemCount = $("#Isin option").length;
+           if( itemCount == 2)
+           {
+                $("#Isin option:nth-child(2)").prop("selected", true);
+           }
+            // var entity = localStorage.getItem("entityId");
+            //    var isinid = localStorage.getItem("isinNumber");
+            //    console.log('entity:', entity);
+            //    console.log('isinid:', isinid);
+            //    $("#Entity").val(entity).trigger('change');
+            //    $("#Isin").val(isinid).trigger('change');
+            //$("#Entity option").each(function () {
+            //    $(this).siblings('[value="' + this.value + '"]').remove();
+            //});
+        }
+
+
+        // Function to populate dropdown
+        function populateDropdown(data, id, value = 'default', text = 'default') {
+            ;
+            var dropdown = $('#' + id);
+
+            // Clear existing options
+            dropdown.empty();
+            var subgrpGid =$("#Entity").val();
+            // Add default option if needed
+            dropdown.append('<option value="0" selected>--Select--</option>');
+            var i = 0;
+            var entityId = 0;
+            // Add options based on data
+            $.each(data, function (index, item) {
+                if (id == 'Entity') {
+                    if (index == 0) {
+                        dropdown.append($('<option selected></option>').attr('value', item.entity_id).text(item.entity_name));
+                      //  localStorage.setItem("entityId", item.entity_id);
+                    } else {
+                        dropdown.append($('<option></option>').attr('value', item.entity_id).text(item.entity_name));
+                    }
+                }
+                //else if (id == 'Isin' && item.entity_id == subgrpGid) {
+                //    if (index == 0) {
+                //        dropdown.append($('<option selected></option>').attr('value', item.isin_id).text(item.isin_number));
+                //      //  localStorage.setItem("isinNumber", item.isin_number);
+                //    } else {
+                //        dropdown.append($('<option></option>').attr('value', item.isin_id).text(item.isin_number));
+                //    }
+                //}
+                else if (id == 'columnNames') {
+                    if (data.count == 1) {
+                        dropdown.append($('<option selected></option>').attr('value', item.cf_field_name).text(item.cf_field_desc));
+                    } else {
+                        dropdown.append($('<option></option>').attr('value', item.cf_field_name).text(item.cf_field_desc));
+                    }
+
+                }
+                //;
+
+            });
+             $("#Entity option").each(function () {
+                $(this).siblings('[value="' + this.value + '"]').remove();
+            });
+             var entity = localStorage.getItem("entityId");
+                var isinid = localStorage.getItem("isinNumber");
+                console.log('entity:', entity);
+                console.log('isinid:', isinid);
+               $("#Entity").val(entity).trigger('change');
+                $("#Isin").val(isinid).trigger('change');
+            var itemCount = $("#Entity option").length;
+           if( itemCount == 2)
+           {
+                $("#Entity option:nth-child(2)").prop("selected", true);
+                funLoadIsin();
+           }
+
+
+        }
+
+        $(document).ready(function () {
+            ;
+            //localStorage.setItem("entityId", 0);
+            //localStorage.setItem("isinNumber", 0);
+            $("#userGroupid").val(JSON.parse(localStorage.getItem("SetContextData"))[0].usergroup_gid);
+            populateDropdown(JSON.parse(localStorage.getItem("SetContextData")), 'Entity');
+          //  populateDropdown(JSON.parse(localStorage.getItem("SetContextData")), 'Isin');
+
+            $("#empname").text(JSON.parse(localStorage.getItem("SetContextData"))[0].Emp_Name);
+            $("#empcode").text(JSON.parse(localStorage.getItem("SetContextData"))[0].Emp_Code);
+            $("#empemail").text(JSON.parse(localStorage.getItem("SetContextData"))[0].Emp_EmailId);
+            $("#empmobile").text(JSON.parse(localStorage.getItem("SetContextData"))[0].Emp_MobileNo);
+            $("#empstatus").text(JSON.parse(localStorage.getItem("SetContextData"))[0].Active);
+            $("#emprole").text(JSON.parse(localStorage.getItem("SetContextData"))[0].usergroup_name);
+
+
+
+            //   $('select[multiple]').multiselect();
+            $("#dropdown").kendoDropDownList("select", 0);
+            //Editcustdetails();
+            //loaddynamiccolumns1();
+            //loaddynamiccolumns('');
+            //$.when(loaddynamiccolumns('')).then(restore_existingheader());
+            $("#showcoursetable").click(function () {
+                ;
+                $("#showcoursetables").show();
+            })
+            $("#showcoursetable2").click(function () {
+                $("#showcoursetables2s").show();
+            })
+            $("#showcoursetableDG").click(function () {
+                $("#showcoursetablesDG").show();
+            })
+            $("#showcoursetableDG1").click(function () {
+                $("#showcoursetablesDG").show();
+            })
+            $("#refresh4").click(function () {
+                $("#tableshow4").show();
+            });
+            $("#refresh41").click(function () {
+                $("#tableshow41").show();
+            });
+            $("#collapse_div").click(function () {
+                ;
+                if ($('#collapse_org').css('display') == 'none') {
+                    $('#collapse_org').show();
+                    $('#collapse_img2').css('display', 'block');
+                    $('#collapse_img').css('display', 'none');
+                } else {
+                    $('#collapse_org').css('display', 'none');
+                    $('#collapse_img2').css('display', 'none');
+                    $('#collapse_img').css('display', 'block');
+                }
+            });
+
+            var myLabel = document.getElementById("orglvlNavigate");
+            myLabel.innerHTML = $("#Entity").find('option:selected').text() + "&nbsp;&nbsp;/&nbsp;&nbsp;" + $("#Isin").find('option:selected').text();
+
+
+        });
+
+        // Show the loader icon
+        $(document).ajaxStart(function () {
+            $('#loader').show();
+
+            showProgress();
+        });
+
+        // Hide the loader icon
+        $(document).ajaxStop(function () {
+            // $('#loader').hide();
+            hideProgress();
+        });
+
+        $(document).ajaxError(function () {
+            hideProgress();
+        })
+
+
+        var spinnerVisible = false;
+        function getconcatval(mastercode) {
+            ;
+            var master = "";
+            if (mastercode != null) {
+                master = "'" + mastercode + "'";
+            }
+            //if (mastercode != null) {
+            //    for (var p = 0; p < mastercode.length; p++) {
+            //        if (mastercode[p] != "0" && mastercode[p] != "" && mastercode[p] != null) {
+            //            if (master == "") {
+            //                master = "'" + mastercode[p] + "'";
+            //            } else {
+            //                master = master + ",'" + mastercode[p] + "'";
+            //            }
+            //        }
+            //    }
+            //}
+            return master;
+        }
+        function clearlocalstorage() {
+            localStorage.clear();
+        }
+
+        function showProgress() {
+           // ;
+            if (!spinnerVisible) {
+                $("div#spinner").fadeIn("fast");
+                spinnerVisible = true;
+            }
+        }
+        function hideProgress() {
+           /// ;
+            if (spinnerVisible) {
+                var spinner = $("div#spinner");
+                spinner.stop();
+                spinner.fadeOut("fast");
+                spinnerVisible = false;
+            }
+        }
+
+        function Editcustdetails() {
+            ;
+            $.ajax({
+                type: "POST",
+                contentType: "application/json; charset=utf-8",
+                data: {},
+                dataType: "html",
+                url: '@Url.Action("EmpProfilePartialView", "_Layout")',
+                success: function (data) {
+                    ;
+                    //  $("#Newcust1").html(data);
+                    var obj = $.parseJSON(data);
+                    $("#empname").text(obj['EmpName']);
+                    $("#empcode").text(obj['EmpCode']);
+                    $("#empemail").text(obj['EmpEmailId']);
+                    $("#empmobile").text(obj['EmpMobileNo']);
+                    $("#empstatus").text(obj['EmpStatus']);
+                    $("#emprole").text(obj["EmpRole"]);
+                    //  alert(obj['EmpName'] + " , " + obj['Emp_Code'] + " , " + obj['EmpEmailId'] + " , " + obj['Emp_MobileNo']);
+
+                },
+                error: function (data) {
+                    $.alert({
+                        title: 'STA',
+                        content: 'Error' + data,
+                        type: 'red',
+                    });
+                }
+            });
+        }
+
+        function setContext() {
+            localStorage.setItem("entityId", $("#Entity").val());
+            localStorage.setItem("isinNumber", $("#Isin").val());
+            var myLabel = document.getElementById("orglvlNavigate");
+            myLabel.innerHTML = $("#Entity").find('option:selected').text() + "&nbsp;&nbsp;/&nbsp;&nbsp;" + $("#Isin").find('option:selected').text();
+            ;
+            if ($('#collapse_org').css('display') == 'none') {
+                $('#collapse_org').show();
+                $('#collapse_img2').css('display', 'block');
+                $('#collapse_img').css('display', 'none');
+            } else {
+                $('#collapse_org').css('display', 'none');
+                $('#collapse_img2').css('display', 'none');
+                $('#collapse_img').css('display', 'block');
+            }
+            var entityGid=$("#Isin").val();
+            var isinId =$("#Isin").find('option:selected').text();
+            $.ajax({
+            url: '@Url.Action("ApplyContext", "Report")?sCompGid=' + entityGid + '&isin_no=' + isinId ,
+            data: {},
+            type: 'Post',
+            datatype: 'json',
+            async: false,
+            success: function (result) {
+                ;
+
+                     location.reload();
+
+            },
+            error: function (result) {
+                $.alert({
+                    title: 'STA',
+                    content: "Failed to Download.!",
+                    type: 'red',
+                });
+            }
+        });
+
+        }
+
+        function storeheader() {
+            ;
+            location.reload();
+        }
+
+        function get_orgarray(_idval) {
+            ;
+            var arr = [];
+            var obj = {};
+            $('#' + _idval + ' option').each(function () {
+                var ischecked_ = false;
+                if ($(this).is(':selected')) {
+                    ischecked_ = true;
+                }
+                obj = {
+                    name: $(this).text(),
+                    value: $(this).val(),
+                    checked: ischecked_
+                }
+                arr.push(obj);
+            });
+            return arr;
+        }
+
+        /*function Signout() {
+            ;
+            var url = '@Url.Action("Login", "Login")';
+            window.location.href = url;
+            /* sessionStorage.removeItem('arr1');
+             sessionStorage.removeItem('arr2');
+             sessionStorage.removeItem('arr3');
+             sessionStorage.removeItem('arr4');
+
+             sessionStorage.removeItem('orglvl1code');
+             sessionStorage.removeItem('orglvl2code');
+             sessionStorage.removeItem('orglvl3code');
+             sessionStorage.removeItem('orglvl4code');
+
+             $.ajax({
+                 type: "POST",
+                 contentType: "application/json; charset=utf-8",
+                 data: {},
+                 dataType: "html",
+                 url: '@Url.Action("Signout", "Login")',
+                 success: function (data) {
+                     var url = '@Url.Action("Login", "Login")'
+                     window.location.href = url;
+                 },
+                 error: function (data) {
+                     $.alert({
+                         title: 'DMS',
+                         content: 'Error' + data,
+                         type: 'red',
+                     });
+                 }
+             });
+        }*/
+
+        function showchangepasswordscreen() {
+            ;
+            var url = '@Url.Action("ChangePassword", "Login")'
+            window.location.href = url;
+        }
+
+        function onChangeunit(sel, idval) {
+            //    alert(this.value());
+            ;
+            var id = idval;
+            // alert(idval);
+
+            try {
+                //alert($('#orglvl1valO').val());
+                //var mastercode = sel.value;
+                var mastercode = $('#' + idval).val();
+                var master1 = "";
+                //  var master = "";
+                var master = "'" + mastercode + "'";
+                //for (var p = 0; p < mastercode.length; p++) {
+                //    if (mastercode[p] != "0" && mastercode[p] != "" && mastercode[p] != null) {
+                //        if (master == "") {
+                //            master = "'" + mastercode[p] + "'";
+                //        } else {
+                //            master = master + ",'" + mastercode[p] + "'";
+                //        }
+                //    }
+                //}
+                var curentorg_ = sel;
+                if (mastercode == "" || mastercode == null || mastercode == "undefined" || mastercode == 0) {
+                    return false;
+                }
+                else {
+                    ;
+                    $.getJSON("DocGroupNamesNew/DocGroupMaster?parentcode=" + master1 + "&dependcode=" + master + "&maxorg=" + maxorglvl + "&currentorg=" + curentorg_,
+                        function (result) {
+                            ;
+                            var _dt1 = JSON.parse(result.Data1);
+                            var _dt2 = JSON.parse(result.Data2);
+                            var _dt3 = JSON.parse(result.Data3);
+                            var _dt4 = JSON.parse(result.Data4);
+
+                            if (sel == 4) {
+                                assigndropdownvalue(_dt1, "orglvl1valO");
+                                assigndropdownvalue(_dt2, "orglvl2valO");
+                                assigndropdownvalue(_dt3, "orglvl3valO");
+                            } else if (sel == 3) {
+                                assigndropdownvalue(_dt4, "orglvl4valO");
+                                assigndropdownvalue(_dt1, "orglvl1valO");
+                                assigndropdownvalue(_dt2, "orglvl2valO");
+                            } else if (sel == 2) {
+                                assigndropdownvalue(_dt3, "orglvl3valO");
+                                assigndropdownvalue(_dt4, "orglvl4valO");
+                                assigndropdownvalue(_dt1, "orglvl1valO");
+                            } else {
+                                assigndropdownvalue(_dt2, "orglvl2valO");
+                                assigndropdownvalue(_dt3, "orglvl3valO");
+                                assigndropdownvalue(_dt4, "orglvl4valO");
+                            }
+                        });
+                }
+                var myLabel = document.getElementById("orglvlNavigate");
+                myLabel.innerHTML = $("#orglvl1valO").find('option:selected').text() + "&nbsp;&nbsp;/&nbsp;&nbsp;" + $("#orglvl2valO").find('option:selected').text();
+            } catch (er) {
+                hideProgress();
+            }
+        }
+        function assigndropdownvalue(dt_, idval_) {
+            ;
+            if (dt_.length > 0) {
+                //$("#" + idval_).removeAttr('multiple');
+                $("#" + idval_).empty();
+                for (var i = 0; i < dt_.length; i++) {
+                    var opt = new Option(dt_[i].mastername, dt_[i].mastercode);
+                    $('#' + idval_).append(opt);
+                    $(opt).attr('selected', true);
+                }
+                //  $("#" + idval_).val($("#" + idval_ + " option").eq(1).val());
+                // $("#" + idval_).prop('multiple', true);
+                $("#" + idval_).multiselect('reload');
+                //$("#ms-opt-1").prop('checked',false);
+            }
+            var myLabel = document.getElementById("orglvlNavigate");
+            myLabel.innerHTML = $("#orglvl1valO").find('option:selected').text() + "&nbsp;&nbsp;/&nbsp;&nbsp;" + $("#orglvl2valO").find('option:selected').text();
+        }
+        function loaddynamiccolumns(_sel) {
+            try {
+                $.ajax({
+                    type: "POST",
+                    contentType: "application/json; charset=utf-8",
+                    async: false,
+                    url: '@Url.Action("getlabellist", "DocGroupMaster")',
+                    data: "{}",
+                    success: function (data) {
+                        ;
+                        // var orglevelcode1 = data[0].orghierarchy_code;
+                        maxorglvl = data.length;
+                        // alert(maxorglvl);
+                        if (maxorglvl > 2) {
+                            $("#sct1").show();
+                            $("#sct2").hide();
+                            $("#sct1N").show();
+                            $("#sct2N").hide();
+                        } else {
+                            $("#sct2").show();
+                            $("#sct1").hide();
+                            $("#sct2N").show();
+                            $("#sct1N").hide();
+                        }
+                        if (data.length >= 1) {
+                            orglevelcode1 = data[0].orghierarchy_code;
+                            var org1val = data[0].orghierarchy_name;
+                            if (orglevelcode1 != null && orglevelcode1 != "" && orglevelcode1 != "undefined") {
+                                $("#orglvl1lblO").text(org1val);
+                                $("#thlbl1O").text(org1val);
+                                //orglevelval1 = $("#" + orglevelcode1).val();
+                                $("#orgcol1O").show();
+                                $("#thlbl1O").show();
+                                $("#orglvl1lblN").text(org1val);
+                                $("#thlbl1N").text(org1val);
+                                $("#orgcol1N").show();
+                                $("#thlbl1N").show();
+
+                                $.ajax({
+                                    url: '@Url.Action("DocGroupNames", "ConfigureAttributes")',
+                                    type: "GET",
+                                    data: { 'parentcode': orglevelcode1, "dependcode": "" },
+                                    success: function (data) {
+                                        ;
+                                        $("#orglvl1valO option").remove();
+                                        $("#orglvl1valN option").remove();
+                                        for (var i = 0; i < data.length; i++) {
+                                            var opt = new Option(data[i].master_name, data[i].master_code);
+                                            //    var opt2 = new Option(data[0].Dname_Name, data[0].Dname_Id);
+                                            $('#orglvl1valO').append(opt);
+
+
+                                        }
+                                        if (_sel != 'R') {
+                                            //$("#orglvl1valO").prop('multiple', true);
+                                            //$("#orglvl1valO").multiselect({
+                                            //    columns: 1,
+                                            //    placeholder: 'Select',
+                                            //    search: true
+                                            //});
+                                            var arr1_ = JSON.parse(sessionStorage.getItem('arr1'));
+                                            bindmultiselectvalues(arr1_, 'orglvl1valO');
+                                        }
+                                        //else {
+                                        //    $("#orglvl1valO").multiselect('reload');
+                                        //}
+                                        for (var i = 0; i < data.length; i++) {
+                                            var opt = new Option(data[i].master_name, data[i].master_code);
+                                            //    var opt2 = new Option(data[0].Dname_Name, data[0].Dname_Id);
+                                            $('#orglvl1valN').append(opt);
+
+
+                                        }
+                                    }
+                                });
+                            }
+
+                        }
+                        if (data.length >= 2) {
+                            orglevelcode2 = data[1].orghierarchy_code;
+                            var org1va2 = data[1].orghierarchy_name;
+                            if (orglevelcode2 != null && orglevelcode2 != "" && orglevelcode2 != "undefined") {
+                                $("#orglvl2lblO").text(org1va2);
+                                $("#orgcol2O").show();
+                                $("#thlbl2O").text(org1va2);
+                                $("#thlbl2O").show();
+
+                                $("#orglvl2lblN").text(org1va2);
+                                $("#thlbl2N").text(org1va2);
+                                $("#orgcol2N").show();
+                                $("#thlbl2N").show();
+                                $.ajax({
+                                    url: '@Url.Action("DocGroupNames", "ConfigureAttributes")',
+                                    type: "GET",
+                                    data: { 'parentcode': orglevelcode2, "dependcode": "" },
+                                    success: function (data) {
+                                        ;
+                                        $("#orglvl2valO option").remove();
+                                        $("#orglvl2valN option").remove();
+                                        for (var i = 0; i < data.length; i++) {
+                                            var opt = new Option(data[i].master_name, data[i].master_code);
+                                            //    var opt2 = new Option(data[0].Dname_Name, data[0].Dname_Id);
+                                            $('#orglvl2valO').append(opt);
+
+                                        }
+                                        if (_sel != 'R') {
+                                            //$("#orglvl2valO").prop('multiple', true);
+                                            //$("#orglvl2valO").multiselect({
+                                            //    columns: 1,
+                                            //  placeholder: 'Select',
+                                            //    search: true
+                                            //});
+
+                                            var arr2_ = JSON.parse(sessionStorage.getItem('arr2'));
+                                            bindmultiselectvalues(arr2_, 'orglvl2valO');
+                                        }
+                                        //else {
+                                        //    $("#orglvl2valO").multiselect('reload');
+                                        //}
+
+                                        for (var i = 0; i < data.length; i++) {
+                                            var opt = new Option(data[i].master_name, data[i].master_code);
+                                            //    var opt2 = new Option(data[0].Dname_Name, data[0].Dname_Id);
+                                            $('#orglvl2valN').append(opt);
+
+                                        }
+                                    }
+                                });
+
+                            }
+                        }
+                        if (data.length >= 3) {
+                            orglevelcode3 = data[2].orghierarchy_code;
+                            var org1va3 = data[2].orghierarchy_name;
+                            if (orglevelcode3 != null && orglevelcode3 != "" && orglevelcode3 != "undefined") {
+                                $("#orglvl3lblO").text(org1va3);
+                                // orglevelval3 = $("#" + orglevelcode3).val();
+                                $("#orgcol3O").show();
+                                $("#thlbl3O").text(org1va3);
+                                $("#thlbl3O").show();
+
+                                $("#orglvl3lblN").text(org1va3);
+                                $("#thlbl3N").text(org1va3);
+                                $("#orgcol3N").show();
+                                $("#thlbl3N").show();
+
+                                $.ajax({
+                                    url: '@Url.Action("DocGroupNames", "ConfigureAttributes")',
+                                    type: "GET",
+                                    data: { 'parentcode': orglevelcode3, "dependcode": "" },
+                                    success: function (data) {
+                                        ;
+                                        $("#orglvl3valO option").remove();
+                                        $("#orglvl3valN option").remove();
+                                        for (var i = 0; i < data.length; i++) {
+                                            var opt = new Option(data[i].master_name, data[i].master_code);
+                                            //    var opt2 = new Option(data[0].Dname_Name, data[0].Dname_Id);
+                                            $('#orglvl3valO').append(opt);
+
+                                        }
+                                        if (_sel != 'R') {
+                                            //$("#orglvl3valO").prop('multiple', true);
+                                            //$("#orglvl3valO").multiselect({
+                                            //    columns: 1,
+                                            //    placeholder: 'Select',
+                                            //    search: true
+                                            //});
+
+                                            var arr3_ = JSON.parse(sessionStorage.getItem('arr3'));
+                                            bindmultiselectvalues(arr3_, 'orglvl3valO');
+                                        }
+                                        //else {
+                                        //    $("#orglvl3valO").multiselect('reload');
+                                        //}
+                                        for (var i = 0; i < data.length; i++) {
+                                            var opt = new Option(data[i].master_name, data[i].master_code);
+                                            //    var opt2 = new Option(data[0].Dname_Name, data[0].Dname_Id);
+                                            $('#orglvl3valN').append(opt);
+
+                                        }
+                                    }
+                                });
+                            }
+                        }
+                        if (data.length == 4) {
+                            orglevelcode4 = data[3].orghierarchy_code;
+                            var org1va4 = data[3].orghierarchy_name;
+                            if (orglevelcode4 != null && orglevelcode4 != "" && orglevelcode4 != "undefined") {
+                                $("#orglvl4lblO").text(org1va4);
+                                //orglevelval4 = $("#" + orglevelcode4).val();
+                                $("#orgcol4O").show();
+                                $("#thlbl4O").text(org1va4);
+                                $("#thlbl4O").show();
+                                $("#orglvl4lblN").text(org1va4);
+                                $("#thlbl4N").text(org1va4);
+                                $("#orgcol4N").show();
+                                $("#thlbl4N").show();
+
+                                $.ajax({
+                                    url: '@Url.Action("DocGroupNames", "ConfigureAttributes")',
+                                    type: "GET",
+                                    data: { 'parentcode': orglevelcode4, "dependcode": "" },
+                                    success: function (data) {
+                                        ;
+                                        $("#orglvl4valO option").remove();
+                                        $("#orglvl4valN option").remove();
+                                        for (var i = 0; i < data.length; i++) {
+                                            var opt = new Option(data[i].master_name, data[i].master_code);
+                                            //    var opt2 = new Option(data[0].Dname_Name, data[0].Dname_Id);
+                                            $('#orglvl4valO').append(opt);
+
+                                        }
+                                        if (_sel != 'R') {
+
+                                            //$("#orglvl4valO").prop('multiple', true);
+                                            //$("#orglvl4valO").multiselect({
+                                            //    columns: 1,
+                                            //    //   placeholder: 'Select',
+                                            //    search: true
+                                            //});
+
+                                            var arr4_ = JSON.parse(sessionStorage.getItem('arr4'));
+                                            bindmultiselectvalues(arr4_, 'orglvl4valO');
+
+                                        }
+                                        //else {
+                                        //    $("#orglvl4valO").multiselect('reload');
+                                        //}
+                                        for (var i = 0; i < data.length; i++) {
+                                            var opt = new Option(data[i].master_name, data[i].master_code);
+                                            //    var opt2 = new Option(data[0].Dname_Name, data[0].Dname_Id);
+                                            $('#orglvl4valN').append(opt);
+
+                                        }
+                                    }
+                                });
+                            }
+                        }
+
+                    },
+                });
+
+
+            } catch (er) {
+                alert(er);
+            }
+        }
+
+
+        //function restore_existingheader() {
+        //    ;
+        //    var arr1_ = JSON.parse(sessionStorage.getItem('arr1'));
+        //    var arr2_ = JSON.parse(sessionStorage.getItem('arr2'));
+        //    var arr3_ = JSON.parse(sessionStorage.getItem('arr3'));
+        //    var arr4_ = JSON.parse(sessionStorage.getItem('arr4'));
+        //    if (arr1_.length > 0) {
+        //        bindmultiselectvalues(arr1_, 'orglvl1valO');
+        //    }
+        //    if (arr2_.length > 0) {
+        //        bindmultiselectvalues(arr2_, 'orglvl2valO');
+        //    }
+        //    if (arr3_.length > 0) {
+        //        bindmultiselectvalues(arr3_, 'orglvl3valO');
+        //    }
+        //    if (arr4_.length > 0) {
+        //        bindmultiselectvalues(arr4_, 'orglvl4valO');
+        //    }
+        //}
+
+        function bindmultiselectvalues(arr, _id) {
+            ;
+            if (arr != null) {
+                $("#" + _id).empty();
+                for (var t = 0; t < arr.length; t++) {
+                    var opt = new Option(arr[t].name, arr[t].value);
+                    $('#' + _id).append(opt);
+                    if (arr[t].checked) {
+                        //$('#' + _id + "option: " + opt).attr('selected', 'selected');
+                        $(opt).attr('selected', true);
+                        var myLabel = document.getElementById("orglvlNavigate");
+                        myLabel.innerHTML = $("#orglvl1valO").find('option:selected').text() + "&nbsp;&nbsp;/&nbsp;&nbsp;" + $("#orglvl2valO").find('option:selected').text();
+                    }
+                }
+                // $('#' + _id).multiselect('reload');
+            }
+            ;
+            //var orglvl2val = $("#orglvl2valO").val();//"
+            //$("#QCD_ORG_tUnit").val(orglvl2val);
+            //$("#QCD_ORG_tUnit").data("kendoDropDownList").trigger("change");
+
+            //var orglvl1val = $("#orglvl1valO").val();//
+            //$("#QCD_ORG_tDepartment").val(orglvl1val);
+            //$("#QCD_ORG_tDepartment").data("kendoDropDownList").trigger("change");
+            ;
+            // Set the inner HTML of the label
+
+            //  $("#orglvlNavigate").innerHTML($("#orglvl1valO").find('option:selected').text() + "&nbsp;&nbsp;/&nbsp;&nbsp;" + $("#orglvl2valO").find('option:selected').text());
+        }
+
+        function loaddynamiccolumns1() {
+            try {
+                $.ajax({
+                    type: "POST",
+                    contentType: "application/json; charset=utf-8",
+                    async: false,
+                    url: '@Url.Action("getlabellist", "DocGroupMaster")',
+                    data: "{}",
+                    success: function (data) {
+                        maxorglvl = data.length;
+                        ;
+                        // var orglevelcode1 = data[0].orghierarchy_code;
+                        if (data.length >= 1) {
+                            orglevelcode1 = data[0].orghierarchy_code;
+                            $("#orglvl1lblh").text(data[0].orghierarchy_name);
+                            // orglevelval1 = $("#" + orglevelcode1).val();
+                        }
+                        if (data.length >= 2) {
+                            orglevelcode2 = data[1].orghierarchy_code;
+                            $("#orglvl2lblh").text(data[1].orghierarchy_name);
+                            // orglevelval2 = $("#" + orglevelcode2).val();
+                        }
+                        if (data.length >= 3) {
+                            orglevelcode3 = data[2].orghierarchy_code;
+                            $("#orglvl3lblh").text(data[2].orghierarchy_name);
+                            //orglevelval3 = $("#" + orglevelcode3).val();
+                        }
+                        if (data.length == 4) {
+                            orglevelcode4 = data[3].orghierarchy_code;
+                            $("#orglvl4lblh").text(data[3].orghierarchy_name);
+                            //orglevelval4 = $("#" + orglevelcode4).val();
+                        }
+
+
+                        // alert(orglevelcode1);
+                        //setTimeout(function () {
+                        //    window.location.reload(1);
+                        //}, 2500);
+                    },
+                });
+            } catch (er) {
+                alert(er);
+            }
+        }
+        function testt() {
+            ;
+            alert($('#orglvl1valO').val());
+        }
+
+        function searchFunction() {
+            //if (isMapAttribute == 'N') {
+            //    $('#applyfilter').modal('hide');
+            //}
+            ;
+            $('#applyfilter').modal('hide');
+            $('#docloaddd').height(245);
+            $('#docloadddlocal').height(245);
+
+            $("#Maingrid_layout").show();
+        }
+    </script>
+
+    <script>
+        var counter = 1;
+        var attributes;
+        var rk;
+        var ran;
+        var parcheck = 0;
+        var parchecksec = 0;
+        var radfile = "";
+        var radgridon = "";
+        var reportcondition = "";
+
+
+        function gridshow() {
+            ;
+        }
+        //$(function () {
+        //    $('#add').click(function () {
+        //        clicks += 1;
+        //        // document.getElementById("add").innerHTML = clicks;
+        //        ;
+
+        //        $("#submissionTable").show();
+        //    });
+        //});
+        var clicks = 0;
+        $(function () {
+            $('#add').click(function () {
+                var res = $("#reportid").data("kendoDropDownList").value();
+                if (res == "-1") {
+                    $.alert({
+                        title: 'Impact',
+                        content: "Attributes Should not be Empty..!",
+                        type: 'red',
+
+
+                    });
+                    return;
+                }
+                clicks += 1;
+                // document.getElementById("add").innerHTML = clicks;
+                ;
+
+                $("#submissionTable").show();
+
+                $('<tr id="tablerow' + counter + '" style="margin-left:90px" ><td>' +
+                    '<input type="text"  class="form-control" id="txtorderid' + counter + '" class="text-box single-line" name="ClientSampleID[' + counter + ']" value="" required="required" style="width:150px;" />' +
+                    ' <input type="text" id="txtorderidone' + counter + '" hidden name="ClientSampleID[' + counter + ']" value="" ;" />' +
+                    '</td>' +
+
+                    ' <td>' +
+                    '<select id="contselect' + counter + '"  class="form-select"  name="drpCondition[' + counter + ']" value="" required="required" style="width:180px;height: 35px;" /></select>' +
+                    '</td>' +
+
+                    ' <td>' +
+                    '<select id="contbtn' + counter + '"  class="form-select" name="jointst[' + counter + ']" value="" required="required" style="width:180px;height: 35px;" /></select>' +
+                    '</td>' +
+                    ' <td>' +
+                    '<input type="checkbox"  id="chkval' + counter + '" style="margin-left:8px;width:22px;  name="checkvalof[' + counter + ']"  value="Y">' +
+                    '</td>' +
+                    ' <td>' +
+                    '<input type="text"  class="form-control" id="txtvalue' + counter + '" class="text-box single-line" name="Valueof[' + counter + ']" value="" required="required" style="width:150px;" />' +
+                    '</td>' +
+                    ' <td>' +
+                    '<input type="checkbox"  id="chkvalue' + counter + '" style="margin-left:8px;width:22px; name="checkvalueof[' + counter + ']"  value="Y">' +
+                    '</td>' +
+                    ' <td>' +
+                    '<button type="button"  class="fa fa-trash" style="color:#357ab8;font-size: 12px;margin-left:10px;border:none;" onclick="removeTr(' + counter + ');"></button>' +
+
+
+                    '</td>' +
+                    //  ' <td>' +
+                    //'<button type="button" class="btn btn-primary" onclick="ApplyFilter(' + counter + ');">Save</button>' +
+                    //  '</td>' +
+                    '</tr>').appendTo('#submissionTable');
+
+
+                ;
+
+                var indexval = counter;
+                $('#contselect' + indexval).append('<option value="' + "Is equal to" + '">' + "Is equal to" + '</option>');
+                $('#contselect' + indexval).append('<option value="' + "Is not equal to" + '">' + "Is not equal to" + '</option>');
+                $('#contselect' + indexval).append('<option value="' + "Begins with" + '">' + "Begins with" + '</option>');
+                $('#contselect' + indexval).append('<option value="' + "End with" + '">' + "End with" + '</option>');
+                $('#contselect' + indexval).append('<option value="' + "Contains" + '">' + "Contains" + '</option>');
+                $('#contselect' + indexval).append('<option value="' + "Is greater Than" + '">' + "Is greater Than" + '</option>');
+                $('#contselect' + indexval).append('<option value="' + "Is less than" + '">' + "Is less than" + '</option>');
+                $('#contselect' + indexval).append('<option value="' + "Is less than or equal to" + '">' + "Is less than or equal to" + '</option>');
+                $('#contselect' + indexval).append('<option value="' + "Is greater than or equal to" + '">' + "Is greater than or equal to" + '</option>');
+                $('#contselect' + indexval).append('<option value="' + "Does not contains" + '">' + "Does not contains" + '</option>');
+                $('#contbtn' + indexval).append('<option value="' + "AND" + '">' + "AND" + '</option>');
+                $('#contbtn' + indexval).append('<option value="' + "OR" + '">' + "OR" + '</option>');
+                $('#txtorderid' + indexval).val($("#reportid").data("kendoDropDownList").text());
+                $('#txtorderidone' + indexval).val($("#reportid").data("kendoDropDownList").value());
+                counter++;
+
+                var res = $('#counttxt').val(counter);
+                var chkcount = $('#')
+                rks = $('#txtvalue' + indexval).text();
+
+                return false;
+            });
+        });
+        function removeTr(index) {
+            ;
+            if (counter > 1) {
+                $('#tablerow' + index).remove();
+                counter -= 1;
+                clicks -= 1;
+            }
+            return false;
+        }
+        function fileradio() {
+            if (document.getElementById('fileid').checked) {
+                $("#gridradio").hide();
+            }
+        }
+
+        function dropaddition() {
+            ;
+            //  $("#add").hide();
+            // dro();
+            var dgroupid = '@ViewBag.dgroupid';
+            var dnameid = '@ViewBag.dnameid';
+            if (dgroupid == "") {
+                return {
+                    DGroup: $("#Catgery").val(), DName: $("#subCatgery").val()
+                }
+            }
+            else {
+                return {
+                    DGroup: dgroupid, DName: dnameid
+                }
+            }
+        }
+
+
+        function getdata() {
+            ;
+            reportcondition = "";
+            parcheck = 0;
+            parchecksec = 0;
+            for (let i = 1; i <= clicks; i++) {
+
+                var j = 0; j = i + 1;
+                var Transaction_Rpt = {};
+                //Transaction_Rpt.Table_Name = "recon_trn_vtranrecon";
+                //  Transaction_Rpt.Table_Name = "recon_trn_ttran";
+                //var Table_Name = "recon_trn_vtranrecon";
+                // var Table_Name = "recon_trn_ttran";
+                //var Period_from = $("#Period_from").val();
+                //var Period_To = $("#Period_To").val();
+                //var Recon_gid = $("#ReconName_id").data("kendoDropDownList").value();
+                //reportcondition += reportcondition1;
+
+
+                var orderid = '`' + $("#txtorderidone" + i).val() + '`';
+                var contselect = $("#contselect" + i).val();
+                var contbtn = $("#contbtn" + i).val();
+
+                var rt = $("#chkval" + i).is(":checked");
+                var rty = $("#chkvalue" + i).is(":checked");
+
+                if (rt == true) {
+                    parcheck = parcheck + 1;
+                }
+                if (rty == true) {
+                    parchecksec = parchecksec + 1;
+                }
+
+                if (i > 1) {
+                    reportcondition += contbtn;
+                }
+
+                attributes = $("#txtvalue" + i).val();
+                if (attributes != "" && clicks != 0) {
+                    ran = "";
+
+
+                    if (contselect.toLowerCase() == "is equal to") {
+                        if (rt == true && rty == true) {
+                            if (orderid.toUpperCase().includes('DATE')) {
+                                // reportcondition = reportcondition + " str_to_date(replace(" + orderid.toString() + ",'/','-') ,'%d-%M-%Y') = '" + attributes.toString() + "'";
+                                reportcondition = reportcondition + " ( " + " ( str_to_date(replace(" + orderid.toString() + ",'/','-') ,'%d-%M-%Y') = '" + attributes.toString() + "' or str_to_date(replace(" + orderid.toString() + ",'/','-') ,'%d-%m-%Y') = '" + attributes.toString() + "' )" + ")";
+                            }
+                            else {
+                                reportcondition += " ( " + orderid + " = '" + attributes.toString() + "' " + ")";
+                            }
+                        }
+                        else if (rt == true) {
+                            if (orderid.toUpperCase().includes('DATE')) {
+                                // reportcondition = reportcondition + " str_to_date(replace(" + orderid.toString() + ",'/','-') ,'%d-%M-%Y') = '" + attributes.toString() + "'";
+                                reportcondition = reportcondition + " (" + " ( str_to_date(replace(" + orderid.toString() + ",'/','-') ,'%d-%M-%Y') = '" + attributes.toString() + "' or str_to_date(replace(" + orderid.toString() + ",'/','-') ,'%d-%m-%Y') = '" + attributes.toString() + "' )";
+                            }
+                            else {
+                                reportcondition += " (" + orderid + " = '" + attributes.toString() + "' ";
+                            }
+                        }
+                        else if (rty == true) {
+                            if (orderid.toUpperCase().includes('DATE')) {
+                                // reportcondition = reportcondition + " str_to_date(replace(" + orderid.toString() + ",'/','-') ,'%d-%M-%Y') = '" + attributes.toString() + "'";
+                                reportcondition = reportcondition + " ( str_to_date(replace(" + orderid.toString() + ",'/','-') ,'%d-%M-%Y') = '" + attributes.toString() + "' or str_to_date(replace(" + orderid.toString() + ",'/','-') ,'%d-%m-%Y') = '" + attributes.toString() + "' )" + ")";
+                            }
+                            else {
+                                reportcondition += " " + orderid + " = '" + attributes.toString() + "' " + ")";
+                            }
+                        }
+                        else {
+                            if (orderid.toUpperCase().includes('DATE')) {
+                                // reportcondition = reportcondition + " str_to_date(replace(" + orderid.toString() + ",'/','-') ,'%d-%M-%Y') = '" + attributes.toString() + "'";
+                                reportcondition = reportcondition + " ( str_to_date(replace(" + orderid.toString() + ",'/','-') ,'%d-%M-%Y') = '" + attributes.toString() + "' or str_to_date(replace(" + orderid.toString() + ",'/','-') ,'%d-%m-%Y') = '" + attributes.toString() + "' )";
+                            }
+                            else {
+                                reportcondition += " " + orderid + " = '" + attributes.toString() + "' ";
+                            }
+
+                        }
+                    }
+                    else if (contselect.toLowerCase() == "is not equal to") {
+                        if (rt == true && rty == true) {
+                            if (orderid.toUpperCase().includes('DATE')) {
+                                // reportcondition = reportcondition + " str_to_date(replace(" + orderid.toString() + ",'/','-') ,'%d-%M-%Y') = '" + attributes.toString() + "'";
+                                reportcondition = reportcondition + " ( " + " ( str_to_date(replace(" + orderid.toString() + ",'/','-') ,'%d-%M-%Y') != '" + attributes.toString() + "' or str_to_date(replace(" + orderid.toString() + ",'/','-') ,'%d-%m-%Y') != '" + attributes.toString() + "' )" + ")";
+                            }
+                            else {
+                                reportcondition += " ( " + orderid + " != '" + attributes.toString() + "' " + ")";
+                            }
+                        }
+                        else if (rt == true) {
+                            if (orderid.toUpperCase().includes('DATE')) {
+                                // reportcondition = reportcondition + " str_to_date(replace(" + orderid.toString() + ",'/','-') ,'%d-%M-%Y') = '" + attributes.toString() + "'";
+                                reportcondition = reportcondition + " (" + " ( str_to_date(replace(" + orderid.toString() + ",'/','-') ,'%d-%M-%Y') != '" + attributes.toString() + "' or str_to_date(replace(" + orderid.toString() + ",'/','-') ,'%d-%m-%Y') != '" + attributes.toString() + "' )";
+                            }
+                            else {
+                                reportcondition += " (" + orderid + " != '" + attributes.toString() + "' ";
+                            }
+                        }
+                        else if (rty == true) {
+                            if (orderid.toUpperCase().includes('DATE')) {
+                                // reportcondition = reportcondition + " str_to_date(replace(" + orderid.toString() + ",'/','-') ,'%d-%M-%Y') = '" + attributes.toString() + "'";
+                                reportcondition = reportcondition + " ( str_to_date(replace(" + orderid.toString() + ",'/','-') ,'%d-%M-%Y') != '" + attributes.toString() + "' or str_to_date(replace(" + orderid.toString() + ",'/','-') ,'%d-%m-%Y') != '" + attributes.toString() + "' )" + ")";
+                            }
+                            else {
+                                reportcondition += " " + orderid + " != '" + attributes.toString() + "' " + ")";
+                            }
+                        }
+                        else {
+                            if (orderid.toUpperCase().includes('DATE')) {
+                                // reportcondition = reportcondition + " str_to_date(replace(" + orderid.toString() + ",'/','-') ,'%d-%M-%Y') = '" + attributes.toString() + "'";
+                                reportcondition = reportcondition + " ( str_to_date(replace(" + orderid.toString() + ",'/','-') ,'%d-%M-%Y') != '" + attributes.toString() + "' or str_to_date(replace(" + orderid.toString() + ",'/','-') ,'%d-%m-%Y') != '" + attributes.toString() + "' )";
+                            }
+                            else {
+                                reportcondition += " " + orderid + " != '" + attributes.toString() + "' ";
+                            }
+
+                        }
+
+
+                    }
+                    else if (contselect.toLowerCase() == "begins with") {
+                        if (rt == true && rty == true) {
+
+                            reportcondition += " ( " + orderid + " like '" + attributes.toString() + '%' + "' " + ")";
+
+                        }
+                        else if (rt == true) {
+
+                            reportcondition += " (" + orderid + " like '" + attributes.toString() + '%' + "' ";
+
+                        }
+                        else if (rty == true) {
+                            reportcondition += " " + orderid + " like '" + attributes.toString() + '%' + "' " + ")";
+                        }
+                        else {
+                            reportcondition += " " + orderid + " like '" + attributes.toString() + '%' + "' ";
+
+                        }
+
+
+
+                    }
+                    else if (contselect.toLowerCase() == "end with") {
+                        if (rt == true && rty == true) {
+
+                            reportcondition += " ( " + orderid + " like '" + '%' + attributes.toString() + "' " + ")";
+
+                        }
+                        else if (rt == true) {
+
+                            reportcondition += " (" + orderid + " like '" + '%' + attributes.toString() + "' ";
+
+                        }
+                        else if (rty == true) {
+                            reportcondition += " " + orderid + " like '" + '%' + attributes.toString() + "' " + ")";
+                        }
+                        else {
+                            reportcondition += " " + orderid + " like '" + '%' + attributes.toString() + "' ";
+
+                        }
+                        reportcondition += " and " + orderid + " like '" + '%' + attributes.toString() + "' ";
+                    }
+                    else if (contselect.toLowerCase() == "contains") {
+                        if (rt == true && rty == true) {
+
+                            reportcondition += " ( " + orderid + " like '" + '%' + attributes.toString() + '%' + "' " + ")";
+
+                        }
+                        else if (rt == true) {
+
+                            reportcondition += " (" + orderid + " like '" + '%' + attributes.toString() + '%' + "' ";
+
+                        }
+                        else if (rty == true) {
+                            reportcondition += " " + orderid + " like '" + '%' + attributes.toString() + '%' + "' " + ")";
+                        }
+                        else {
+                            reportcondition += " " + orderid + " like '" + '%' + attributes.toString() + '%' + "' ";
+
+                        }
+
+                    }
+                    else if (contselect.toLowerCase() == "does not contains") {
+
+                        if (rt == true && rty == true) {
+
+                            reportcondition += " ( " + orderid + "not like '" + '%' + attributes.toString() + '%' + "' " + ")";
+
+                        }
+                        else if (rt == true) {
+
+                            reportcondition += " (" + orderid + " not like '" + '%' + attributes.toString() + '%' + "' ";
+
+                        }
+                        else if (rty == true) {
+                            reportcondition += " " + orderid + " not like '" + '%' + attributes.toString() + '%' + "' " + ")";
+                        }
+                        else {
+                            reportcondition += " " + orderid + " not like '" + '%' + attributes.toString() + '%' + "' ";
+
+                        }
+
+                    }
+                    else if (contselect.toLowerCase() == "is greater than") {
+
+                        if (rt == true && rty == true) {
+                            if (orderid.toUpperCase().includes('DATE')) {
+                                // reportcondition = reportcondition + " str_to_date(replace(" + orderid.toString() + ",'/','-') ,'%d-%M-%Y') = '" + attributes.toString() + "'";
+                                reportcondition = reportcondition + " ( " + " ( str_to_date(replace(" + orderid.toString() + ",'/','-') ,'%d-%M-%Y') > '" + attributes.toString() + "' or str_to_date(replace(" + orderid.toString() + ",'/','-') ,'%d-%m-%Y') > '" + attributes.toString() + "' )" + ")";
+                            }
+                            else {
+                                reportcondition += " ( " + orderid + " > '" + attributes.toString() + "' " + ")";
+                            }
+                        }
+                        else if (rt == true) {
+                            if (orderid.toUpperCase().includes('DATE')) {
+                                // reportcondition = reportcondition + " str_to_date(replace(" + orderid.toString() + ",'/','-') ,'%d-%M-%Y') = '" + attributes.toString() + "'";
+                                reportcondition = reportcondition + " (" + " ( str_to_date(replace(" + orderid.toString() + ",'/','-') ,'%d-%M-%Y') > '" + attributes.toString() + "' or str_to_date(replace(" + orderid.toString() + ",'/','-') ,'%d-%m-%Y') > '" + attributes.toString() + "' )";
+                            }
+                            else {
+                                reportcondition += " (" + orderid + " > '" + attributes.toString() + "' ";
+                            }
+                        }
+                        else if (rty == true) {
+                            if (orderid.toUpperCase().includes('DATE')) {
+                                // reportcondition = reportcondition + " str_to_date(replace(" + orderid.toString() + ",'/','-') ,'%d-%M-%Y') = '" + attributes.toString() + "'";
+                                reportcondition = reportcondition + " ( str_to_date(replace(" + orderid.toString() + ",'/','-') ,'%d-%M-%Y') > '" + attributes.toString() + "' or str_to_date(replace(" + orderid.toString() + ",'/','-') ,'%d-%m-%Y') > '" + attributes.toString() + "' )" + ")";
+                            }
+                            else {
+                                reportcondition += " " + orderid + " > '" + attributes.toString() + "' " + ")";
+                            }
+                        }
+                        else {
+                            if (orderid.toUpperCase().includes('DATE')) {
+                                // reportcondition = reportcondition + " str_to_date(replace(" + orderid.toString() + ",'/','-') ,'%d-%M-%Y') = '" + attributes.toString() + "'";
+                                reportcondition = reportcondition + " ( str_to_date(replace(" + orderid.toString() + ",'/','-') ,'%d-%M-%Y') > '" + attributes.toString() + "' or str_to_date(replace(" + orderid.toString() + ",'/','-') ,'%d-%m-%Y') > '" + attributes.toString() + "' )";
+                            }
+                            else {
+                                reportcondition += " " + orderid + " > '" + attributes.toString() + "' ";
+                            }
+
+                        }
+
+
+                    }
+
+                    else if (contselect.toLowerCase() == "is less than") {
+
+                        if (rt == true && rty == true) {
+                            if (orderid.toUpperCase().includes('DATE')) {
+                                // reportcondition = reportcondition + " str_to_date(replace(" + orderid.toString() + ",'/','-') ,'%d-%M-%Y') = '" + attributes.toString() + "'";
+                                reportcondition = reportcondition + " ( " + " ( str_to_date(replace(" + orderid.toString() + ",'/','-') ,'%d-%M-%Y') < '" + attributes.toString() + "' or str_to_date(replace(" + orderid.toString() + ",'/','-') ,'%d-%m-%Y') < '" + attributes.toString() + "' )" + ")";
+                            }
+                            else {
+                                reportcondition += " ( " + orderid + " < '" + attributes.toString() + "' " + ")";
+                            }
+                        }
+                        else if (rt == true) {
+                            if (orderid.toUpperCase().includes('DATE')) {
+                                // reportcondition = reportcondition + " str_to_date(replace(" + orderid.toString() + ",'/','-') ,'%d-%M-%Y') = '" + attributes.toString() + "'";
+                                reportcondition = reportcondition + " (" + " ( str_to_date(replace(" + orderid.toString() + ",'/','-') ,'%d-%M-%Y') < '" + attributes.toString() + "' or str_to_date(replace(" + orderid.toString() + ",'/','-') ,'%d-%m-%Y') < '" + attributes.toString() + "' )";
+                            }
+                            else {
+                                reportcondition += " (" + orderid + " < '" + attributes.toString() + "' ";
+                            }
+                        }
+                        else if (rty == true) {
+                            if (orderid.toUpperCase().includes('DATE')) {
+                                // reportcondition = reportcondition + " str_to_date(replace(" + orderid.toString() + ",'/','-') ,'%d-%M-%Y') = '" + attributes.toString() + "'";
+                                reportcondition = reportcondition + " ( str_to_date(replace(" + orderid.toString() + ",'/','-') ,'%d-%M-%Y') < '" + attributes.toString() + "' or str_to_date(replace(" + orderid.toString() + ",'/','-') ,'%d-%m-%Y') < '" + attributes.toString() + "' )" + ")";
+                            }
+                            else {
+                                reportcondition += " " + orderid + " < '" + attributes.toString() + "' " + ")";
+                            }
+                        }
+                        else {
+                            if (orderid.toUpperCase().includes('DATE')) {
+                                // reportcondition = reportcondition + " str_to_date(replace(" + orderid.toString() + ",'/','-') ,'%d-%M-%Y') = '" + attributes.toString() + "'";
+                                reportcondition = reportcondition + " ( str_to_date(replace(" + orderid.toString() + ",'/','-') ,'%d-%M-%Y') < '" + attributes.toString() + "' or str_to_date(replace(" + orderid.toString() + ",'/','-') ,'%d-%m-%Y') < '" + attributes.toString() + "' )";
+                            }
+                            else {
+                                reportcondition += " " + orderid + " < '" + attributes.toString() + "' ";
+                            }
+
+                        }
+
+                    }
+
+                    else if (contselect.toLowerCase() == "is greater than or equal to") {
+                        if (rt == true && rty == true) {
+                            if (orderid.toUpperCase().includes('DATE')) {
+                                // reportcondition = reportcondition + " str_to_date(replace(" + orderid.toString() + ",'/','-') ,'%d-%M-%Y') = '" + attributes.toString() + "'";
+                                reportcondition = reportcondition + " ( " + " ( str_to_date(replace(" + orderid.toString() + ",'/','-') ,'%d-%M-%Y') >= '" + attributes.toString() + "' or str_to_date(replace(" + orderid.toString() + ",'/','-') ,'%d-%m-%Y') >= '" + attributes.toString() + "' )" + ")";
+                            }
+                            else {
+                                reportcondition += " ( " + orderid + " >= '" + attributes.toString() + "' " + ")";
+                            }
+                        }
+                        else if (rt == true) {
+                            if (orderid.toUpperCase().includes('DATE')) {
+                                // reportcondition = reportcondition + " str_to_date(replace(" + orderid.toString() + ",'/','-') ,'%d-%M-%Y') = '" + attributes.toString() + "'";
+                                reportcondition = reportcondition + " (" + " ( str_to_date(replace(" + orderid.toString() + ",'/','-') ,'%d-%M-%Y') >= '" + attributes.toString() + "' or str_to_date(replace(" + orderid.toString() + ",'/','-') ,'%d-%m-%Y') >= '" + attributes.toString() + "' )";
+                            }
+                            else {
+                                reportcondition += " (" + orderid + " >= '" + attributes.toString() + "' ";
+                            }
+                        }
+                        else if (rty == true) {
+                            if (orderid.toUpperCase().includes('DATE')) {
+                                // reportcondition = reportcondition + " str_to_date(replace(" + orderid.toString() + ",'/','-') ,'%d-%M-%Y') = '" + attributes.toString() + "'";
+                                reportcondition = reportcondition + " ( str_to_date(replace(" + orderid.toString() + ",'/','-') ,'%d-%M-%Y') >= '" + attributes.toString() + "' or str_to_date(replace(" + orderid.toString() + ",'/','-') ,'%d-%m-%Y') >= '" + attributes.toString() + "' )" + ")";
+                            }
+                            else {
+                                reportcondition += " " + orderid + " >= '" + attributes.toString() + "' " + ")";
+                            }
+                        }
+                        else {
+                            if (orderid.toUpperCase().includes('DATE')) {
+                                // reportcondition = reportcondition + " str_to_date(replace(" + orderid.toString() + ",'/','-') ,'%d-%M-%Y') = '" + attributes.toString() + "'";
+                                reportcondition = reportcondition + " ( str_to_date(replace(" + orderid.toString() + ",'/','-') ,'%d-%M-%Y') >= '" + attributes.toString() + "' or str_to_date(replace(" + orderid.toString() + ",'/','-') ,'%d-%m-%Y') >= '" + attributes.toString() + "' )";
+                            }
+                            else {
+                                reportcondition += " " + orderid + " >= '" + attributes.toString() + "' ";
+                            }
+
+                        }
+
+
+                    }
+                    else if (contselect.toLowerCase() == "is less than or equal to") {
+                        if (rt == true && rty == true) {
+                            if (orderid.toUpperCase().includes('DATE')) {
+                                // reportcondition = reportcondition + " str_to_date(replace(" + orderid.toString() + ",'/','-') ,'%d-%M-%Y') = '" + attributes.toString() + "'";
+                                reportcondition = reportcondition + " ( " + " ( str_to_date(replace(" + orderid.toString() + ",'/','-') ,'%d-%M-%Y') <= '" + attributes.toString() + "' or str_to_date(replace(" + orderid.toString() + ",'/','-') ,'%d-%m-%Y') <= '" + attributes.toString() + "' )" + ")";
+                            }
+                            else {
+                                reportcondition += " ( " + orderid + " <= '" + attributes.toString() + "' " + ")";
+                            }
+                        }
+                        else if (rt == true) {
+                            if (orderid.toUpperCase().includes('DATE')) {
+                                // reportcondition = reportcondition + " str_to_date(replace(" + orderid.toString() + ",'/','-') ,'%d-%M-%Y') = '" + attributes.toString() + "'";
+                                reportcondition = reportcondition + " (" + " ( str_to_date(replace(" + orderid.toString() + ",'/','-') ,'%d-%M-%Y') <= '" + attributes.toString() + "' or str_to_date(replace(" + orderid.toString() + ",'/','-') ,'%d-%m-%Y') <= '" + attributes.toString() + "' )";
+                            }
+                            else {
+                                reportcondition += " (" + orderid + " <= '" + attributes.toString() + "' ";
+                            }
+                        }
+                        else if (rty == true) {
+                            if (orderid.toUpperCase().includes('DATE')) {
+                                // reportcondition = reportcondition + " str_to_date(replace(" + orderid.toString() + ",'/','-') ,'%d-%M-%Y') = '" + attributes.toString() + "'";
+                                reportcondition = reportcondition + " ( str_to_date(replace(" + orderid.toString() + ",'/','-') ,'%d-%M-%Y') <= '" + attributes.toString() + "' or str_to_date(replace(" + orderid.toString() + ",'/','-') ,'%d-%m-%Y') <= '" + attributes.toString() + "' )" + ")";
+                            }
+                            else {
+                                reportcondition += " " + orderid + " <= '" + attributes.toString() + "' " + ")";
+                            }
+                        }
+                        else {
+                            if (orderid.toUpperCase().includes('DATE')) {
+                                // reportcondition = reportcondition + " str_to_date(replace(" + orderid.toString() + ",'/','-') ,'%d-%M-%Y') = '" + attributes.toString() + "'";
+                                reportcondition = reportcondition + " ( str_to_date(replace(" + orderid.toString() + ",'/','-') ,'%d-%M-%Y') <= '" + attributes.toString() + "' or str_to_date(replace(" + orderid.toString() + ",'/','-') ,'%d-%m-%Y') <= '" + attributes.toString() + "' )";
+                            }
+                            else {
+                                reportcondition += " " + orderid + " <= '" + attributes.toString() + "' ";
+                            }
+
+                        }
+
+                    }
+
+
+
+
+                }
+                else {
+                    ran = "emptyvalue";
+
+
+                }
+
+            }
+
+            if (clicks > 0 && attributes != "") {
+
+                var docgroup = $("#Catgery").val();
+                var docname = $("#subCatgery").val();
+
+                var dbCondition = "";
+                GetSearch_Info(docgroup, docname, reportcondition);
+            }
+
+
+
+
+        }
+        let sessionTimeoutMinutes = 20;
+        let countdown = sessionTimeoutMinutes * 60 * 1000; // 10 minutes in milliseconds
+        let timeout;
+
+        function resetTimer() {
+            clearTimeout(timeout);
+            timeout = setTimeout(() => {
+                // Redirect to session expired page
+                window.location.href = "../Login/SessionExpired"; // Change to your session expired route
+            }, countdown);
+        }
+
+        // Reset timer on activity
+        document.onload = resetTimer();
+        document.onmousemove = resetTimer;
+        document.onkeypress = resetTimer;
+        document.onscroll = resetTimer;
+        document.onclick = resetTimer;
+
+    </script>
+
+</body>
+
+
+</html>
+

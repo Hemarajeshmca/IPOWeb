@@ -1,0 +1,196 @@
+﻿@{
+    Layout = "~/Views/Shared/_LayoutNew.cshtml";
+}
+<!DOCTYPE html>
+<html>  
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>Client Setup</title>
+    <style>
+        .content-wrapper {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        h5#navhead {
+            position: relative;
+            right: 129px;
+            width: 23%;
+        }
+    </style>
+</head>
+
+<body class="hold-transition skin-blue sidebar-mini fixed">
+    <div class="content-wrapper">
+        <div class="container-xxl flex-grow-1 container-p-y">
+            <div class="card-body" style="margin-top:5px;height: 358px;width: 103%;margin-left: -18px;box-shadow: 0px 6px 7px -1px rgba(67, 89, 113, 0.12);">
+                <div class="row">
+                    <div class="col-sm-2">
+                        <input type="text" id="createedit" class="form-control" readonly value="@ViewBag.Mode" />
+                    </div>
+                    <div class="col-sm-2">
+                        <input type="text" id="clientcode" class="form-control" readonly value="@ViewBag.ClientCode" />
+                    </div>
+                    <div class="col-sm-2">
+                        <input type="text" id="clientstatus" class="form-control" readonly value="@ViewBag.Status" />
+                    </div>
+                    <div class="col-sm-6">
+                        <img style="width:20px; height:20px; margin-bottom:-9px; cursor:pointer;float:right;" onclick="location.href='@Url.Action("Dashboard", "Dashboard")?tab=client'"  src="/Assets/images/toplist.png">
+                    </div>
+                </div>
+                <div class="row" style="margin-top:20px;">
+                    <div class="col-sm-3">
+                        <input type="hidden" id="iponame"/>
+                        <label class="form-label" for="ReferredBy" data-field="ReferredBy">Client Name</label>&nbsp;<span style="font-size: 12px;color:red;font-weight: bold;">*</span>
+                        <input type="text" id="clientname" class="form-control" value="@ViewBag.ClientName" />
+                    </div>
+                    <div class="col-sm-3">
+                        <label class="form-label" for="ctype" data-field="ctype">Client Type</label>&nbsp;<span style="font-size: 12px;color:red;font-weight: bold;">*</span>
+                        <select name="ctype" id="ctype" class="form-control" >                            
+                        </select>
+                    </div>
+                    <div class="col-sm-3">
+                        <label class="form-label" for="cin" data-field="cin">CIN</label>&nbsp;<span style="font-size: 12px;color:red;font-weight: bold;">*</span>
+                        <input type="text" id="cin" name="cin" class="form-control" value="@ViewBag.CIN"  />
+                    </div>
+                    <div class="col-sm-3">
+                        <label class="form-label" for="cperson" data-field="cperson">Contact Person</label>
+                        <input type="text" id="cperson" name="cperson" class="form-control" value="@ViewBag.Person"  />
+                    </div>
+                </div>
+                <div class="row" style="margin-top:20px;">
+                    <div class="col-sm-3">
+                        <label class="form-label" for="mobno" data-field="mobno">Mobile No</label>&nbsp;<span style="font-size: 12px;color:red;font-weight: bold;">*</span>
+                        <input type="text" id="mobno" name="mobno" class="form-control" value="@ViewBag.Mob"  />
+                    </div>
+                    <div class="col-sm-3">
+                        <label class="form-label" for="email" data-field="email">Email ID</label>&nbsp;<span style="font-size: 12px;color:red;font-weight: bold;">*</span>
+                        <input type="text" id="email" name="email" class="form-control" value="@ViewBag.Email"  />
+                    </div>
+                    <div class="col-sm-3">
+                        <label class="form-label" for="address" data-field="address">Address</label>&nbsp;<span style="font-size: 12px;color:red;font-weight: bold;">*</span>
+                        <textarea id="address" class="form-control" cols="10" rows="2" >@ViewBag.Address</textarea>
+                    </div>
+                    <div class="col-sm-3">
+                        <label class="form-label" for="country" data-field="country">Country</label>&nbsp;<span style="font-size: 12px;color:red;font-weight: bold;">*</span>
+                        <select name="country" id="country" class="form-control" >                           
+                        </select>
+                    </div>
+                </div>
+                <div class="row" style="margin-top:20px;">
+                    <div class="col-sm-3">
+                        <label class="form-label" for="state" data-field="state">State</label>&nbsp;<span style="font-size: 12px;color:red;font-weight: bold;">*</span>
+                        <select name="state" id="state" class="form-control" >                           
+                        </select>
+                    </div>
+                    <div class="col-sm-3">
+                        <label class="form-label" for="city" data-field="city">City</label>&nbsp;<span style="font-size: 12px;color:red;font-weight: bold;">*</span>
+                        <select name="city" id="city" class="form-control" >                           
+                        </select>
+                    </div>
+                    <div class="col-sm-3">
+                        <label class="form-label" for="pin" data-field="pin">Pincode</label>&nbsp;<span style="font-size: 12px;color:red;font-weight: bold;">*</span>
+                        <input type="text" id="pin" name="pin" class="form-control" value="@ViewBag.PIN"   />
+                    </div>
+                    <div class="col-sm-3">
+                        <center><button type="button" class="btn btn-primary" id="btnSave"  style="padding: 3px 25px;margin-top:28px;width:40%">Save</button></center>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>      
+   
+</body>
+
+</html>
+<script>
+     $( document ).ready(function() {
+          $('#navhead').text('Client Master');
+          $("#iponame").val("");
+            loadMasterDropdown("QCD_MAST_CLIENT_TYPE", "ctype",null);
+            loadMasterDropdown("QCD_MAST_COUNTRY", "country", null);
+          var selectedType = '@ViewBag.ClientType';
+        if (selectedType) {
+            $("#ctype").val(selectedType);
+        }
+        var selectedState =  '@ViewBag.State';
+        if (selectedState) {
+            $("#state").val(selectedState);
+        }
+         var selectedCity =  '@ViewBag.City';
+        if (selectedCity) {
+            $("#city").val(selectedCity);
+        }
+        var selectedCountry =  '@ViewBag.Country';
+        if (selectedCountry) {
+            $("#country").val(selectedCountry);
+        }
+    });
+
+
+     function loadMasterDropdown(masterCode, dropdownId, dependValue, selectedValue) {
+        var mymodel = {
+            mastercode: masterCode,
+            dependvalue: dependValue
+        };
+        $.ajax({
+            type: "POST",
+            url: '@Url.Action("ClientType", "ClientSetup")',
+            data: JSON.stringify(mymodel),
+            dataType: "json",
+            contentType: 'application/json; charset=utf-8',
+            success: function (response) {
+                    if (response.authExpired) {
+                        $.alert({
+                             title: 'Unauthorized',
+                            content: response.message || 'Unauthorized User',
+                            type: 'red',
+                            buttons: {
+                                ok: {
+                                    text: 'OK',
+                                    action: function () {
+                                        window.location.href = '/login/logout';
+                                    }
+                                }
+                            }
+                        });
+                        return;
+                    }
+                var result = JSON.parse(response.data);
+
+                var $ddl = $("#" + dropdownId);
+                $ddl.empty();
+                $ddl.append('<option value="">--- Select ---</option>');
+
+                $.each(result.Table, function (index, item) {
+                    $ddl.append(
+                        '<option value="' + item.master_gid + '">' +
+                            item.master_name +
+                        '</option>'
+                    );
+                });
+
+                // bind selected value (edit scenario)
+                if (selectedValue) {
+                    $ddl.val(selectedValue).trigger("change");
+                }
+            },
+            error: function (xhr) {
+                console.log("Dropdown load error:", xhr.responseText);
+            }
+        });
+    }
+
+$("#country").on("change", function () {
+     var country = $(this).val();
+    $("#state").empty();
+    $("#city").empty();
+    loadMasterDropdown("QCD_MAST_STATE", "state", country);
+  });
+$("#state").on("change", function () {
+    var state = $(this).val();
+    $("#city").empty();
+    loadMasterDropdown("QCD_MAST_CITY", "city", state);
+});
+</script>

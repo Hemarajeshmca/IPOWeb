@@ -1,0 +1,681 @@
+﻿@{
+    Layout = "~/Views/Shared/_LayoutNew.cshtml";
+    var userName = Context.Session.GetString("user_name");
+}
+<!DOCTYPE html>
+<html>  
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>Jobs Status</title>
+    <style>
+        .content-wrapper {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .nav-tabs .nav-link.active, .nav-tabs .nav-item.show .nav-link {
+            background-color: #027ed1 !important;
+            color: #fff !important;
+        }
+
+        .nav-tabs .nav-item .nav-link:not(.active) {
+            background-color: #716969;
+            color: #fff;
+        }
+
+
+        /* Alternate row color */
+        #datasetList .k-grid-content tr.k-alt td {
+            background-color: #fff;
+            color: #000;
+        }
+
+        /* Consistent borders */
+        #datasetList .k-grid-header th,
+        #datasetList .k-grid-content td {
+            border-right: 1px solid #ddd;
+        }
+
+            /* Remove last border */
+            #datasetList .k-grid-header th:last-child,
+            #datasetList .k-grid-content td:last-child {
+                border-right: none;
+            }
+
+        /* Fixed layout for alignment */
+        #datasetList .k-grid-header table,
+        #datasetList .k-grid-content table {
+            table-layout: fixed;
+            width: 100%;
+        }
+
+        /* Prevent wrapping */
+        #datasetList .k-grid-header th,
+        #datasetList .k-grid-content td {
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        /* Compact size */
+        #datasetList .k-grid-content td {
+            padding: 3px 6px;
+            font-size: 12px;
+            line-height: 18px;
+            background: #fff;
+        }
+
+        #datasetList .k-grid-header th {
+            padding: 4px 6px;
+            font-size: 12px;
+            line-height: 18px;
+        }
+
+        /* Compact row height */
+        #datasetList .k-grid-content tr {
+            height: 26px;
+        }
+
+        #datasetList .k-grid-header tr {
+            height: 28px;
+        }
+
+        .k-grid td {
+            padding: 2px 2px;
+            font-size: 13px;
+        }
+        td {
+            font-size: 13px;
+        }
+        /* Alternate row color */
+        #infoGrid .k-grid-content tr.k-alt td {
+            background-color: #fff;
+            color: #000;
+        }
+
+        /* Consistent borders */
+        #infoGrid .k-grid-header th,
+        #infoGrid .k-grid-content td {
+            border-right: 1px solid #ddd;
+        }
+
+            /* Remove last border */
+            #infoGrid .k-grid-header th:last-child,
+            #infoGrid .k-grid-content td:last-child {
+                border-right: none;
+            }
+
+        /* Fixed layout for alignment */
+        #infoGrid .k-grid-header table,
+        #infoGrid .k-grid-content table {
+            table-layout: fixed;
+            width: 100%;
+        }
+
+        /* Prevent wrapping */
+        #infoGrid .k-grid-header th,
+        #infoGrid .k-grid-content td {
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        /* Compact size */
+        #infoGrid .k-grid-content td {
+            padding: 3px 6px;
+            font-size: 12px;
+            line-height: 18px;
+            background: #fff;
+        }
+
+        #infoGrid .k-grid-header th {
+            padding: 4px 6px;
+            font-size: 12px;
+            line-height: 18px;
+        }
+
+        /* Compact row height */
+        #infoGrid .k-grid-content tr {
+            height: 26px;
+        }
+
+        #infoGrid .k-grid-header tr {
+            height: 28px;
+        }
+        /* Alternate row color */
+        #inQueueList .k-grid-content tr.k-alt td {
+            background-color: #fff;
+            color: #000;
+        }
+
+        /* Consistent borders */
+        #inQueueList .k-grid-header th,
+        #inQueueList .k-grid-content td {
+            border-right: 1px solid #ddd;
+        }
+
+            /* Remove last border */
+            #inQueueList .k-grid-header th:last-child,
+            #inQueueList .k-grid-content td:last-child {
+                border-right: none;
+            }
+
+        #inQueueList .k-grid-content tr:last-child td {
+            border-bottom: 1px solid #dcdcdc !important;
+        }
+
+        /* Fixed layout for alignment */
+        #inQueueList .k-grid-header table,
+        #inQueueList .k-grid-content table {
+            table-layout: fixed;
+            width: 100%;
+        }
+
+        /* Prevent wrapping */
+        #inQueueList .k-grid-header th,
+        #inQueueList .k-grid-content td {
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        /* Compact size */
+        #inQueueList .k-grid-content td {
+            padding: 3px 6px;
+            font-size: 12px;
+            line-height: 18px;
+            background: #fff;
+        }
+
+        #inQueueList .k-grid-header th {
+            padding: 4px 6px;
+            font-size: 12px;
+            line-height: 18px;
+        }
+
+        /* Compact row height */
+        #inQueueList .k-grid-content tr {
+            height: 26px;
+        }
+
+        #inQueueList .k-grid-header tr {
+            height: 28px;
+        }
+        /* Alternate row color */
+        #inProgressList .k-grid-content tr.k-alt td {
+            background-color: #fff;
+            color: #000;
+        }
+
+        /* Consistent borders */
+        #inProgressList .k-grid-header th,
+        #inProgressList .k-grid-content td {
+            border-right: 1px solid #ddd;
+        }
+
+            /* Remove last border */
+            #inProgressList .k-grid-header th:last-child,
+            #inProgressList .k-grid-content td:last-child {
+                border-right: none;
+            }
+
+        #inProgressList .k-grid-content tr:last-child td {
+            border-bottom: 1px solid #dcdcdc !important;
+        }
+        /* Fixed layout for alignment */
+        #inProgressList .k-grid-header table,
+        #inProgressList .k-grid-content table {
+            table-layout: fixed;
+            width: 100%;
+        }
+
+        /* Prevent wrapping */
+        #inProgressList .k-grid-header th,
+        #inProgressList .k-grid-content td {
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        /* Compact size */
+        #inProgressList .k-grid-content td {
+            padding: 3px 6px;
+            font-size: 12px;
+            line-height: 18px;
+            background: #fff;
+        }
+
+        #inProgressList .k-grid-header th {
+            padding: 4px 6px;
+            font-size: 12px;
+            line-height: 18px;
+        }
+
+        /* Compact row height */
+        #inProgressList .k-grid-content tr {
+            height: 26px;
+        }
+
+        #inProgressList .k-grid-header tr {
+            height: 28px;
+        }
+        /* Alternate row color */
+        #completedList .k-grid-content tr.k-alt td {
+            background-color: #fff;
+            color: #000;
+        }
+
+        /* Consistent borders */
+        #completedList .k-grid-header th,
+        #completedList .k-grid-content td {
+            border-right: 1px solid #ddd;
+        }
+
+            /* Remove last border */
+            #completedList .k-grid-header th:last-child,
+            #completedList .k-grid-content td:last-child {
+                border-right: none;
+            }
+
+        #completedList .k-grid-content tr:last-child td {
+            border-bottom: 1px solid #dcdcdc !important;
+        }
+        /* Fixed layout for alignment */
+        #completedList .k-grid-header table,
+        #completedList .k-grid-content table {
+            table-layout: fixed;
+            width: 100%;
+        }
+
+        /* Prevent wrapping */
+        #completedList .k-grid-header th,
+        #completedList .k-grid-content td {
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        /* Compact size */
+        #completedList .k-grid-content td {
+            padding: 3px 6px;
+            font-size: 12px;
+            line-height: 18px;
+            background: #fff;
+        }
+
+        #completedList .k-grid-header th {
+            padding: 4px 6px;
+            font-size: 12px;
+            line-height: 18px;
+        }
+
+        /* Compact row height */
+        #completedList .k-grid-content tr {
+            height: 26px;
+        }
+
+        #completedList .k-grid-header tr {
+            height: 28px;
+        }
+        .k-grid-content {
+            height:229px;
+        }
+    </style>
+</head>
+
+<body class="hold-transition skin-blue sidebar-mini fixed">
+    <div class="content-wrapper">
+        <div class="container-xxl flex-grow-1 container-p-y">
+            <div class="card-body" style="margin-top:5px;height: 556px;width: 103%;margin-left: -18px;">
+                <div class="row" style="margin-top: -17px;">
+                    <div class="col-sm-3">
+                        <label class="form-label" for="ctype" data-field="ctype">IPO Name</label>&nbsp;<span style="font-size: 12px;color:red;font-weight: bold;">*</span>
+                        <input type="text" class="form-control" id="iponame" readonly/>
+                    </div>
+                </div>
+               <div class="row" style="margin-top:20px;">
+                   <div class="col-sm-12">
+                        <div class="nav-align-top mb-4">
+                            <ul class="nav nav-tabs" role="tablist">
+                                <li class="nav-item">
+                                    <button type="button"
+                                            onclick="queueTab()"
+                                            class="nav-link active"
+                                            role="tab"
+                                            data-bs-toggle="tab"
+                                            data-bs-target="#navs-top-list"
+                                            aria-controls="navs-top-list"
+                                            aria-selected="true">
+                                        In Queue
+                                    </button>
+                                </li>
+                                <li class="nav-item">
+                                    <button type="button"
+                                            onclick="progressTab()"
+                                            class="nav-link"
+                                            role="tab"
+                                            data-bs-toggle="tab"
+                                            data-bs-target="#navs-top-progress"
+                                            aria-controls="navs-top-progress"
+                                            aria-selected="false">
+                                        In Progress
+                                    </button>
+                                </li>
+                                <li class="nav-item">
+                                    <button type="button"
+                                            onclick="completedTab()"
+                                            class="nav-link"
+                                            role="tab"
+                                            data-bs-toggle="tab"
+                                            data-bs-target="#navs-top-com"
+                                            aria-controls="navs-top-com"
+                                            aria-selected="false">
+                                        Completed
+                                    </button>
+                                </li>
+                            </ul>
+                            <div class="tab-content">
+                                <div class="tab-pane fade show active" id="navs-top-list" role="tabpanel">
+                                    <div class="row" style="margin-top: -12px;">
+                                        <div class="col-sm-3">
+                                            <label class="form-label"  for="ReferredBy" data-field="ReferredBy">Initiated From Date</label>
+                                            <input type="date" id="initiated_from" class="form-control" />
+                                        </div>
+                                         <div class="col-sm-3">
+                                            <label class="form-label"  for="ReferredBy" data-field="ReferredBy">Initiated To Date</label>
+                                            <input type="date" id="initiated_to" class="form-control" />
+                                        </div>
+                                        <div class="col-sm-3">
+                                            <button type="button" class="btn btn-primary" id="btnSearch" onclick="searchJob()" style="padding: 3px 25px;margin-top:30px;width:50%">Search</button>
+                                        </div>
+                                    </div>
+                                    <div class="row" style="margin-top: 10px;">
+                                        <div class="col-sm-12" id="gd_inQueueList">
+                                            <div id="inQueueList"></div>
+                                        </div>
+                                    </div>                                   
+                                </div>
+                                <div class="tab-pane fade" id="navs-top-progress" role="tabpanel">    
+                                    <div class="row" style="margin-top: -12px;">
+                                        <div class="col-sm-3">
+                                            <label class="form-label" for="ReferredBy" data-field="ReferredBy">Initiated From Date</label>
+                                            <input type="date" id="initiated_from_ip" class="form-control" />
+                                        </div>
+                                        <div class="col-sm-3">
+                                            <label class="form-label" for="ReferredBy" data-field="ReferredBy">Initiated To Date</label>
+                                            <input type="date" id="initiated_to_ip" class="form-control" />
+                                        </div>
+                                        <div class="col-sm-3">
+                                            <button type="button" class="btn btn-primary" id="btnSearch" onclick="jobinprogress()" style="padding: 3px 25px;margin-top:30px;width:50%">Search</button>
+                                        </div>
+                                    </div>
+                                    <div class="row" style="margin-top: 10px;">
+                                        <div class="col-sm-12" id="gd_inProgressList">
+                                            <div id="inProgressList"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="tab-pane fade" id="navs-top-com" role="tabpanel">
+                                    <div class="row" style="margin-top: -12px;">
+                                        <div class="col-sm-3">
+                                            <label class="form-label" for="ReferredBy" data-field="ReferredBy">Initiated From Date</label>
+                                            <input type="date" id="initiated_from_c" class="form-control" />
+                                        </div>
+                                        <div class="col-sm-3">
+                                            <label class="form-label" for="ReferredBy" data-field="ReferredBy">Initiated To Date</label>
+                                            <input type="date" id="initiated_to_c" class="form-control" />
+                                        </div>
+                                        <div class="col-sm-3">
+                                            <button type="button" class="btn btn-primary" onclick="jobcompleted()" id="btnSearch" style="padding: 3px 25px;margin-top:30px;width:50%">Search</button>
+                                        </div>
+                                    </div>
+                                    <div class="row" style="margin-top: 10px;">
+                                        <div class="col-sm-12" id="gd_completedList">
+                                            <div id="completedList"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                                </div>                             
+                            </div>
+                        </div>
+                   </div>
+               </div>
+            </div>
+        </div>
+
+
+</body>
+
+</html>
+<script>
+     $(document).ready(function () {
+        var today = new Date().toISOString().split('T')[0];
+        $("#initiated_from").val(today);
+        $("#initiated_to").val(today);
+        $("#navhead").text("Jobs In Queue");
+        searchJob();
+        $('#navhead').text('Jobs Status');
+        var ipoName = localStorage.getItem("selectedIPOText");
+        $("#iponame").val(ipoName);   
+      });     
+
+     function searchJob(){
+            var fromDate = validateDateFormat($("#initiated_from").val());
+            var toDate = validateDateFormat($("#initiated_to").val());
+             if (fromDate && toDate) {
+                try {
+                   // var job_type = type;
+                    var period_from = $("#initiated_from").val();
+                    var start_date = period_from;
+                    var period_end = $("#initiated_to").val();
+                    var end_date = period_end;
+                    var action_by = '@userName'; //sessionStorage.getItem("usrname");
+                    $.ajax({
+                        type: "POST",
+                        url: '../JobsStatus/QueueListFetch',
+                        dataType: 'json',
+                        data: JSON.stringify({ in_start_date: start_date, in_end_date: end_date, in_jobstatus: 'I', in_user_code: action_by }),
+                        contentType: 'application/json; charset=utf-8',
+                        success: function (response) {
+                            if (response != null || (response.length) > 0) {
+                                    $("#gd_inQueueList").empty();
+                                    $("#gd_inQueueList").append("<div id='inQueueList'></div>");
+                                    fetchInQueueGrid(response);                                
+                            }
+                            else {
+                                fetchInQueueGrid([]);
+                            }
+                        },
+                        error: function (er) {
+                            alert(er)
+                            console.log(er)
+                        }
+
+                    });
+                }
+                catch (e) {
+                    console.log(e)
+                }
+            } else if (!fromDate || !toDate) {
+                $.alert({
+                    title: 'Recon',
+                    content: "Invalid Date ..!",
+                    type: 'red',
+                });
+            }
+    }
+
+    function jobinprogress(){
+         var fromDate = validateDateFormat($("#initiated_from_ip").val());
+         var toDate = validateDateFormat($("#initiated_to_ip").val());        
+          if (fromDate && toDate) {
+              var start_date = $("#initiated_from_ip").val();
+              var end_date = $("#initiated_to_ip").val();              
+                try {
+                    var action_by = '@userName';
+                    $.ajax({
+                        type: "POST",
+                        url: '../JobsStatus/getjobinprogresslist',
+                        dataType: 'json',
+                        data: JSON.stringify({ in_start_date: start_date, in_end_date: end_date, in_jobtype_code: '0', in_jobstatus: 'P', in_user_code: action_by }),
+                        contentType: 'application/json; charset=utf-8',
+                        success: function (response) {
+                            if (response != null || (response.length) > 0) {                               
+                                    $("#gd_inProgressList").empty();
+                                    $("#gd_inProgressList").append("<div id='inProgressList'></div>");
+                                    fetchInProgressGrid(response);                                
+                            }
+                            else {
+                                fetchInProgressGrid([]);
+                            }
+                        },
+                        error: function (er) {
+                            alert(er)
+                            console.log(er)
+                        }
+
+                    });
+                }
+                catch (e) {
+                    console.log(e)
+                }
+            } else if (!fromDate || !toDate) {
+                $.alert({
+                    title: 'Recon',
+                    content: "Invalid Date ..!",
+                    type: 'red',
+                });
+            }
+    }
+
+    function jobcompleted(){
+         var fromDate = validateDateFormat($("#initiated_from_c").val());
+         var  toDate = validateDateFormat($("#initiated_to_c").val());
+          if (fromDate && toDate) {
+              var start_date =  $("#initiated_from_c").val();
+              var end_date = $("#initiated_to_c").val();              
+                try {
+                    var action_by = '@userName';
+                    $.ajax({
+                        type: "POST",
+                        url: '../JobsStatus/Joblistfetch',
+                        dataType: 'json',
+                        data: JSON.stringify({ in_start_date: start_date, in_end_date: end_date, in_jobtype_code: '0', in_jobstatus: 'C', in_user_code: action_by }),
+                        contentType: 'application/json; charset=utf-8',
+                        success: function (response) {
+                            if (response != null || (response.length) > 0) {                               
+                                    $("#gd_completedList").empty();
+                                    $("#gd_completedList").append("<div id='completedList'></div>");
+                                    fetchCompletedGrid(response);                                
+                            }
+                            else {
+                                fetchCompletedGrid([]);
+                            }
+                        },
+                        error: function (er) {
+                            alert(er)
+                            console.log(er)
+                        }
+
+                    });
+                }
+                catch (e) {
+                    console.log(e)
+                }
+            } else if (!fromDate || !toDate) {
+                $.alert({
+                    title: 'Recon',
+                    content: "Invalid Date ..!",
+                    type: 'red',
+                });
+            }
+    }
+
+    function fetchInQueueGrid(data){
+            $("#inQueueList").kendoGrid({
+                dataSource: {
+                    data: data,
+                    pageSize: 10
+                },
+                height: 300,
+                sortable: true,
+                pageable: true,
+                columns: [
+                    { field: "in_koqueue_gid", title: "Queue ID" },
+                    { field: "recon_name", title: "IPO Name" },
+                    { field: "queue_name", title: "Scheduled Job" },
+                    { field: "scheduled_date", title: "Scheduled Date" },
+                    { field: "in_koqueue_remark", title: "Remarks" },
+                    { field: "scheduled_by", title: "Scheduled By" },
+                    { field: "jobstatus_desc", title: "Job Status" }
+                ]
+            });
+    }
+
+    function fetchInProgressGrid(data){
+         $("#inProgressList").kendoGrid({
+                dataSource: {
+                    data: data,
+                    pageSize: 10
+                },
+                height: 300,
+                sortable: true,
+                pageable: true,
+
+                columns: [
+                    { field: "job_gid", title: "Queue ID" },
+                    { field: "job_name", title: "Job Name" },
+                    { field: "jobtype_desc", title: "Job Type" },
+                    { field: "job_name", title: "IPO Name" },
+                    { field: "start_date", title: "Start Date" },
+                   { field: "job_initiated_by", title: "Initiated By" },
+                    { field: "job_remark", title: "Job Remarks" }
+                ]
+            });
+    }
+
+    function fetchCompletedGrid(data){
+         $("#completedList").kendoGrid({
+                dataSource: {
+                    data: data,
+                    pageSize: 10
+                },
+                height: 300,
+                sortable: true,
+                pageable: true,
+                columns: [
+                    { field: "job_gid", title: "Job ID" },
+                    { field: "job_name", title: "Job Name" },
+                    { field: "jobtype_desc", title: "Job Type" },
+                    { field: "recon_name", title: "IPO Name" },
+                    { field: "start_date", title: "Start Date" },
+                    { field: "end_date", title: "End Date" },
+                    { field: "job_remark", title: "Job Remarks" },
+                   { field: "job_initiated_by", title: "Initiated By" },
+                   { field: "jobstatus_desc", title: "Job Status" }
+                ]
+            });
+    }
+
+    function queueTab() {
+        var today = new Date().toISOString().split('T')[0];
+        $("#initiated_from").val(today);
+        $("#initiated_to").val(today);
+    }
+
+    function progressTab() {
+        var today = new Date().toISOString().split('T')[0];
+        $("#initiated_from_ip").val(today);
+        $("#initiated_to_ip").val(today);
+        jobinprogress();
+    }
+
+     function completedTab() {
+        var today = new Date().toISOString().split('T')[0];
+        $("#initiated_from_c").val(today);
+        $("#initiated_to_c").val(today);
+        jobcompleted();
+    }
+   
+</script>

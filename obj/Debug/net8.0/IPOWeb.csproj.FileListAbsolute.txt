@@ -1,0 +1,176 @@
+E:\Venki Shared Project\IPO\IPOWeb\bin\Debug\net8.0\appsettings.Development.json
+E:\Venki Shared Project\IPO\IPOWeb\bin\Debug\net8.0\appsettings.json
+E:\Venki Shared Project\IPO\IPOWeb\bin\Debug\net8.0\IPOWeb.staticwebassets.runtime.json
+E:\Venki Shared Project\IPO\IPOWeb\bin\Debug\net8.0\IPOWeb.staticwebassets.endpoints.json
+E:\Venki Shared Project\IPO\IPOWeb\bin\Debug\net8.0\IPOWeb.exe
+E:\Venki Shared Project\IPO\IPOWeb\bin\Debug\net8.0\IPOWeb.deps.json
+E:\Venki Shared Project\IPO\IPOWeb\bin\Debug\net8.0\IPOWeb.runtimeconfig.json
+E:\Venki Shared Project\IPO\IPOWeb\bin\Debug\net8.0\IPOWeb.dll
+E:\Venki Shared Project\IPO\IPOWeb\bin\Debug\net8.0\IPOWeb.pdb
+E:\Venki Shared Project\IPO\IPOWeb\bin\Debug\net8.0\BouncyCastle.Crypto.dll
+E:\Venki Shared Project\IPO\IPOWeb\bin\Debug\net8.0\ClosedXML.dll
+E:\Venki Shared Project\IPO\IPOWeb\bin\Debug\net8.0\ClosedXML.Extensions.Mvc.dll
+E:\Venki Shared Project\IPO\IPOWeb\bin\Debug\net8.0\ClosedXML.Parser.dll
+E:\Venki Shared Project\IPO\IPOWeb\bin\Debug\net8.0\DocumentFormat.OpenXml.dll
+E:\Venki Shared Project\IPO\IPOWeb\bin\Debug\net8.0\DocumentFormat.OpenXml.Framework.dll
+E:\Venki Shared Project\IPO\IPOWeb\bin\Debug\net8.0\ExcelNumberFormat.dll
+E:\Venki Shared Project\IPO\IPOWeb\bin\Debug\net8.0\FluentValidation.dll
+E:\Venki Shared Project\IPO\IPOWeb\bin\Debug\net8.0\FluentValidation.AspNetCore.dll
+E:\Venki Shared Project\IPO\IPOWeb\bin\Debug\net8.0\FluentValidation.DependencyInjectionExtensions.dll
+E:\Venki Shared Project\IPO\IPOWeb\bin\Debug\net8.0\itextsharp.dll
+E:\Venki Shared Project\IPO\IPOWeb\bin\Debug\net8.0\System.Web.Razor.dll
+E:\Venki Shared Project\IPO\IPOWeb\bin\Debug\net8.0\System.Web.Helpers.dll
+E:\Venki Shared Project\IPO\IPOWeb\bin\Debug\net8.0\System.Web.WebPages.Deployment.dll
+E:\Venki Shared Project\IPO\IPOWeb\bin\Debug\net8.0\System.Web.WebPages.Razor.dll
+E:\Venki Shared Project\IPO\IPOWeb\bin\Debug\net8.0\System.Web.WebPages.dll
+E:\Venki Shared Project\IPO\IPOWeb\bin\Debug\net8.0\Microsoft.Web.Infrastructure.dll
+E:\Venki Shared Project\IPO\IPOWeb\bin\Debug\net8.0\Newtonsoft.Json.dll
+E:\Venki Shared Project\IPO\IPOWeb\bin\Debug\net8.0\RBush.dll
+E:\Venki Shared Project\IPO\IPOWeb\bin\Debug\net8.0\SixLabors.Fonts.dll
+E:\Venki Shared Project\IPO\IPOWeb\bin\Debug\net8.0\System.IO.Packaging.dll
+E:\Venki Shared Project\IPO\IPOWeb\obj\Debug\net8.0\IPOWeb.csproj.AssemblyReference.cache
+E:\Venki Shared Project\IPO\IPOWeb\obj\Debug\net8.0\rpswa.dswa.cache.json
+E:\Venki Shared Project\IPO\IPOWeb\obj\Debug\net8.0\IPOWeb.GeneratedMSBuildEditorConfig.editorconfig
+E:\Venki Shared Project\IPO\IPOWeb\obj\Debug\net8.0\IPOWeb.AssemblyInfoInputs.cache
+E:\Venki Shared Project\IPO\IPOWeb\obj\Debug\net8.0\IPOWeb.AssemblyInfo.cs
+E:\Venki Shared Project\IPO\IPOWeb\obj\Debug\net8.0\IPOWeb.csproj.CoreCompileInputs.cache
+E:\Venki Shared Project\IPO\IPOWeb\obj\Debug\net8.0\IPOWeb.MvcApplicationPartsAssemblyInfo.cs
+E:\Venki Shared Project\IPO\IPOWeb\obj\Debug\net8.0\IPOWeb.MvcApplicationPartsAssemblyInfo.cache
+E:\Venki Shared Project\IPO\IPOWeb\obj\Debug\net8.0\IPOWeb.RazorAssemblyInfo.cache
+E:\Venki Shared Project\IPO\IPOWeb\obj\Debug\net8.0\IPOWeb.RazorAssemblyInfo.cs
+E:\Venki Shared Project\IPO\IPOWeb\obj\Debug\net8.0\IPOWeb.sourcelink.json
+E:\Venki Shared Project\IPO\IPOWeb\obj\Debug\net8.0\rjimswa.dswa.cache.json
+E:\Venki Shared Project\IPO\IPOWeb\obj\Debug\net8.0\rjsmrazor.dswa.cache.json
+E:\Venki Shared Project\IPO\IPOWeb\obj\Debug\net8.0\rjsmcshtml.dswa.cache.json
+E:\Venki Shared Project\IPO\IPOWeb\obj\Debug\net8.0\scopedcss\Views\Shared\_Layout.cshtml.rz.scp.css
+E:\Venki Shared Project\IPO\IPOWeb\obj\Debug\net8.0\scopedcss\bundle\IPOWeb.styles.css
+E:\Venki Shared Project\IPO\IPOWeb\obj\Debug\net8.0\scopedcss\projectbundle\IPOWeb.bundle.scp.css
+E:\Venki Shared Project\IPO\IPOWeb\obj\Debug\net8.0\staticwebassets.build.json
+E:\Venki Shared Project\IPO\IPOWeb\obj\Debug\net8.0\staticwebassets.build.json.cache
+E:\Venki Shared Project\IPO\IPOWeb\obj\Debug\net8.0\staticwebassets.development.json
+E:\Venki Shared Project\IPO\IPOWeb\obj\Debug\net8.0\staticwebassets.build.endpoints.json
+E:\Venki Shared Project\IPO\IPOWeb\obj\Debug\net8.0\staticwebassets.upToDateCheck.txt
+E:\Venki Shared Project\IPO\IPOWeb\obj\Debug\net8.0\IPOWeb.csproj.Up2Date
+E:\Venki Shared Project\IPO\IPOWeb\obj\Debug\net8.0\IPOWeb.dll
+E:\Venki Shared Project\IPO\IPOWeb\obj\Debug\net8.0\refint\IPOWeb.dll
+E:\Venki Shared Project\IPO\IPOWeb\obj\Debug\net8.0\IPOWeb.pdb
+E:\Venki Shared Project\IPO\IPOWeb\obj\Debug\net8.0\IPOWeb.genruntimeconfig.cache
+E:\Venki Shared Project\IPO\IPOWeb\obj\Debug\net8.0\ref\IPOWeb.dll
+E:\user\hema\IPOProject_New\IPOProject\IPOWeb\bin\Debug\net8.0\appsettings.Development.json
+E:\user\hema\IPOProject_New\IPOProject\IPOWeb\bin\Debug\net8.0\appsettings.json
+E:\user\hema\IPOProject_New\IPOProject\IPOWeb\bin\Debug\net8.0\IPOWeb.staticwebassets.runtime.json
+E:\user\hema\IPOProject_New\IPOProject\IPOWeb\bin\Debug\net8.0\IPOWeb.staticwebassets.endpoints.json
+E:\user\hema\IPOProject_New\IPOProject\IPOWeb\bin\Debug\net8.0\IPOWeb.exe
+E:\user\hema\IPOProject_New\IPOProject\IPOWeb\bin\Debug\net8.0\IPOWeb.deps.json
+E:\user\hema\IPOProject_New\IPOProject\IPOWeb\bin\Debug\net8.0\IPOWeb.runtimeconfig.json
+E:\user\hema\IPOProject_New\IPOProject\IPOWeb\bin\Debug\net8.0\IPOWeb.dll
+E:\user\hema\IPOProject_New\IPOProject\IPOWeb\bin\Debug\net8.0\IPOWeb.pdb
+E:\user\hema\IPOProject_New\IPOProject\IPOWeb\bin\Debug\net8.0\BouncyCastle.Crypto.dll
+E:\user\hema\IPOProject_New\IPOProject\IPOWeb\bin\Debug\net8.0\ClosedXML.dll
+E:\user\hema\IPOProject_New\IPOProject\IPOWeb\bin\Debug\net8.0\ClosedXML.Extensions.Mvc.dll
+E:\user\hema\IPOProject_New\IPOProject\IPOWeb\bin\Debug\net8.0\ClosedXML.Parser.dll
+E:\user\hema\IPOProject_New\IPOProject\IPOWeb\bin\Debug\net8.0\DocumentFormat.OpenXml.dll
+E:\user\hema\IPOProject_New\IPOProject\IPOWeb\bin\Debug\net8.0\DocumentFormat.OpenXml.Framework.dll
+E:\user\hema\IPOProject_New\IPOProject\IPOWeb\bin\Debug\net8.0\ExcelNumberFormat.dll
+E:\user\hema\IPOProject_New\IPOProject\IPOWeb\bin\Debug\net8.0\FluentValidation.dll
+E:\user\hema\IPOProject_New\IPOProject\IPOWeb\bin\Debug\net8.0\FluentValidation.AspNetCore.dll
+E:\user\hema\IPOProject_New\IPOProject\IPOWeb\bin\Debug\net8.0\FluentValidation.DependencyInjectionExtensions.dll
+E:\user\hema\IPOProject_New\IPOProject\IPOWeb\bin\Debug\net8.0\itextsharp.dll
+E:\user\hema\IPOProject_New\IPOProject\IPOWeb\bin\Debug\net8.0\System.Web.Razor.dll
+E:\user\hema\IPOProject_New\IPOProject\IPOWeb\bin\Debug\net8.0\System.Web.Helpers.dll
+E:\user\hema\IPOProject_New\IPOProject\IPOWeb\bin\Debug\net8.0\System.Web.WebPages.Deployment.dll
+E:\user\hema\IPOProject_New\IPOProject\IPOWeb\bin\Debug\net8.0\System.Web.WebPages.Razor.dll
+E:\user\hema\IPOProject_New\IPOProject\IPOWeb\bin\Debug\net8.0\System.Web.WebPages.dll
+E:\user\hema\IPOProject_New\IPOProject\IPOWeb\bin\Debug\net8.0\Microsoft.Web.Infrastructure.dll
+E:\user\hema\IPOProject_New\IPOProject\IPOWeb\bin\Debug\net8.0\Newtonsoft.Json.dll
+E:\user\hema\IPOProject_New\IPOProject\IPOWeb\bin\Debug\net8.0\RBush.dll
+E:\user\hema\IPOProject_New\IPOProject\IPOWeb\bin\Debug\net8.0\SixLabors.Fonts.dll
+E:\user\hema\IPOProject_New\IPOProject\IPOWeb\bin\Debug\net8.0\System.IO.Packaging.dll
+E:\user\hema\IPOProject_New\IPOProject\IPOWeb\obj\Debug\net8.0\IPOWeb.csproj.AssemblyReference.cache
+E:\user\hema\IPOProject_New\IPOProject\IPOWeb\obj\Debug\net8.0\IPOWeb.GeneratedMSBuildEditorConfig.editorconfig
+E:\user\hema\IPOProject_New\IPOProject\IPOWeb\obj\Debug\net8.0\IPOWeb.AssemblyInfoInputs.cache
+E:\user\hema\IPOProject_New\IPOProject\IPOWeb\obj\Debug\net8.0\IPOWeb.AssemblyInfo.cs
+E:\user\hema\IPOProject_New\IPOProject\IPOWeb\obj\Debug\net8.0\IPOWeb.csproj.CoreCompileInputs.cache
+E:\user\hema\IPOProject_New\IPOProject\IPOWeb\obj\Debug\net8.0\IPOWeb.MvcApplicationPartsAssemblyInfo.cs
+E:\user\hema\IPOProject_New\IPOProject\IPOWeb\obj\Debug\net8.0\IPOWeb.MvcApplicationPartsAssemblyInfo.cache
+E:\user\hema\IPOProject_New\IPOProject\IPOWeb\obj\Debug\net8.0\IPOWeb.RazorAssemblyInfo.cache
+E:\user\hema\IPOProject_New\IPOProject\IPOWeb\obj\Debug\net8.0\IPOWeb.RazorAssemblyInfo.cs
+E:\user\hema\IPOProject_New\IPOProject\IPOWeb\obj\Debug\net8.0\IPOWeb.sourcelink.json
+E:\user\hema\IPOProject_New\IPOProject\IPOWeb\obj\Debug\net8.0\scopedcss\Views\Shared\_Layout.cshtml.rz.scp.css
+E:\user\hema\IPOProject_New\IPOProject\IPOWeb\obj\Debug\net8.0\scopedcss\bundle\IPOWeb.styles.css
+E:\user\hema\IPOProject_New\IPOProject\IPOWeb\obj\Debug\net8.0\scopedcss\projectbundle\IPOWeb.bundle.scp.css
+E:\user\hema\IPOProject_New\IPOProject\IPOWeb\obj\Debug\net8.0\staticwebassets.build.json
+E:\user\hema\IPOProject_New\IPOProject\IPOWeb\obj\Debug\net8.0\staticwebassets.development.json
+E:\user\hema\IPOProject_New\IPOProject\IPOWeb\obj\Debug\net8.0\staticwebassets.build.endpoints.json
+E:\user\hema\IPOProject_New\IPOProject\IPOWeb\obj\Debug\net8.0\staticwebassets\msbuild.IPOWeb.Microsoft.AspNetCore.StaticWebAssets.props
+E:\user\hema\IPOProject_New\IPOProject\IPOWeb\obj\Debug\net8.0\staticwebassets\msbuild.IPOWeb.Microsoft.AspNetCore.StaticWebAssetEndpoints.props
+E:\user\hema\IPOProject_New\IPOProject\IPOWeb\obj\Debug\net8.0\staticwebassets\msbuild.build.IPOWeb.props
+E:\user\hema\IPOProject_New\IPOProject\IPOWeb\obj\Debug\net8.0\staticwebassets\msbuild.buildMultiTargeting.IPOWeb.props
+E:\user\hema\IPOProject_New\IPOProject\IPOWeb\obj\Debug\net8.0\staticwebassets\msbuild.buildTransitive.IPOWeb.props
+E:\user\hema\IPOProject_New\IPOProject\IPOWeb\obj\Debug\net8.0\staticwebassets.pack.json
+E:\user\hema\IPOProject_New\IPOProject\IPOWeb\obj\Debug\net8.0\staticwebassets.upToDateCheck.txt
+E:\user\hema\IPOProject_New\IPOProject\IPOWeb\obj\Debug\net8.0\IPOWeb.csproj.Up2Date
+E:\user\hema\IPOProject_New\IPOProject\IPOWeb\obj\Debug\net8.0\IPOWeb.dll
+E:\user\hema\IPOProject_New\IPOProject\IPOWeb\obj\Debug\net8.0\refint\IPOWeb.dll
+E:\user\hema\IPOProject_New\IPOProject\IPOWeb\obj\Debug\net8.0\IPOWeb.pdb
+E:\user\hema\IPOProject_New\IPOProject\IPOWeb\obj\Debug\net8.0\IPOWeb.genruntimeconfig.cache
+E:\user\hema\IPOProject_New\IPOProject\IPOWeb\obj\Debug\net8.0\ref\IPOWeb.dll
+E:\user\hema\IPOProject\IPOProject_Web\IPOProject\IPOWeb\bin\Debug\net8.0\appsettings.Development.json
+E:\user\hema\IPOProject\IPOProject_Web\IPOProject\IPOWeb\bin\Debug\net8.0\appsettings.json
+E:\user\hema\IPOProject\IPOProject_Web\IPOProject\IPOWeb\bin\Debug\net8.0\IPOWeb.staticwebassets.runtime.json
+E:\user\hema\IPOProject\IPOProject_Web\IPOProject\IPOWeb\bin\Debug\net8.0\IPOWeb.staticwebassets.endpoints.json
+E:\user\hema\IPOProject\IPOProject_Web\IPOProject\IPOWeb\bin\Debug\net8.0\IPOWeb.exe
+E:\user\hema\IPOProject\IPOProject_Web\IPOProject\IPOWeb\bin\Debug\net8.0\IPOWeb.deps.json
+E:\user\hema\IPOProject\IPOProject_Web\IPOProject\IPOWeb\bin\Debug\net8.0\IPOWeb.runtimeconfig.json
+E:\user\hema\IPOProject\IPOProject_Web\IPOProject\IPOWeb\bin\Debug\net8.0\IPOWeb.dll
+E:\user\hema\IPOProject\IPOProject_Web\IPOProject\IPOWeb\bin\Debug\net8.0\IPOWeb.pdb
+E:\user\hema\IPOProject\IPOProject_Web\IPOProject\IPOWeb\bin\Debug\net8.0\BouncyCastle.Crypto.dll
+E:\user\hema\IPOProject\IPOProject_Web\IPOProject\IPOWeb\bin\Debug\net8.0\ClosedXML.dll
+E:\user\hema\IPOProject\IPOProject_Web\IPOProject\IPOWeb\bin\Debug\net8.0\ClosedXML.Extensions.Mvc.dll
+E:\user\hema\IPOProject\IPOProject_Web\IPOProject\IPOWeb\bin\Debug\net8.0\ClosedXML.Parser.dll
+E:\user\hema\IPOProject\IPOProject_Web\IPOProject\IPOWeb\bin\Debug\net8.0\DocumentFormat.OpenXml.dll
+E:\user\hema\IPOProject\IPOProject_Web\IPOProject\IPOWeb\bin\Debug\net8.0\DocumentFormat.OpenXml.Framework.dll
+E:\user\hema\IPOProject\IPOProject_Web\IPOProject\IPOWeb\bin\Debug\net8.0\ExcelNumberFormat.dll
+E:\user\hema\IPOProject\IPOProject_Web\IPOProject\IPOWeb\bin\Debug\net8.0\FluentValidation.dll
+E:\user\hema\IPOProject\IPOProject_Web\IPOProject\IPOWeb\bin\Debug\net8.0\FluentValidation.AspNetCore.dll
+E:\user\hema\IPOProject\IPOProject_Web\IPOProject\IPOWeb\bin\Debug\net8.0\FluentValidation.DependencyInjectionExtensions.dll
+E:\user\hema\IPOProject\IPOProject_Web\IPOProject\IPOWeb\bin\Debug\net8.0\itextsharp.dll
+E:\user\hema\IPOProject\IPOProject_Web\IPOProject\IPOWeb\bin\Debug\net8.0\System.Web.Razor.dll
+E:\user\hema\IPOProject\IPOProject_Web\IPOProject\IPOWeb\bin\Debug\net8.0\System.Web.Helpers.dll
+E:\user\hema\IPOProject\IPOProject_Web\IPOProject\IPOWeb\bin\Debug\net8.0\System.Web.WebPages.Deployment.dll
+E:\user\hema\IPOProject\IPOProject_Web\IPOProject\IPOWeb\bin\Debug\net8.0\System.Web.WebPages.Razor.dll
+E:\user\hema\IPOProject\IPOProject_Web\IPOProject\IPOWeb\bin\Debug\net8.0\System.Web.WebPages.dll
+E:\user\hema\IPOProject\IPOProject_Web\IPOProject\IPOWeb\bin\Debug\net8.0\Microsoft.Web.Infrastructure.dll
+E:\user\hema\IPOProject\IPOProject_Web\IPOProject\IPOWeb\bin\Debug\net8.0\Newtonsoft.Json.dll
+E:\user\hema\IPOProject\IPOProject_Web\IPOProject\IPOWeb\bin\Debug\net8.0\RBush.dll
+E:\user\hema\IPOProject\IPOProject_Web\IPOProject\IPOWeb\bin\Debug\net8.0\SixLabors.Fonts.dll
+E:\user\hema\IPOProject\IPOProject_Web\IPOProject\IPOWeb\bin\Debug\net8.0\System.IO.Packaging.dll
+E:\user\hema\IPOProject\IPOProject_Web\IPOProject\IPOWeb\obj\Debug\net8.0\IPOWeb.csproj.AssemblyReference.cache
+E:\user\hema\IPOProject\IPOProject_Web\IPOProject\IPOWeb\obj\Debug\net8.0\IPOWeb.GeneratedMSBuildEditorConfig.editorconfig
+E:\user\hema\IPOProject\IPOProject_Web\IPOProject\IPOWeb\obj\Debug\net8.0\IPOWeb.AssemblyInfoInputs.cache
+E:\user\hema\IPOProject\IPOProject_Web\IPOProject\IPOWeb\obj\Debug\net8.0\IPOWeb.AssemblyInfo.cs
+E:\user\hema\IPOProject\IPOProject_Web\IPOProject\IPOWeb\obj\Debug\net8.0\IPOWeb.csproj.CoreCompileInputs.cache
+E:\user\hema\IPOProject\IPOProject_Web\IPOProject\IPOWeb\obj\Debug\net8.0\IPOWeb.MvcApplicationPartsAssemblyInfo.cs
+E:\user\hema\IPOProject\IPOProject_Web\IPOProject\IPOWeb\obj\Debug\net8.0\IPOWeb.MvcApplicationPartsAssemblyInfo.cache
+E:\user\hema\IPOProject\IPOProject_Web\IPOProject\IPOWeb\obj\Debug\net8.0\IPOWeb.RazorAssemblyInfo.cache
+E:\user\hema\IPOProject\IPOProject_Web\IPOProject\IPOWeb\obj\Debug\net8.0\IPOWeb.RazorAssemblyInfo.cs
+E:\user\hema\IPOProject\IPOProject_Web\IPOProject\IPOWeb\obj\Debug\net8.0\IPOWeb.sourcelink.json
+E:\user\hema\IPOProject\IPOProject_Web\IPOProject\IPOWeb\obj\Debug\net8.0\scopedcss\Views\Shared\_Layout.cshtml.rz.scp.css
+E:\user\hema\IPOProject\IPOProject_Web\IPOProject\IPOWeb\obj\Debug\net8.0\scopedcss\bundle\IPOWeb.styles.css
+E:\user\hema\IPOProject\IPOProject_Web\IPOProject\IPOWeb\obj\Debug\net8.0\scopedcss\projectbundle\IPOWeb.bundle.scp.css
+E:\user\hema\IPOProject\IPOProject_Web\IPOProject\IPOWeb\obj\Debug\net8.0\staticwebassets.build.json
+E:\user\hema\IPOProject\IPOProject_Web\IPOProject\IPOWeb\obj\Debug\net8.0\staticwebassets.development.json
+E:\user\hema\IPOProject\IPOProject_Web\IPOProject\IPOWeb\obj\Debug\net8.0\staticwebassets.build.endpoints.json
+E:\user\hema\IPOProject\IPOProject_Web\IPOProject\IPOWeb\obj\Debug\net8.0\staticwebassets\msbuild.IPOWeb.Microsoft.AspNetCore.StaticWebAssets.props
+E:\user\hema\IPOProject\IPOProject_Web\IPOProject\IPOWeb\obj\Debug\net8.0\staticwebassets\msbuild.IPOWeb.Microsoft.AspNetCore.StaticWebAssetEndpoints.props
+E:\user\hema\IPOProject\IPOProject_Web\IPOProject\IPOWeb\obj\Debug\net8.0\staticwebassets\msbuild.build.IPOWeb.props
+E:\user\hema\IPOProject\IPOProject_Web\IPOProject\IPOWeb\obj\Debug\net8.0\staticwebassets\msbuild.buildMultiTargeting.IPOWeb.props
+E:\user\hema\IPOProject\IPOProject_Web\IPOProject\IPOWeb\obj\Debug\net8.0\staticwebassets\msbuild.buildTransitive.IPOWeb.props
+E:\user\hema\IPOProject\IPOProject_Web\IPOProject\IPOWeb\obj\Debug\net8.0\staticwebassets.pack.json
+E:\user\hema\IPOProject\IPOProject_Web\IPOProject\IPOWeb\obj\Debug\net8.0\staticwebassets.upToDateCheck.txt
+E:\user\hema\IPOProject\IPOProject_Web\IPOProject\IPOWeb\obj\Debug\net8.0\IPOWeb.csproj.Up2Date
+E:\user\hema\IPOProject\IPOProject_Web\IPOProject\IPOWeb\obj\Debug\net8.0\IPOWeb.dll
+E:\user\hema\IPOProject\IPOProject_Web\IPOProject\IPOWeb\obj\Debug\net8.0\refint\IPOWeb.dll
+E:\user\hema\IPOProject\IPOProject_Web\IPOProject\IPOWeb\obj\Debug\net8.0\IPOWeb.pdb
+E:\user\hema\IPOProject\IPOProject_Web\IPOProject\IPOWeb\obj\Debug\net8.0\IPOWeb.genruntimeconfig.cache
+E:\user\hema\IPOProject\IPOProject_Web\IPOProject\IPOWeb\obj\Debug\net8.0\ref\IPOWeb.dll
