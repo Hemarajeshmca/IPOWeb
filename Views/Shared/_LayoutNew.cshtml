@@ -107,7 +107,15 @@
             color: #5490ff;
         }
 
+        i.bx.bx-qr.fs-4.me-1 {
+            color: #5490ff;
+        }
+
         i.bx.bx-left-arrow-circle.fs-4.me-1 {
+            color: #5490ff;
+        }
+
+        i.bx.bx-building.fs-4.me-1 {
             color: #5490ff;
         }
 
@@ -402,8 +410,20 @@
                                 <ul class="dropdown-menu dropdown-menu-end">
                                     <li>
                                         <a class="dropdown-item" href="~/QCDmaster/QcdMaster" data-language="fr">
-                                            <i class="bx bxs-user-pin fs-4 me-1"></i>
+                                            <i class="bx bx-qr fs-4 me-1"></i>
                                             <span class="align-middle">QCD Master</span>
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a class="dropdown-item" href="~/BankMaster/BankMaster" data-language="fr">
+                                            <i class="bx bx-building fs-4 me-1"></i>
+                                            <span class="align-middle">Bank Master</span>
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a class="dropdown-item" href="~/CategoryMaster/CategoryMaster" data-language="fr">
+                                            <i class="bx bx-building fs-4 me-1"></i>
+                                            <span class="align-middle">Category Master</span>
                                         </a>
                                     </li>
                                     <li>
@@ -779,16 +799,16 @@
             //localStorage.setItem("entityId", 0);
             //localStorage.setItem("isinNumber", 0);
            // console.log("ISIN", isinid);
-           // $("#userGroupid").val(JSON.parse(localStorage.getItem("SetContextData"))[0].usergroup_gid);
-           // populateDropdown(JSON.parse(localStorage.getItem("SetContextData")), 'Entity');
+            $("#userGroupid").val(JSON.parse(localStorage.getItem("SetContextData"))[0].usergroup_gid);
+            populateDropdown(JSON.parse(localStorage.getItem("SetContextData")), 'Entity');
             //  populateDropdown(JSON.parse(localStorage.getItem("SetContextData")), 'Isin');
 
-            // $("#empname").text(JSON.parse(localStorage.getItem("SetContextData"))[0].Emp_Name);
-            // $("#empcode").text(JSON.parse(localStorage.getItem("SetContextData"))[0].Emp_Code);
-            // $("#empemail").text(JSON.parse(localStorage.getItem("SetContextData"))[0].Emp_EmailId);
-            // $("#empmobile").text(JSON.parse(localStorage.getItem("SetContextData"))[0].Emp_MobileNo);
-            // $("#empstatus").text(JSON.parse(localStorage.getItem("SetContextData"))[0].Active);
-            // $("#emprole").text(JSON.parse(localStorage.getItem("SetContextData"))[0].usergroup_name);
+            $("#empname").text(JSON.parse(localStorage.getItem("SetContextData"))[0].Emp_Name);
+            $("#empcode").text(JSON.parse(localStorage.getItem("SetContextData"))[0].Emp_Code);
+            $("#empemail").text(JSON.parse(localStorage.getItem("SetContextData"))[0].Emp_EmailId);
+            $("#empmobile").text(JSON.parse(localStorage.getItem("SetContextData"))[0].Emp_MobileNo);
+            $("#empstatus").text(JSON.parse(localStorage.getItem("SetContextData"))[0].Active);
+            $("#emprole").text(JSON.parse(localStorage.getItem("SetContextData"))[0].usergroup_name);
 
 
 
@@ -830,8 +850,8 @@
                 }
             });
 
-            // var myLabel = document.getElementById("orglvlNavigate");
-            // myLabel.innerHTML = $("#Entity").find('option:selected').text() + "&nbsp;&nbsp;/&nbsp;&nbsp;" + $("#Isin").find('option:selected').text();
+            var myLabel = document.getElementById("orglvlNavigate");
+            myLabel.innerHTML = $("#Entity").find('option:selected').text() + "&nbsp;&nbsp;/&nbsp;&nbsp;" + $("#Isin").find('option:selected').text();
 
 
         });
@@ -932,8 +952,8 @@
         function setContext() {
             localStorage.setItem("entityId", $("#Entity").val());
             localStorage.setItem("isinNumber", $("#Isin").val());
-            // var myLabel = document.getElementById("orglvlNavigate");
-            // myLabel.innerHTML = $("#Entity").find('option:selected').text() + "&nbsp;&nbsp;/&nbsp;&nbsp;" + $("#Isin").find('option:selected').text();
+            var myLabel = document.getElementById("orglvlNavigate");
+            myLabel.innerHTML = $("#Entity").find('option:selected').text() + "&nbsp;&nbsp;/&nbsp;&nbsp;" + $("#Isin").find('option:selected').text();
             debugger;
             if ($('#collapse_org').css('display') == 'none') {
                 $('#collapse_org').show();
@@ -2014,11 +2034,11 @@
         window.location.href = url;
       }
 
-    function validateDateFormat(date) {
-            // const regex = /^(0[1-9]|[12][0-9]|3[01])\/(0[1-9]|1[0-2])\/\d{4}$/; // Reg exp for dd/mm/yyyy
-        const regex = /^\d{4}-(0[1-9]|1[0-2])-(0[1-9]|[12][0-9]|3[01])$/; // Reg exp for dd-mm-yyyy
-        return regex.test(date);
-    }
+          function validateDateFormat(date) {
+                // const regex = /^(0[1-9]|[12][0-9]|3[01])\/(0[1-9]|1[0-2])\/\d{4}$/; // Reg exp for dd/mm/yyyy
+            const regex = /^\d{4}-(0[1-9]|1[0-2])-(0[1-9]|[12][0-9]|3[01])$/; // Reg exp for dd-mm-yyyy
+            return regex.test(date);
+        }
 
     </script>
 

@@ -5,7 +5,7 @@
     var roleName = Context.Session.GetString("role_name");
 }
 <!DOCTYPE html>
-<html>  
+<html>
 <head>
     <meta name="viewport" content="width=device-width" />
     <title>File Import</title>
@@ -90,6 +90,7 @@
             padding: 2px 2px;
             font-size: 13px;
         }
+
         td {
             font-size: 13px;
         }
@@ -158,11 +159,11 @@
                 <div class="row" style="margin-top: -17px;">
                     <div class="col-sm-3">
                         <label class="form-label" for="ctype" data-field="ctype">IPO Name</label>&nbsp;<span style="font-size: 12px;color:red;font-weight: bold;">*</span>
-                        <input type="text" class="form-control" id="iponame" readonly/>
+                        <input type="text" class="form-control" id="iponame" readonly />
                     </div>
                 </div>
-               <div class="row" style="margin-top:20px;">
-                   <div class="col-sm-12">
+                <div class="row" style="margin-top:20px;">
+                    <div class="col-sm-12">
                         <div class="nav-align-top mb-4">
                             <ul class="nav nav-tabs" role="tablist">
                                 <li class="nav-item">
@@ -186,7 +187,7 @@
                                             aria-selected="false">
                                         Dataset Progress
                                     </button>
-                                </li>                               
+                                </li>
                             </ul>
                             <div class="tab-content">
                                 <div class="tab-pane fade show active" id="navs-top-list" role="tabpanel">
@@ -197,43 +198,42 @@
                                     </div>
                                     <div class="row">
                                         <div class="col-sm-6">
-
                                         </div>
                                         <div class="col-sm-6">
                                             <button type="button" class="btn btn-primary" id="btnNext" onclick="nextprocess()" style="float:right;padding: 3px 25px;margin-top:28px;width:25%">Next</button>
                                         </div>
                                     </div>
                                 </div>
-                                <div class="tab-pane fade" id="navs-top-progress" role="tabpanel">    
+                                <div class="tab-pane fade" id="navs-top-progress" role="tabpanel">
                                     <div class="row">
                                         <div class="col-sm-3">
                                             <label class="form-label" for="ds" data-field="ds">Selected Dataset : <span id="datasetname"></span></label>
                                         </div>
                                     </div>
-                                   <div class="row">
-                                       <div class="col-sm-3">                                            
-                                           <label class="form-label" for="pipeline" data-field="pipeline">Pipeline</label>&nbsp;<span style="font-size: 12px;color:red;font-weight: bold;">*</span>
-                                            <input type="text" id="pipeline" class="form-control" readonly/>
-                                       </div>
-                                       <div class="col-sm-2">
-                                          <img style="margin-top: 35px; height: 25px; width: 25px; cursor:pointer;" src="~/Assets/images/download.png" />
-                                       </div>
-                                       <div class="col-sm-3">
-                                           <label class="form-label" for="pipeline" data-field="pipeline">Choose Excel</label>&nbsp;<span style="font-size: 12px;color:red;font-weight: bold;">*</span>
-                                           <input class="form-control" type="file" id="MultipleFile" multiple>
-                                       </div>
-                                       <div class="col-sm-4">
-                                           <button type="button" class="btn btn-primary" id="btnPre" style="float:right;padding: 3px 25px;margin-top:28px;width:40%">Previous</button>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<button type="button" class="btn btn-primary" id="btnStart" onclick="startprocess()" style="float:right;padding: 3px 25px;margin-top:28px;width:40%;margin-right:10px;">Start</button>
-                                       </div>
-                                   </div>
+                                    <div class="row">
+                                        <div class="col-sm-3">
+                                            <label class="form-label" for="pipeline" data-field="pipeline">Pipeline</label>&nbsp;<span style="font-size: 12px;color:red;font-weight: bold;">*</span>
+                                            <input type="text" id="pipeline" class="form-control" readonly />
+                                        </div>
+                                        <div class="col-sm-2">
+                                            <img style="margin-top: 35px; height: 25px; width: 25px; cursor:pointer;" src="~/Assets/images/download.png" />
+                                        </div>
+                                        <div class="col-sm-3">
+                                            <label class="form-label" for="pipeline" data-field="pipeline">Choose Excel</label>&nbsp;<span style="font-size: 12px;color:red;font-weight: bold;">*</span>
+                                            <input class="form-control" type="file" id="MultipleFile" multiple>
+                                        </div>
+                                        <div class="col-sm-4">
+                                            <button type="button" class="btn btn-primary" id="btnPre" style="float:right;padding: 3px 25px;margin-top:28px;width:40%">Previous</button>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<button type="button" class="btn btn-primary" id="btnStart" onclick="startprocess()" style="float:right;padding: 3px 25px;margin-top:28px;width:40%;margin-right:10px;">Start</button>
+                                        </div>
                                     </div>
-                                </div>                             
+                                </div>
                             </div>
                         </div>
-                   </div>
-               </div>
+                    </div>
+                </div>
             </div>
         </div>
+    </div>
 
     <div class="modal" id="myModal" tabindex="-1">
         <div class="modal-dialog modal-lg">
@@ -242,22 +242,21 @@
                 <div class="modal-body">
                     <div class="row">
                         <div class="col-sm-4">
-                            
                         </div>
                         <div class="col-sm-4">
-                            <h4 style="font-size: 15px;text-align: center;">Info</h4>                          
+                            <h4 style="font-size: 15px;text-align: center;">Info</h4>
                         </div>
                         <div class="col-sm-4">
                             <i class="bx bx-x cursor-pointer" data-bs-dismiss="modal" style="color: #000000;float:right"></i>
                         </div>
                     </div>
-                    <hr style="margin-top:-6px;"/>
+                    <hr style="margin-top:-6px;" />
                     <div class="row">
                         <div class="col-sm-12">
                             <div id="infoGrid"></div>
                         </div>
                     </div>
-                </div>             
+                </div>
 
             </div>
         </div>
@@ -268,221 +267,223 @@
 
 </html>
 <script>
-     var selectedPipeline = "";
-    var selectedDataset = "";
-             $(document).ready(function () {
+         var selectedPipeline = "";
+        var selectedDataset = "";
+                 $(document).ready(function () {
 
-        $('#navhead').text('File Import');
+            $('#navhead').text('File Import');
 
-        var ipoName = localStorage.getItem("selectedIPOText");
-        $("#iponame").val(ipoName);
+            var ipoName = localStorage.getItem("selectedIPOText");
+            $("#iponame").val(ipoName);
 
-        showgrid();
+            showgrid();
 
-        $("#infoGrid").kendoGrid({
-        dataSource: {
-            data: [
-                {
-                    jobDescription: "Bid NSE File",
-                    jobDate: "07-01-2026 16:40:53",
-                    jobBy: "Admin",
-                    jobStatus: "Completed",
-                    jobRemarks: "Imported 1 record(s)"
-                },
-                {
-                    jobDescription: "Bid NSE File",
-                    jobDate: "18-01-2026 12:40:53",
-                    jobBy: "Admin",
-                    jobStatus: "Completed",
-                    jobRemarks: "Imported 1 record(s)"
-                },
-                {
-                    jobDescription: "Bid NSE File",
-                    jobDate: "22-01-2026 02:40:53",
-                    jobBy: "Admin",
-                    jobStatus: "Completed",
-                    jobRemarks: "Imported 3 record(s)"
-                },
-                {
-                    jobDescription: "Bid NSE File",
-                    jobDate: "12-02-2026 12:30:53",
-                    jobBy: "Admin",
-                    jobStatus: "Completed",
-                    jobRemarks: "Imported 5 record(s)"
-                },
-                 {
-                    jobDescription: "Bid NSE File",
-                    jobDate: "16-02-2026 12:30:53",
-                    jobBy: "Admin",
-                    jobStatus: "Completed",
-                    jobRemarks: "Imported 15 record(s)"
-                },
-                 {
-                    jobDescription: "Bid NSE File",
-                    jobDate: "24-02-2026 12:30:53",
-                    jobBy: "Admin",
-                    jobStatus: "Completed",
-                    jobRemarks: "Imported 1 record(s)"
-                }
-            ],
-            pageSize: 10
-        },
-
-        height: 225,
-        sortable: true,
-        pageable: true,
-
-        columns: [
-            { field: "jobDescription", title: "Job Description" },
-            { field: "jobDate", title: "Job Initiated Date" },
-            { field: "jobBy", title: "Job Initiated By" },
-            { field: "jobStatus", title: "Job Status" },
-            { field: "jobRemarks", title: "Job Remarks" }
-        ]
-    });       
-
-    $("#btnPre").click(function () {
-
-        var tabTrigger = document.querySelector('button[data-bs-target="#navs-top-list"]');
-        var tab = new bootstrap.Tab(tabTrigger);
-        tab.show();
-        $("#datasetList").show();
-    });
-});
-
-  function showgrid() {
-        $.ajax({
-        type: "GET",
-        url: '@Url.Action("GetDatasetList", "FileImport")',
-        dataType: "json",
-        success: function (response) {
-            if (!response.success) {
-                console.log(response.message);
-                return;
-            }
-            var data = response.data;
-         $("#datasetList").kendoGrid({
-                    dataSource: {
-                        data: data,
-                        pageSize: 10
+            $("#infoGrid").kendoGrid({
+            dataSource: {
+                data: [
+                    {
+                        jobDescription: "Bid NSE File",
+                        jobDate: "07-01-2026 16:40:53",
+                        jobBy: "Admin",
+                        jobStatus: "Completed",
+                        jobRemarks: "Imported 1 record(s)"
                     },
-                    height: 300,
-                    pageable: true,
-                    sortable: true,
-                    filterable: true,
-                        columns: [
-                            {
-                                title: "Select",
-                                width: 70,
-                                template: "<div style='display:flex; justify-content:center'>\
-                                            <input type='radio' name='clientSelect' value='#=dataset_gid#' data-code='#=dataset_code#'>\
-                                           </div>"
-                            },
-                            { field: "dataset_gid", title: "Dataset ID", hidden: true },
-                            { field: "dataset_code", title: "Dataset Code" ,hidden: true },
-                            { field: "dataset_name", title: "Dataset Name" },
-                            { field: "dataset_category", title: "Category" },
-                            { field: "dataset_table_name", title: "Dataset Table Name", hidden: true },
-                            { field: "system_flag", hidden: true },
-                            {
-                                title: "Info",
-                                width: 80,
-                                template: '<img src="/Assets/images/topnotes.png" style="cursor:pointer;width:18px;" data-bs-toggle="modal" data-bs-target="\\#myModal" />'
-                            }
-                            ]
-                });
-        },
-        error: function (xhr) {
-            console.log("Error:", xhr.responseText);
-        }
+                    {
+                        jobDescription: "Bid NSE File",
+                        jobDate: "18-01-2026 12:40:53",
+                        jobBy: "Admin",
+                        jobStatus: "Completed",
+                        jobRemarks: "Imported 1 record(s)"
+                    },
+                    {
+                        jobDescription: "Bid NSE File",
+                        jobDate: "22-01-2026 02:40:53",
+                        jobBy: "Admin",
+                        jobStatus: "Completed",
+                        jobRemarks: "Imported 3 record(s)"
+                    },
+                    {
+                        jobDescription: "Bid NSE File",
+                        jobDate: "12-02-2026 12:30:53",
+                        jobBy: "Admin",
+                        jobStatus: "Completed",
+                        jobRemarks: "Imported 5 record(s)"
+                    },
+                     {
+                        jobDescription: "Bid NSE File",
+                        jobDate: "16-02-2026 12:30:53",
+                        jobBy: "Admin",
+                        jobStatus: "Completed",
+                        jobRemarks: "Imported 15 record(s)"
+                    },
+                     {
+                        jobDescription: "Bid NSE File",
+                        jobDate: "24-02-2026 12:30:53",
+                        jobBy: "Admin",
+                        jobStatus: "Completed",
+                        jobRemarks: "Imported 1 record(s)"
+                    }
+                ],
+                pageSize: 10
+            },
+
+            height: 225,
+            sortable: true,
+            pageable: true,
+
+            columns: [
+                { field: "jobDescription", title: "Job Description" },
+                { field: "jobDate", title: "Job Initiated Date" },
+                { field: "jobBy", title: "Job Initiated By" },
+                { field: "jobStatus", title: "Job Status" },
+                { field: "jobRemarks", title: "Job Remarks" }
+            ]
+        });
+
+        $("#btnPre").click(function () {
+
+            var tabTrigger = document.querySelector('button[data-bs-target="#navs-top-list"]');
+            var tab = new bootstrap.Tab(tabTrigger);
+            tab.show();
+            $("#datasetList").show();
+        });
     });
 
-    }
-
-  function nextprocess() {
-        var selected = $("input[name='clientSelect']:checked");
-        if (selected.length === 0) {
-            alert("Please select a dataset");
-            return;
-        }
-        var dataset_gid = selected.val();
-        var dataset_code = selected.data("code");
-        selectedDataset = selected.data("code");
-        console.log("Dataset GID:", dataset_gid);
-        console.log("Dataset Code:", dataset_code);
-        $("#datasetname").text(selectedDataset );
-        var tabTrigger = document.querySelector('button[data-bs-target="#navs-top-progress"]');
-        var tab = new bootstrap.Tab(tabTrigger);
-        tab.show();
-        $.ajax({
-            type: "POST",
-            url: '@Url.Action("GetPipelinetList", "FileImport")',
-            data: { dataset: dataset_code }, 
+      function showgrid() {
+            $.ajax({
+            type: "GET",
+            url: '@Url.Action("GetDatasetList", "FileImport")',
             dataType: "json",
             success: function (response) {
                 if (!response.success) {
                     console.log(response.message);
                     return;
                 }
-               var data = response.data;
-               $("#pipeline").val(data[0].pipeline_name);
-               selectedPipeline = data[0].pipeline_code;
-               console.log(data);
+                var data = response.data;
+             $("#datasetList").kendoGrid({
+                        dataSource: {
+                            data: data,
+                            pageSize: 10
+                        },
+                        height: 300,
+                        pageable: true,
+                        sortable: true,
+                        filterable: true,
+                            columns: [
+                                {
+                                    title: "Select",
+                                    width: 70,
+                                       template: "<div style='display:flex; justify-content:center'>\
+                                    <input type='radio' name='clientSelect' value='#=dataset_gid#' \
+                                    data-code='#=dataset_code#' \
+                                    data-name='#=dataset_name#'>\
+                                    </div>"
+                                },
+                                { field: "dataset_gid", title: "Dataset ID", hidden: true },
+                                { field: "dataset_code", title: "Dataset Code" ,hidden: true },
+                                { field: "dataset_name", title: "Dataset Name" },
+                                { field: "dataset_category", title: "Category" },
+                                { field: "dataset_table_name", title: "Dataset Table Name", hidden: true },
+                                { field: "system_flag", hidden: true },
+                                {
+                                    title: "Info",
+                                    width: 80,
+                                    template: '<img src="/Assets/images/topnotes.png" style="cursor:pointer;width:18px;" data-bs-toggle="modal" data-bs-target="\\#myModal" />'
+                                }
+                                ]
+                    });
             },
             error: function (xhr) {
                 console.log("Error:", xhr.responseText);
             }
         });
-    }
 
-    function startprocess() {
-
-        var fileInput = document.getElementById("MultipleFile");
-
-        if (fileInput.files.length === 0) {
-            alert("Please choose a file");
-            return;
         }
 
-        var formData = new FormData();
-
-        formData.append("file", fileInput.files[0]);
-        formData.append("pipeline_code", selectedPipeline);
-            formData.append("initiated_by",'@userName' );
-        formData.append("dataset_code", selectedDataset);
-        formData.append("reference_no", "REF4321");
-
-        $.ajax({
-            type: "POST",
-            url: '@Url.Action("ImportData", "FileImport")',
-            data: formData,
-            processData: false,
-            contentType: false,
-                    success: function (data) {
-
-        console.log(data);
-
-        var res = JSON.parse(data.data);
-
-        if (res.result) {
-            $.alert({
-                title: 'IPO',
-                content: "File Imported Successfully!",
-                type: 'green',
-            });
-        }
-        else {
-            $.alert({
-                title: 'IPO',
-                content: res.message,
-                type: 'red',
-            });
-        }
-
-    },
-            error: function (err) {
-                console.log(err);
+      function nextprocess() {
+            var selected = $("input[name='clientSelect']:checked");
+            if (selected.length === 0) {
+                alert("Please select a dataset");
+                return;
             }
-        });
-    }
+            var dataset_gid = selected.val();
+            var dataset_code = selected.data("code");
+            var dataset_name = selected.data("name");
+            selectedDataset = selected.data("code");
+            console.log("Dataset GID:", dataset_gid);
+            console.log("Dataset Code:", dataset_code);
+            $("#datasetname").text(dataset_name );
+            var tabTrigger = document.querySelector('button[data-bs-target="#navs-top-progress"]');
+            var tab = new bootstrap.Tab(tabTrigger);
+            tab.show();
+            $.ajax({
+                type: "POST",
+                url: '@Url.Action("GetPipelinetList", "FileImport")',
+                data: { dataset: dataset_code },
+                dataType: "json",
+                success: function (response) {
+                    if (!response.success) {
+                        console.log(response.message);
+                        return;
+                    }
+                   var data = response.data;
+                   $("#pipeline").val(data[0].pipeline_name);
+                   selectedPipeline = data[0].pipeline_code;
+                   console.log(data);
+                },
+                error: function (xhr) {
+                    console.log("Error:", xhr.responseText);
+                }
+            });
+        }
+
+        function startprocess() {
+
+            var fileInput = document.getElementById("MultipleFile");
+
+            if (fileInput.files.length === 0) {
+                alert("Please choose a file");
+                return;
+            }
+
+            var formData = new FormData();
+
+            formData.append("file", fileInput.files[0]);
+            formData.append("pipeline_code", selectedPipeline);
+                formData.append("initiated_by",'@userName' );
+            formData.append("dataset_code", selectedDataset);
+            formData.append("reference_no", "REF4321");
+
+            $.ajax({
+                type: "POST",
+                url: '@Url.Action("ImportData", "FileImport")',
+                data: formData,
+                processData: false,
+                contentType: false,
+                        success: function (data) {
+            console.log(data);
+
+            var res = JSON.parse(data.data);
+
+            if (res.result) {
+                $.alert({
+                    title: 'IPO',
+                    content: "File Imported Successfully!",
+                    type: 'green',
+                });
+            }
+            else {
+                $.alert({
+                    title: 'IPO',
+                    content: res.message,
+                    type: 'red',
+                });
+            }
+
+        },
+                error: function (err) {
+                    console.log(err);
+                }
+            });
+        }
 </script>

@@ -75,7 +75,7 @@
                     </div>
                     <div class="col-sm-3">
                         <label class="form-label" for="email" data-field="email">Email ID</label>&nbsp;<span style="font-size: 12px;color:red;font-weight: bold;">*</span>
-                        <input type="text" id="email" name="email" class="form-control"  />
+                        <input type="email" id="email" name="email" class="form-control"  />
                         <span id="queryemail" style="color: red; font-size: 12px;position:relative;"></span>
                     </div>
                     <div class="col-sm-3">
@@ -123,6 +123,19 @@
   $(document).ready(function () {
         $('#navhead').text('Client Master');
         $("#iponame").val("");
+        $("#createedit").val("Create");
+        $("#clientcode").val("<< Client Code >>");
+        $("#clientstatus").val("Draft");
+
+         $("#clientname").on("input", function () {
+            this.value = this.value.replace(/[^A-Za-z\s]/g, '');
+        });
+        $("#mobno").on("input", function () {
+        this.value = this.value.replace(/[^0-9]/g, '').slice(0,10);
+         });
+        $("#pin").on("input", function () {
+        this.value = this.value.replace(/[^0-9]/g, '').slice(0,6);
+          });
         loadMasterDropdown("QCD_MAST_CLIENT_TYPE", "ctype");
         loadMasterDropdown("QCD_MAST_COUNTRY", "country");
         setTimeout(function () {
@@ -136,10 +149,11 @@
     });
 
  function loadClientDetails(client_gid) {
+         $('#btnSave').text("Update");             
         $.ajax({
             type: "POST",
             url: '@Url.Action("GetClientList", "Dashboard")',
-                data: JSON.stringify({ p_client_gid: client_gid,p_action: "I" }),
+            data: JSON.stringify({ p_client_gid: client_gid,p_action: "I" }),
             contentType: "application/json; charset=utf-8",
             dataType: "json",
             success: function (response) {
@@ -154,18 +168,26 @@
                 $("#email").val(data.client_email_id);
                 $("#address").val(data.client_addr);
                 $("#country").val(data.client_country);
-                $("#state").val(data.client_state);
-                $("#city").val(data.client_city);
+                     $("#createedit").val("Edit");
+                    $("#clientcode").val(data.client_code);
+                $("#clientstatus").val("Active");
+                 loadMasterDropdown("QCD_MAST_STATE", "state", data.client_country);
+                 setTimeout(function () {                  
+                    $("#state").val(data.client_state);                  
+                    loadMasterDropdown("QCD_MAST_CITY", "city", data.client_state);
+                    setTimeout(function () {                     
+                    $("#city").val(data.client_city);
+                    }, 300);
+                }, 300);
                 $("#pin").val(data.client_pincode);
             },
-
             error: function (xhr) {
                 console.log("Error:", xhr.responseText);
             }
         });
     }
 
-     function loadMasterDropdown(masterCode, dropdownId, selectedValue) {
+  function loadMasterDropdown(masterCode, dropdownId, selectedValue) {
         var mymodel = {
             in_master_code: masterCode,
             in_user_code: ""
@@ -243,6 +265,9 @@ $("#state").on("change", function () {
             var state = $("#state").val();
             var city = $("#city").val();
              var pin = $("#pin").val();
+                $("#clientname").on("input", function () {
+                    this.value = this.value.replace(/[^A-Za-z\s]/g, '');
+                });
                 if(clientname === "") {
                     $("#queryClientname").text("Please Enter Client Name");
                 isValid = false;
@@ -255,11 +280,16 @@ $("#state").on("change", function () {
                 } else {
                         $("#queryClienttype").text("");
                 }
-                if(cin === "") {
-                        $("#queryCin").text("Please Enter CIN");
-                        isValid = false;
-                } else {
-                         $("#queryCin").text("");
+                if (cin === "") {
+                    $("#queryCin").text("Please Enter CIN");
+                    isValid = false;
+                }
+                else if (cin.length !== 21) {
+                    $("#queryCin").text("CIN must be 21 characters");
+                    isValid = false;
+                }
+                else {
+                    $("#queryCin").text("");
                 }
                 if(cperson === "") {
                         $("#queryContactperson").text("Please Enter Contact Name");
@@ -270,15 +300,25 @@ $("#state").on("change", function () {
                 if(mobno === "") {
                     $("#querymobno").text("Please Enter Mobile Number");
                      isValid = false;
-                 } else {
-                    $("#querymobno").text("");
-                }
-                 if(email === "") {
-                         $("#queryemail").text("Please Enter Email ID");
-                         isValid = false;
-                  } else {
-                            $("#queryemail").text("");
                  }
+                    else if (mobno.length !== 10) {
+                    $("#querymobno").text("Mobile Number must be 10 Digits");
+                isValid = false;
+                }
+                 else {
+                    $("#querymobno").text("");
+                }   
+                if (email === "") {
+                    $("#queryemail").text("Please Enter Email ID");
+                    isValid = false;
+                }
+                else if (!$("#email")[0].checkValidity()) {
+                    $("#queryemail").text("Email is not valid");
+                    isValid = false;
+                }
+                else {
+                    $("#queryemail").text("");
+                }
                 if(address === "") {
                         $("#queryaddress").text("Please Enter Address");
                     isValid = false;
@@ -306,7 +346,12 @@ $("#state").on("change", function () {
                 if(pin === "") {
                             $("#querypin").text("Please Enter Pincode");
                         isValid = false;
-                } else {
+                }
+                    else if (pin.length !== 6) {
+                            $("#querypin").text("Pincode  must be 6 Digits");
+                         isValid = false;
+            }
+                else {
                             $("#querypin").text("");
                 }
                  if (isValid) {
@@ -344,7 +389,7 @@ $("#state").on("change", function () {
                                             type: 'green',
                                         });
                                        setTimeout(() => {
-                                              window.location.href = "../ClientSetup/ClientSetup";
+                                                  window.location.href = "../Dashboard/Dashboard?tab=client";
                                         }, 3000);
                                     }                                   
                             }
