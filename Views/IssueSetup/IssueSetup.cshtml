@@ -8,6 +8,14 @@
     <meta name="viewport" content="width=device-width" />
     <title>Client Setup</title>
     <style>
+
+        .ui-autocomplete {
+            font-weight: 400;
+            font-size: 13px !important;
+            line-height: 17px !important;
+            color: #697a8d;
+        }
+
         .content-wrapper {
             display: flex;
             justify-content: center;
@@ -61,10 +69,11 @@
                         <input type="text" id="createedit" class="form-control" readonly value="@ViewBag.Mode" />
                     </div>
                     <div class="col-sm-2">
-                        <input type="text" id="issuecode" class="form-control" readonly value="@ViewBag.IssueCode" />
+                        <input type="text" id="offer_code" class="form-control" readonly value="@ViewBag.IssueCode" />
                     </div>
                     <div class="col-sm-2">
                         <input type="text" id="issuestatus" class="form-control" readonly value="@ViewBag.IssueStatus" />
+                        <input type="text" id="offer_header_gid" class="form-control" hidden />
                     </div>
                     <div class="col-sm-6">
                         <img style="width:20px; height:20px; margin-bottom:-9px; cursor:pointer;float:right;" onclick="location.href='@Url.Action("Dashboard", "Dashboard")?tab=issue'"  src="/Assets/images/toplist.png">
@@ -72,15 +81,15 @@
                 </div>
                 <div class="row" style="margin-top:5px;">
                     <div class="col-sm-3">
-                        <label class="form-label" for="ReferredBy" data-field="ReferredBy">Client Name</label>
+                        <label class="form-label" >Client Name</label>
                         <input type="text" id="clientname" class="form-control" value="@ViewBag.ClientName" />
                     </div>
                     <div class="col-sm-3">
-                        <label class="form-label" for="ReferredBy" data-field="ReferredBy">Client Code</label>
+                        <label class="form-label" >Client Code</label>
                         <input type="text" id="clientcode" class="form-control" readonly value="@ViewBag.IssueCode" />
                     </div>                   
                     <div class="col-sm-3">
-                        <label class="form-label" for="offer_type" data-field="offer_type">Offer Type</label>&nbsp;<span style="font-size: 12px;color:red;font-weight: bold;">*</span>
+                        <label class="form-label" >Offer Type</label>&nbsp;<span style="font-size: 12px;color:red;font-weight: bold;">*</span>
                         <select name="offer_type" id="offer_type" class="form-control">                                                     
                         </select>
                     </div>
@@ -92,19 +101,15 @@
                 </div>
                 <div class="row" style="margin-top:5px;">
                     <div class="col-sm-3">
-                        <label class="form-label" for="isin" data-field="isin">ISIN No.</label>&nbsp;<span style="font-size: 12px;color:red;font-weight: bold;">*</span>
+                        <label class="form-label" >ISIN No.</label>&nbsp;<span style="font-size: 12px;color:red;font-weight: bold;">*</span>
                         <input type="text" id="isin" name="isin" class="form-control"  />
                     </div>
                     <div class="col-sm-3">
-                        <label class="form-label" for="isin" data-field="isin">Status</label>
-                        <select name="status" id="status" class="form-control">
-                            <option value="">---- Select Status ---</option>
-                            <option value="closed">Closed</option>
-                            <option value="inactive">Inactive</option>
-                        </select>
+                        <label class="form-label">Status</label>
+                        <select name="status" id="status" class="form-control"></select>
                     </div>
                     <div class="col-sm-4">
-                        <label class="form-label" for="isin" data-field="isin">Remarks</label>                        
+                        <label class="form-label" >Remarks</label>
                         <input type="text" id="remarks" name="remarks" class="form-control" />
                     </div>
                     <div class="col-sm-2">
@@ -175,33 +180,33 @@
                                 <div class="tab-pane fade show active" id="navs-top-ids" role="tabpanel">
                                     <div class="row">
                                         <div class="col-sm-2">
-                                            <label class="form-label" for="isin" data-field="isin">Pre Offer Capital</label>
+                                            <label class="form-label">Pre Offer Capital</label>
                                             <input type="number" id="preissue" class="form-control"/>
                                         </div>
                                         <div class="col-sm-2">
-                                            <label class="form-label" for="isin" data-field="isin">Issue Size</label>
+                                            <label class="form-label">Issue Size</label>
                                             <input type="number" id="issuesize" class="form-control" />
                                         </div>
                                         <div class="col-sm-2">
-                                            <label class="form-label" for="isin" data-field="isin">Post Offer Capital</label>
+                                            <label class="form-label">Post Offer Capital</label>
                                             <input type="number" id="postissue" class="form-control"  readonly/>
                                         </div>
                                         <div class="col-sm-2">
-                                            <label class="form-label" for="isin" data-field="isin">Lot Size</label>
+                                            <label class="form-label">Lot Size</label>
                                             <input type="number" id="lotsize" class="form-control" />
                                         </div>
                                         <div class="col-sm-2">
-                                            <label class="form-label" for="isin" data-field="isin">Face Value</label>
+                                            <label class="form-label">Face Value</label>
                                             <input type="number" id="facevalue" class="form-control" />
                                         </div>
                                         <div class="col-sm-2">
-                                            <label class="form-label" for="isin" data-field="isin">Premium</label>
+                                            <label class="form-label">Premium</label>
                                             <input type="number" id="premium" class="form-control" />
                                         </div>
                                     </div>
                                     <div class="row" style="margin-top:20px;">
                                         <div class="col-sm-2">
-                                            <label class="form-label" for="isin" data-field="isin"> Price Type</label>
+                                            <label class="form-label" > Price Type</label>
                                             <select name="pricetype" id="pricetype" class="form-control">
                                                 <option value="">---- Select Type---</option>
                                                 <option value="1">Fixed</option>
@@ -209,19 +214,19 @@
                                             </select>
                                         </div>
                                         <div class="col-sm-2">
-                                            <label class="form-label" for="isin" data-field="isin">Fixed Price</label>
+                                            <label class="form-label">Fixed Price</label>
                                             <input type="number" id="fprice" class="form-control"  disabled/>
                                         </div>
                                         <div class="col-sm-2">
-                                            <label class="form-label" for="isin" data-field="isin">Minimum Price</label>
+                                            <label class="form-label">Minimum Price</label>
                                             <input type="number" id="minprice" class="form-control" disabled />
                                         </div>
                                         <div class="col-sm-2">
-                                            <label class="form-label" for="isin" data-field="isin">Maximum Price</label>
+                                            <label class="form-label" >Maximum Price</label>
                                             <input type="number" id="maxprice" class="form-control" disabled />
                                         </div>
                                         <div class="col-sm-2">
-                                            <label class="form-label" for="isin" data-field="isin">Cut Off Price</label>
+                                            <label class="form-label" >Cut Off Price</label>
                                             <input type="number" id="cutoffprice" class="form-control" disabled />
                                         </div>
                                         <div class="col-sm-2">
@@ -237,15 +242,15 @@
                                             </select>
                                       </div>
                                         <div class="col-sm-3">
-                                            <label class="form-label" for="isin" data-field="isin">Bank Name</label>
+                                            <label class="form-label" >Bank Name</label>
                                             <input type="text" id="bankname" class="form-control" />
                                         </div>
                                         <div class="col-sm-3">
-                                            <label class="form-label" for="isin" data-field="isin">Address</label>
+                                            <label class="form-label" >Address</label>
                                             <textarea id="address" class="form-control" cols="10" rows="2"></textarea>
                                         </div>
                                         <div class="col-sm-2">
-                                            <label class="form-label" for="banktype" data-field="banktype">City</label>
+                                            <label class="form-label" >City</label>
                                             <select name="city" id="city" class="form-control">
                                                 <option value="">---- Select City ---</option>
                                                 <option value="CB">Chennai</option>
@@ -254,7 +259,7 @@
                                             </select>
                                         </div>
                                         <div class="col-sm-2">
-                                            <label class="form-label" for="banktype" data-field="banktype">State</label>
+                                            <label class="form-label" >State</label>
                                             <select name="state" id="state" class="form-control">
                                                 <option value="">---- Select State ---</option>
                                                 <option value="CB">Tamilnadu</option>
@@ -265,19 +270,19 @@
                                   </div>
                                   <div class="row">
                                         <div class="col-sm-2">
-                                            <label class="form-label" for="isin" data-field="isin">Pincode</label>
+                                            <label class="form-label" >Pincode</label>
                                             <input type="text" id="pin" class="form-control" />
                                         </div>
                                         <div class="col-sm-3">
-                                            <label class="form-label" for="isin" data-field="isin">Account No.</label>
+                                            <label class="form-label" >Account No.</label>
                                             <input type="text" id="acno" class="form-control" />
                                         </div>
                                         <div class="col-sm-3">
-                                            <label class="form-label" for="isin" data-field="isin">Account Name</label>
+                                            <label class="form-label">Account Name</label>
                                             <input type="text" id="acname" class="form-control" />
                                         </div>
                                         <div class="col-sm-2">
-                                            <label class="form-label" for="isin" data-field="isin">IFSC Code</label>
+                                            <label class="form-label">IFSC Code</label>
                                             <input type="text" id="ifsc" class="form-control" />
                                         </div>
                                         <div class="col-sm-2">
@@ -330,20 +335,20 @@
                                 <div class="tab-pane fade" id="navs-top-sh" role="tabpanel" style="overflow-y: scroll;height: 235px;overflow-x: hidden;">
                                     <div class="row">
                                         <div class="col-sm-2">
-                                            <label class="form-label" for="sh" data-field="sh">Stake Holder Type</label>
+                                            <label class="form-label" >Stake Holder Type</label>
                                             <select name="sh" id="sh" class="form-control">                                               
                                             </select>
                                         </div>
                                         <div class="col-sm-2">
-                                            <label class="form-label" for="isin" data-field="isin">Stake Holder Name</label>
+                                            <label class="form-label" >Stake Holder Name</label>
                                             <input type="text" id="shname" class="form-control" />
                                         </div>
                                         <div class="col-sm-3">
-                                            <label class="form-label" for="isin" data-field="isin">Address</label>
+                                            <label class="form-label" >Address</label>
                                             <textarea id="address" class="form-control" cols="10" rows="2"></textarea>
                                         </div>
                                         <div class="col-sm-2">
-                                            <label class="form-label" for="banktype" data-field="banktype">City</label>
+                                            <label class="form-label" >City</label>
                                             <select name="city" id="city" class="form-control">
                                                 <option value="">---- Select City ---</option>
                                                 <option value="CB">Chennai</option>
@@ -352,7 +357,7 @@
                                             </select>
                                         </div>
                                         <div class="col-sm-3">
-                                            <label class="form-label" for="banktype" data-field="banktype">State</label>
+                                            <label class="form-label">State</label>
                                             <select name="state" id="state" class="form-control">
                                                 <option value="">---- Select State ---</option>
                                                 <option value="CB">Tamilnadu</option>
@@ -363,23 +368,23 @@
                                     </div>
                                     <div class="row">
                                         <div class="col-sm-2">
-                                            <label class="form-label" for="isin" data-field="isin">Pincode</label>
+                                            <label class="form-label" >Pincode</label>
                                             <input type="text" id="pin" class="form-control" />
                                         </div>
                                         <div class="col-sm-2">
-                                            <label class="form-label" for="isin" data-field="isin">Contact Name</label>
+                                            <label class="form-label" >Contact Name</label>
                                             <input type="text" id="cname" class="form-control" />
                                         </div>
                                         <div class="col-sm-3">
-                                            <label class="form-label" for="isin" data-field="isin">Designation</label>
+                                            <label class="form-label" >Designation</label>
                                             <input type="text" id="designation" class="form-control" />
                                         </div>
                                         <div class="col-sm-2">
-                                            <label class="form-label" for="isin" data-field="isin">Email</label>
+                                            <label class="form-label" >Email</label>
                                             <input type="text" id="email" class="form-control" />
                                         </div>                                       
                                         <div class="col-sm-2">
-                                            <label class="form-label" for="isin" data-field="isin">Mobile</label>
+                                            <label class="form-label" >Mobile</label>
                                             <input type="text" id="mob" class="form-control" style="width:80%"/>
                                         </div>
                                         <div class="col-sm-1">
@@ -552,38 +557,38 @@
                                 <div class="tab-pane fade" id="navs-top-mile" role="tabpanel">
                                     <div class="row">
                                         <div class="col-md-2-4">
-                                            <label class="form-label" for="sh" data-field="sh">Offer Opening Date	</label>
+                                            <label class="form-label" >Offer Opening Date	</label>
                                             <input type="date" id="iod" class="form-control"/>
                                         </div>
                                         <div class="col-md-2-4">
-                                            <label class="form-label" for="sh" data-field="sh">Offer closing Date	</label>
+                                            <label class="form-label" >Offer closing Date	</label>
                                             <input type="date" id="icd" class="form-control" />
                                         </div>
                                         <div class="col-md-2-4">
-                                            <label class="form-label" for="sh" data-field="sh">Allotment Date	</label>
+                                            <label class="form-label">Allotment Date	</label>
                                             <input type="date" id="alotdate" class="form-control" />
                                         </div>
                                         <div class="col-md-2-4">
-                                            <label class="form-label" for="sh" data-field="sh">Approval Date	</label>
+                                            <label class="form-label" >Approval Date	</label>
                                             <input type="date" id="apdate" class="form-control" />
                                         </div>
                                         <div class="col-md-2-4">
-                                            <label class="form-label" for="sh" data-field="sh">Listing Date	</label>
+                                            <label class="form-label" >Listing Date	</label>
                                             <input type="date" id="ldate" class="form-control" />
                                         </div>
                                     </div>
                                     <div class="row" style="margin-top:15px;">
 
                                         <div class="col-md-2-4">
-                                            <label class="form-label" for="sh" data-field="sh">NSDL CA Date	</label>
+                                            <label class="form-label" >NSDL CA Date	</label>
                                             <input type="date" id="nsdldate" class="form-control" />
                                         </div>
                                         <div class="col-md-2-4">
-                                            <label class="form-label" for="sh" data-field="sh">CDSL CA Date	</label>
+                                            <label class="form-label" >CDSL CA Date	</label>
                                             <input type="date" id="cdsldate" class="form-control" />
                                         </div>
                                         <div class="col-md-2-4">
-                                            <label class="form-label" for="sh" data-field="sh">Refund Date	</label>
+                                            <label class="form-label" >Refund Date	</label>
                                             <input type="date" id="refunddare" class="form-control" />
                                         </div>                                 
                                         <div class="col-md-2-4">
@@ -605,10 +610,12 @@
 </html>
 <script>
   $( document ).ready(function() {
-      $('#navhead').text('Issue Setup');      
+      $('#navhead').text('Issue Setup');
+          $('#offer_header_gid').val(0);
           loadMasterDropdown("QCD_MAST_OFFER_TYPE", "offer_type");
           loadMasterDropdown("QCD_MAST_LISTING", "listing");
-         
+          loadMasterDropdown("QCD_STATUS", "status");
+          getclientlist();
           $("#status").change(function () {
         var selectedValue = $(this).val();
         if (selectedValue === "inactive") {
@@ -712,22 +719,69 @@ $('button[data-bs-target="#navs-top-sh"]').on('shown.bs.tab', function () {
         loadMasterDropdown("QCD_MAST_STAKEHOLDER_TYPE", "sh");
 });
 
+function getclientlist(){
+        var mymodel = {
+            p_client_gid: 0,
+            p_action: "A"
+        };
+        try {
+            $.ajax({
+                type: "POST",
+                url: '@Url.Action("GetClientList", "Dashboard")',
+                dataType: 'json',
+                data: JSON.stringify(mymodel),
+                contentType: 'application/json; charset=utf-8',
+                success: function (response) {
+                    if (response ) {
+                     var clientList = JSON.parse(response._data);
+                     $("#clientname").autocomplete({
+                        source: $.map(clientList, function (item) {
+                            return {
+                                label: item.client_name, // shown to user
+                                value: item.client_name, // set in textbox
+                                id: item.client_code       // actual id
+                            };
+                        }),
+                        select: function (event, ui) {
+                            $("#clientname").val(ui.item.value); // show name
+                            $("#clientcode").val(ui.item.id);      // store id
+                            return false;
+                        }
+                    });
+                    }
+                    else {
+
+                    }
+                },
+                error: function (er) {
+                    alert(er)
+                    console.log(er)
+                }
+            });
+        }
+            catch (e) {
+                console.log(e)
+            }
+}
+
  function offerHeaderSave() {
      var payload = {}
-            payload.in_offer_header_gid = '0';
-        payload.client_name = $("#clientname").val();
-            payload.in_client_code = $("#clientcode").val();
-            payload.in_offer_type = $("#offer_type").val();
-            payload.in_offer_listing = $("#listing").val();
-            payload.in_offer_isin = $("#isin").val();
-            payload.in_offer_status = $("#status").val();
-            payload.in_offer_remarks = $("#remarks").val();
-            payload.in_user_code = '@userName';
-            payload.in_action = in_offer_header_gid == '0' ? "INSERT": "UPDATE";
+        payload.offer_header_gid = $("#offer_header_gid").val();
+        payload.offer_code = $("#offer_header_gid").val() == 0 ? "" : $("#offer_code").val();
+        payload.client_code = $("#clientname").val();
+        payload.active_status = 'Y';
+        payload.offer_type = $("#offer_type").val();
+        payload.offer_listing_no = $("#listing").val();
+        payload.offer_isin = $("#isin").val();
+        payload.offer_status = $("#status").val();
+        payload.offer_remarks = $("#remarks").val();
+        payload.in_user_code = '@userName';
+        payload.action = $("#offer_header_gid").val() == 0 ? "INSERT": "UPDATE";
+        payload.delete_flag = 'N';
     try {
         $.ajax({
             type: "POST",
-            url: '../IssueSetup/IssueSetup',
+            url: '../IssueSetup/OfferHeaderSave',
             dataType: 'json',
             data: JSON.stringify(payload),
             contentType: 'application/json; charset=utf-8',
@@ -761,6 +815,7 @@ $('button[data-bs-target="#navs-top-sh"]').on('shown.bs.tab', function () {
                 contentType: 'application/json; charset=utf-8',
                 success: function (response) {
                     if (response ) {
+
                     }
                     else {
                     }

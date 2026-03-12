@@ -83,7 +83,7 @@ namespace IPOWeb.Controllers
         [HttpPost]
         public JsonResult OfferHeaderSave([FromBody] OfferHeaderModel objOfferHeader)
         {
-            urlstring = Convert.ToString(_configuration.GetSection("Appsettings")["apiurl"]) + "offerheader";
+            urlstring = Convert.ToString(_configuration.GetSection("Appsettings")["apiurl"]) + "Set_OfferHeader";
             try
             {
                 using (var client = new HttpClient())
