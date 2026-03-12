@@ -38,5 +38,7 @@ namespace IPOWeb.Models
     {
         public int p_client_gid { get; set; }
         public string p_action { get; set; }
+     
     }
+  
 }

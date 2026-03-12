@@ -1,5 +1,8 @@
 ﻿@{
     Layout = "~/Views/Shared/_LayoutNew.cshtml";
+    var userName = Context.Session.GetString("user_name");
+    var userRole = Context.Session.GetString("user_role");
+    var roleName = Context.Session.GetString("role_name");
 }
 <!DOCTYPE html>
 <html>  
@@ -521,6 +524,92 @@
         console.log("Edit client_gid:", client_gid);        
         sessionStorage.setItem("edit_client_gid", client_gid);
         window.location.href = "../ClientSetup/ClientSetup";
+    }
+
+     function deleteGrid(e) {
+        var grid = $("#grid").data("kendoGrid");
+        var row = $(e).closest("tr");
+        var dataItem = grid.dataItem(row);
+        var client_gid = dataItem.client_gid;
+        console.log("Edit client_gid:", client_gid);    
+        $.confirm({
+                icon: 'fa fa-warning',
+                    title: 'IPO Web',
+                    autoClose: 'cancel|10000',
+                    theme: 'blue',
+                    animationSpeed: 700,
+                    content: 'Are you sure do you want to delete this record!',
+                    type: 'orange',
+                    buttons: {
+                    confirm: function () {
+                                var mymodel = {
+                                    in_client_gid:client_gid,  
+                                    in_client_name: '',
+                                    in_client_type:'',
+                                    in_client_cin:'',
+                                    in_client_contact_person:'',
+                                    in_client_mob_no:'',
+                                    in_client_email_id:'',
+                                    in_client_addr:'',
+                                    in_client_country:'',
+                                    in_client_state:'',
+                                    in_client_city:'',
+                                    in_client_pincode:'',
+                                    in_insert_by:'',
+                                    in_update_by:"@userName",
+                                    in_action: "D"                                    
+                                }                            
+                                $.ajax({
+                                    type: "Post",
+                                    url: '@Url.Action("IudClient", "ClientSetup")',
+                                    data: JSON.stringify(mymodel),
+                                    dataType: "json",
+                                    contentType: 'application/json; charset=utf-8',
+                                    success: function (response) {
+                                            if (response.authExpired) {
+                                                $.alert({
+                                                     title: 'Unauthorized',
+                                                    content: response.message || 'Unauthorized User',
+                                                    type: 'red',
+                                                    buttons: {
+                                                        ok: {
+                                                            text: 'OK',
+                                                            action: function () {
+                                                                window.location.href = '/login/logout';
+                                                            }
+                                                        }
+                                                    }
+                                                });
+                                                return;
+                                            }
+                                    var result = JSON.parse(response._data);                                       
+                                             if (result.length > 0) {
+                                            $.alert({
+                                            title: 'IPO Web',
+                                            content: result[0].result,
+                                            type: 'green',
+                                        });
+                                        $("#grid").data("kendoGrid").dataSource.read();
+                                         $("#grid").data("kendoGrid").refresh();
+                                       setTimeout(() => {
+                                               window.location.href = "../Dashboard/Dashboard?tab=client";
+                                        }, 3000);
+                                    }
+                                    }
+                        });
+                    },
+                        cancel: function () {
+                            $.alert({
+                                icon: 'fa fa-success',
+                                title: 'IPO Web',
+                                theme: 'dark',
+                                content: 'Delete Canceled.!',
+                                type: 'blue',
+                                animationSpeed: 700,
+                            });
+                        },
+        }
+        });
     }
 
 </script>
