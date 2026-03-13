@@ -1,12 +1,12 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
-using Recon_proto.Models;
+using IPOWeb.Models;
 using System.Data;
 using System.Net;
 using System.Net.Http.Headers;
 using System.Security.Claims;
 using System.Text;
-namespace Recon_proto.Controllers
+namespace IPOWeb.Controllers
 {
     public class QCDmasterController : Controller
     {
