@@ -1,4 +1,4 @@
-﻿namespace Recon_proto.Models
+﻿namespace IPOWeb.Models
 {
     public class QcdMasterModel
     {

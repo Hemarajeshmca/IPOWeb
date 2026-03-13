@@ -8,7 +8,7 @@ using System.Security.Claims;
 using System.Text;
 
 
-namespace Recon_proto.Controllers
+namespace IPOWeb.Controllers
 {
     public class CommonController : Controller
     {
@@ -36,8 +36,9 @@ namespace Recon_proto.Controllers
             {
                 using (var client = new HttpClient())
                 {
-                    string Urlcon = "/api/Qcdmaster/";
-                    client.BaseAddress = new Uri(urlstring + Urlcon);
+                    string Urlcon = "Qcdmaster/";
+                    //client.BaseAddress = new Uri(urlstring + Urlcon);
+                    client.BaseAddress = new Uri(urlstring);
                     //client.BaseAddress = new Uri("http://localhost:4195/api/Qcdmaster/");
                     client.DefaultRequestHeaders.Accept.Clear();
                     client.Timeout = Timeout.InfiniteTimeSpan;
@@ -289,6 +290,7 @@ namespace Recon_proto.Controllers
             public string in_config_name { get; set; }
             public string in_user_code { get; set; }
         }
+        [HttpPost]
         public JsonResult getconfigvalue([FromBody] configvalueModel confing_val)
         {
             urlstring = _configuration.GetSection("Appsettings")["apiurl"].ToString();
@@ -299,16 +301,21 @@ namespace Recon_proto.Controllers
                 using (var client = new HttpClient())
                 {
                     string Urlcon = "Common/";
-                    client.BaseAddress = new Uri(urlstring + Urlcon);
+                    //client.BaseAddress = new Uri(urlstring + Urlcon);
+                    client.BaseAddress = new Uri(urlstring);
                     client.DefaultRequestHeaders.Accept.Clear();
                     client.Timeout = Timeout.InfiniteTimeSpan;
+                    APIcookieName = "APItoken-" + User.FindFirst(ClaimTypes.Name)?.Value.ToString() + "_" + User.FindFirst(ClaimTypes.Role)?.Value.ToString();
+                    string token = Request.Cookies[APIcookieName];
                     client.DefaultRequestHeaders.Add("user_code", confing_val.in_user_code);
                     client.DefaultRequestHeaders.Add("lang_code", _configuration.GetSection("AppSettings")["lang_code"].ToString());
                     client.DefaultRequestHeaders.Add("role_code", _configuration.GetSection("AppSettings")["role_code"].ToString());
                     client.DefaultRequestHeaders.Add("ipaddress", _configuration.GetSection("AppSettings")["ipaddress"].ToString());
-                    client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+                    client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+                    client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json")); 
                     HttpContent content = new StringContent(JsonConvert.SerializeObject(confing_val), UTF8Encoding.UTF8, "application/json");
                     var response = client.PostAsync("configvalue", content).Result;
+                    //var response = client.PostAsync("api/Common/configvalue", content).Result;
                     Stream data = response.Content.ReadAsStreamAsync().Result;
                     StreamReader reader = new StreamReader(data);
                     post_data = reader.ReadToEnd();
@@ -390,16 +397,20 @@ namespace Recon_proto.Controllers
 				using (var client = new HttpClient())
 				{
 					string Urlcon = "Common/";
-					client.BaseAddress = new Uri(urlstring + Urlcon);
-					client.DefaultRequestHeaders.Accept.Clear();
-					client.Timeout = Timeout.InfiniteTimeSpan;
-					//client.DefaultRequestHeaders.Add("in_user_code", context.in_user_code);
-					//client.DefaultRequestHeaders.Add("in_recon_code", context.in_recon_code);
-					//client.DefaultRequestHeaders.Add("in_template_code", context.in_template_code);
-					client.DefaultRequestHeaders.Add("lang_code", _configuration.GetSection("AppSettings")["lang_code"].ToString()); 
+                    //client.BaseAddress = new Uri(urlstring + Urlcon);
+                    client.BaseAddress = new Uri(urlstring);
+                    client.DefaultRequestHeaders.Accept.Clear();
+                    client.Timeout = Timeout.InfiniteTimeSpan;
+                    APIcookieName = "APItoken-" + User.FindFirst(ClaimTypes.Name)?.Value.ToString() + "_" + User.FindFirst(ClaimTypes.Role)?.Value.ToString();
+                    string token = Request.Cookies[APIcookieName];
+                    //client.DefaultRequestHeaders.Add("in_user_code", context.in_user_code);
+                    //client.DefaultRequestHeaders.Add("in_recon_code", context.in_recon_code);
+                    //client.DefaultRequestHeaders.Add("in_template_code", context.in_template_code);
+                    client.DefaultRequestHeaders.Add("lang_code", _configuration.GetSection("AppSettings")["lang_code"].ToString()); 
 					client.DefaultRequestHeaders.Add("role_code", _configuration.GetSection("AppSettings")["role_code"].ToString());
 					client.DefaultRequestHeaders.Add("ipaddress", _configuration.GetSection("AppSettings")["ipaddress"].ToString());
-					client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+                    client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+                    client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
 					HttpContent content = new StringContent(JsonConvert.SerializeObject(role), UTF8Encoding.UTF8, "application/json");
 					var response = client.PostAsync("reportpermissionconfig", content).Result;
 					Stream data = response.Content.ReadAsStreamAsync().Result;

@@ -1,0 +1,405 @@
+﻿@{
+    ViewBag.title = "Recon Version History";
+    Layout = "~/Views/Shared/_LayoutNew.cshtml";
+}
+<!Doctype html>
+<html>
+<head>
+    <title></title>
+    <style>
+        .k-link:link, .k-link:visited, .k-nav-current.k-state-hover .k-link {
+            color: white !important;
+        }
+
+        .k-header, .k-treemap-title, .k-grid-header .k-header > .k-link {
+            color: white !important;
+        }
+
+        table {
+            border: 1px solid #C5C5C5 !important;
+        }
+
+        .k-grid-content {
+            overflow-x: hidden;
+            height: 325px !important;
+        }
+
+        .k-header, .k-grid-header {
+            color: white !important;
+        }
+        .k-treeview .k-minus {
+            background: url('../../images/math-minus-icon.png')center center;
+        }
+
+        .k-treeview .k-plus {
+            background: url('../../images/math-add-icon.png')center center;
+        }
+
+        div.k-treeview {
+            height: 393px !important;
+            width: 420px !important;
+            padding-left: 30px;
+            border-width: 2px;
+            padding-top: 10px !important;
+        }
+
+        .k-treeview.k-group {
+            margin-right: 57px;
+            overflow: auto;
+            height: 216px;
+            padding: 10px;
+        }
+
+        .k-icon.k-i-expand {
+            border-color: transparent;
+            background-image: url('../images/sprite.png');
+        }
+
+        .k-icon.k-i-collapse {
+            border-color: transparent;
+            background-image: url('../images/sprite.png');
+        }
+    </style>
+</head>
+<body class="hold-transition skin-blue sidebar-mini fixed">
+    <div class="content-wrapper">
+        <div class="container-xxl flex-grow-1 container-p-y">
+            <div class="card-body" style="margin-top: -1%; min-height: 82%;">
+                <div class="row">
+                    <div class="row" style="padding-bottom:1px;margin-top:-13px;padding-right:5px">
+                        <div class="col-sm-4">
+                            <label for="" class="form-label">Recon Name&nbsp;<span style="font-size: 12px;color: red;font-weight: bold;">*</span></label>
+                            <select id="cmbreconname" class="form-select form-control" onchange="reconchange()">
+                            </select>
+                        </div>
+                        <div class="col-sm-2" id="cmbversion">
+                            <label for="" class="form-label">History Version&nbsp;<span style="font-size: 12px;color: red;font-weight: bold;">*</span></label>
+                            <select id="comreconversion" class="form-select form-control" style=" width: 100%;">
+                            </select>
+                        </div>
+                        <div class="col-md-2" style="margin-top: 2%;">
+                            <button type="button" class="btn btn-sm save_btn me-2" style="margin-top: 7px" onclick="reconversionhistory()">
+                                View History
+                            </button>
+                        </div>
+                        <div class="col-md-2" style="margin-top: 2%;">
+                            <button type="button" onclick="pdfFiledownload()" class="btn btn-sm me-2" id="pdf_gen" style="margin-top: 7px; border: 1px solid gray;">
+                                PDF Generation
+                            </button>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="nav-align-top mt-3">
+                            <ul class="nav nav-pills mb-2" role="tablist">
+                                <li class="nav-item">
+                                    <button type="button"
+                                            class="nav-link active"
+                                            role="tab"
+                                            data-bs-toggle="tab"
+                                            data-bs-target="#navs-pills-top-Rule"
+                                            aria-controls="navs-pills-top-Rule"
+                                            aria-selected="true">
+                                       Process
+                                    </button>
+                                </li>
+                            </ul>
+                            <div class="tab-content" style="box-shadow:none !important;padding: 20px 0px;">
+                                 <div class="tab-pane fade show active" id="navs-pills-top-Rule" role="tabpanel" style="margin-top:-25px;">
+                                    <div class="panel panel-default">
+                                        <div class="panel-body">
+                                            <div class="col-xs-12">                                               
+                                                    <div id="grid_reconverion">                                                 
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>                             
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
+<script>
+    $(document).ready(function () {       
+        $("#navhead").text("Recon Version History");
+        gridlist();
+    });
+    function reconversionhistory() {
+        $("#cmbversion").show();
+        $("#txtversion").hide();
+        $("#btnsubmit").hide();
+    }
+    function gridlist() {
+        //recon name
+        var data = {};       
+        data.in_user_gid = 0;
+        data.in_active_status = '';
+        data.in_user_code = sessionStorage.getItem("usrname");
+        var Context = data;
+        $.ajax({
+            type: "POST",
+            url: '../Recon/Reconlistfetch',
+            dataType: 'json',
+            async: false,
+            data: JSON.stringify(data),
+            contentType: 'application/json; charset=utf-8',
+            success: function (response) {
+                var res = JSON.parse(response);
+                $("#cmbreconname").empty();
+                $("#cmbreconname").append($('<option>', {
+                    value: "",
+                    text: "  Select  "
+                }));
+                $.each(res, function (index, item) {
+                    if (item.active_status == 'Y') {
+                        $("#cmbreconname").append($('<option>', {
+                            value: item.recon_code,
+                            text: item.recon_name
+                        }));
+                    }
+                });
+                if (sessionStorage.getItem("reconcode") != null) {
+                    $("#cmbreconname").val(sessionStorage.getItem("reconcode"));
+                    jQuery('#cmbreconname').trigger("change");
+                }
+            },
+            error: function (er) {
+                alert(er)
+                console.log(er)
+            }
+        });
+    }
+    function reconchange() {
+        $(".save_btn").prop("disabled", false);
+        if ($("#cmbreconname").val() != '') {
+            sessionStorage.setItem("reconcode", $("#cmbreconname").val());
+            sessionStorage.setItem("reconname", $("#cmbreconname :selected").text());
+            setcon();
+        }
+        var in_recon_code = $("#cmbreconname").val();
+        var in_user_code = sessionStorage.getItem("usrname");
+        $.ajax({
+            type: "POST",
+            url: '../Reconversion/ReconversionListfetch',
+            dataType: 'json',
+            data: JSON.stringify({ in_recon_code: in_recon_code, in_user_code: in_user_code }),
+            contentType: 'application/json; charset=utf-8',
+            success: function (response) {
+                debugger;
+                if (response != null) {
+                    var res = JSON.parse(response);
+                    $("#comreconversion").empty();
+                    $("#comreconversion").append($('<option>', {
+                        value: "",
+                        text: "  Select  "
+                    }));
+                    $.each(res.Reconversion, function (index, item) {
+                        $("#comreconversion").append($('<option>', {
+                            value: item.recon_rule_version,
+                            text: item.recon_rule_version
+                        }));
+                    });
+                }
+            }
+        });
+    }
+    function reconversionhistory() {
+        var treeList = $("#grid_reconverion").data("kendoTreeList");
+        if (treeList)
+        {
+                 treeList.destroy();
+                 $("#grid_reconverion").empty(); 
+        }
+        var in_recon_code = $("#cmbreconname").val();
+        var in_version_code = $("#comreconversion").val();
+        var in_user_code = sessionStorage.getItem("usrname");
+        $.ajax({
+            type: "POST",
+            url: '../Reports/Reconversionhistoryfetch',
+            dataType: 'json',
+            data: JSON.stringify({ in_recon_code: in_recon_code, in_version_code: in_version_code, in_action_by: in_user_code }),
+            contentType: 'application/json; charset=utf-8',
+            success: function (response) {
+                if (response != null) {
+                    var res = JSON.parse(response);
+                    if (res.versionlist.length > 0) {
+                        grid_reconverion(res.versionlist);                        
+                    } else {
+                        grid_reconverion([]);
+                    }
+                }
+            },
+            error: function (er) {
+                alert(er)
+                console.log(er)
+            }
+        });
+    }
+    function grid_reconverion(data) {
+        $("#grid_reconverion").kendoTreeList({
+            dataSource: {
+                  data: data,
+                   schema: {
+                        model: {
+                            id: "id",
+                            parentId: "parentId",
+                            fields: {
+                                id: { type: "number" },
+                                parentId: { type: "number", nullable: true },
+                                seqno : { type: "string" },
+                                name: { type: "string" },
+                                code: { type: "string" },
+                                type: { type: "string" }
+                            },
+                            expanded: true
+                        }
+                   }
+            },
+            selectable: true,
+            height: 355,
+            columns: [
+                { field: "name", title: "Ko Sequence", expandable: true,width: 200,
+                template: function(item) {
+                    const icon = {
+                        Preprocess: "🟢",
+                        Rule: "🔵",
+                        Postprocess: "🟠",
+                        Theme: "🟣"
+                    }[item.type] || "";
+
+                    return `${icon} ${item.name}`;
+                }
+            },
+                { field: "code", title: "Code", width: 50,hidden :true },
+                { field: "master_code", title: "master_code", width: 50,hidden :true },
+                { field: "gid", title: "gid", width: 50,hidden :true },
+                { field: "type", title: "Type", width: 60,filterable: false},
+                {
+                    field: "seqno",
+                    title: "Seq. No.",
+                    width: 30,
+                    attributes:	{ style: "text-align: Right" },
+                    // filterable: false,
+                    // template: '#=sel_textbox1(data)#'
+                },
+                {
+                    field: "hold_flag_desc",
+                    title: "Hold",
+                    width: 30,
+                    attributes: { style: "text-align: center" },
+                    filterable: false,
+                    template: function (dataItem) {
+                        const checked = dataItem.hold_flag_desc ? "checked" : "";
+                        if (dataItem.parentId != null) {
+                            return `<input type="checkbox" class="hold-flag" disabled data-id="${dataItem.id}" ${checked} />`;
+                        }
+                        else {
+                            return '';
+                        }
+                    },
+                },
+                // {
+                //     field: "Info",
+                //     title: "Info",
+                //     width: 30,
+                //     filterable: false,
+                //     attributes: {
+                //         style: "text-align: center;"
+                //     },
+                //     template: function (dataItem) {
+                //     if (dataItem.parentId != null) {
+                //         return `<a href="#" style="cursor:pointer;"
+                //             onclick="showNodeInfo('${dataItem.master_code}', '${dataItem.name}', '${dataItem.gid}', '${dataItem.type}')"
+                //             data-bs-toggle="modal">
+                //             <img style="width:17px;height:17px;" src="../Assets/images/topnotes.png" />
+                //         </a>`;
+                //     } else {
+                //         return '';
+                //     }
+                //     },
+                // },
+            ],
+                rowTemplate: function(item) {
+                const typeClass = `row-${item.type}`;
+                return `<tr class="${typeClass}">
+                        <td>${item.name}</td>
+                        <td>${item.type}</td>
+                        <td>${item.code}</td>
+                    </tr>`;
+                }
+            });
+    }
+    function sel_textbox1(data){
+        var isvalue = data.seqno;
+        if (isvalue > 0) {
+            return '<input id="seqno_' + data.id + '" value=' + isvalue + ' disabled name="seqno" style="width: 100%; border: none !important;box-shadow: none !important;" onpaste="return false;" maxlength="5" onkeypress="return isNumberKey(event)" type="text"/> ';
+        }else {
+            return '';
+        }
+    }
+    function sel_checkbox(data) {
+        var isChecked1 = data.parentId;
+        var con1 = "";
+        if (isChecked1 != null) {
+            return '<input id="chk_sel1_' + data.id + '"  name = "hold_flag_desc" disabled type="checkbox"/> ';
+        }else {
+            return '<input id="chk_sel1_' + data.id + '"  style="display:none" disabled name = "hold_flag_desc" type="checkbox"/> ';
+        }
+    }
+    function sel_info(data) {
+        var isChecked1 = data.parentId;
+        var con1 = "";
+        if (isChecked1 != null) {
+            return "<a href='' style='cursor:pointer;' id='info'" + data.id + "' onclick='showNodeInfo('" + data + ")' value='edit' data-bs-toggle='modal'><img style='height:17px;width:17px' src = '../Assets/images/topnotes.png'></a>&nbsp;&nbsp;&nbsp;"
+           }else {
+            return ""
+        }
+    }
+    function onSelect(e) {
+      var treeview1 = $("#grid_reconverion").data("kendoTreeView");
+      var dataItem = treeview1.dataItem(e.node);
+    } 
+    
+    $('#pdf_gen').click(function () {        
+        var in_recon_name = $("#cmbreconname").find(":selected").text();
+        var in_recon_code = $("#cmbreconname").val();
+        var in_version_code = $("#comreconversion").val();
+        var slice_recon_name = in_recon_name.slice(0, 20);
+        var in_user_code = sessionStorage.getItem("usrname");
+
+        if (in_recon_code && in_version_code) {
+            window.location.href = '@Url.Action("GeneratePdf", "Reports")?in_recon_code=' + in_recon_code + '&in_version_code=' + in_version_code + '&in_action_by=' + in_user_code;
+        } else if (!in_recon_code) {
+            $.alert({
+                title: 'Recon',
+                content: 'Please Select Recon Name .!',
+                type: 'red',
+            });
+        } else if (!in_version_code) {
+            $.alert({
+                title: 'Recon',
+                content: 'Please Select Version .!',
+                type: 'red',
+            });
+        }
+        //var exportURL = getRootUrl() + "Reports/GeneratePdf";
+        //window.location.href = exportURL;
+    });
+
+    function getRootUrl() {
+       return window.location.origin ? window.location.origin + '/' : window.location.protocol + '/' + window.location.host + '/';
+    }
+
+    function pdfFiledownload(){
+        var in_recon_name = $("#cmbreconname").find(":selected").text();
+        var in_recon_code = $("#cmbreconname").val();
+        var in_version_code = $("#comreconversion").val();
+        var slice_recon_name = in_recon_name.slice(0, 20);
+        var data = {};        
+    }
+</script>
+

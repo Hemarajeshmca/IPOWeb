@@ -249,7 +249,7 @@
         h5#navhead {
             position: relative;
             right: 340px;
-            width: 23%;
+            width: 28%;
         }
     </style>
 
@@ -311,7 +311,7 @@
     <script src="~/Scripts/jquery-confirm.min.js"></script>
     <link href="~/Content/css/jquery-confirm.min.css" rel="stylesheet" />
 
-    @*/*dashboard chart*/*@
+    @*/*dashboard chart*@
     @*<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>*@
     <script type="text/javascript" src="https://www.google.com/jsapi"></script>
     <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
@@ -515,18 +515,24 @@
                                     </li>
                                 </ul>
                             </li>
-                            <li class="nav-item dropdown-language dropdown lh-1 me-1">
+                          <li class="nav-item dropdown-language dropdown lh-1 me-1">
                                 <a class="nav-link dropdown-toggle hide-arrow" href="javascript:void(0);" data-bs-toggle="dropdown">
                                     <i class='bx bx-news' data-bs-toggle="tooltip" data-bs-placement="bottom" title="Reports"></i>
                                 </a>
 
                                 <ul class="dropdown-menu dropdown-menu-end">
                                     <li>
-                                        <a class="dropdown-item" href="~/Report/Report" data-language="fr">
+                                        <a class="dropdown-item" href="~/Reports/ReportGeneration_newlist" data-language="fr">
                                             <i class="fa fa-file-excel-o" style="font-size: 16px;color: #5490ff;position: relative;top: 3px;"></i>&nbsp;
                                             <span class="align-middle">Report Generation</span>
                                         </a>
-                                    </li>                                    
+                                    </li>        
+                                    <li>
+                                        <a class="dropdown-item" href="~/Reports/ReportTemplete" data-language="fr">
+                                            <i class="fa fa-file-excel-o" style="font-size: 16px;color: #5490ff;position: relative;top: 3px;"></i>&nbsp;
+                                            <span class="align-middle">Custom Reports</span>
+                                        </a>
+                                    </li>
                                 </ul>
                             </li>
                             <!-- User -->
@@ -799,7 +805,7 @@
             //localStorage.setItem("entityId", 0);
             //localStorage.setItem("isinNumber", 0);
            // console.log("ISIN", isinid);
-            $("#userGroupid").val(JSON.parse(localStorage.getItem("SetContextData"))[0].usergroup_gid);
+            // $("#userGroupid").val(JSON.parse(localStorage.getItem("SetContextData"))[0].usergroup_gid);
             populateDropdown(JSON.parse(localStorage.getItem("SetContextData")), 'Entity');
             //  populateDropdown(JSON.parse(localStorage.getItem("SetContextData")), 'Isin');
 
@@ -1045,7 +1051,7 @@
                      });
                  }
              });
-        }*/
+        }
 
         function showchangepasswordscreen() {
             debugger;
@@ -2039,7 +2045,126 @@
             const regex = /^\d{4}-(0[1-9]|1[0-2])-(0[1-9]|[12][0-9]|3[01])$/; // Reg exp for dd-mm-yyyy
             return regex.test(date);
         }
+           function kendodate_format() {
+               var kendate = getconfigvalue("kendo_date_format");
+               var kendatetime = getconfigvalue("kendo_datetime_format");
+               sessionStorage.setItem("kendatetime", kendatetime);
+               sessionStorage.setItem("kendate", kendate);
+               $(".cusDate").kendoDatePicker({
+                   value: new Date(),
+                   format: kendate
+               });
+               $(".cusDate1").kendoDatePicker({
+                   value: new Date(),
+                   format: "yyyy-MM-dd"
+               });
+           }
+              function getconfigvalue(selectElement) {
+               var result = "";
+               var selectElement = selectElement;
+               // var in_user_code = sessionStorage.getItem("usrname");
+               var in_user_code = 'test';
+               $.ajax({
+                   type: "POST",
+                   url: '../Common/getconfigvalue',
+                   dataType: 'json',
+                   async: false,
+                   data: JSON.stringify({ in_config_name: selectElement, in_user_code: in_user_code }),
+                   contentType: 'application/json; charset=utf-8',
+                   success: function (response) {
+                       var res = JSON.parse(response);
+                       result = res[0].out_config_value
+                   }
+               });
+               return result;
+           }
+              function btn_onClick(event) {
+               click_btn_val = "";
+               if (event != "") {
+                   if (event == "Create") {
+                       click_btn_val = "Create";
+                   }
+                   else if (event == "Edit") {
+                       click_btn_val = "Edit";
+                   }
+                   else if (event == "View") {
+                       click_btn_val = "View";
+                   }
+                   else
+                       click_btn_val = "";
+                   setlocalStorage('btn_clk_val', click_btn_val);
+                   //document.location = form_list_url;
+               }
+           }
+              function reportpermissionscreen(reconcode, templatecode) {
+               var result = {};
+               var in_user_code = 'test';
 
+               $.ajax({
+                   type: "POST",
+                   url: '../Common/reportpermission',
+                   dataType: 'json',
+                   async: false,
+                   data: JSON.stringify({
+                       in_template_code: templatecode,
+                       in_user_code: in_user_code,
+                       in_recon_code: reconcode
+                   }),
+                   contentType: 'application/json; charset=utf-8',
+                   success: function (response) {
+                       result = response;
+                   }
+               });
+
+               return result;
+           }
+           function combo_editor_man(container, cmbid, datasource, datafield, code_datafield, grid_id) {
+			$('<input  id="' + cmbid + '" data-text-field="desc" data-value-field="desc" data-bind="value:' + datafield + '" name ="' + datafield + '"/>').appendTo(container).kendoComboBox({
+				autoBind: false,
+				filter: "contains",
+				dataSource: datasource,
+				change: function (e) {
+					var cmb_value = this.value();
+					if (cmb_value && this.selectedIndex == -1) {
+						this.value("");
+					}
+					//else{FF
+					var cmb_var = $("#" + grid_id).data("kendoGrid");
+					var selectedItem = cmb_var.dataItem(cmb_var.select());
+					var combobox_data = $("#" + cmbid).data("kendoComboBox");
+					if (combobox_data != undefined && combobox_data.selectedIndex == -1) {
+						selectedItem[datafield] = "";
+						selectedItem[code_datafield] = "";
+					}
+					else {
+						selectedItem[datafield] = combobox_data.dataItem(combobox_data.selectedIndex).desc;
+						selectedItem[code_datafield] = combobox_data.dataItem(combobox_data.selectedIndex).code;
+					}
+				}
+			});
+			$("<span class='k-invalid-msg' data-for='" + datafield + "'></span>").appendTo(container);
+		}
+           function hideProgress() {
+               if (spinnerVisible) {
+                    var spinner = $("div#spinner");
+                    spinner.stop();
+                    spinner.fadeOut("fast");
+                    spinnerVisible = false;
+                    $("div.k-grid").each(function () {
+                       var grid = $(this).data("kendoGrid");
+                       if (grid) {
+                           var isSortable = grid.options.sortable;
+                           var isFilterable = grid.options.filterable;
+                           if (!isSortable || !isFilterable) {
+                               grid.setOptions ({
+                                   sortable: true,
+                                   filterable: true
+                               });
+                           }
+                       }
+                    });
+               }
+           }
     </script>
 
 </body>
