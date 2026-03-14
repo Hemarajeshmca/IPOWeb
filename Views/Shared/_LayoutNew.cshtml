@@ -880,7 +880,7 @@
         })
 
 
-        var spinnerVisible = false;
+        // var spinnerVisible = false;
         function getconcatval(mastercode) {
             debugger;
             var master = "";
@@ -904,6 +904,7 @@
             localStorage.clear();
         }
 
+        var spinnerVisible = false;
         function showProgress() {
             debugger;
             if (!spinnerVisible) {
@@ -914,13 +915,24 @@
             }
         }
         function hideProgress() {
-            debugger;
             if (spinnerVisible) {
-                //alert("hidep");
-                var spinner = $("div#spinner");
-                spinner.stop();
-                spinner.fadeOut("fast");
-                spinnerVisible = false;
+                 var spinner = $("div#spinner");
+                 spinner.stop();
+                 spinner.fadeOut("fast");
+                 spinnerVisible = false;
+                 $("div.k-grid").each(function () {
+                    var grid = $(this).data("kendoGrid");
+                    if (grid) {
+                        var isSortable = grid.options.sortable;
+                        var isFilterable = grid.options.filterable;
+                        if (!isSortable || !isFilterable) {
+                            grid.setOptions ({
+                                sortable: true,
+                                filterable: true
+                            });
+                        }
+                    }
+                 });
             }
         }
 
@@ -2144,27 +2156,7 @@
 			});
 			$("<span class='k-invalid-msg' data-for='" + datafield + "'></span>").appendTo(container);
 		}
-           function hideProgress() {
-               if (spinnerVisible) {
-                    var spinner = $("div#spinner");
-                    spinner.stop();
-                    spinner.fadeOut("fast");
-                    spinnerVisible = false;
-                    $("div.k-grid").each(function () {
-                       var grid = $(this).data("kendoGrid");
-                       if (grid) {
-                           var isSortable = grid.options.sortable;
-                           var isFilterable = grid.options.filterable;
-                           if (!isSortable || !isFilterable) {
-                               grid.setOptions ({
-                                   sortable: true,
-                                   filterable: true
-                               });
-                           }
-                       }
-                    });
-               }
-           }
+         
     </script>
 
 </body>
