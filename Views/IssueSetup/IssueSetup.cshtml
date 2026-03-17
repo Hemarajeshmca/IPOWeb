@@ -659,58 +659,6 @@
         }      
     });
 
-     function loadMasterDropdown(masterCode, dropdownId,selectedValue) {
-        var mymodel = {
-            in_master_code: masterCode,
-            in_user_code: ""
-        };
-        $.ajax({
-            type: "POST",
-            url: '@Url.Action("OfferType", "IssueSetup")',
-            data: JSON.stringify(mymodel),
-            dataType: "json",
-            contentType: 'application/json; charset=utf-8',
-                success: function (response) {
-                    if (response.authExpired) {
-                        $.alert({
-                            title: 'Unauthorized',
-                            content: response.message || 'Unauthorized User',
-                            type: 'red',
-                            buttons: {
-                                ok: {
-                                    text: 'OK',
-                                    action: function () {
-                                        window.location.href = '/login/logout';
-                                    }
-                                }
-                            }
-                        });
-                        return;
-                    }
-
-                    var result = JSON.parse(response.data);
-
-                    var $ddl = $("#" + dropdownId);
-                    $ddl.empty();
-                    $ddl.append('<option value="">--- Select ---</option>');
-
-                    $.each(result, function (index, item) {
-                        $ddl.append(
-                            '<option value="' + item.master_gid + '">' +
-                            item.master_name +
-                            '</option>'
-                        );
-                    });
-
-                    if (selectedValue) {
-                        $ddl.val(selectedValue).trigger("change");
-                    }
-                },
-            error: function (xhr) {
-                console.log("Dropdown load error:", xhr.responseText);
-            }
-        });
-    }
 
  $('button[data-bs-target="#navs-top-bank"]').on('shown.bs.tab', function () {        
      loadMasterDropdown("QCD_MAST_BANK_TYPE", "banktype");        
@@ -768,14 +716,14 @@ function getclientlist(){
      var payload = {}
         payload.offer_header_gid = $("#offer_header_gid").val();
         payload.offer_code = $("#offer_header_gid").val() == 0 ? "" : $("#offer_code").val();
-        payload.client_code = $("#clientname").val();
-        payload.active_status = 'Y';
         payload.offer_type = $("#offer_type").val();
         payload.offer_listing_no = $("#listing").val();
         payload.offer_isin = $("#isin").val();
         payload.offer_status = $("#status").val();
         payload.offer_remarks = $("#remarks").val();
-        payload.in_user_code = '@userName';
+        payload.client_code = $("#clientname").val();      
+        payload.user_code = '@userName';
+        payload.active_status = 'Y';
         payload.action = $("#offer_header_gid").val() == 0 ? "INSERT": "UPDATE";
         payload.delete_flag = 'N';
     try {
@@ -786,8 +734,18 @@ function getclientlist(){
             data: JSON.stringify(payload),
             contentType: 'application/json; charset=utf-8',
             success: function (response) {
-                if (response ) {
-                      
+                if (response ) {                    
+                    if (data.success) {
+                        var data = JSON.parse(response);
+                        $("#offer_header_gid").val(data[0].in_offer_header_gid);
+                        $("#offer_code").val(data[0].in_offer_code);
+                        fetchIssuesetup();                     
+                        $.alert({
+                        title: 'IPO Allotment',
+                        content:data[0].out_msg,
+                        type: 'green',
+                        });
+                     }
                 }
                 else {
                  
