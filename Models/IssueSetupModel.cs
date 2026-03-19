@@ -34,4 +34,24 @@ namespace IPOWeb.Models
         public char delete_flag { get; set; }
 
     }
+
+    public class OfferDetailsModel
+    {
+        public int? offer_detail_gid { get; set; }
+        public decimal? offer_precapital { get; set; } = 0;
+        public int offer_issuesize { get; set; } = 0;
+        public decimal offer_postcapital { get; set; } = 0;
+        public int? offer_lotsize { get; set; }
+        public decimal? offer_facevalue { get; set; } = 0;
+        public decimal? offer_premiun { get; set; } = 0;
+        public string? offer_pricetype { get; set; }
+        public decimal? offer_fixedprice { get; set; } = 0;
+        public decimal? offer_maximumprice { get; set; } = 0;
+        public decimal? offer_minimumprice { get; set; } = 0;
+        public decimal? offer_cutoffprice { get; set; } = 0;
+        public string? offer_code { get; set; }
+        public string? client_code { get; set; }
+        public string? user_code { get; set; }
+        public string? action { get; set; }
+    }
 }
