@@ -189,8 +189,8 @@
                                     class="nav-link"
                                     role="tab"
                                     data-bs-toggle="tab"
-                                    data-bs-target="#navs-top-issue"
-                                    aria-controls="navs-top-issue"
+                                    data-bs-target="#navs-top-offer"
+                                    aria-controls="navs-top-offer"
                                     aria-selected="false">
                                 Offer
                             </button>
@@ -254,7 +254,7 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="tab-pane fade" id="navs-top-issue" role="tabpanel">
+                        <div class="tab-pane fade" id="navs-top-offer" role="tabpanel">
                             <div class="row" style="margin-top:-13px;">
                                 <div class="col-sm-6">
                                     <img id="plusIcon" onclick="location.href='@Url.Action("IssueSetup", "IssueSetup", new { mode = "Create" })'" style="width:11px; height:11px;margin-bottom:12px;cursor:pointer" src="~/Assets/images/plus.png" />
@@ -451,11 +451,11 @@
                                 width: 70,
                                 template: `
                                     <img src='../Assets/images/editicons.png'
-                                         onclick="editOfferGrid(this)"
+                                         onclick="editGrid(this)"
                                          style="height:12px;width:12px;cursor:pointer;margin-right:10px;" />
 
                                     <img src='../Assets/images/del.png'
-                                         onclick="deleteOfferGrid(this)"
+                                         onclick="deleteGrid(this)"
                                          style="height:12px;width:12px;cursor:pointer;" />
                                 `
                             },
@@ -531,8 +531,7 @@
         var grid = $("#grid").data("kendoGrid");
         var row = $(e).closest("tr");
         var dataItem = grid.dataItem(row);
-        var client_gid = dataItem.client_gid;
-        console.log("Edit client_gid:", client_gid);    
+        var client_gid = dataItem.client_gid;  
         $.confirm({
                 icon: 'fa fa-warning',
                     title: 'IPO Web',
@@ -618,15 +617,12 @@
     }
 
        function showofferGrid() {
-
         $.ajax({
             type: "GET",
             url: '@Url.Action("GetOffersList", "Dashboard")',
             dataType: "json",
             contentType: 'application/json; charset=utf-8',
-
             success: function (data) {
-
                 if (data.authExpired) {
                     $.alert({
                         title: 'Unauthorized',
@@ -643,20 +639,18 @@
                     });
                     return;
                 }
-
                 var gridData = JSON.parse(data._data);
-
                 var columns = [
                     {
                         title: "Action",
                         width: 70,
                         template: `
                             <img src='../Assets/images/editicons.png'
-                                 onclick="editGrid(this)"
+                                 onclick="editOfferGrid(this)"
                                  style="height:12px;width:12px;cursor:pointer;margin-right:10px;" />
 
                             <img src='../Assets/images/del.png'
-                                 onclick="deleteGrid(this)"
+                                 onclick="deleteOfferGrid(this)"
                                  style="height:12px;width:12px;cursor:pointer;" />
                         `
                     },
@@ -691,65 +685,51 @@
                         title: "Offer Status"
                     }
                 ];
-
-                // Destroy existing grid if it exists
                 if ($("#offerListGrid").data("kendoGrid")) {
                     $("#offerListGrid").data("kendoGrid").destroy();
                     $("#offerListGrid").empty();
                 }
-
                 $("#offerListGrid").kendoGrid({
-
                     dataSource: {
                         data: gridData,
                         pageSize: 10
                     },
-
                     height: 358,
-
                     pageable: {
                         pageSizes: [10, 20, 30],
                         refresh: true
                     },
-
                     sortable: true,
                     filterable: true,
                     resizable: true,
-
                     columns: columns,
-
                     dataBound: function () {
                         var grid = this;
                         grid.columns.forEach(function (col, index) {
                             // Custom logic if needed
                         });
                     }
-
                 });
-
             },
-
             error: function () {
                 alert("Error loading Offer List");
             }
-
         });
 
     }
      function editOfferGrid(e) {
-        var grid = $("#grid").data("kendoGrid");
+        var grid = $("#offerListGrid").data("kendoGrid");
         var row = $(e).closest("tr");
         var dataItem = grid.dataItem(row);
-        var offer_header_gid = dataItem.offer_header_gid;
-        sessionStorage.setItem("edit_offer_gid", offer_header_gid);
+        sessionStorage.setItem("edit_offer_code", dataItem.offer_code);
+        sessionStorage.setItem("edit_client_code", dataItem.client_code);
         window.location.href = "../IssueSetup/IssueSetup";
     }
 
-     function deleteGrid(e) {
-        var grid = $("#grid").data("kendoGrid");
+     function deleteOfferGrid(e) {
+        var grid = $("#offerListGrid").data("kendoGrid");
         var row = $(e).closest("tr");
         var dataItem = grid.dataItem(row);
-        var offer_header_gid = dataItem.offer_header_gid;
         $.confirm({
                 icon: 'fa fa-warning',
                     title: 'IPO Web',
@@ -760,27 +740,24 @@
                     type: 'orange',
                     buttons: {
                     confirm: function () {
-                                var mymodel = {
-                                    in_client_gid:client_gid,
-                                    in_client_name: '',
-                                    in_client_type:'',
-                                    in_client_cin:'',
-                                    in_client_contact_person:'',
-                                    in_client_mob_no:'',
-                                    in_client_email_id:'',
-                                    in_client_addr:'',
-                                    in_client_country:'',
-                                    in_client_state:'',
-                                    in_client_city:'',
-                                    in_client_pincode:'',
-                                    in_insert_by:'',
-                                    in_update_by:"@userName",
-                                    in_action: "D"
+                                var payload = {
+                                    offer_header_gid: `${dataItem.offer_header_gid}`,
+                                    offer_code: dataItem.offer_code,
+                                    offer_type: "",
+                                    offer_listing_no: "",
+                                    offer_isin: "",
+                                    offer_status: "",
+                                    offer_remarks: "",
+                                    client_code: dataItem.client_code,
+                                    user_code: '@userName',
+                                    active_status: 'N',
+                                    action: "DELETE",
+                                    delete_flag: 'Y'
                                 }
                                 $.ajax({
                                     type: "Post",
-                                    url: '@Url.Action("IudClient", "ClientSetup")',
-                                    data: JSON.stringify(mymodel),
+                                    url: '@Url.Action("OfferHeaderSave", "IssueSetup")',
+                                    data: JSON.stringify(payload),
                                     dataType: "json",
                                     contentType: 'application/json; charset=utf-8',
                                     success: function (response) {
@@ -800,17 +777,17 @@
                                                 });
                                                 return;
                                             }
-                                    var result = JSON.parse(response._data);
-                                             if (result.length > 0) {
+                                    var result = JSON.parse(response.data);
+                                          if (result.length > 0) {
                                             $.alert({
                                             title: 'IPO Web',
-                                            content: result[0].result,
+                                            content: result[0].out_msg,
                                             type: 'green',
                                         });
-                                        $("#grid").data("kendoGrid").dataSource.read();
-                                         $("#grid").data("kendoGrid").refresh();
+                                        $("#offerListGrid").data("kendoGrid").dataSource.read();
+                                        $("#offerListGrid").data("kendoGrid").refresh();
                                        setTimeout(() => {
-                                               window.location.href = "../Dashboard/Dashboard?tab=client";
+                                             window.location.href = "../Dashboard/Dashboard?tab=offer";
                                         }, 3000);
                                     }
                                     }
@@ -829,6 +806,5 @@
         }
         });
     }
-
-
+   
 </script>
