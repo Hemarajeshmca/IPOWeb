@@ -251,6 +251,67 @@
             right: 340px;
             width: 28%;
         }
+
+        /* Normal rows */
+        .k-grid-content tr td {
+            background-color: #ffffff;
+            border-bottom: 1px solid #dcdcdc;
+            color: #000;
+        }
+
+        /* Alternate rows */
+        .k-grid-content tr.k-alt td {
+            background-color: #fff !important;
+            color: #000;
+            border-bottom: 1px solid #dcdcdc;
+        }
+        /* Cell borders */
+        td {
+            border: 1px solid #cfd8dc;
+        }
+
+        .k-grid-content tr:last-child td {
+            border-bottom: 1px solid #dcdcdc !important;
+        }
+
+        /* Compact row height */
+        .k-grid-content td {
+            padding-top: 2px;
+            padding-bottom: 2px;
+        }
+
+        /* Fixed layout */
+        .k-grid-header table,
+        .k-grid-content table {
+            table-layout: fixed;
+            width: 100%;
+        }
+
+        /* Prevent wrapping */
+        .k-grid-header th,
+        .k-grid-content td {
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .k-grid-content td {
+            padding-top: 2px;
+            padding-bottom: 2px;
+            line-height: 18px;
+            font-size: 13px;
+        }
+
+         .k-grid-header th {
+            padding-top: 4px;
+            padding-bottom: 4px;
+            line-height: 18px;
+            font-size: 13px;
+        }
+
+         .k-grid-content {
+            height: 288px !important;
+        }
     </style>
 
     <meta charset="utf-8" />
@@ -2227,6 +2288,49 @@
                     },
                 error: function (xhr) {
                     console.log("Dropdown load error:", xhr.responseText);
+                }
+            });
+        }
+
+        // ======== Hema Changes
+
+         function customAjax(options) {
+            return $.ajax({
+                type: options.type || "GET",
+                url: options.url,
+                data: options.data,
+                dataType: options.dataType || "json",
+                contentType: options.contentType || "application/json; charset=utf-8",
+                success: function (response) {
+                    if (response.authExpired) {
+                        $.alert({
+                            title: 'Unauthorized',
+                            content: response.message || 'Unauthorized User',
+                            type: 'red',
+                            buttons: {
+                                ok: {
+                                    text: 'OK',
+                                    action: function () {
+                                        window.location.href = '/login/logout';
+                                    }
+                                }
+                            }
+                        });
+                        return;
+                    }
+                    if (options.success) {
+                        options.success(response);
+                    }
+                },
+                error: function (xhr) {
+                    $.alert({
+                        title: 'Error',
+                        content: 'Something went wrong!',
+                        type: 'red'
+                    });
+                    if (options.error) {
+                        options.error(xhr);
+                    }
                 }
             });
         }

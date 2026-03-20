@@ -341,11 +341,9 @@ namespace IPOWeb.Controllers
         }
         #endregion
         #region Downloads
-
-
         public JsonResult getfilepath(string confing_val, string username)
         {
-            urlstring = _configuration.GetSection("Appsettings")["apiurl"].ToString();
+            urlstring = Convert.ToString(_configuration.GetSection("Appsettings")["apiurl"]) + "configvalue";
             fileconfigmodel FileDownload = new fileconfigmodel();
 
             var context = _configuration.GetSection("Appsettings")[confing_val];
@@ -356,17 +354,22 @@ namespace IPOWeb.Controllers
             {
                 using (var client = new HttpClient())
                 {
-                    string Urlcon = "Common/";
-                    client.BaseAddress = new Uri(urlstring + Urlcon);
+                    client.Timeout = Timeout.InfiniteTimeSpan;
+                    APIcookieName = "APItoken-" + User.FindFirst(ClaimTypes.Name)?.Value.ToString() + "_" + User.FindFirst(ClaimTypes.Role)?.Value.ToString();
+                    string token = Request.Cookies[APIcookieName];
+                    client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+                    client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
                     client.DefaultRequestHeaders.Accept.Clear();
                     client.Timeout = Timeout.InfiniteTimeSpan;
                     client.DefaultRequestHeaders.Add("user_code", username);
                     client.DefaultRequestHeaders.Add("lang_code", _configuration.GetSection("AppSettings")["lang_code"].ToString());
                     client.DefaultRequestHeaders.Add("role_code", _configuration.GetSection("AppSettings")["role_code"].ToString());
                     client.DefaultRequestHeaders.Add("ipaddress", _configuration.GetSection("AppSettings")["ipaddress"].ToString());
-                    client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
-                    HttpContent content = new StringContent(JsonConvert.SerializeObject(FileDownload), UTF8Encoding.UTF8, "application/json");
-                    var response = client.PostAsync("configvalue", content).Result;
+                    //client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+                   // HttpContent content = new StringContent(JsonConvert.SerializeObject(FileDownload), UTF8Encoding.UTF8, "application/json");
+                    var json = JsonConvert.SerializeObject(FileDownload);
+                    var content = new StringContent(json, Encoding.UTF8, "application/json");
+                    var response = client.PostAsync(urlstring, content).Result;
                     Stream data = response.Content.ReadAsStreamAsync().Result;
                     StreamReader reader = new StreamReader(data);
                     post_data = reader.ReadToEnd();
@@ -541,5 +544,6 @@ namespace IPOWeb.Controllers
 
         }
 
+   
     }
 }
