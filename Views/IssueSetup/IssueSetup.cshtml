@@ -82,7 +82,7 @@
                         <input type="text" id="offer_header_gid" class="form-control" hidden />
                     </div>
                     <div class="col-sm-6">
-                        <img style="width:20px; height:20px; margin-bottom:-9px; cursor:pointer;float:right;" onclick="location.href='@Url.Action("Dashboard", "Dashboard")?tab=issue'"  src="/Assets/images/toplist.png">
+                        <img style="width:20px; height:20px; margin-bottom:-9px; cursor:pointer;float:right;" onclick="location.href='@Url.Action("Dashboard", "Dashboard")?tab=offer'"  src="/Assets/images/toplist.png">
                     </div>
                 </div>
                 <div class="row" style="margin-top:5px;">
@@ -247,8 +247,8 @@
                                   <div class="row">
                                       <div class="col-sm-2">
                                             <label class="form-label" for="banktype" data-field="banktype">Bank Type</label>
-                                            <select name="banktype" id="banktype" class="form-control">                                                
-                                            </select>
+                                            <select name="banktype" id="banktype" class="form-control"></select>
+                                            <input id="banker_gid" class="form-control" hidden/>
                                       </div>
                                         <div class="col-sm-3">
                                             <label class="form-label" >Bank Name</label>
@@ -295,7 +295,7 @@
                                             <input type="text" id="ifsc" class="form-control" />
                                         </div>
                                         <div class="col-sm-2">
-                                            <center><button type="button" class="btn btn-primary" id="btnBankSave" style="padding: 3px 25px;margin-top:28px;width:60%">Save</button></center>
+                                            <center><button type="button" onclick="saveofferBank()" class="btn btn-primary" id="btnBankSave" style="padding: 3px 25px;margin-top:28px;width:60%">Save</button></center>
                                         </div>
                                   </div>
                                   <div class="row" style="margin-top:10px;">
@@ -308,20 +308,21 @@
                                     <div class="row">
                                         <div class="col-sm-2">
                                             <label class="form-label" >Stake Holder Type</label>
-                                            <select name="sh" id="sh" class="form-control">                                               
-                                            </select>
+                                            <select name="sh" id="sh_type" class="form-control"></select>
+                                            <input id="stack_gid" class="form-control" hidden/>
+                                            <input id="stack_code" class="form-control" hidden />
                                         </div>
                                         <div class="col-sm-2">
                                             <label class="form-label" >Stake Holder Name</label>
-                                            <input type="text" id="shname" class="form-control" />
+                                            <input type="text" id="sh_name" class="form-control" />
                                         </div>
                                         <div class="col-sm-3">
                                             <label class="form-label" >Address</label>
-                                            <textarea id="address" class="form-control" cols="10" rows="2"></textarea>
+                                            <textarea id="sh_address" class="form-control" cols="10" rows="2"></textarea>
                                         </div>
                                         <div class="col-sm-2">
                                             <label class="form-label" >City</label>
-                                            <select name="city" id="city" class="form-control">
+                                            <select name="sh_city" id="sh_city" class="form-control">
                                                 <option value="">---- Select City ---</option>
                                                 <option value="CB">Chennai</option>
                                                 <option value="RB">Kilpauk</option>
@@ -330,7 +331,7 @@
                                         </div>
                                         <div class="col-sm-3">
                                             <label class="form-label">State</label>
-                                            <select name="state" id="state" class="form-control">
+                                            <select name="sh_state" id="sh_state" class="form-control">
                                                 <option value="">---- Select State ---</option>
                                                 <option value="CB">Tamilnadu</option>
                                                 <option value="RB">Kerala</option>
@@ -341,88 +342,39 @@
                                     <div class="row">
                                         <div class="col-sm-2">
                                             <label class="form-label" >Pincode</label>
-                                            <input type="text" id="pin" class="form-control" />
+                                            <input type="text" id="sh_pin" class="form-control" />
                                         </div>
                                         <div class="col-sm-2">
                                             <label class="form-label" >Contact Name</label>
-                                            <input type="text" id="cname" class="form-control" />
+                                            <input type="text" id="sh_cname" class="form-control" />
                                         </div>
                                         <div class="col-sm-3">
                                             <label class="form-label" >Designation</label>
-                                            <input type="text" id="designation" class="form-control" />
+                                            <input type="text" id="sh_designation" class="form-control" />
                                         </div>
                                         <div class="col-sm-2">
                                             <label class="form-label" >Email</label>
-                                            <input type="text" id="email" class="form-control" />
+                                            <input type="text" id="sh_email" class="form-control" />
                                         </div>                                       
                                         <div class="col-sm-2">
                                             <label class="form-label" >Mobile</label>
-                                            <input type="text" id="mob" class="form-control" style="width:80%"/>
+                                            <input type="text" id="sh_mob" class="form-control" style="width:80%"/>
                                         </div>
                                         <div class="col-sm-1">
-                                            <center><button type="button" class="btn btn-primary" id="btnShSave" style="padding: 3px 25px;margin-top:28px;margin-left:-40px;">Save</button></center>
+                                            <center><button type="button" onclick="saveofferStackHolder()" class="btn btn-primary" id="btnShSave" style="padding: 3px 25px;margin-top:28px;margin-left:-40px;">Save</button></center>
                                         </div>
                                     </div>
                                     <div class="row" style="margin-top:10px;">
                                         <div class="col-sm-12">
-                                            <table class="table table-bordered table-sm">
-                                                <thead>
-                                                    <tr>
-                                                        <th style="font-size:12px;width: 10%">Type</th>
-                                                        <th style="font-size:12px;width: 15%;">Name</th>
-                                                        <th style="font-size:12px;width: 22%;">Address</th>
-                                                        <th style="font-size:12px;">Contact</th>
-                                                        <th style="font-size:12px;">Designation</th>
-                                                        <th style="font-size:12px;width: 23%;">Email</th>
-                                                        <th style="font-size:12px;">Mobile</th>
-                                                    </tr>
-                                                </thead>
-                                                <tbody>
-                                                    <tr>
-                                                        <td style="font-size:13px;">Merchant Banker</td>
-                                                        <td></td>
-                                                        <td></td>
-                                                        <td></td>
-                                                        <td></td>
-                                                        <td></td>
-                                                        <td></td>
-                                                    </tr>
-                                                    <tr>
-                                                        <td style="font-size:13px;">RTA</td>
-                                                        <td></td>
-                                                        <td></td>
-                                                        <td></td>
-                                                        <td></td>
-                                                        <td></td>
-                                                        <td></td>
-                                                    </tr>
-                                                    <tr>
-                                                        <td style="font-size:13px;">Lead Manager</td>
-                                                        <td></td>
-                                                        <td></td>
-                                                        <td></td>
-                                                        <td></td>
-                                                        <td></td>
-                                                        <td></td>
-                                                    </tr>
-                                                    <tr>
-                                                        <td style="font-size:13px;">Company Officials</td>
-                                                        <td></td>
-                                                        <td></td>
-                                                        <td></td>
-                                                        <td></td>
-                                                        <td></td>
-                                                        <td></td>
-                                                    </tr>                                                                                          
-                                                </tbody>
-                                            </table>
+                                            <div id="offerStackGrid"></div>
                                         </div>
                                     </div>
                                 </div>
                                 <div class="tab-pane fade" id="navs-top-cat" role="tabpanel" style="overflow-y: scroll;height: 235px;overflow-x: hidden;">
                                     <div class="row">
                                         <div class="col-sm-12">
-                                            <table class="table table-bordered table-sm">
+                                            <div id="offerCategoryGrid"></div>
+                                            @* <table class="table table-bordered table-sm">
                                                 <thead>
                                                     <tr style="position: sticky;top: 0;background: #ffffff;z-index: 10;">
                                                         <th style="font-size:12px;width:9%"><input type="checkbox" id="selectAll" />&nbsp;Select</th>
@@ -512,6 +464,7 @@
                                                     </tr>
                                                 </tbody>
                                             </table>
+                                             *@
                                         </div>
                                     </div>        
                                     <div class="row" style="margin-top:-30px;">
@@ -519,7 +472,7 @@
 
                                         </div>
                                         <div class="col-sm-4">
-                                            <center><button type="button" class="btn btn-primary" id="btnCatSave" style="padding: 3px 25px;margin-top:28px;width:35%">Save</button></center>
+                                            <center><button type="button" onclick="saveofferCategory()" class="btn btn-primary" id="btnCatSave" style="padding: 3px 25px;margin-top:28px;width:35%">Save</button></center>
                                         </div>
                                         <div class="col-sm-4">
 
@@ -531,6 +484,7 @@
                                         <div class="col-md-2-4">
                                             <label class="form-label" >Offer Opening Date	</label>
                                             <input type="date" id="iod" class="form-control"/>
+                                            <input id="milestone_gid" class="form-control" hidden/>
                                         </div>
                                         <div class="col-md-2-4">
                                             <label class="form-label" >Offer closing Date	</label>
@@ -561,10 +515,10 @@
                                         </div>
                                         <div class="col-md-2-4">
                                             <label class="form-label" >Refund Date	</label>
-                                            <input type="date" id="refunddare" class="form-control" />
+                                            <input type="date" id="refunddate" class="form-control" />
                                         </div>                                 
                                         <div class="col-md-2-4">
-                                            <center><button type="button" class="btn btn-primary" id="btnSave" style="padding: 3px 25px;margin-top:30px;width:50%">Save</button></center>
+                                            <center><button type="button" onclick="saveOfferMilstone()" class="btn btn-primary" id="btnSave" style="padding: 3px 25px;margin-top:30px;width:50%">Save</button></center>
                                         </div>
                                     </div>    
                                  
@@ -585,6 +539,9 @@
       $('#navhead').text('Issue Setup');
           $('#offer_header_gid').val(0);
           $("#offer_detail_gid").val(0);
+          $("#banker_gid").val(0);
+          $("#stack_gid").val(0);
+          $("#milestone_gid").val(0)
           $("#createedit").val($('#offer_header_gid').val() == 0 ? "CREATE": "EDIT");
           var offer_code = sessionStorage.getItem("edit_offer_code");
           var client_code = sessionStorage.getItem("edit_client_code");
@@ -597,6 +554,7 @@
           loadMasterDropdown("QCD_BANK_TYPE", "banktype");
           loadMasterDropdown("QCD_MAST_STATE", "state");
           loadMasterDropdown("QCD_MAST_STATE", "state");
+          loadMasterDropdown("QCD_STACK_HOLDER_TYPE", "sh_type");
           getclientlist();
           fetchIssuesetup();
           $("#status").change(function () {
@@ -649,13 +607,12 @@
         }      
     });
 
-
- $('button[data-bs-target="#navs-top-bank"]').on('shown.bs.tab', function () {        
-     loadMasterDropdown("QCD_MAST_BANK_TYPE", "banktype");        
- });
-$('button[data-bs-target="#navs-top-sh"]').on('shown.bs.tab', function () {
-        loadMasterDropdown("QCD_MAST_STAKEHOLDER_TYPE", "sh");
-});
+//  $('button[data-bs-target="#navs-top-bank"]').on('shown.bs.tab', function () {
+//              loadMasterDropdown("QCD_MAST_BANK_TYPE", "banktype");   // QCD_BANK_TYPE
+//      });
+// $('button[data-bs-target="#navs-top-sh"]').on('shown.bs.tab', function () {
+//             loadMasterDropdown("QCD_MAST_STAKEHOLDER_TYPE", "sh_type"); // QCD_STACK_HOLDER_TYPE
+// });
 
 function getclientlist(){
         var mymodel = {
@@ -729,7 +686,7 @@ function getclientlist(){
             isValid = false;
         }
         if (isValid) {
-        var payload = {}
+        var payload = {};
         payload.offer_header_gid = $("#offer_header_gid").val();
         payload.offer_code = $("#offer_header_gid").val() == 0 ? "" : $("#offer_code").val();
         payload.offer_type = $("#offer_type").val();
@@ -801,6 +758,9 @@ function getclientlist(){
                         fetchofferHeader(data.Table[0]);
                         fetchofferDetails(data.Table1[0]);
                         fetchofferBank(data.Table2);
+                        fetchofferStackHolder(data.Table3);
+                        fetchofferCategory(data.Table4);
+                        offerMillstone(data.Table5[0]);
                     }
                     else {
                     }
@@ -999,5 +959,557 @@ function fetchofferHeader(data){
                     });               
      }
 
+     function saveofferBank() {
+        var isValid = true;
+        if (!isValid) return;
+        var payload = {
+            banker_gid: $("#banker_gid").val() ? parseInt($("#banker_gid").val()) : 0,
+            banker_type: $("#banktype").val(),
+            banker_name: $("#bankname").val(),
+            banker_address: $("#address").val(),
+            banker_city: $("#city").val(),
+            banker_state: $("#state").val(),
+            banker_pincode: $("#pin").val(),
+            banker_accountno: $("#acno").val(),
+            banker_ifsc: $("#ifsc").val(),
+            offer_code: $("#offer_code").val(),
+            client_code: $("#clientcode").val(),
+            user_code: '@userName',
+            action: $("#banker_gid").val() == 0 ? "INSERT" : "UPDATE"
+        };
+        try {
+            customAjax({
+                type: "POST",
+                url: '@Url.Action("OfferBankersSave", "IssueSetup")',
+                data: JSON.stringify(payload),
+                success: function (response) {
+                    if (response && response.success) {
+                        clearbankerform();
+                        $("#banker_gid").val(0);
+                        var data = JSON.parse(response.data);
+                        fetchIssuesetup();
+                        $.alert({
+                            title: 'IPO Allotment',
+                            content: data[0].out_msg,
+                            type: 'green',
+                        });
+                    }
+                    else {
+                        $.alert({
+                            title: 'IPO Allotment',
+                            content: 'Save failed!',
+                            type: 'red',
+                        });
+                    }
+                },
+                error: function (er) {
+                    console.log(er);
+                }
+            });
+        } catch (e) {
+            console.log(e);
+        }
+    }
 
+     function clearbankerform(){
+        $("#banker_gid").val(0);
+        $("#banktype").val("");
+        $("#bankname").val("");
+        $("#address").val("");
+        $("#city").val("");
+        $("#state").val("");
+        $("#pin").val("");
+        $("#acno").val("");
+        $("#ifsc").val("");
+     }
+    function editBankGrid(e){
+        var grid = $("#offerBankGrid").data("kendoGrid");
+        var row = $(e).closest("tr");
+        var dataItem = grid.dataItem(row);
+        $("#banker_gid").val(dataItem.banker_gid);
+        $("#banktype").val(dataItem.banker_type);
+        $("#bankname").val(dataItem.banker_name);
+        $("#address").val(dataItem.banker_address);
+        $("#city").val(dataItem.banker_city);
+        $("#state").val(dataItem.banker_state);
+        $("#pin").val(dataItem.banker_pincode);
+        $("#acno").val(dataItem.banker_accountno);
+        $("#ifsc").val(dataItem.banker_ifsc);
+    }
+
+     function deleteBankGrid(e) {
+        var grid = $("#offerBankGrid").data("kendoGrid");
+        var row = $(e).closest("tr");
+        var dataItem = grid.dataItem(row);
+        $.confirm({
+            icon: 'fa fa-warning',
+            title: 'IPO Web',
+            autoClose: 'cancel|10000',
+            theme: 'blue',
+            animationSpeed: 700,
+            content: 'Are you sure do you want to delete this record!',
+            type: 'orange',
+            buttons: {
+                confirm: function () {
+                    var payload = {
+                        banker_type: "",
+                        banker_name: "",
+                        banker_gid: dataItem.banker_gid,
+                        banker_address: "",
+                        banker_city: "",
+                        banker_state: "",
+                        banker_pincode: "",
+                        banker_accountno: "",
+                        banker_ifsc: "",
+                        offer_code: $("#offer_code").val(),
+                        client_code: $("#clientcode").val(),
+                        user_code: '@userName',
+                        action: "DELETE"
+                    };
+                    customAjax({
+                        type: "POST",
+                        url: '@Url.Action("OfferBankersSave", "IssueSetup")',
+                        data: JSON.stringify(payload),
+                        success: function (response) {
+                            var result = JSON.parse(response.data);
+                            if (result.length > 0) {
+                                $.alert({
+                                    title: 'IPO Web',
+                                    content: result[0].out_msg,
+                                    type: 'green',
+                                });
+                                fetchIssuesetup();
+                            }
+                        }
+                    });
+                },
+                cancel: function () {
+                    $.alert({
+                        icon: 'fa fa-success',
+                        title: 'IPO Web',
+                        theme: 'dark',
+                        content: 'Delete Canceled.!',
+                        type: 'blue',
+                        animationSpeed: 700,
+                    });
+                }
+            }
+        });
+    }
+
+    // =================== Stackhoder details
+
+        function fetchofferStackHolder(data){
+                                  var columns = [
+                            {
+                                title: "Action",
+                                width: 70,
+                                template: `
+                                    <img src='../Assets/images/editicons.png'
+                                         onclick="editStackHolderGrid(this)"
+                                         style="height:12px;width:12px;cursor:pointer;margin-right:10px;" />
+
+                                    <img src='../Assets/images/del.png'
+                                             onclick="deleteStackHolderGrid(this)"
+                                         style="height:12px;width:12px;cursor:pointer;" />
+                                `
+                            },
+                            {
+                                field: "stack_gid",
+                                title: "ID",
+                                hidden: true
+                            },
+                            {
+                                field: "stack_type",
+                                title: "Stack Type",
+                            },
+                            {
+                                field: "stack_name",
+                                title: "Stack Name"
+                            },
+                            {
+                                field: "stack_address",
+                                title: "Address"
+                            },
+                            {
+                                field: "stack_city",
+                                title: "City",
+                                hidden: true
+                            },
+                            {
+                                field: "stack_state",
+                                title: "State",
+                                hidden: true
+                            },
+                            {
+                                field: "stack_pincode",
+                                title: "Pin code",
+                                hidden: true
+                            },
+                            {
+                                field: "stack_contact",
+                                title: "Contact Person"
+                            },
+                            {
+                                field: "stack_designation",
+                                title: "Designation"
+                            },
+                            {
+                                field: "stack_email",
+                                title: "Email"
+                            },
+                            {
+                                field: "stack_mobile",
+                                title: "Mobile No."
+                            }
+                        ];
+                            if ($("#offerStackGrid").data("kendoGrid")) {
+                               $("#offerStackGrid").data("kendoGrid").destroy();
+                               $("#offerStackGrid").empty();
+                        }
+                                $("#offerStackGrid").kendoGrid({
+                            dataSource: {
+                                data: data,
+                                pageSize: 10
+                            },
+                            height: 358,
+                            pageable: {
+                                pageSizes: [10, 20, 30],
+                                refresh: true
+                            },
+                            sortable: true,
+                            filterable: true,
+                            resizable: true,
+                            columns: columns,
+                            dataBound: function () {
+                                var grid = this;
+                                grid.columns.forEach(function (col, index) {
+                                });
+                            }
+                        });
+            }
+
+        function saveofferStackHolder() {
+            var isValid = true;
+            if (!isValid) return;
+            var payload = {                
+                stack_gid : parseInt($("#stack_gid").val()),
+                stack_code : parseInt($("#stack_gid").val()) == 0 ? "" : $("#stack_code").val(),
+                stack_type : $("#sh_type").val(),
+                stack_name : $("#sh_name").val(),
+                stack_address : $("#sh_address").val(),
+                stack_city : $("#sh_city").val(),
+                stack_state : $("#sh_state").val(),
+                stack_pincode : $("#sh_pin").val(),
+                stack_contact : $("#sh_cname").val(),
+                stack_designation : $("#sh_designation").val(),
+                stack_email : $("#sh_email").val(),
+                stack_mobile : $("#sh_mob").val(),
+                offer_code: $("#offer_code").val(),
+                client_code: $("#clientcode").val(),
+                user_code: '@userName',
+                action : parseInt($("#stack_gid").val()) == 0 ? "INSERT" : "UPDATE",
+                active_status: "Y"
+            };
+            try {
+                customAjax({
+                    type: "POST",
+                    url: '@Url.Action("OfferStackHolderSave", "IssueSetup")',
+                    data: JSON.stringify(payload),
+                    success: function (response) {
+                        if (response && response.success) {
+                            clearstackform();
+                            $("#stack_gid").val(0);
+                            var data = JSON.parse(response.data);
+                            fetchIssuesetup();
+                            $.alert({
+                                title: 'IPO Allotment',
+                                content: data[0].out_msg,
+                                type: 'green',
+                            });
+                        }
+                        else {
+                            $.alert({
+                                title: 'IPO Allotment',
+                                content: 'Save failed!',
+                                type: 'red',
+                            });
+                        }
+                    },
+                    error: function (er) {
+                        console.log(er);
+                    }
+                });
+            } catch (e) {
+                console.log(e);
+            }
+        }
+
+    function clearstackform() {
+        $("#stack_gid").val(0);
+        $("#stack_code").val("");
+        $("#sh_type").val("");
+        $("#sh_name").val("");
+        $("#sh_address").val("");
+        $("#sh_city").val("");
+        $("#sh_state").val("");
+        $("#sh_pin").val("");
+        $("#sh_cname").val("");
+        $("#sh_designation").val("");
+        $("#sh_email").val("");
+        $("#sh_mob").val("");
+    }
+
+        function editStackHolderGrid(e){
+            var grid = $("#offerStackGrid").data("kendoGrid");
+            var row = $(e).closest("tr");
+            var dataItem = grid.dataItem(row);
+            $("#stack_gid").val(dataItem.stack_gid);
+            $("#stack_code").val(dataItem.stack_code);
+            $("#sh_type").val(dataItem.stack_type);
+            $("#sh_name").val(dataItem.stack_name);
+            $("#sh_address").val(dataItem.stack_address);
+            $("#sh_city").val(dataItem.stack_city);
+            $("#sh_state").val(dataItem.stack_state);
+            $("#sh_pin").val(dataItem.stack_pincode);
+            $("#sh_cname").val(dataItem.stack_contact);
+            $("#sh_designation").val(dataItem.stack_designation);
+            $("#sh_email").val(dataItem.stack_email);
+            $("#sh_mob").val(dataItem.stack_mobile);
+        }
+
+     function deleteStackHolderGrid(e) {
+        var grid = $("#offerStackGrid").data("kendoGrid");
+        var row = $(e).closest("tr");
+        var dataItem = grid.dataItem(row);
+        $.confirm({
+            icon: 'fa fa-warning',
+            title: 'IPO Web',
+            autoClose: 'cancel|10000',
+            theme: 'blue',
+            animationSpeed: 700,
+            content: 'Are you sure do you want to delete this record!',
+            type: 'orange',
+            buttons: {
+                confirm: function () {
+                    var payload = {
+                        stack_gid: dataItem.stack_gid,
+                        stack_code: dataItem.stack_code,
+                        stack_type: "",
+                        stack_name: "",
+                        stack_address: "",
+                        stack_city: "",
+                        stack_state: "",
+                        stack_pincode: "",
+                        stack_contact: "",
+                        stack_designation: "",
+                        stack_email: "",
+                        stack_mobile: "",
+                        offer_code: $("#offer_code").val(),
+                        client_code: $("#clientcode").val(),
+                        user_code: '@userName',
+                        action: "DELETE",
+                        active_status: "N"
+                    };
+                    customAjax({
+                        type: "POST",
+                        url: '@Url.Action("OfferStackHolderSave", "IssueSetup")',
+                        data: JSON.stringify(payload),
+                        success: function (response) {
+                            var result = JSON.parse(response.data);
+                            if (result.length > 0) {
+                                $.alert({
+                                    title: 'IPO Web',
+                                    content: result[0].out_msg,
+                                    type: 'green',
+                                });
+                                fetchIssuesetup(); 
+                            }
+                        }
+                    });
+                },
+                cancel: function () {
+                    $.alert({
+                        icon: 'fa fa-success',
+                        title: 'IPO Web',
+                        theme: 'dark',
+                        content: 'Delete Canceled.!',
+                        type: 'blue',
+                        animationSpeed: 700,
+                    });
+                }
+            }
+        });
+    }
+
+    // ================= Offer Cateogery ==============
+
+           function fetchofferCategory(data) {
+
+        var columns = [
+            {
+                headerTemplate: `<input type="checkbox" id="selectAll" />`,
+                width: 70,
+                template: `<input type="checkbox" class="rowCheckbox" />`,
+                editable: false
+            },
+            {
+                field: "category_gid",
+                title: "ID",
+                hidden: true
+            },
+            {
+                field: "offer_cat_code",
+                title: "Cat Code"
+            },
+            {
+                field: "offer_cat_name",
+                title: "Category Name"
+            },
+            {
+                field: "offer_cat_shares",
+                title: "Share",
+                editor: numericEditor
+            }
+        ];
+
+        // destroy existing grid
+        var grid = $("#offerCategoryGrid").data("kendoGrid");
+        if (grid) {
+            grid.destroy();
+            $("#offerCategoryGrid").empty();
+        }
+
+        $("#offerCategoryGrid").kendoGrid({
+            dataSource: {
+                data: data,
+                pageSize: 10,
+                schema: {
+                    model: {
+                        id: "category_gid",
+                        fields: {
+                            category_gid: { editable: false },
+                            offer_cat_code: { editable: false },
+                            offer_cat_name: { editable: false },
+                            offer_cat_shares: { type: "number", editable: true } // ✅ ONLY editable field
+                        }
+                    }
+                }
+            },
+
+            height: 358,
+            pageable: {
+                pageSizes: [10, 20, 30],
+                refresh: true
+            },
+            sortable: true,
+            filterable: true,
+            resizable: true,
+            editable: "incell",
+            columns: columns,
+            dataBound: function () {
+                $("#selectAll").off("click").on("click", function () {
+                    $(".rowCheckbox").prop("checked", this.checked);
+                });
+                $(".rowCheckbox").off("click").on("click", function () {
+                    if (!this.checked) {
+                        $("#selectAll").prop("checked", false);
+                    } else {
+                        var allChecked = $(".rowCheckbox").length === $(".rowCheckbox:checked").length;
+                        $("#selectAll").prop("checked", allChecked);
+                    }
+                });
+            }
+        });
+    }
+        // ==================== Offer Milstone ===========
+
+        function offerMillstone(data){
+            $("#iod").val(formatDate(data.offer_openingdate));
+            $("#icd").val(formatDate(data.offer_closingdate));
+            $("#alotdate").val(formatDate(data.offer_allotmentdate));
+            $("#apdate").val(formatDate(data.apdate));
+            $("#ldate").val(formatDate(data.offer_listingdate));
+            $("#nsdldate").val(formatDate(data.offer_nsdldate));
+            $("#cdsldate").val(formatDate(data.offer_cdsldate));
+            $("#refunddate").val(formatDate(data.offer_refunddate));
+         }
+
+        function formatDate(date) {
+            return date ? date.split("T")[0] : "";
+        }
+
+    function saveOfferMilstone() {
+        var isValid = true;
+        if (!isValid) return;
+        var payload = {};
+        payload.milestone_gid = parseInt($("#milestone_gid").val()) == 0 ? parseInt($("#milestone_gid").val()) : 0;
+        payload.offer_openingdate = $("#iod").val();
+        payload.offer_closingdate = $("#icd").val();
+        payload.offer_allotmentdate = $("#alotdate").val();
+        payload.offer_approvaldate = $("#apdate").val();
+        payload.offer_listingdate = $("#ldate").val();
+        payload.offer_nsdldate = $("#nsdldate").val();
+        payload.offer_cdsldate = $("#cdsldate").val();
+        payload.offer_refunddate = $("#refunddate").val();
+        payload.offer_code = $("#offer_code").val();
+        payload.client_code = $("#clientcode").val();
+        payload.user_code = '@userName';
+        payload.action = parseInt($("#milestone_gid").val()) == 0 ? "INSERT" : "UPDATE";
+        try {
+            customAjax({
+                type: "POST",
+                url: '@Url.Action("saveOfferMilstone", "IssueSetup")', 
+                data: JSON.stringify(payload),
+                success: function (response) {
+                    if (response && response.success) {
+                        var data = JSON.parse(response.data);
+                        $("#milestone_gid").val(data[0].in_milestone_gid);
+                        fetchIssuesetup();
+                        $.alert({
+                            title: 'IPO Allotment',
+                            content: data[0].out_msg,
+                            type: 'green',
+                        });
+                    }
+                    else {
+                        $.alert({
+                            title: 'IPO Allotment',
+                            content: 'Save failed!',
+                            type: 'red',
+                        });
+                    }
+                }
+            });
+        } catch (e) {
+            console.log(e);
+        }
+    }
+
+        function numericEditor(container, options) {
+        $('<input data-bind="value:' + options.field + '" />')
+            .appendTo(container)
+            .kendoNumericTextBox({
+                min: 0,
+                format: "n2" 
+            });
+    }
+
+    function saveofferCategory() {
+        var grid = $("#offerCategoryGrid").data("kendoGrid");
+        var selectedData = [];
+        $("#offerCategoryGrid tbody tr").each(function () {
+            var checkbox = $(this).find(".rowCheckbox");
+            if (checkbox.is(":checked")) {
+                var dataItem = grid.dataItem(this);
+                selectedData.push({
+                    category_gid: dataItem.category_gid,
+                    offer_cat_code: dataItem.offer_cat_code,
+                    offer_cat_name: dataItem.offer_cat_name,
+                    offer_cat_shares: dataItem.offer_cat_shares
+                });
+            }
+        });
+       console.log(selectedData);
+    }
 </script>

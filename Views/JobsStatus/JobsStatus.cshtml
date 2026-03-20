@@ -645,6 +645,15 @@
                 sortable: true,
                 pageable: true,
                 columns: [
+                     {
+                        title: "Action",
+                        width: 60,
+                        template: `
+                            <a href="javascript:void(0)" onclick="downloadFile(this)" title="Download">
+                                <i class="fa fa-download" style="color:blue; cursor:pointer;"></i>
+                            </a>
+                        `
+                    },
                     { field: "job_gid", title: "Job ID" },
                     { field: "job_name", title: "Job Name" },
                     { field: "jobtype_desc", title: "Job Type" },
@@ -677,5 +686,35 @@
         $("#initiated_to_c").val(today);
         jobcompleted();
     }
-   
+
+    function downloadFile(e) {
+        var grid = $("#completedList").data("kendoGrid");
+        var row = $(e).closest("tr");
+        var dataItem = grid.dataItem(row);
+        var jobId = dataItem.job_gid;
+        var result = splitFile(dataItem.file_name);
+        var extenstion = result.extension;
+        var file_name = result.fileName;
+        var user_code = '@userName';
+        if(extenstion != 'xlsx') {
+           window.location.href = '@Url.Action("Downloads", "JobsStatus")?jobid=' + jobId + '&filetype=' + 'csv' + '&file_name=' + file_name + '' + '&username=' + user_code + '';
+        } else {
+            window.location.href = '@Url.Action("Downloads", "JobsStatus")?jobid=' + jobId + '&filetype=' + 'xlsx' + '&file_name=' + file_name + '' + '&username=' + user_code + '';
+        }
+    }
+
+    function splitFile(file) {
+        var name = file;
+        var ext = "";
+        if (file && file.includes(".")) {
+            var lastDot = file.lastIndexOf(".");
+            name = file.substring(0, lastDot);
+            ext = file.substring(lastDot + 1);
+        }
+        return {
+            fileName: name,
+            extension: ext
+        };
+    }
+
 </script>
