@@ -185,60 +185,7 @@
                 console.log("Error:", xhr.responseText);
             }
         });
-    }
-
-  function loadMasterDropdown(masterCode, dropdownId, selectedValue) {
-        var mymodel = {
-            in_master_code: masterCode,
-            in_user_code: ""
-        };
-        $.ajax({
-            type: "POST",
-            url: '@Url.Action("ClientType", "ClientSetup")',
-            data: JSON.stringify(mymodel),
-            dataType: "json",
-            contentType: 'application/json; charset=utf-8',
-                   success: function (response) {
-                    if (response.authExpired) {
-                        $.alert({
-                            title: 'Unauthorized',
-                            content: response.message || 'Unauthorized User',
-                            type: 'red',
-                            buttons: {
-                                ok: {
-                                    text: 'OK',
-                                    action: function () {
-                                        window.location.href = '/login/logout';
-                                    }
-                                }
-                            }
-                        });
-                        return;
-                    }
-
-                    var result = JSON.parse(response.data);
-
-                    var $ddl = $("#" + dropdownId);
-                    $ddl.empty();
-                    $ddl.append('<option value="">--- Select ---</option>');
-
-                    $.each(result, function (index, item) {
-                        $ddl.append(
-                            '<option value="' + item.master_gid + '">' +
-                            item.master_name +
-                            '</option>'
-                        );
-                    });
-
-                    if (selectedValue) {
-                        $ddl.val(selectedValue).trigger("change");
-                    }
-                },
-            error: function (xhr) {
-                console.log("Dropdown load error:", xhr.responseText);
-            }
-        });
-    }
+    } 
 
 $("#country").on("change", function () {
      var country = $(this).val();
