@@ -113,4 +113,12 @@ namespace IPOWeb.Models
         public int? out_result { get; set; }
     }
 
+    public class CategoryModel
+    {
+        public string? action { get; set; }
+        public string? json_data { get; set; }
+        public string? offer_code { get; set; }
+        public string? client_code { get; set; }
+        public string? user_code { get; set; }
+    }
 }

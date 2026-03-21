@@ -341,19 +341,19 @@ namespace IPOWeb.Controllers
         }
         #endregion
         #region Downloads
-        public JsonResult getfilepath(string confing_val, string username)
+        public List<fileconfigmodel> getfilepath(string confing_val, string username)
         {
-            urlstring = Convert.ToString(_configuration.GetSection("Appsettings")["apiurl"]) + "configvalue";
-            fileconfigmodel FileDownload = new fileconfigmodel();
+            string urlstring = Convert.ToString(_configuration["Appsettings:apiurl"]) + "configvalue";
 
-            var context = _configuration.GetSection("Appsettings")[confing_val];
+            fileconfigmodel FileDownload = new fileconfigmodel();
+            var context = _configuration["Appsettings:" + confing_val];
             FileDownload.in_config_name = context;
-            DataTable result = new DataTable();
-            string post_data = "";
+
             try
             {
                 using (var client = new HttpClient())
                 {
+                    // client.DefaultRequestHeaders.Clear();
                     client.Timeout = Timeout.InfiniteTimeSpan;
                     APIcookieName = "APItoken-" + User.FindFirst(ClaimTypes.Name)?.Value.ToString() + "_" + User.FindFirst(ClaimTypes.Role)?.Value.ToString();
                     string token = Request.Cookies[APIcookieName];
@@ -362,111 +362,107 @@ namespace IPOWeb.Controllers
                     client.DefaultRequestHeaders.Accept.Clear();
                     client.Timeout = Timeout.InfiniteTimeSpan;
                     client.DefaultRequestHeaders.Add("user_code", username);
-                    client.DefaultRequestHeaders.Add("lang_code", _configuration.GetSection("AppSettings")["lang_code"].ToString());
-                    client.DefaultRequestHeaders.Add("role_code", _configuration.GetSection("AppSettings")["role_code"].ToString());
-                    client.DefaultRequestHeaders.Add("ipaddress", _configuration.GetSection("AppSettings")["ipaddress"].ToString());
-                    //client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
-                   // HttpContent content = new StringContent(JsonConvert.SerializeObject(FileDownload), UTF8Encoding.UTF8, "application/json");
+                    client.DefaultRequestHeaders.Add("lang_code", _configuration["AppSettings:lang_code"]);
+                    client.DefaultRequestHeaders.Add("role_code", _configuration["AppSettings:role_code"]);
+                    client.DefaultRequestHeaders.Add("ipaddress", _configuration["AppSettings:ipaddress"]);
+
                     var json = JsonConvert.SerializeObject(FileDownload);
                     var content = new StringContent(json, Encoding.UTF8, "application/json");
+
                     var response = client.PostAsync(urlstring, content).Result;
-                    Stream data = response.Content.ReadAsStreamAsync().Result;
-                    StreamReader reader = new StreamReader(data);
-                    post_data = reader.ReadToEnd();
-                    string d2 = JsonConvert.DeserializeObject<string>(post_data);
-                    result = JsonConvert.DeserializeObject<DataTable>(d2);
-                    return Json(d2);
+
+                    var post_data = response.Content.ReadAsStringAsync().Result;
+
+                    // ✅ Direct conversion
+                    var result = JsonConvert.DeserializeObject<List<fileconfigmodel>>(post_data);
+
+                    return result ?? new List<fileconfigmodel>();
                 }
             }
             catch (Exception ex)
             {
                 CommonController objcom = new CommonController(_configuration);
                 objcom.errorlog(ex.Message, "getfilepath");
-                return Json(ex.Message);
+                return new List<fileconfigmodel>();
             }
         }
 
         public IActionResult Downloads(string jobid, string filetype, string file_name, string username)
         {
-            var out_result = getfilepath("fileconfig_value", username);
-            List<fileconfigmodel> myObjects = JsonConvert.DeserializeObject<List<fileconfigmodel>>(out_result.Value.ToString());
-            urlstring = _configuration.GetSection("Appsettings")["filedownload"].ToString();
-            fileModel FileDownloadgrid = new fileModel();
+            var myObjects = getfilepath("fileconfig_value", username);
             string filepath = "";
-            if (myObjects.Count > 0)
+            if (myObjects != null && myObjects.Count > 0)
             {
                 filepath = myObjects[0].out_config_value;
             }
-            FileDownloadgrid.jobGid = jobid;
-            FileDownloadgrid.jobName = "";
-            FileDownloadgrid.filePath = filepath.Replace("'", "");
+
+            string urlstring = _configuration["Appsettings:filedownload"];
+
+            fileModel FileDownloadgrid = new fileModel
+            {
+                jobGid = jobid,
+                jobName = "",
+                filePath = filepath?.Replace("'", "")
+            };
+
             try
             {
                 using (var client = new HttpClient())
                 {
-                    string[] result = { };
                     client.BaseAddress = new Uri(urlstring);
-                    client.DefaultRequestHeaders.Accept.Clear();
                     client.Timeout = Timeout.InfiniteTimeSpan;
-                    client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
-                    HttpContent content = new StringContent(JsonConvert.SerializeObject(FileDownloadgrid), UTF8Encoding.UTF8, "application/json");
+
+                    client.DefaultRequestHeaders.Clear();
+                    client.DefaultRequestHeaders.Accept.Add(
+                        new MediaTypeWithQualityHeaderValue("application/json"));
+
+                    var content = new StringContent(
+                        JsonConvert.SerializeObject(FileDownloadgrid),
+                        Encoding.UTF8,
+                        "application/json");
+
                     content.Headers.Add("user_code", username);
+
                     var response = client.PostAsync("files", content).Result;
+
+                    // ================= NON-XLSX FILE =================
                     if (filetype != "xlsx")
                     {
-                        Stream data = response.Content.ReadAsStreamAsync().Result;
-                        StreamReader reader = new StreamReader(data);
-                        string base64data = string.Empty;
-                        var bytes = new byte[data.Length];
-                        data.Read(bytes, 0, bytes.Length);
-                        var responses = new FileContentResult(bytes, "application/octet-stream");
-                        var fileName = file_name.ToString() + ".zip";
-                        var contentDisposition = new ContentDisposition
-                        {
-                            FileName = file_name,
-                            Inline = true,
-                        };
-                        Response.Clear();
-                        Response.Headers.Add("Content-Disposition", contentDisposition.ToString());
-                        Response.Headers.Add("Content-Type", "application/octet-stream");
-                        return File(bytes, "application/octet-stream", fileName);
+                        var bytes = response.Content.ReadAsByteArrayAsync().Result;
+                        string zipName = file_name + ".zip";
+
+                        return File(bytes, "application/octet-stream", zipName);
                     }
+
+                    // ================= XLSX FILE =================
                     else
                     {
-                        var get_outresult = getfilepath("download_xls_folder", username);
-                        List<fileconfigmodel> obj_outresult = JsonConvert.DeserializeObject<List<fileconfigmodel>>(get_outresult.Value.ToString());
+                        var obj_outresult = getfilepath("download_xls_folder", username);
+
                         string out_filepath = "";
-                        string fileName = "";
-                        if (obj_outresult.Count > 0)
+                        if (obj_outresult != null && obj_outresult.Count > 0)
                         {
                             out_filepath = obj_outresult[0].out_config_value;
                         }
-                        if (file_name.ToLower().Contains(".xlsx"))
-                        {
-                            fileName = file_name;
-                        }
-                        else
-                        {
-                            fileName = file_name + ".xlsx";
-                        }
-                        string filePath = Path.Combine(out_filepath, fileName);
 
+                        string fileName = file_name.ToLower().Contains(".xlsx")
+                            ? file_name
+                            : file_name + ".xlsx";
+
+                        string filePath = Path.Combine(out_filepath, fileName);
                         if (!System.IO.File.Exists(filePath))
                         {
                             filePath = filePath.Replace("xlsx", "xlsm");
-                            if (!System.IO.File.Exists(filePath))
-                            {
-                                return NotFound();
-                            }
-                        }
 
+                            if (!System.IO.File.Exists(filePath))
+                                return NotFound();
+                        }
 
                         using (var memoryStream = new MemoryStream())
                         {
                             using (var archive = new ZipArchive(memoryStream, ZipArchiveMode.Create, true))
                             {
-                                var fileName1 = Path.GetFileName(filePath);
-                                var entry = archive.CreateEntry(fileName1, CompressionLevel.Optimal);
+                                var entry = archive.CreateEntry(Path.GetFileName(filePath), CompressionLevel.Optimal);
 
                                 using (var entryStream = entry.Open())
                                 using (var fileStream = System.IO.File.OpenRead(filePath))
@@ -474,9 +470,8 @@ namespace IPOWeb.Controllers
                                     fileStream.CopyTo(entryStream);
                                 }
                             }
-                            var zipName = $"{file_name}.zip";
                             memoryStream.Seek(0, SeekOrigin.Begin);
-                            return File(memoryStream.ToArray(), "application/zip", zipName);
+                            return File(memoryStream.ToArray(), "application/zip", file_name + ".zip");
                         }
                     }
                 }
