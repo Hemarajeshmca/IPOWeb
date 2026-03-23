@@ -361,7 +361,7 @@
 
 								<div class="col-md-2" style="width:23%">
 									<label for="organization" class="form-label">
-										Recon Name&nbsp;
+										IPO Name&nbsp;
 										<span style="font-size: 12px;color: red;font-weight: bold;">*</span>
 									</label><br>
 									<select id="reconname" class="form-select form-control"></select>
@@ -1292,8 +1292,8 @@
 					"in_outputfile_flag": true,
 					"in_outputfile_type": 'csv',
 					"in_ip_addr": "",
-					// "in_user_code": sessionStorage.getItem("usrname"),
-					"in_user_code": 'test',
+				    "in_user_code": sessionStorage.getItem("usrname"),
+					//"in_user_code": 'test',
 					"file_name": $("#file_name").val(),
 					"in_report_name": concatName,
 					"in_reporttemplateresultset_code": reporttemplateresultset_code ? reporttemplateresultset_code : ''
@@ -1813,7 +1813,7 @@
 			});
 
 			function generateXlsxdynamic() {
-				hideProgress();
+				//hideProgress();
 				var dataset2 = [];
 				var dataArray = [];
 				var grid = $("#grid_tempfilter").data("kendoGrid");

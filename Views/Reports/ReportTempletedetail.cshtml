@@ -159,9 +159,9 @@
             float: left;
         }
 
-        .k-block, .k-header, .k-grid-header, .k-toolbar, .k-grouping-header, .k-pager-wrap, .k-button, .k-draghandle, .k-treemap-tile, html .km-pane-wrapper .k-header {
+     /*    .k-block, .k-header, .k-grid-header, .k-toolbar, .k-grouping-header, .k-pager-wrap, .k-button, .k-draghandle, .k-treemap-tile, html .km-pane-wrapper .k-header {
             background-color: rgb(135, 46, 123) !important;
-        }
+        } */
 
         .k-grid-header {
             background-color: #FEE7D5;
@@ -307,7 +307,7 @@
                                     <input class="form-control" type="hidden" id="recon_code" value="">
                                 </div>
                                 <div class="col-sm-3" style="">
-                                    <label for="" class="form-label">Recon Name&nbsp;<span style="font-size: 12px;color: red;font-weight: bold;">*</span></label>
+                                    <label for="" class="form-label">IPO Name&nbsp;<span style="font-size: 12px;color: red;font-weight: bold;">*</span></label>
                                     <input disabled class="form-control" id="cmbreconname_desc" name="reconName" type="text">
                                     <select hidden id="cmbreconname" class="form-select form-control" disabled>
                                     </select>
@@ -995,6 +995,7 @@
                   if (response != " " && response != null && response != "{}" && response != "[]") {
                       var res = JSON.parse(response);
                       grid_tempfilter(res.Table1);
+                      debugger;
                       grid_columfilter(res.Table2);
                       grid_sorting(res.Table3);
                       if( fromstatus == "fromdetailfetch")
@@ -1096,7 +1097,7 @@
             dataBound: function (e) {
                 resultData = e.sender._data;
                 var rows = $('#grid_Resultset').data('kendoGrid').tbody.children();
-                setColor(rows, resultData);
+               // setColor(rows, resultData);
                 if ($("#txtmode").val() == "View") {
                     $(".k-grid-save").hide();
                     $(".k-grid-delete").hide();
@@ -3023,8 +3024,8 @@
             } */
             else if (!data.in_recon_code) {
                 $.alert({
-                    title: 'Recon',
-                    content: 'Recon Name should not be empty',
+                    title: 'IPO',
+                    content: 'IPO Name should not be empty',
                     type: 'red',
                 });
             }

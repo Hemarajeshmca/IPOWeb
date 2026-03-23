@@ -451,12 +451,7 @@
                         <img src="~/Assets/images/ipologos.png" style="height:35px;margin-left: -20px;">
                         @if (ViewBag.HideIPO != true)
                         {
-                            <select name="iponames" id="iponames" class="form-control">
-                                <option value="">---- Select IPO Name---</option>
-                                <option value="1">ISSIPO001 - LG Electronics</option>
-                                <option value="2">ISSIPO002 - ICICI Prudential</option>
-                                <option value="3">ISSIPO003 - HBD Finance Groups</option>
-                            </select>
+                            <select name="iponames" id="iponames" class="form-control"></select>
                         }
                         <center>  <h5 class="card-header" id="navhead" style="margin-left: 38.5vw !important;"></h5></center>                      
                         <ul class="navbar-nav flex-row align-items-center ms-auto">
@@ -706,24 +701,20 @@
     <script>
 
        var selectedIPO = "";
-                $(document).on("change", "#iponames", function () {
-
-               var ipoId = $(this).val();
+        $(document).on("change", "#iponames", function () {
+        var ipoId = $(this).val();
         var ipoText = $("#iponames option:selected").text();
-
         localStorage.setItem("selectedIPO", ipoId);
         localStorage.setItem("selectedIPOText", ipoText);
-
         });
-                $(document).ready(function () {
-
+        $(document).ready(function () {
+            getofferList();
             var savedIPO = localStorage.getItem("selectedIPO");
-
             if (savedIPO) {
                 $("#iponames").val(savedIPO);
             }
-
         });
+
         function openNav() {
             $(document).ready(function () {
                 $('#layout-menu').toggleClass('active');
@@ -967,7 +958,6 @@
 
         var spinnerVisible = false;
         function showProgress() {
-            debugger;
             if (!spinnerVisible) {
                // alert("showP");
                 $("div#spinner").fadeIn("fast");
@@ -2335,7 +2325,40 @@
             });
         }
 
-         
+         function getofferList() {
+            try {
+               customAjax({
+                   type: "GET",
+                   url: '@Url.Action("GetOffersList", "Dashboard")',
+                   dataType: "json",
+                   success: function (response) {
+                       if (response) {
+                         var data = JSON.parse(response._data);
+                         var $ddl = $("#" + 'iponames');
+                           $ddl.empty();
+                           $ddl.append('<option value="">--- Select ---</option>');
+                           $.each(data, function (index, item) {
+                               $ddl.append(
+                                  '<option value="' + item.offer_code + '">' +
+                                     item.offer_code + ' - '+ item.client_name +
+                                   '</option>'
+                               );
+                           });
+                       }
+                       else {
+                          
+                       }
+                   },
+                   error: function (er) {
+                       console.log(er);
+                   }
+               });
+           } catch (e) {
+               console.log(e);
+           }   
+        }
+
+
     </script>
 
 </body>

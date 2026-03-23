@@ -15,8 +15,8 @@ namespace IPOWeb.Controllers
         {
             ViewBag.Mode = mode;
             ViewBag.HideIPO = true;
-            ViewBag.IssueStatus = "Draft";                // 👈 Draft for create
-            ViewBag.IssueCode = "<<Client Code>>"; // 👈 Default placeholder
+            ViewBag.IssueStatus = "Draft";                
+            ViewBag.IssueCode = "<<Client Code>>"; 
             return View();
         }
 
