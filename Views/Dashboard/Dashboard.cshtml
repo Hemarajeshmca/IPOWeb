@@ -492,7 +492,7 @@
         showofferGrid();
     }
 
-       function showofferGrid() {
+     function showofferGrid() {
         $.ajax({
             type: "GET",
             url: '@Url.Action("GetOffersList", "Dashboard")',
@@ -593,6 +593,7 @@
         });
 
     }
+     
      function editOfferGrid(e) {
         var grid = $("#offerListGrid").data("kendoGrid");
         var row = $(e).closest("tr");

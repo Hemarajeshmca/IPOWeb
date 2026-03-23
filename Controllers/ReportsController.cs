@@ -15,7 +15,7 @@ using static IPOWeb.Controllers.ReportsController.ResultSetModel;
 namespace IPOWeb.Controllers
 {
     public class ReportsController : Controller
-    {
+    {  
         private IConfiguration _configuration;
         public ReportsController(IConfiguration configuration)
         {
@@ -1126,14 +1126,18 @@ namespace IPOWeb.Controllers
                 using (var client = new HttpClient())
                 {
                     string Urlcon = "Report/";
-                    client.BaseAddress = new Uri(urlstring + Urlcon);
+                    //client.BaseAddress = new Uri(urlstring + Urlcon);
+                    client.BaseAddress = new Uri(urlstring );
                     client.DefaultRequestHeaders.Accept.Clear();
                     client.Timeout = Timeout.InfiniteTimeSpan;
+                    APIcookieName = "APItoken-" + User.FindFirst(ClaimTypes.Name)?.Value.ToString() + "_" + User.FindFirst(ClaimTypes.Role)?.Value.ToString();
+                    string token = Request.Cookies[APIcookieName];
                     client.DefaultRequestHeaders.Add("user_code", context.in_action_by);
                     client.DefaultRequestHeaders.Add("lang_code", _configuration.GetSection("AppSettings")["lang_code"].ToString());
                     client.DefaultRequestHeaders.Add("role_code", _configuration.GetSection("AppSettings")["role_code"].ToString());
                     client.DefaultRequestHeaders.Add("ipaddress", _configuration.GetSection("AppSettings")["ipaddress"].ToString());
                     client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+                    client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
                     HttpContent content = new StringContent(JsonConvert.SerializeObject(context), UTF8Encoding.UTF8, "application/json");
                     try
                     {
@@ -1238,14 +1242,18 @@ namespace IPOWeb.Controllers
                 using (var client = new HttpClient())
                 {
                     string Urlcon = "Report/";
-                    client.BaseAddress = new Uri(urlstring + Urlcon);
+                    //client.BaseAddress = new Uri(urlstring + Urlcon);
+                    client.BaseAddress = new Uri(urlstring );
                     client.DefaultRequestHeaders.Accept.Clear();
                     client.Timeout = Timeout.InfiniteTimeSpan;
+                    APIcookieName = "APItoken-" + User.FindFirst(ClaimTypes.Name)?.Value.ToString() + "_" + User.FindFirst(ClaimTypes.Role)?.Value.ToString();
+                    string token = Request.Cookies[APIcookieName];
                     client.DefaultRequestHeaders.Add("user_code", context.in_action_by);
                     client.DefaultRequestHeaders.Add("lang_code", _configuration.GetSection("AppSettings")["lang_code"].ToString());
                     client.DefaultRequestHeaders.Add("role_code", _configuration.GetSection("AppSettings")["role_code"].ToString());
                     client.DefaultRequestHeaders.Add("ipaddress", _configuration.GetSection("AppSettings")["ipaddress"].ToString());
                     client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+                    client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
                     HttpContent content = new StringContent(JsonConvert.SerializeObject(context), UTF8Encoding.UTF8, "application/json");
                     try
                     {
@@ -1992,15 +2000,19 @@ namespace IPOWeb.Controllers
                 using (var client = new HttpClient())
                 {
                     string Urlcon = "Report/";
-                    client.BaseAddress = new Uri(urlstring + Urlcon);
+                   // client.BaseAddress = new Uri(urlstring + Urlcon);
+                    client.BaseAddress = new Uri(urlstring );
                     //client.BaseAddress = new Uri("https://localhost:44348/api/Report/");
                     client.DefaultRequestHeaders.Accept.Clear();
                     client.Timeout = Timeout.InfiniteTimeSpan;
+                    APIcookieName = "APItoken-" + User.FindFirst(ClaimTypes.Name)?.Value.ToString() + "_" + User.FindFirst(ClaimTypes.Role)?.Value.ToString();
+                    string token = Request.Cookies[APIcookieName];
                     client.DefaultRequestHeaders.Add("user_code", context.in_action_by);
                     client.DefaultRequestHeaders.Add("lang_code", _configuration.GetSection("AppSettings")["lang_code"].ToString());
                     client.DefaultRequestHeaders.Add("role_code", _configuration.GetSection("AppSettings")["role_code"].ToString());
                     client.DefaultRequestHeaders.Add("ipaddress", _configuration.GetSection("AppSettings")["ipaddress"].ToString());
                     client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+                    client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
                     HttpContent content = new StringContent(JsonConvert.SerializeObject(context), UTF8Encoding.UTF8, "application/json");
                     try
                     {
@@ -2047,14 +2059,18 @@ namespace IPOWeb.Controllers
                 using (var client = new HttpClient())
                 {
                     string Urlcon = "Report/";
-                    client.BaseAddress = new Uri(urlstring + Urlcon);
+                    client.BaseAddress = new Uri(urlstring );
+                   // client.BaseAddress = new Uri(urlstring + Urlcon);
                     client.DefaultRequestHeaders.Accept.Clear();
                     client.Timeout = Timeout.InfiniteTimeSpan;
+                    APIcookieName = "APItoken-" + User.FindFirst(ClaimTypes.Name)?.Value.ToString() + "_" + User.FindFirst(ClaimTypes.Role)?.Value.ToString();
+                    string token = Request.Cookies[APIcookieName];
                     client.DefaultRequestHeaders.Add("user_code", context.in_action_by);
                     client.DefaultRequestHeaders.Add("lang_code", _configuration.GetSection("AppSettings")["lang_code"].ToString());
                     client.DefaultRequestHeaders.Add("role_code", _configuration.GetSection("AppSettings")["role_code"].ToString());
                     client.DefaultRequestHeaders.Add("ipaddress", _configuration.GetSection("AppSettings")["ipaddress"].ToString());
                     client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+                    client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
                     HttpContent content = new StringContent(JsonConvert.SerializeObject(context), UTF8Encoding.UTF8, "application/json");
                     try
                     {
@@ -2275,7 +2291,7 @@ namespace IPOWeb.Controllers
                     //string Urlcon = "Report/";
                     //client.BaseAddress = new Uri(urlstring + Urlcon);
                     client.BaseAddress = new Uri(urlstring);
-                    //client.BaseAddress = new Uri("https://localhost:44348/api/Report/");
+                    //client.BaseAddress = new Uri("https://localhost:44348/api/Report/"); 
                     client.DefaultRequestHeaders.Accept.Clear();
                     client.Timeout = Timeout.InfiniteTimeSpan;
                     APIcookieName = "APItoken-" + User.FindFirst(ClaimTypes.Name)?.Value.ToString() + "_" + User.FindFirst(ClaimTypes.Role)?.Value.ToString();
@@ -2292,11 +2308,12 @@ namespace IPOWeb.Controllers
                     try
                     {
                         //var response = client.PostAsync("generatedynamicreport", content).Result;
-                        var response = client.PostAsync("api/ReportQueue/setReportqueue", content).Result;
+                        var response = client.PostAsync("setReportqueue", content).Result;
                         Stream data = response.Content.ReadAsStreamAsync().Result;
                         StreamReader reader = new StreamReader(data);
                         post_data = reader.ReadToEnd();
                         string d2 = JsonConvert.DeserializeObject<string>(post_data);
+                        response = client.PostAsync("reportScheduler", null).Result;
                         return Json(d2);
                     }
                     catch (HttpRequestException ex)
@@ -2607,7 +2624,7 @@ namespace IPOWeb.Controllers
 
 
         [HttpPost]
-        public JsonResult generatedynamicreport_typeC([FromBody] generatedynamicReport_typeCmodel context)
+        public JsonResult generatedynamicreport_typeC([FromBody] reportqueue context)
         {
             urlstring = _configuration.GetSection("Appsettings")["apiurl"].ToString();
             DataTable result = new DataTable();
@@ -2619,7 +2636,7 @@ namespace IPOWeb.Controllers
                     string Urlcon = "ReportQueue/";
                     //string Urlcon = "Report/";
                     //client.BaseAddress = new Uri(urlstring + Urlcon);
-                    client.BaseAddress = new Uri(urlstring);
+                    client.BaseAddress = new Uri(urlstring );
                     //client.BaseAddress = new Uri("https://localhost:44348/api/Report/");
                     client.DefaultRequestHeaders.Accept.Clear();
                     client.Timeout = Timeout.InfiniteTimeSpan;
@@ -2640,6 +2657,7 @@ namespace IPOWeb.Controllers
                         StreamReader reader = new StreamReader(data);
                         post_data = reader.ReadToEnd();
                         string d2 = JsonConvert.DeserializeObject<string>(post_data);
+                        response = client.PostAsync("reportScheduler", null).Result;
                         return Json(d2);
                     }
                     catch (HttpRequestException ex)
@@ -2655,7 +2673,23 @@ namespace IPOWeb.Controllers
                 return Json(ex.Message);
             }
         }
+        public class reportqueue
+        {
+            public string? in_archival_code { get; set; }
+            public String? in_reporttemplate_code { get; set; }
+            public string? in_report_code { get; set; }
+            public string? in_recon_code { get; set; }
+            public String? in_report_param { get; set; }
+            public String? in_report_condition { get; set; }
+            public String? in_ip_addr { get; set; }
+            public Boolean? in_outputfile_flag { get; set; }
+            public String? in_outputfile_type { get; set; }
+            public string? in_user_code { get; set; }
+            public string? file_name { get; set; }
+            public string? in_report_name { get; set; }
+            public string? in_reporttemplateresultset_code { get; set; }
 
+        }
         public class generatedynamicReport_typeCmodel
         {
 
@@ -2970,14 +3004,18 @@ namespace IPOWeb.Controllers
                 using (var client = new HttpClient())
                 {
                     string Urlcon = "Report/";
-                    client.BaseAddress = new Uri(urlstring + Urlcon);
+                   // client.BaseAddress = new Uri(urlstring + Urlcon);
+                    client.BaseAddress = new Uri(urlstring );
                     client.DefaultRequestHeaders.Accept.Clear();
                     client.Timeout = Timeout.InfiniteTimeSpan;
+                    APIcookieName = "APItoken-" + User.FindFirst(ClaimTypes.Name)?.Value.ToString() + "_" + User.FindFirst(ClaimTypes.Role)?.Value.ToString();
+                    string token = Request.Cookies[APIcookieName];
                     client.DefaultRequestHeaders.Add("user_code", userCode);
                     client.DefaultRequestHeaders.Add("lang_code", _configuration.GetSection("AppSettings")["lang_code"].ToString());
                     client.DefaultRequestHeaders.Add("role_code", _configuration.GetSection("AppSettings")["role_code"].ToString());
                     client.DefaultRequestHeaders.Add("ipaddress", _configuration.GetSection("AppSettings")["ipaddress"].ToString());
                     client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+                    client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
                     HttpContent content = new StringContent(JsonConvert.SerializeObject(objqueryValidation), UTF8Encoding.UTF8, "application/json");
                     try
                     {
@@ -3086,10 +3124,14 @@ namespace IPOWeb.Controllers
                 using (var client = new HttpClient())
                 {
                     string Urlcon = "Report/";
-                    client.BaseAddress = new Uri(urlstring + Urlcon);
+                    //client.BaseAddress = new Uri(urlstring + Urlcon);
+                    client.BaseAddress = new Uri(urlstring);
                     //client.BaseAddress = new Uri("https://localhost:44348/api/Report/");
                     client.DefaultRequestHeaders.Accept.Clear();
                     client.Timeout = Timeout.InfiniteTimeSpan;
+                    APIcookieName = "APItoken-" + User.FindFirst(ClaimTypes.Name)?.Value.ToString() + "_" + User.FindFirst(ClaimTypes.Role)?.Value.ToString();
+                    string token = Request.Cookies[APIcookieName];
+                    client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
                     client.DefaultRequestHeaders.Add("user_code", context.in_user_code);
                     client.DefaultRequestHeaders.Add("lang_code", _configuration.GetSection("AppSettings")["lang_code"].ToString());
                     client.DefaultRequestHeaders.Add("role_code", _configuration.GetSection("AppSettings")["role_code"].ToString());
