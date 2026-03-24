@@ -451,7 +451,7 @@
                         <img src="~/Assets/images/ipologos.png" style="height:35px;margin-left: -20px;">
                         @if (ViewBag.HideIPO != true)
                         {
-                            <select name="iponames" id="iponames" class="form-control"></select>
+                            <select name="iponames" id="iponames" onchange="setoffers()" class="form-control"></select>
                         }
                         <center>  <h5 class="card-header" id="navhead" style="margin-left: 38.5vw !important;"></h5></center>                      
                         <ul class="navbar-nav flex-row align-items-center ms-auto">
@@ -489,7 +489,7 @@
                                         </a>
                                     </li>
                                     <li>
-                                        <a class="dropdown-item" href="~/IssueSetup/IssueSetup" data-language="fr">
+                                        <a class="dropdown-item" onclick="offersetup()" href="~/IssueSetup/IssueSetup" data-language="fr">
                                             <i class="bx bx-atom fs-4 me-1"></i>
                                             <span class="align-middle">Offer Setup</span>
                                         </a>
@@ -730,14 +730,12 @@
         function getlocalStorage(key) {
             if (key == "getlocalStorage") {
                 var data = localStorage.getItem(key);
-
                 return JSON.parse(data)
             } else {
                 var guid = localStorage.getItem(key);
                 return JSON.parse(guid);
             }
         }
-
     </script>
 
     <script>
@@ -2346,7 +2344,8 @@
                            });
                        }
                        else {
-                          
+                              $ddl.empty();
+                              $ddl.append('<option value="">--- Select ---</option>');
                        }
                    },
                    error: function (er) {
@@ -2358,6 +2357,17 @@
            }   
         }
 
+        function offersetup(){
+            sessionStorage.removeItem("edit_client_code");
+            sessionStorage.removeItem("edit_offer_code");
+        }
+
+           window.addEventListener("beforeunload", function () {
+             if (window.location.pathname.includes("/IssueSetup/IssueSetup")) {
+               sessionStorage.removeItem("edit_client_code");
+               sessionStorage.removeItem("edit_offer_code");
+            }
+        });
 
     </script>
 
