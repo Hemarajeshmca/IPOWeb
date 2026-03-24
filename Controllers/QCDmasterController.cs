@@ -106,7 +106,7 @@ namespace IPOWeb.Controllers
         [HttpPost]
         public JsonResult QcdCrud([FromBody] QcdCrudModal context)
         {
-            urlstring = _configuration.GetSection("Appsettings")["apiurl"].ToString();
+            var urlstring = _configuration.GetSection("Appsettings")["apiurl"].ToString() + "qcdmaster";
             QcdCrudModal objList = new QcdCrudModal();
             DataTable result = new DataTable();
             string post_data = "";
@@ -114,9 +114,8 @@ namespace IPOWeb.Controllers
             {
                 using (var client = new HttpClient())
                 {
-                    string Urlcon = "/api/qcdmaster/";
-                    client.BaseAddress = new Uri(urlstring + Urlcon);
-                    //client.BaseAddress = new Uri("https://localhost:44348/api/qcdmaster/");
+                    string Urlcon = "/qcdmaster/";
+                    client.BaseAddress = new Uri(urlstring );
                     client.DefaultRequestHeaders.Accept.Clear();
                     client.Timeout = Timeout.InfiniteTimeSpan;
                     APIcookieName = "APItoken-" + User.FindFirst(ClaimTypes.Name)?.Value.ToString() + "_" + User.FindFirst(ClaimTypes.Role)?.Value.ToString();
@@ -130,7 +129,7 @@ namespace IPOWeb.Controllers
                     HttpContent content = new StringContent(JsonConvert.SerializeObject(context), UTF8Encoding.UTF8, "application/json");
                     try
                     {
-                        var response = client.PostAsync("QcdMaster", content).Result;
+                        var response = client.PostAsync(urlstring, content).Result;
                         if (response.StatusCode == HttpStatusCode.Unauthorized)
                         {
                             Response.Cookies.Delete(APIcookieName);

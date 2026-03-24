@@ -182,6 +182,7 @@
                                 </li>
                                 <li class="nav-item">
                                     <button type="button"
+                                            onclick="loadCatagory()"
                                             class="nav-link"
                                             role="tab"
                                             data-bs-toggle="tab"
@@ -208,12 +209,12 @@
                                     <div class="row">
                                         <div class="col-sm-2">
                                             <label class="form-label">Pre Offer Capital</label>
-                                            <input type="number" id="preissue" class="form-control"/>
+                                            <input type="number" id="preissue" onchange="setPostPrice()" class="form-control"/>
                                             <input type="number" id="offer_detail_gid" class="form-control" hidden />
                                         </div>
                                         <div class="col-sm-2">
                                             <label class="form-label">Issue Size</label>
-                                            <input type="number" id="issuesize" class="form-control" />
+                                            <input type="number" id="issuesize" onchange="setPostPrice()" class="form-control" />
                                         </div>
                                         <div class="col-sm-2">
                                             <label class="form-label">Post Offer Capital</label>
@@ -443,17 +444,17 @@
 </html>
 <script>
   $( document ).ready(function() {
-      $('#navhead').text('Issue Setup');
+          $('#navhead').text('Issue Setup');
           $('#offer_header_gid').val(0);
           $("#offer_detail_gid").val(0);
           $("#banker_gid").val(0);
           $("#stack_gid").val(0);
-          $("#milestone_gid").val(0)
+          $("#milestone_gid").val(0);
           $("#createedit").val($('#offer_header_gid').val() == 0 ? "CREATE": "EDIT");
           var offer_code = sessionStorage.getItem("edit_offer_code");
           var client_code = sessionStorage.getItem("edit_client_code");
           $("#clientcode").val(client_code);
-          $("#offer_code").val(offer_code);
+          $("#offer_code").val(offer_code);                      
           loadMasterDropdown("QCD_MAST_OFFER_TYPE", "offer_type");
           loadMasterDropdown("QCD_MAST_LISTING", "listing");
           loadMasterDropdown("QCD_STATUS", "status");
@@ -463,7 +464,9 @@
           loadMasterDropdown("QCD_MAST_STATE", "sh_state");
           loadMasterDropdown("QCD_STACK_HOLDER_TYPE", "sh_type");
           getclientlist();
-          fetchIssuesetup();
+          if(offer_code && client_code) {
+              fetchIssuesetup(); 
+          }
           $("#status").change(function () {
             var selectedValue = $(this).val();
             if (selectedValue === "I") {
@@ -479,6 +482,10 @@
     offerHeader = "";
     offerDetails = "";
     offerBank = "";
+    offerStackHolder = "";
+    offerCategory = "";
+    offerMillstone = "";
+    activeOfferStatus = false;
     
     // $("#selectAll").on("change", function () {
     //     $(".rowCheckbox").prop("checked", $(this).prop("checked"));
@@ -569,11 +576,11 @@ function getclientlist(){
  function offerHeaderSave() {
      var isValid = true;
       if($("#clientcode").val() === "") { $("#v_clientcode").text("Please Choose Client Code"); isValid = false; }
-      if($("#clientcode").val() === "") { $("#v_offer_type").text("Please Choose Offer Type");isValid = false;}
+      if($("#offer_type").val() === "") { $("#v_offer_type").text("Please Choose Offer Type");isValid = false;}
       if($("#listing").val() === "") { $("#v_listing").text("Please Choose Listing");isValid = false; }
       if($("#isin").val() === "") { $("#v_isin").text("Please Enter ISIN"); isValid = false; }
       if($("#status").val() === "") { $("#v_status").text("Please Choose status");isValid = false; }
-      if(($("#status").val() === "I" || $("#status").val() === "C") && $("#remarks").val() === "") { $("#v_remarks").text("Please Enter Remark"); isValid = false;}
+      if(($("#remarks").val() === "I" || $("#status").val() === "C") && $("#remarks").val() === "") { $("#v_remarks").text("Please Enter Remark"); isValid = false;}
       if (isValid) { 
         var payload = {};
         payload.offer_header_gid = $("#offer_header_gid").val();
@@ -635,16 +642,28 @@ function getclientlist(){
             },
             success: function (response) {
                     if (response && response.success == true ) {
-                    var data = JSON.parse(response.data);
+                    var data = JSON.parse(response.data);                  
                     offerHeader = data.Table;
                     offerDetails = data.Table1;
                     offerBank = data.Table2;
+                    offerStackHolder = data.Table3;
+                    offerCategory = data.Table4;
+                    offerMillstone = data.Table5;
                     fetchofferHeader(data.Table[0]);
                     fetchofferDetails(data.Table1[0]);
                     fetchofferBank(data.Table2);
                     fetchofferStackHolder(data.Table3);
-                    fetchofferCategory(data.Table4);
+                    if(data.Table4.length == 0){
+                       loadCatagory();
+                    } else {
+                       fetchofferCategory(data.Table4);
+                    }                    
                     offerMillstone(data.Table5[0]);
+                    if(offerDetails.length >0 && offerBank.length >0 && offerStackHolder.length >0 && offerCategory.length > 0 && offerMillstone.length > 0)  {
+                        activeOfferStatus = true;
+                    } else {
+                        activeOfferStatus = false;
+                    }
                 }
                 else {
                 }
@@ -679,7 +698,7 @@ function getclientlist(){
         }
 
 
-// ----------------- Offer functions ------------------
+// ----------------- Offer Details ------------------
 
     
     function fetchofferDetails(data){
@@ -694,8 +713,7 @@ function getclientlist(){
             $("#fprice").val(data.offer_fixedprice);
             $("#minprice").val(data.offer_maximumprice);
             $("#maxprice").val(data.offer_minimumprice);
-            $("#cutoffprice").val(data.offer_cutoffprice);
-            
+            $("#cutoffprice").val(data.offer_cutoffprice);            
         }
 
     function saveofferDetails(){
@@ -732,8 +750,7 @@ function getclientlist(){
                     if (response ) {
                          if (response.success) {
                             var data = JSON.parse(response.data);
-                            $("#offer_header_gid").val(data[0].in_offer_header_gid);
-                            $("#offer_code").val(data[0].in_offer_code);
+                            $("#offer_header_gid").val(data[0].in_offer_header_gid);                            
                             fetchIssuesetup();
                             $.alert({
                             title: 'IPO Allotment',
@@ -756,6 +773,37 @@ function getclientlist(){
                 console.log(e)
             }
          }
+    }
+
+    function setPostPrice(){
+        var preCaptital = parseFloat($("#preissue").val()) || 0;
+        var offer_issuesize = parseFloat($("#issuesize").val()) || 0;
+        var postprice = preCaptital + offer_issuesize;
+        $("#postissue").val(postprice.toFixed(2));
+    }
+
+    function validatePrices() {
+        var min = parseFloat($("#minprice").val()) || 0;
+        var max = parseFloat($("#maxprice").val()) || 0;
+        var cutoff = parseFloat($("#cutoffprice").val()) || 0;
+        var isValid = true;
+        if (max <= min) {
+            $.alert({
+                title: 'IPO Web',
+                content: "Maximum Price should be greater than Minimum Price",
+                type: 'green',
+            });
+            isValid = false;
+        }
+        if (cutoff < min || cutoff > max) {
+            $.alert({
+                title: 'IPO Web',
+                content: "Cut Off Price should be between Minimum and Maximum Price",
+                type: 'green',
+            });
+            isValid = false;
+        }
+        return isValid;
     }
 
  // ----------------- Bank functions ------------------
@@ -1244,8 +1292,36 @@ function getclientlist(){
 
     // ================= Offer Cateogery ==============
 
+
+    function loadCatagory() {
+        var mymodel = {
+            in_master_code: "QCD_CATEGORY",
+            in_user_code: ""
+        };
+        customAjax({
+            type: "POST",
+            url: '@Url.Action("OfferType", "IssueSetup")',
+            data: JSON.stringify(mymodel),
+            success: function (response) {
+                var result = JSON.parse(response.data);
+                var formattedData = result.map(function (item) {
+                return {
+                    category_gid: item.master_gid,
+                    offer_cat_code: item.master_code,
+                    offer_cat_name: item.master_name,
+                    offer_cat_shares: 0
+                };
+            });
+            fetchofferCategory(formattedData);
+            },
+            error: function (xhr) {
+                console.log("Dropdown load error:", xhr.responseText);
+            }
+        });
+    }
+
         function fetchofferCategory(data) {
-         data.forEach(function (item) {
+            data.forEach(function (item) {
             if (item.offer_cat_shares) {
                 item.offer_cat_shares = parseFloat(
                     item.offer_cat_shares.toString().replace(/,/g, "")
@@ -1297,7 +1373,7 @@ function getclientlist(){
 
         $("#offerCategoryGrid").kendoGrid({
             dataSource: {
-                data: data,
+                    data: data,
                 pageSize: 10,
                 aggregate: [
                     { field: "offer_cat_shares", aggregate: "sum" }
@@ -1312,9 +1388,14 @@ function getclientlist(){
                             offer_cat_shares: { type: "number", editable: true }
                         }
                     }
+                },
+               change: function (e) {
+                if (e.field === "offer_cat_shares") {                   
+                    var grid = $("#offerCategoryGrid").data("kendoGrid");
+                    grid.refresh();
                 }
+            }
             },
-
             scrollable: {
                  height: 150
             },
@@ -1494,6 +1575,7 @@ function getclientlist(){
     // ================Common Methods
 
      function validateOfferAndClient() {
+            if($("#status").val() == "I" && activeofferstatus == true) {
         var offerCode = $("#offer_code").val();
         var clientCode = $("#clientcode").val();
         if (!offerCode) {
@@ -1513,6 +1595,15 @@ function getclientlist(){
             return false;
         }
         return true;
+    }
+         else if($("#status").val() == "I" && activeofferstatus == false) {
+                $.alert({
+                title: 'Validation',
+                content: 'Status Need to be in Draft Mode until fill the mandatory fields .!',
+                type: 'red'
+            });
+            return false;
+    }
     }
     
 </script>

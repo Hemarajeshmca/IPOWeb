@@ -695,7 +695,6 @@ button.btn.btn-sm.cancel_btn.me-2 {
 							});
 							return;
 						}
-				console.log("QCD Response : ", response);
 				if (response != " " && response != null && response != "{}" && response != "[]") {
 					var result = JSON.parse(response);
 					var data = result[0];
@@ -710,9 +709,12 @@ button.btn.btn-sm.cancel_btn.me-2 {
 						var data = {};
 						data.in_user_code = '';
 						data.in_master_code = master_code;
-						//grid_dataset_details(data);
-						window.location.reload(1);
-						master_code = "";
+						clearModal();			
+						var modal = bootstrap.Modal.getInstance(document.getElementById('newQcd'));
+						if (modal) {
+							modal.hide();
+						}
+						getQcdlist($("#qcdcode").val());
 					} else {
 						$.alert({
 							title: 'Recon',
@@ -745,7 +747,6 @@ button.btn.btn-sm.cancel_btn.me-2 {
 		$("#newQcd").modal('show');
 		var grid = $("#grid").data("kendoGrid");
 		var selectedItem = grid.dataItem(grid.select());
-		console.log("selectedItem", selectedItem);
 		$("#master_gid").val(selectedItem.master_gid);
 		$("#mode").val("UPDATE");
 		$("#MasterSysCode").val(selectedItem.master_syscode);
