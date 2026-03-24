@@ -2227,7 +2227,7 @@
                }
            }
 
-        function loadMasterDropdown(masterCode, dropdownId,selectedValue) {
+           function loadMasterDropdown(masterCode, dropdownId,selectedValue, callback) {
             var mymodel = {
                 in_master_code: masterCode,
                 in_user_code: ""
@@ -2273,6 +2273,7 @@
                         if (selectedValue) {
                             $ddl.val(selectedValue).trigger("change");
                         }
+                            if (callback) callback();
                     },
                 error: function (xhr) {
                     console.log("Dropdown load error:", xhr.responseText);
@@ -2360,14 +2361,25 @@
         function offersetup(){
             sessionStorage.removeItem("edit_client_code");
             sessionStorage.removeItem("edit_offer_code");
+           // window.location.href = '@Url.Action("IssueSetup", "IssueSetup", new { mode = "Create" })';
+           // window.location.href = "~/IssueSetup/IssueSetup?mode=Create";
         }
 
-           window.addEventListener("beforeunload", function () {
-             if (window.location.pathname.includes("/IssueSetup/IssueSetup")) {
-               sessionStorage.removeItem("edit_client_code");
-               sessionStorage.removeItem("edit_offer_code");
-            }
-        });
+        function setoffers(){
+           var ipoId = $("#iponames").val();
+           var ipoText = $("#iponames option:selected").text();
+           localStorage.setItem("selectedIPO", ipoId);
+           localStorage.setItem("selectedIPOText", ipoText);
+           $("#iponame").val(ipoText);
+           $("#ipocode").val(ipoId);
+        }
+
+        //    window.addEventListener("beforeunload", function () {
+        //      if (window.location.pathname.includes("/IssueSetup/IssueSetup")) {
+        //        sessionStorage.removeItem("edit_client_code");
+        //        sessionStorage.removeItem("edit_offer_code");
+        //     }
+        // });
 
     </script>
 

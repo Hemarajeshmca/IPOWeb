@@ -133,7 +133,7 @@
                         <div class="tab-pane fade" id="navs-top-offer" role="tabpanel">
                             <div class="row" style="margin-top:-13px;">
                                 <div class="col-sm-6">
-                                    <img id="plusIcon" onclick="location.href='@Url.Action("IssueSetup", "IssueSetup", new { mode = "Create" })'" style="width:11px; height:11px;margin-bottom:12px;cursor:pointer" src="~/Assets/images/plus.png" />
+                                    <img id="plusIcon" onclick="navOfferPage()" style="width:11px; height:11px;margin-bottom:12px;cursor:pointer" src="~/Assets/images/plus.png" />
                                 </div>
                                 <div class="col-sm-6">
                                     <i class='fas fa-file-excel' style='font-size:20px;color:green;float:right'></i>
@@ -592,6 +592,12 @@
             }
         });
 
+    }
+
+    function navOfferPage(){
+        sessionStorage.removeItem("edit_offer_code");
+        sessionStorage.removeItem("edit_client_code");
+        window.location.href = "../IssueSetup/IssueSetup?mode=Create";     
     }
      
      function editOfferGrid(e) {
