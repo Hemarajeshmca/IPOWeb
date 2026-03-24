@@ -181,8 +181,7 @@
                                     </button>
                                 </li>
                                 <li class="nav-item">
-                                    <button type="button"
-                                            onclick="loadCatagory()"
+                                    <button type="button"                                            
                                             class="nav-link"
                                             role="tab"
                                             data-bs-toggle="tab"
@@ -209,12 +208,12 @@
                                     <div class="row">
                                         <div class="col-sm-2">
                                             <label class="form-label">Pre Offer Capital</label>
-                                            <input type="number" id="preissue" onchange="setPostPrice()" class="form-control"/>
+                                            <input type="number" id="preissue" onkeydown="setPostPrice()" class="form-control"/>
                                             <input type="number" id="offer_detail_gid" class="form-control" hidden />
                                         </div>
                                         <div class="col-sm-2">
                                             <label class="form-label">Issue Size</label>
-                                            <input type="number" id="issuesize" onchange="setPostPrice()" class="form-control" />
+                                            <input type="number" id="issuesize" onkeydown="setPostPrice()" class="form-control" />
                                         </div>
                                         <div class="col-sm-2">
                                             <label class="form-label">Post Offer Capital</label>
@@ -649,16 +648,24 @@ function getclientlist(){
                     offerStackHolder = data.Table3;
                     offerCategory = data.Table4;
                     offerMillstone = data.Table5;
-                    fetchofferHeader(data.Table[0]);
-                    fetchofferDetails(data.Table1[0]);
-                    fetchofferBank(data.Table2);
-                    fetchofferStackHolder(data.Table3);
+                    if(data.Table.length > 0){
+                        fetchofferHeader(data.Table[0]);
+                    } 
+                    if(data.Table1.length > 0) {
+                                fetchofferDetails(data.Table1[0]);
+                        } if(data.Table2.length > 0) {
+                       fetchofferBank(data.Table2);
+                        } if(data.Table3.length > 0) {
+                                fetchofferStackHolder(data.Table3);
+                            } 
                     if(data.Table4.length == 0){
                        loadCatagory();
                     } else {
                        fetchofferCategory(data.Table4);
-                    }                    
-                    offerMillstone(data.Table5[0]);
+                        }   if(data.Table5.length > 0) {
+                        fetchofferMillstone(data.Table5[0]);
+                    } 
+                    
                     if(offerDetails.length >0 && offerBank.length >0 && offerStackHolder.length >0 && offerCategory.length > 0 && offerMillstone.length > 0)  {
                         activeOfferStatus = true;
                     } else {
@@ -846,8 +853,18 @@ function getclientlist(){
                             hidden: true
                         },
                         {
+                            field: "banker_city",
+                            title: "banker_city",
+                            hidden: true
+                        },
+                        {
                             field: "state",
                             title: "State",
+                            hidden: true
+                        },
+                        {
+                            field: "banker_state",
+                            title: "banker_state",
                             hidden: true
                         },
                         {
@@ -860,7 +877,7 @@ function getclientlist(){
                             title: "Account Number"
                         },
                         {
-                                field: "banker_accountname",
+                                field: "banker_holdname",
                                 title: "Account Name"
                         },
                         {
@@ -908,6 +925,7 @@ function getclientlist(){
             banker_city: $("#city").val(),
             banker_state: $("#state").val(),
             banker_pincode: $("#pin").val(),
+            banker_holdname: $("#acname").val(),
             banker_accountno: $("#acno").val(),
             banker_ifsc: $("#ifsc").val(),
             offer_code: $("#offer_code").val(),
@@ -953,6 +971,7 @@ function getclientlist(){
         $("#banker_gid").val(0);
         $("#banktype").val("");
         $("#bankname").val("");
+        $("#acname").val("");
         $("#address").val("");
         $("#city").val("");
         $("#state").val("");
@@ -960,20 +979,31 @@ function getclientlist(){
         $("#acno").val("");
         $("#ifsc").val("");
      }
-    
-     function editBankGrid(e){
+
+      function editBankGrid(e){
         var grid = $("#offerBankGrid").data("kendoGrid");
         var row = $(e).closest("tr");
         var dataItem = grid.dataItem(row);
+
+        $("#state").val(dataItem.banker_state);
+
+        loadMasterDropdown(
+            dataItem.banker_state,
+            "city",
+            dataItem.banker_city,   // ✅ selected value
+            function () {
+                console.log("City loaded and selected");
+            }
+        );
+
         $("#banker_gid").val(dataItem.banker_gid);
         $("#banktype").val(dataItem.banker_type);
         $("#bankname").val(dataItem.banker_name);
         $("#address").val(dataItem.banker_address);
-        $("#city").val(dataItem.banker_city);
-        $("#state").val(dataItem.banker_state);
         $("#pin").val(dataItem.banker_pincode);
         $("#acno").val(dataItem.banker_accountno);
         $("#ifsc").val(dataItem.banker_ifsc);
+        $("#asname").val(dataItem.banker_holdname);
     }
 
      function stateChange(targetId, el){
@@ -1212,13 +1242,21 @@ function getclientlist(){
             var grid = $("#offerStackGrid").data("kendoGrid");
             var row = $(e).closest("tr");
             var dataItem = grid.dataItem(row);
+            $("#sh_state").val(dataItem.stack_state);
+            loadMasterDropdown(
+                dataItem.stack_state,
+                "sh_city",
+                 dataItem.stack_city,   
+                function () {
+                    console.log("City loaded and selected");
+                }
+            );
             $("#stack_gid").val(dataItem.stack_gid);
             $("#stack_code").val(dataItem.stack_code);
             $("#sh_type").val(dataItem.stack_type);
             $("#sh_name").val(dataItem.stack_name);
             $("#sh_address").val(dataItem.stack_address);
             $("#sh_city").val(dataItem.stack_city);
-            $("#sh_state").val(dataItem.stack_state);
             $("#sh_pin").val(dataItem.stack_pincode);
             $("#sh_cname").val(dataItem.stack_contact);
             $("#sh_designation").val(dataItem.stack_designation);
@@ -1307,8 +1345,8 @@ function getclientlist(){
                 var formattedData = result.map(function (item) {
                 return {
                     category_gid: item.master_gid,
-                    offer_cat_code: item.master_code,
-                    offer_cat_name: item.master_name,
+                    catagory_code: item.master_code,
+                    catagory_name: item.master_name,
                     offer_cat_shares: 0
                 };
             });
@@ -1342,11 +1380,11 @@ function getclientlist(){
                 hidden: true
             },
             {
-                field: "offer_cat_code",
+                field: "category_code",
                 title: "Cat Code"
             },
             {
-                field: "offer_cat_name",
+                field: "category_name",
                 title: "Category Name"
             },
             {
@@ -1373,7 +1411,7 @@ function getclientlist(){
 
         $("#offerCategoryGrid").kendoGrid({
             dataSource: {
-                    data: data,
+                data: data,
                 pageSize: 10,
                 aggregate: [
                     { field: "offer_cat_shares", aggregate: "sum" }
@@ -1411,7 +1449,6 @@ function getclientlist(){
                 });
                 $(".rowCheckbox").off("click").on("click", function () {
                     if (!this.checked) {
-                        $("#selectAll").prop("checked", false);
                     } else {
                         var allChecked = $(".rowCheckbox").length === $(".rowCheckbox:checked").length;
                         $("#selectAll").prop("checked", allChecked);
@@ -1507,7 +1544,7 @@ function getclientlist(){
     
     // ==================== Offer Milstone ===========
 
-        function offerMillstone(data){
+         function fetchofferMillstone(data){
             $("#iod").val(formatDate(data.offer_openingdate));
             $("#icd").val(formatDate(data.offer_closingdate));
             $("#alotdate").val(formatDate(data.offer_allotmentdate));
@@ -1572,38 +1609,46 @@ function getclientlist(){
         }
     }
 
-    // ================Common Methods
+    // ================Common Methods ===============
 
-     function validateOfferAndClient() {
-            if($("#status").val() == "I" && activeofferstatus == true) {
-        var offerCode = $("#offer_code").val();
-        var clientCode = $("#clientcode").val();
-        if (!offerCode) {
-            $.alert({
-                title: 'Validation',
-                content: 'Offer Code is required!',
-                type: 'red'
-            });
-            return false;
-        }
-        if (!clientCode) {
-            $.alert({
-                title: 'Validation',
-                content: 'Client Code is required!',
-                type: 'red'
-            });
-            return false;
-        }
-        return true;
-    }
-         else if($("#status").val() == "I" && activeofferstatus == false) {
+        function validateOfferAndClient() {
+            var status = $("#status").val();
+            var offerCode = $("#offer_code").val();
+            var clientCode = $("#clientcode").val();
+
+        if (status == "I" && activeofferstatus == true) {
+
+            if (!offerCode) {
                 $.alert({
+                    title: 'Validation',
+                    content: 'Offer Code is required!',
+                    type: 'red'
+                });
+                return false;
+            }
+
+            if (!clientCode) {
+                $.alert({
+                    title: 'Validation',
+                    content: 'Client Code is required!',
+                    type: 'red'
+                });
+                return false;
+            }
+
+            return true; 
+        }
+
+        else if (status == "I" && activeofferstatus == false) {
+            $.alert({
                 title: 'Validation',
                 content: 'Status Need to be in Draft Mode until fill the mandatory fields .!',
                 type: 'red'
             });
             return false;
-    }
+        }
+
+        return true; 
     }
     
 </script>
