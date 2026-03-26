@@ -104,7 +104,7 @@
                         <button type="button" class="btn btn-primary" id="btnSave" onclick="runrecon()" style="padding: 3px 25px;margin-top:28px;">Run Recon</button>
                     </div>
                     <div class="col-sm-2">
-                        <button type="button" class="btn btn-primary" id="btnGen" style="float:right;padding: 3px 25px;margin-top:28px;width:75%">Export</button>
+                        <button type="button" onclick="exportSummary()" class="btn btn-primary" id="btnGen" style="float:right;padding: 3px 25px;margin-top:28px;width:75%">Export</button>
                     </div>
                 </div>
                <div class="row" style="margin-top:20px;">
@@ -253,11 +253,21 @@
                      filterable: true,
                      resizable: true,
                      columns: columns,
+                      excel: {
+                        fileName: "BidBank_Summary_Report.xlsx",
+                        allPages: true,   
+                        filterable: true
+                       },
                      dataBound: function () {
                          var grid = this;
                          grid.columns.forEach(function (col, index) {
                          });
                      }
                  });
+    }
+
+    function exportSummary() {
+        var grid = $("#banktList").data("kendoGrid");
+        grid.saveAsExcel();
     }
 </script>
