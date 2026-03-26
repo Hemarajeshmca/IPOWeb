@@ -79,6 +79,14 @@
         #offerStackGrid .k-grid-content {
             height: 160px !important;
         }
+
+        #offerBankGrid {
+            overflow-y: hidden;
+        }
+
+        #offerStackGrid {
+            overflow-y: hidden;
+        }
     </style>
 </head>
 
@@ -217,7 +225,7 @@
                                         </div>
                                         <div class="col-sm-2">
                                             <label class="form-label">Post Offer Capital</label>
-                                            <input type="number" id="postissue" class="form-control"  readonly/>
+                                            <input type="number" id="postissue" class="form-control"  readonly/>                                           
                                         </div>
                                         <div class="col-sm-2">
                                             <label class="form-label">Lot Size</label>
@@ -484,7 +492,7 @@
     offerStackHolder = "";
     offerCategory = "";
     offerMillstone = "";
-    activeOfferStatus = false;
+    var activeOfferStatus = false;
     
     // $("#selectAll").on("change", function () {
     //     $(".rowCheckbox").prop("checked", $(this).prop("checked"));
@@ -574,12 +582,13 @@ function getclientlist(){
 
  function offerHeaderSave() {
      var isValid = true;
-      if($("#clientcode").val() === "") { $("#v_clientcode").text("Please Choose Client Code"); isValid = false; }
-      if($("#offer_type").val() === "") { $("#v_offer_type").text("Please Choose Offer Type");isValid = false;}
-      if($("#listing").val() === "") { $("#v_listing").text("Please Choose Listing");isValid = false; }
-      if($("#isin").val() === "") { $("#v_isin").text("Please Enter ISIN"); isValid = false; }
-      if($("#status").val() === "") { $("#v_status").text("Please Choose status");isValid = false; }
-      if(($("#remarks").val() === "I" || $("#status").val() === "C") && $("#remarks").val() === "") { $("#v_remarks").text("Please Enter Remark"); isValid = false;}
+      if($("#clientname").val() === "") { $("#v_clientname").text("Please Choose Client Name"); isValid = false; } else {$("#v_clientname").text(""); }
+        if($("#clientcode").val() === "") { $("#v_clientcode").text("Please Choose Client Code"); isValid = false; } else {$("#v_clientcode").text(""); }
+        if($("#offer_type").val() === "") { $("#v_offer_type").text("Please Choose Offer Type");isValid = false;} else {$("#v_offer_type").text(""); }
+        if($("#listing").val() === "") { $("#v_listing").text("Please Choose Listing");isValid = false; } else {$("#v_listing").text(""); }
+        if($("#isin").val() === "") { $("#v_isin").text("Please Enter ISIN"); isValid = false; } else {$("#v_isin").text(""); }
+        if($("#status").val() === "") { $("#v_status").text("Please Choose status");isValid = false; } else {$("#v_status").text(""); }
+        if(($("#remarks").val() === "I" || $("#status").val() === "C") && $("#remarks").val() === "") { $("#v_remarks").text("Please Enter Remark"); isValid = false;} else {$("#v_remarks").text(""); }
       if (isValid) { 
         var payload = {};
         payload.offer_header_gid = $("#offer_header_gid").val();
@@ -724,6 +733,14 @@ function getclientlist(){
         }
 
     function saveofferDetails(){
+            console.log("SAVE CALLED");
+            debugger;
+            var priceType = $("#pricetype").val();
+         if (priceType === "P") {
+            if (!validatePrices()) {
+                return;
+            }
+        }
         if (!validateOfferAndClient()) {
            return;
         }
@@ -733,7 +750,7 @@ function getclientlist(){
                 payload.offer_detail_gid = $("#offer_detail_gid").val();
                 payload.offer_precapital= $("#preissue").val() ? parseFloat($("#preissue").val()) : 0;
                 payload.offer_issuesize= $("#issuesize").val()? parseInt($("#issuesize").val()) : 0;
-                payload.offer_postcapital= $("#postissue").val() ? parseFloat($("#postissue").val()) : 0;
+                payload.offer_postcapital= $("#postissue").val() ? parseFloat($("#postissue").val()) : 0;                
                 payload.offer_lotsize= $("#lotsize").val() ? parseInt($("#lotsize").val()) : 0;
                 payload.offer_facevalue= $("#facevalue").val()? parseFloat($("#facevalue").val()) : 0;
                 payload.offer_premiun= $("#premium").val() ? parseFloat($("#premium").val()): 0;
@@ -782,12 +799,17 @@ function getclientlist(){
          }
     }
 
-    function setPostPrice(){
-        var preCaptital = parseFloat($("#preissue").val()) || 0;
-        var offer_issuesize = parseFloat($("#issuesize").val()) || 0;
+       function setPostPrice(){
+        var preCaptital = parseFloat($("#preissue").val().replace(/,/g, '')) || 0;
+        var offer_issuesize = parseFloat($("#issuesize").val().replace(/,/g, '')) || 0;
+        console.log("Pre:", preCaptital, "Issue:", offer_issuesize);
         var postprice = preCaptital + offer_issuesize;
-        $("#postissue").val(postprice.toFixed(2));
+        $("#postissue").val(postprice.toFixed(2));        
     }
+
+        $("#preissue, #issuesize").on("input", function () {
+        setPostPrice();
+    });
 
     function validatePrices() {
         var min = parseFloat($("#minprice").val()) || 0;
@@ -984,7 +1006,7 @@ function getclientlist(){
         var grid = $("#offerBankGrid").data("kendoGrid");
         var row = $(e).closest("tr");
         var dataItem = grid.dataItem(row);
-
+            console.log("records :",dataItem );
         $("#state").val(dataItem.banker_state);
 
         loadMasterDropdown(
@@ -1003,7 +1025,7 @@ function getclientlist(){
         $("#pin").val(dataItem.banker_pincode);
         $("#acno").val(dataItem.banker_accountno);
         $("#ifsc").val(dataItem.banker_ifsc);
-        $("#asname").val(dataItem.banker_holdname);
+        $("#acname").val(dataItem.banker_holdname);
     }
 
      function stateChange(targetId, el){
@@ -1242,6 +1264,7 @@ function getclientlist(){
             var grid = $("#offerStackGrid").data("kendoGrid");
             var row = $(e).closest("tr");
             var dataItem = grid.dataItem(row);
+            console.log("Stack records :", dataItem);
             $("#sh_state").val(dataItem.stack_state);
             loadMasterDropdown(
                 dataItem.stack_state,
@@ -1253,7 +1276,7 @@ function getclientlist(){
             );
             $("#stack_gid").val(dataItem.stack_gid);
             $("#stack_code").val(dataItem.stack_code);
-            $("#sh_type").val(dataItem.stack_type);
+            $("#sh_type").val(dataItem.stack_type);           
             $("#sh_name").val(dataItem.stack_name);
             $("#sh_address").val(dataItem.stack_address);
             $("#sh_city").val(dataItem.stack_city);
@@ -1332,6 +1355,7 @@ function getclientlist(){
 
 
     function loadCatagory() {
+        debugger;
         var mymodel = {
             in_master_code: "QCD_CATEGORY",
             in_user_code: ""
@@ -1345,8 +1369,8 @@ function getclientlist(){
                 var formattedData = result.map(function (item) {
                 return {
                     category_gid: item.master_gid,
-                    catagory_code: item.master_code,
-                    catagory_name: item.master_name,
+                     category_code: item.master_code,
+                     category_name: item.master_name,
                     offer_cat_shares: 0
                 };
             });
@@ -1359,6 +1383,7 @@ function getclientlist(){
     }
 
         function fetchofferCategory(data) {
+          // var postIssue = parseFloat($("#hidden_postissue").val().replace(/,/g, '')) || 0;
             data.forEach(function (item) {
             if (item.offer_cat_shares) {
                 item.offer_cat_shares = parseFloat(
@@ -1458,7 +1483,31 @@ function getclientlist(){
         });
     }
 
-        function formatIndianNumber(x) {
+   function validateCategoryTotal() {
+        var postIssue = parseFloat($("#postissue").val().replace(/,/g, '')) || 0;
+        var grid = $("#offerCategoryGrid").data("kendoGrid");
+        if (!grid) return false;
+        var data = grid.dataSource.view();
+        var total = 0;
+        data.forEach(function (item) {
+            total += parseFloat(item.offer_cat_shares) || 0;
+        });
+        console.log("Post Issue:", postIssue);
+        console.log("Category Total:", total);
+        if (postIssue !== total) {
+            $.alert({
+                title: 'IPO Web',
+                content: "Category Total (" + total + ") must match with Post Issue Total (" + postIssue + ")",
+                type: 'red',
+            });
+            return false;
+        }
+
+        return true;
+    }
+
+
+ function formatIndianNumber(x) {
             if (x == null) return "";
 
             var parts = x.toFixed(2).split(".");
@@ -1491,6 +1540,9 @@ function getclientlist(){
             if (!validateOfferAndClient()) {
                 return;
             }
+            if (!validateCategoryTotal()) {
+            return;   // ❌ STOP SAVE
+              }
             var grid = $("#offerCategoryGrid").data("kendoGrid");
             var selectedData = [];
             $("#offerCategoryGrid tbody tr").each(function () {
@@ -1499,8 +1551,8 @@ function getclientlist(){
                     var dataItem = grid.dataItem(this);
                     selectedData.push({
                         category_gid: dataItem.category_gid,
-                        offer_cat_code: dataItem.offer_cat_code,
-                        offer_cat_name: dataItem.offer_cat_name,
+                        offer_cat_code: dataItem.category_code,
+                        offer_cat_name: dataItem.category_name,
                         offer_cat_shares: dataItem.offer_cat_shares
                     });
                 }
@@ -1545,10 +1597,11 @@ function getclientlist(){
     // ==================== Offer Milstone ===========
 
          function fetchofferMillstone(data){
+             console.log("Milestones :", data);
             $("#iod").val(formatDate(data.offer_openingdate));
             $("#icd").val(formatDate(data.offer_closingdate));
             $("#alotdate").val(formatDate(data.offer_allotmentdate));
-            $("#apdate").val(formatDate(data.apdate));
+                $("#apdate").val(formatDate(data.offer_approvaldate));
             $("#ldate").val(formatDate(data.offer_listingdate));
             $("#nsdldate").val(formatDate(data.offer_nsdldate));
             $("#cdsldate").val(formatDate(data.offer_cdsldate));
@@ -1611,44 +1664,46 @@ function getclientlist(){
 
     // ================Common Methods ===============
 
-        function validateOfferAndClient() {
-            var status = $("#status").val();
-            var offerCode = $("#offer_code").val();
-            var clientCode = $("#clientcode").val();
+              function validateOfferAndClient() {
+                var status = $("#status").val();
+                var offerCode = $("#offer_code").val();
+                var clientCode = $("#clientcode").val();
 
-        if (status == "I" && activeofferstatus == true) {
+            if (status == "I" && activeofferstatus == true) {
 
-            if (!offerCode) {
+                if (!offerCode) {
+                    $.alert({
+                        title: 'Validation',
+                        content: 'Offer Code is required!',
+                        type: 'red'
+                    });
+                    return false;
+                }
+
+                if (!clientCode) {
+                    $.alert({
+                        title: 'Validation',
+                        content: 'Client Code is required!',
+                        type: 'red'
+                    });
+                    return false;
+                }
+
+                return true;
+            }
+
+            else if (status == "I" && activeofferstatus == false) {
                 $.alert({
                     title: 'Validation',
-                    content: 'Offer Code is required!',
+                    content: 'Status Need to be in Draft Mode until fill the mandatory fields .!',
                     type: 'red'
                 });
                 return false;
             }
 
-            if (!clientCode) {
-                $.alert({
-                    title: 'Validation',
-                    content: 'Client Code is required!',
-                    type: 'red'
-                });
-                return false;
-            }
-
-            return true; 
+            return true;
         }
 
-        else if (status == "I" && activeofferstatus == false) {
-            $.alert({
-                title: 'Validation',
-                content: 'Status Need to be in Draft Mode until fill the mandatory fields .!',
-                type: 'red'
-            });
-            return false;
-        }
-
-        return true; 
-    }
+ 
     
 </script>

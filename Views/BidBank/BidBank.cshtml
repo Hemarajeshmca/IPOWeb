@@ -98,6 +98,7 @@
                     <div class="col-sm-3">
                         <label class="form-label" for="ctype" data-field="ctype">IPO Name</label>&nbsp;<span style="font-size: 12px;color:red;font-weight: bold;">*</span>
                         <input type="text" class="form-control" id="iponame" readonly />
+                        <input type="text" class="form-control" id="ipocode" hidden />
                     </div>
                     <div class="col-sm-2">
                         <button type="button" class="btn btn-primary" id="btnSave" onclick="runrecon()" style="padding: 3px 25px;margin-top:28px;">Run Recon</button>
@@ -120,105 +121,19 @@
 
 </html>
 <script>
-         $(document).ready(function () {
-
+      $(document).ready(function () {
+          getBidBank();
         $('#navhead').text('Bid Vs Bank');
-         var ipoName = localStorage.getItem("selectedIPOText");
-
-    $("#iponame").val(ipoName);
-
-        $("#banktList").hide();   // Hide grid container
-
-         $("#banktList").kendoGrid({
-
-        autoBind: false,
-
-        dataSource: {
-            transport: {
-                read: {
-                    url: "@Url.Action("GetBankList", "BidBank")",
-                    dataType: "json"
-                }
-            },
-            pageSize: 20
-        },
-
-        pageable: true,
-        sortable: true,
-        filterable: true,
-            scrollable: {
-                virtual: false
-            },
-        height: 410,
-        resizable: true,
-        columns: [
-            {
-                title: "Select",
-                width: 45,
-                locked: true,
-                headerAttributes: { style: "text-align:center;" },
-                attributes: { style: "text-align:center;" },              
-                headerTemplate:
-                    "<div style='text-align:center;'>" +
-                    "<input type='checkbox' id='selectAll' /> " +
-                    "<label for='selectAll' style='cursor:pointer;'>All</label>" +
-                    "</div>",
-                template: "<input type='checkbox' class='client-checkbox' value='#= bankName #' />"
-            },
-            {
-                field: "bankName",
-                title: "Bank Name",
-                width: 150,
-                locked: true
-            },
-             {
-                field: "status",
-                title: "Status",
-                width: 120,                
-                 locked: true
-            },
-            {
-                title: "As per Bid",
-                headerAttributes: { style: "text-align:center;font-weight:bold;" },
-                columns: [
-                    { field: "bidNoOfAppl", title: "No.of Appl", width: 120, attributes:{style:"text-align:right;"} },
-                    { field: "bidNoOfShares", title: "No.of Shares", width: 130, attributes:{style:"text-align:right;"} },
-                    { field: "bidAmount", title: "Amount", width: 120, attributes:{style:"text-align:right;"} }
-                ]
-            },
-
-            {
-                title: "As per Bank",
-                headerAttributes: { style: "text-align:center;font-weight:bold;" },
-                columns: [
-                    { field: "bankNoOfAppl", title: "No.of Appl", width: 120, attributes:{style:"text-align:right;"} },
-                    { field: "bankNoOfShares", title: "No.of Shares", width: 130, attributes:{style:"text-align:right;"} },
-                    { field: "bankAmount", title: "Amount", width: 120, attributes:{style:"text-align:right;"} }
-                ]
-            },
-
-            {
-                title: "Diff.",
-                headerAttributes: { style: "text-align:center;font-weight:bold;" },
-                columns: [
-                    { field: "diffNoOfAppl", title: "No.of Appl", width: 120, attributes:{style:"text-align:right;color:red;"} },
-                    { field: "diffNoOfShares", title: "No.of Shares", width: 130, attributes:{style:"text-align:right;color:red;"} },
-                    { field: "diffAmount", title: "Amount", width: 120, attributes:{style:"text-align:right;color:red;"} }
-                ]
-            }           
-        ]
+        var ipoName = localStorage.getItem("selectedIPOText");
+        var ipocode = localStorage.getItem("selectedIPO");
+        $("#iponame").val(ipoName);
+        $("#ipocode").val(ipocode);
     });
 
-    });
-
-       function runrecon() {
-        var grid = $("#banktList").data("kendoGrid");
-        $("#btnGen").show();
-        $("#banktList").show();
-        grid.dataSource.read();
+    function runrecon() {
+        getBidBank();
     }
 
-        // Select / Deselect all
     $(document).on("click", "#selectAll", function () {
         var isChecked = this.checked;
 
@@ -226,4 +141,123 @@
             $(this).prop("checked", isChecked);
         });
     });
+
+    function getBidBank(){
+        var offer_code =  localStorage.getItem("selectedIPO");
+          try {
+            customAjax({
+                type: "GET",
+                url: '@Url.Action("getBidBank", "BidBank")',
+                data: {
+                offer_code: offer_code
+                },
+                success: function (response) {
+                    if (response && response.success) {
+                      var data = JSON.parse(response.data);
+                      fetchgrid(data);
+                    }
+                    else {
+                        $.alert({
+                            title: 'IPO Allotment',
+                            content: 'Save failed!',
+                            type: 'red',
+                        });
+                    }
+                },
+                error: function (er) {
+                    console.log(er);
+                }
+            });
+        } catch (e) {
+            console.log(e);
+        }
+    }
+
+    function fetchgrid(data){
+        var columns = [
+                     {
+                        title: "Select",
+                        width: 45,
+                        locked: true,
+                        headerAttributes: { style: "text-align:center;" },
+                        attributes: { style: "text-align:center;" },
+                        headerTemplate:
+                            "<div style='text-align:center;'>" +
+                            "<input type='checkbox' id='selectAll' /> " +
+                            "<label for='selectAll' style='cursor:pointer;'>All</label>" +
+                            "</div>",
+                        template: "<input type='checkbox' class='client-checkbox' value='#= bnk_code #' />"
+                     },
+                     {
+                field: "bnk_code",
+                title: "Bank Code",
+                locked: true,
+                hidden: true,
+            },
+            {
+                field: "bnk_name",
+                title: "Bank Name",
+                width: 150,
+                locked: true
+            },
+               {
+                      field: "status",
+                      title: "Status",
+                      width: 120,
+                      locked: true
+                  },
+                  {
+              title: "As per Bid",
+              headerAttributes: { style: "text-align:center;font-weight:bold;" },
+              columns: [
+                  { field: "bid_appl_count", title: "No.of Appl", width: 120, attributes:{style:"text-align:right;"} },
+                  { field: "bid_quantity", title: "No.of Shares", width: 130, attributes:{style:"text-align:right;"} },
+                  { field: "bid_amount", title: "Amount", width: 120, attributes:{style:"text-align:right;"} }
+              ]
+          },
+          {
+              title: "As per Bank",
+              headerAttributes: { style: "text-align:center;font-weight:bold;" },
+              columns: [
+                  { field: "bnk_appl_count", title: "No.of Appl", width: 120, attributes:{style:"text-align:right;"} },
+                  { field: "bnk_quantity", title: "No.of Shares", width: 130, attributes:{style:"text-align:right;"} },
+                  { field: "bank_amount", title: "Amount", width: 120, attributes:{style:"text-align:right;"} }
+              ]
+          },
+
+          {
+              title: "Diff.",
+              headerAttributes: { style: "text-align:center;font-weight:bold;" },
+              columns: [
+                  { field: "diff_appl_count", title: "No.of Appl", width: 120, attributes:{style:"text-align:right;color:red;"} },
+                  { field: "diff_quantity", title: "No.of Shares", width: 130, attributes:{style:"text-align:right;color:red;"} },
+                  { field: "diff_amount", title: "Amount", width: 120, attributes:{style:"text-align:right;color:red;"} }
+              ]
+          }
+                 ];
+                 if ($("#banktList").data("kendoGrid")) {
+                    $("#banktList").data("kendoGrid").destroy();
+                    $("#banktList").empty();
+                 }
+                     $("#banktList").kendoGrid({
+                     dataSource: {
+                         data: data,
+                         pageSize: 20
+                     },
+                     height: 410,
+                     pageable: {
+                         pageSizes: [10, 20, 30],
+                         refresh: true
+                     },
+                     sortable: true,
+                     filterable: true,
+                     resizable: true,
+                     columns: columns,
+                     dataBound: function () {
+                         var grid = this;
+                         grid.columns.forEach(function (col, index) {
+                         });
+                     }
+                 });
+    }
 </script>
