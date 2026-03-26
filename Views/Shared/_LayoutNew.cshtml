@@ -7,7 +7,7 @@
     var roleName = Context.Session.GetString("role_name");
     var menuJson = Context.Session.GetString("UserMenus");
     var menus = new List<MenuModel>();
-    var asideMenus = new List<MenuModel>();
+    var asideMenus = new List<MenuModel>(); 
     var navMenus = new List<MenuModel>();
 
     if (!string.IsNullOrEmpty(menuJson))
@@ -73,7 +73,7 @@
 
         i.bx.bx-chip.fs-4.me-1 {
             color: #5490ff;
-        }
+        }      
 
         i.bx.bx-dots-vertical-rounded.fs-4.me-1 {
             color: #5490ff;
@@ -83,7 +83,7 @@
             color: #5490ff;
         }
 
-        i.bx.bx-atom.fs-4.me-1 {
+        i.bx.bx-atom.fs-4.me-1{
             color: #5490ff;
         }
 
@@ -127,15 +127,14 @@
             color: #5490ff;
         }
 
-        i.bx.bx-save.fs-4.me-1 {
+        i.bx.bx-save.fs-4.me-1 { 
             color: #5490ff;
         }
-
         i.bx.bxs-file-doc.fs-4.me-1 {
             color: #5490ff;
         }
 
-        i.bx.bx-cog {
+        i.bx.bx-cog { 
             color: #5490ff;
             font-size: 22px;
             margin-right: 10px;
@@ -200,7 +199,7 @@
             div#spinner img {
                 position: absolute;
                 /*width: 100px;
-                                                                height: 100px;*/
+                                                        height: 100px;*/
                 top: 40%;
                 left: 42%;
                 opacity: 4.5;
@@ -228,7 +227,7 @@
             vertical-align: middle;
             text-overflow: ellipsis;
             border-color: #80808040;
-        }
+        }  
 
         .k-grid.k-widget {
             height: 360px;
@@ -303,16 +302,16 @@
             font-size: 13px;
         }
 
-        .k-grid-header th {
+         .k-grid-header th {
             padding-top: 4px;
             padding-bottom: 4px;
             line-height: 18px;
             font-size: 13px;
         }
 
-        /*   .k-grid-content {
-                    height: 288px !important;
-                } */
+       /*   .k-grid-content {
+            height: 288px !important;
+        } */
     </style>
 
     <meta charset="utf-8" />
@@ -351,7 +350,7 @@
     <script src="~/Scripts/jquery-confirm.min.js"></script>
     <link href="~/Content/css/jquery-confirm.min.css" rel="stylesheet" />
 
-    @*/*dashboard chart*/*@
+    @*/*dashboard chart*@
     @*<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>*@
     <script type="text/javascript" src="https://www.google.com/jsapi"></script>
     <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
@@ -400,11 +399,11 @@
     </div>
     <div class="layout-wrapper layout-content-navbar layout-without-menu">
         <div class="layout-container">
-
+        
             <footer class="footer">
-
+                
                 <h6 class="copyright" style="color:#000;font-family:inherit;font-size:14px">Copyright &#169;  GNSA Infotech </h6>
-
+              
             </footer>
             <!-- / Menu -->
             <!-- Layout container -->
@@ -424,7 +423,7 @@
                         {
                             <select name="iponames" id="iponames" onchange="setoffers()" class="form-control"></select>
                         }
-                        <center>  <h5 class="card-header" id="navhead" style="margin-left: 38.5vw !important;"></h5></center>
+                        <center>  <h5 class="card-header" id="navhead" style="margin-left: 38.5vw !important;"></h5></center>                      
                         <ul class="navbar-nav flex-row align-items-center ms-auto">
                             <li class="nav-item lh-1 me-1">
                                 <i style="cursor:pointer;" class='bx bxs-home' data-bs-toggle="tooltip" data-bs-placement="bottom" title="Home" onclick="window.location.href='../Dashboard/Dashboard'"></i>
@@ -432,7 +431,7 @@
                             <li class="nav-item dropdown-language dropdown lh-1 me-1">
                                 <a class="nav-link dropdown-toggle hide-arrow" href="javascript:void(0);" data-bs-toggle="dropdown">
                                     <i class='bx bxs-cog' data-bs-toggle="tooltip" data-bs-placement="bottom" title="Settings"></i>
-                                </a>
+                                </a>                           
 
                                 <ul class="dropdown-menu dropdown-menu-end">
                                     <li>
@@ -542,7 +541,7 @@
                                     </li>
                                 </ul>
                             </li>
-                            <li class="nav-item dropdown-language dropdown lh-1 me-1">
+                          <li class="nav-item dropdown-language dropdown lh-1 me-1">
                                 <a class="nav-link dropdown-toggle hide-arrow" href="javascript:void(0);" data-bs-toggle="dropdown">
                                     <i class='bx bx-news' data-bs-toggle="tooltip" data-bs-placement="bottom" title="Reports"></i>
                                 </a>
@@ -553,7 +552,7 @@
                                             <i class="fa fa-file-excel-o" style="font-size: 16px;color: #5490ff;position: relative;top: 3px;"></i>&nbsp;
                                             <span class="align-middle">Report Generation</span>
                                         </a>
-                                    </li>
+                                    </li>        
                                     <li>
                                         <a class="dropdown-item" href="~/Reports/ReportTemplete" data-language="fr">
                                             <i class="fa fa-file-excel-o" style="font-size: 16px;color: #5490ff;position: relative;top: 3px;"></i>&nbsp;
@@ -597,7 +596,7 @@
                                         <a class="dropdown-item" href="#">
                                             <i class="bx bx-envelope me-2"></i>
                                             <span class="align-middle" id="empemail">@userEmail</span>
-                                        </a>
+                                        </a>                                       
                                         <a class="dropdown-item" href="#">
                                             <i class="bx bx-user me-2"></i>
                                             <span class="align-middle" id="emprole">@roleName</span>
@@ -619,14 +618,14 @@
                                         </a>
                                     </li>
                                 </ul>
-                            </li>
+                            </li>                        
                             <!--/ User -->
                         </ul>
                     </div>
 
                 </nav>
                 <!-- / Navbar -->
-                <!-- Content wrapper -->
+                <!-- Content wrapper -->            
 
 
                 <div class="content-wrapper">
@@ -645,6 +644,7 @@
         <div class="drag-target"></div>
     </div>
     <!-- / Layout wrapper -->
+
     @*<link href="https://kendo.cdn.telerik.com/2022.2.802/styles/kendo.default-main.min.css" rel="stylesheet" />*@
     @*<script src="https://code.jquery.com/jquery-1.12.3.min.js"></script>*@
     @*<script src="https://kendo.cdn.telerik.com/2022.2.802/js/kendo.all.min.js"></script>*@
@@ -669,13 +669,22 @@
     <script async defer src="https://buttons.github.io/buttons.js"></script>
 
     <script>
-        var selectedIPO = "";
+
+       var selectedIPO = "";
         $(document).on("change", "#iponames", function () {
         var ipoId = $(this).val();
         var ipoText = $("#iponames option:selected").text();
         localStorage.setItem("selectedIPO", ipoId);
         localStorage.setItem("selectedIPOText", ipoText);
         });
+        $(document).ready(function () {
+            getofferList();
+            var savedIPO = localStorage.getItem("selectedIPO");
+            if (savedIPO) {
+                $("#iponames").val(savedIPO);
+            }
+        });
+
         function openNav() {
             $(document).ready(function () {
                 $('#layout-menu').toggleClass('active');
@@ -691,14 +700,12 @@
         function getlocalStorage(key) {
             if (key == "getlocalStorage") {
                 var data = localStorage.getItem(key);
-
                 return JSON.parse(data)
             } else {
                 var guid = localStorage.getItem(key);
                 return JSON.parse(guid);
             }
         }
-
     </script>
 
     <script>
@@ -818,7 +825,7 @@
             //localStorage.setItem("entityId", 0);
             //localStorage.setItem("isinNumber", 0);
            // console.log("ISIN", isinid);
-            $("#userGroupid").val(JSON.parse(localStorage.getItem("SetContextData"))[0].usergroup_gid);
+            // $("#userGroupid").val(JSON.parse(localStorage.getItem("SetContextData"))[0].usergroup_gid);
             populateDropdown(JSON.parse(localStorage.getItem("SetContextData")), 'Entity');
             //  populateDropdown(JSON.parse(localStorage.getItem("SetContextData")), 'Isin');
 
@@ -893,7 +900,7 @@
         })
 
 
-        var spinnerVisible = false;
+        // var spinnerVisible = false;
         function getconcatval(mastercode) {
             debugger;
             var master = "";
@@ -917,8 +924,8 @@
             localStorage.clear();
         }
 
+        var spinnerVisible = false;
         function showProgress() {
-            debugger;
             if (!spinnerVisible) {
                // alert("showP");
                 $("div#spinner").fadeIn("fast");
@@ -927,13 +934,24 @@
             }
         }
         function hideProgress() {
-            debugger;
             if (spinnerVisible) {
-                //alert("hidep");
-                var spinner = $("div#spinner");
-                spinner.stop();
-                spinner.fadeOut("fast");
-                spinnerVisible = false;
+                 var spinner = $("div#spinner");
+                 spinner.stop();
+                 spinner.fadeOut("fast");
+                 spinnerVisible = false;
+                 $("div.k-grid").each(function () {
+                    var grid = $(this).data("kendoGrid");
+                    if (grid) {
+                        var isSortable = grid.options.sortable;
+                        var isFilterable = grid.options.filterable;
+                        if (!isSortable || !isFilterable) {
+                            grid.setOptions ({
+                                sortable: true,
+                                filterable: true
+                            });
+                        }
+                    }
+                 });
             }
         }
 
@@ -1064,7 +1082,7 @@
                      });
                  }
              });
-        }*/
+        }
 
         function showchangepasswordscreen() {
             debugger;
@@ -2046,11 +2064,14 @@
 
         }
 
-             function logoutUser() {
-            const url = '@Url.Action("Logout", "Login")';
-            window.location.href = url;
-        }
-         function validateDateFormat(date) {
+     function logoutUser() {
+        localStorage.removeItem("selectedIPO");
+        localStorage.removeItem("selectedIPOText");
+        const url = '@Url.Action("Logout", "Login")';
+        window.location.href = url;
+      }
+
+          function validateDateFormat(date) {
                 // const regex = /^(0[1-9]|[12][0-9]|3[01])\/(0[1-9]|1[0-2])\/\d{4}$/; // Reg exp for dd/mm/yyyy
             const regex = /^\d{4}-(0[1-9]|1[0-2])-(0[1-9]|[12][0-9]|3[01])$/; // Reg exp for dd-mm-yyyy
             return regex.test(date);
@@ -2129,32 +2150,52 @@
                return result;
            }
            function combo_editor_man(container, cmbid, datasource, datafield, code_datafield, grid_id) {
-            $('<input  id="' + cmbid + '" data-text-field="desc" data-value-field="desc" data-bind="value:' + datafield + '" name ="' + datafield + '"/>').appendTo(container).kendoComboBox({
-                autoBind: false,
-                filter: "contains",
-                dataSource: datasource,
-                change: function (e) {
-                    var cmb_value = this.value();
-                    if (cmb_value && this.selectedIndex == -1) {
-                        this.value("");
-                    }
-                    //else{FF
-                    var cmb_var = $("#" + grid_id).data("kendoGrid");
-                    var selectedItem = cmb_var.dataItem(cmb_var.select());
-                    var combobox_data = $("#" + cmbid).data("kendoComboBox");
-                    if (combobox_data != undefined && combobox_data.selectedIndex == -1) {
-                        selectedItem[datafield] = "";
-                        selectedItem[code_datafield] = "";
-                    }
-                    else {
-                        selectedItem[datafield] = combobox_data.dataItem(combobox_data.selectedIndex).desc;
-                        selectedItem[code_datafield] = combobox_data.dataItem(combobox_data.selectedIndex).code;
-                    }
-                }
-            });
-            $("<span class='k-invalid-msg' data-for='" + datafield + "'></span>").appendTo(container);
-        }
-      
+			$('<input  id="' + cmbid + '" data-text-field="desc" data-value-field="desc" data-bind="value:' + datafield + '" name ="' + datafield + '"/>').appendTo(container).kendoComboBox({
+				autoBind: false,
+				filter: "contains",
+				dataSource: datasource,
+				change: function (e) {
+					var cmb_value = this.value();
+					if (cmb_value && this.selectedIndex == -1) {
+						this.value("");
+					}
+					//else{FF
+					var cmb_var = $("#" + grid_id).data("kendoGrid");
+					var selectedItem = cmb_var.dataItem(cmb_var.select());
+					var combobox_data = $("#" + cmbid).data("kendoComboBox");
+					if (combobox_data != undefined && combobox_data.selectedIndex == -1) {
+						selectedItem[datafield] = "";
+						selectedItem[code_datafield] = "";
+					}
+					else {
+						selectedItem[datafield] = combobox_data.dataItem(combobox_data.selectedIndex).desc;
+						selectedItem[code_datafield] = combobox_data.dataItem(combobox_data.selectedIndex).code;
+					}
+				}
+			});
+			$("<span class='k-invalid-msg' data-for='" + datafield + "'></span>").appendTo(container);
+		}
+           function hideProgress() {
+               if (spinnerVisible) {
+                    var spinner = $("div#spinner");
+                    spinner.stop();
+                    spinner.fadeOut("fast");
+                    spinnerVisible = false;
+                    $("div.k-grid").each(function () {
+                       var grid = $(this).data("kendoGrid");
+                       if (grid) {
+                           var isSortable = grid.options.sortable;
+                           var isFilterable = grid.options.filterable;
+                           if (!isSortable || !isFilterable) {
+                               grid.setOptions ({
+                                   sortable: true,
+                                   filterable: true
+                               });
+                           }
+                       }
+                    });
+               }
+           }
 
            function loadMasterDropdown(masterCode, dropdownId,selectedValue, callback) {
             var mymodel = {
@@ -2284,7 +2325,7 @@
                });
            } catch (e) {
                console.log(e);
-           }
+           }   
         }
 
         function offersetup(){
@@ -2309,6 +2350,7 @@
         //        sessionStorage.removeItem("edit_offer_code");
         //     }
         // });
+
     </script>
 
 </body>
