@@ -93,7 +93,7 @@
                 <div class="row" style="margin-top:20px;">
                     <div class="col-sm-3">
                         <label class="form-label" for="state" data-field="state">State</label>&nbsp;<span style="font-size: 12px;color:red;font-weight: bold;">*</span>
-                        <select name="state" id="state" class="form-control" >                           
+                        <select name="state" id="state" onchange="stateChange('city', this)" class="form-control">
                         </select>
                         <span id="querystate" style="color: red; font-size: 12px;position:relative;"></span>
                     </div>
@@ -138,6 +138,7 @@
           });
         loadMasterDropdown("QCD_MAST_CLIENT_TYPE", "ctype");
         loadMasterDropdown("QCD_MAST_COUNTRY", "country");
+       loadMasterDropdown("QCD_MAST_STATE", "state");
         setTimeout(function () {
             var client_gid = sessionStorage.getItem("edit_client_gid");
             if (client_gid) {
@@ -149,7 +150,8 @@
     });
 
  function loadClientDetails(client_gid) {
-         $('#btnSave').text("Update");             
+         $('#btnSave').text("Update");
+         debugger;            
         $.ajax({
             type: "POST",
             url: '@Url.Action("GetClientList", "Dashboard")',
@@ -174,16 +176,21 @@
                  loadMasterDropdown("QCD_MAST_STATE", "state", data.client_country);
                  setTimeout(function () {                  
                     $("#state").val(data.client_state);                  
-                    loadMasterDropdown("QCD_MAST_CITY", "city", data.client_state);
+                    // loadMasterDropdown("QCD_MAST_CITY", "city", data.client_state);
+                    loadMasterDropdown(data.client_state,"city",data.client_city,   // ✅ selected value
+                function () {
+                    console.log("City loaded and selected");
+                }
+            );
                     setTimeout(function () {                     
-                    $("#city").val(data.client_city);
+                    $("#city").val(data.client_city);                        
                     }, 300);
                 }, 300);
                 $("#pin").val(data.client_pincode);
             },
             error: function (xhr) {
-                console.log("Error:", xhr.responseText);
-            }
+                console.log("Error:", xhr.responseText);                   
+            }               
         });
     } 
 
@@ -193,13 +200,13 @@ $("#country").on("change", function () {
     $("#city").empty();
     loadMasterDropdown("QCD_MAST_STATE", "state", country);
   });
-$("#state").on("change", function () {
-    var state = $(this).val();
-    $("#city").empty();
-    loadMasterDropdown("QCD_MAST_CITY", "city", state);
-});
 
-    function saveclient() {
+function stateChange(targetId, el){
+        var value = el.value;
+        loadMasterDropdown(value, targetId);
+}
+
+ function saveclient() {
             var isValid = true;
             var clientname = $("#clientname").val();
             var ctype = $("#ctype").val();
