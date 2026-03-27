@@ -96,12 +96,7 @@ namespace IPOWeb.Controllers
         }
 
         [HttpPost]
-        public async Task<JsonResult> ImportData(
-     IFormFile file,
-     string pipeline_code,
-     string initiated_by,
-     string dataset_code,
-     string reference_no)
+        public async Task<JsonResult> ImportData( IFormFile file, string pipeline_code, string initiated_by, string dataset_code, string ref_bank_data)
         {
             try
             {
@@ -110,11 +105,18 @@ namespace IPOWeb.Controllers
                     return Json(new { success = false, message = "File not received" });
                 }
 
+                var refBankList = JsonConvert.DeserializeObject<List<RefBankModel>>(ref_bank_data);
+                // Example: get first item
+                var reference_no = refBankList[0].reference_no;
+                var bank_code = refBankList[0].bank_code;
+
+                string parameterJson = JsonConvert.SerializeObject(refBankList);
+
                 string urlstring = _configuration.GetSection("Appsettings")["connector_api"]
                     + "Pipeline/NewScheduler?pipeline_code=" + pipeline_code
                     + "&initiated_by=" + initiated_by
                     + "&dataset_code=" + dataset_code
-                    + "&reference_no=" + reference_no;
+                    + "&parameter=" + Uri.EscapeDataString(parameterJson);
 
                 using (var client = new HttpClient())
                 {
@@ -124,10 +126,7 @@ namespace IPOWeb.Controllers
                                   + "_" + User.FindFirst(System.Security.Claims.ClaimTypes.Role)?.Value;
 
                     string token = Request.Cookies[APIcookieName];
-
-                    client.DefaultRequestHeaders.Authorization =
-                        new AuthenticationHeaderValue("Bearer", token);
-
+                    client.DefaultRequestHeaders.Authorization =  new AuthenticationHeaderValue("Bearer", token);
                     using (var content = new MultipartFormDataContent())
                     {
                         using (var stream = file.OpenReadStream())

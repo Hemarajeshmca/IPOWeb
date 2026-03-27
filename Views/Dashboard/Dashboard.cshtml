@@ -172,24 +172,21 @@
 <script>    
      $( document ).ready(function() {
           $('#navhead').text('Dashboard');
-          const urlParams = new URLSearchParams(window.location.search);
-            const tab = urlParams.get('tab');
+         const tab = new URLSearchParams(window.location.search).get('tab');
+            if (tab) {
+                const triggerEl = document.querySelector(`[data-bs-target="#navs-top-${tab}"]`);
 
-        if (tab === "client") {
+                if (triggerEl) {
+                    new bootstrap.Tab(triggerEl).show();
 
-            // Activate Client Listing tab button
-            var triggerEl = document.querySelector('[data-bs-target="#navs-top-client"]');
-            var tabInstance = new bootstrap.Tab(triggerEl);
-            tabInstance.show();
-            history.replaceState(null, null, window.location.pathname);
-        } else if (tab === "issue") {
-            // Activate Client Listing tab button
-            var triggerEl = document.querySelector('[data-bs-target="#navs-top-issue"]');
-            var tabInstance = new bootstrap.Tab(triggerEl);
-            var tabInstance = new bootstrap.Tab(triggerEl);
-            tabInstance.show();
-            history.replaceState(null, null, window.location.pathname);
-        }
+                    // 🔥 FIX: manually call for offer tab
+                    if (tab === "offer") {
+                        offersTab();
+                    }
+                }
+
+                history.replaceState(null, null, window.location.pathname);
+            }
     }); 
 
      google.charts.load("current", {packages:["corechart"]});

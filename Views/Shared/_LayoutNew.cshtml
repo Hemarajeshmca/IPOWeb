@@ -2084,6 +2084,8 @@
         }
 
              function logoutUser() {
+                localStorage.removeItem("selectedIPO");
+                localStorage.removeItem("selectedIPOText");
             const url = '@Url.Action("Logout", "Login")';
             window.location.href = url;
         }
@@ -2309,6 +2311,11 @@
                                    '</option>'
                                );
                            });
+                           var savedIPO = localStorage.getItem("selectedIPO");
+
+                    if (savedIPO) {
+                        $ddl.val(savedIPO).trigger("change"); // 🔥 important
+                    }
                        }
                        else {
                               $ddl.empty();

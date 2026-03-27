@@ -99,7 +99,10 @@
                         <button type="button" class="btn btn-primary" id="btnSave" onclick="runrecon()" style="padding: 3px 25px;margin-top:28px;">Run Rejection</button>
                     </div>
                     <div class="col-sm-2">
-                        <button type="button" class="btn btn-primary" id="btnExport"  style="padding: 3px 53px;margin-top:28px;">Export</button>
+                        <button type="button" onclick="exportSummary()" class="btn btn-primary" id="btnGen" style="padding: 3px 25px;margin-top:28px;">Export Summary </button>
+                    </div>
+                    <div class="col-sm-2">
+                        <button type="button" onclick="exportdetailSummary()" class="btn btn-primary" id="btnGen" style="padding: 3px 25px;margin-top:28px; white-space: nowrap;">Export Detail Summary </button>
                     </div>
                 </div>
                <div class="row" style="margin-top:20px;">
@@ -115,6 +118,7 @@
 
 </html>
 <script>
+    var selectedCodes = [];
          $(document).ready(function () {
 
         $('#navhead').text('Run Rejection');
@@ -122,31 +126,46 @@
 
     $("#iponame").val(ipoName);
 
-        $("#rejectionList").hide();   // Hide grid container
+        $("#rejectionList").hide();   // Hide grid container         
 
-           $("#rejectionList").kendoGrid({
+    });
 
-        autoBind: false,
-
-        dataSource: {
-            transport: {
-                read: {
-                    url: "@Url.Action("GetRejectionList", "Rejection")",
-                    dataType: "json"
+       function runrecon() {       
+         var offer_code =  localStorage.getItem("selectedIPO");
+          try {
+            customAjax({
+                type: "GET",
+                url: '@Url.Action("getRejReason", "Rejection")',
+                data: {
+                offer_code: offer_code
+                },
+                success: function (response) {
+                    if (response && response.success) {
+                      var data = JSON.parse(response.data);
+                      fetchrejgrid(data);
+                      console.log("DATAS:", data);
+                    }
+                    else {
+                        $.alert({
+                            title: 'IPO Allotment',
+                            content: 'Save failed!',
+                            type: 'red',
+                        });
+                    }
+                },
+                error: function (er) {
+                    console.log(er);
                 }
-            },
-            pageSize: 100
-        },
+            });
+        } catch (e) {
+            console.log(e);
+        }
+    }
 
-        pageable: true,
-        sortable: true,
-        filterable: true,
-            scrollable: {
-                virtual: false
-            },
-        height: 450,   
-        resizable: true,           
-        columns: [
+
+     function fetchrejgrid(data){
+         $("#rejectionList").show();
+        var columns =  [
             {
                 title: "Select",
                 width: 45,
@@ -158,10 +177,16 @@
                     "<input type='checkbox' id='selectAll' /> " +
                     "<label for='selectAll' style='cursor:pointer;'>All</label>" +
                     "</div>",
-                template: "<input type='checkbox' class='client-checkbox' value='#= bankName #' />"
+                template: "<input type='checkbox' class='client-checkbox' value='#= rule_name #' />"
             },
+             {
+             field: "rule_code",
+             title: "Rule Code",
+             locked: true,
+             hidden: true,
+         },
             {
-                field: "bankName",
+                field: "rule_name",
                 title: "Reject Reason",
                 width: 260,
                 locked: true
@@ -170,9 +195,9 @@
                 title: "Original Rejections",
                 headerAttributes: { style: "text-align:center;font-weight:bold;" },
                 columns: [
-                    { field: "bidNoOfAppl", title: "No.of Appl", width: 120, attributes:{style:"text-align:right;"} },
-                    { field: "bidNoOfShares", title: "No.of Shares", width: 130, attributes:{style:"text-align:right;"} },
-                    { field: "bidAmount", title: "Amount", width: 120, attributes:{style:"text-align:right;"} }
+                    { field: "original_app", title: "No.of Appl", width: 120, attributes:{style:"text-align:right;"} },
+                    { field: "original_shares", title: "No.of Shares", width: 130, attributes:{style:"text-align:right;"} },
+                    { field: "original_amount", title: "Amount", width: 120, attributes:{style:"text-align:right;"} }
                 ]
             },
 
@@ -180,9 +205,9 @@
                 title: "Additions",
                 headerAttributes: { style: "text-align:center;font-weight:bold;" },
                 columns: [
-                    { field: "bankNoOfAppl", title: "No.of Appl", width: 120, attributes:{style:"text-align:right;"} },
-                    { field: "bankNoOfShares", title: "No.of Shares", width: 130, attributes:{style:"text-align:right;"} },
-                    { field: "bankAmount", title: "Amount", width: 120, attributes:{style:"text-align:right;"} }
+                    { field: "addition_app", title: "No.of Appl", width: 120, attributes:{style:"text-align:right;"} },
+                    { field: "addition_shares", title: "No.of Shares", width: 130, attributes:{style:"text-align:right;"} },
+                    { field: "addition_amount", title: "Amount", width: 120, attributes:{style:"text-align:right;"} }
                 ]
             },
 
@@ -190,9 +215,9 @@
                 title: "Rejections",
                 headerAttributes: { style: "text-align:center;font-weight:bold;" },
                 columns: [
-                    { field: "bankNoOfAppl", title: "No.of Appl", width: 120, attributes:{style:"text-align:right;"} },
-                    { field: "bankNoOfShares", title: "No.of Shares", width: 130, attributes:{style:"text-align:right;"} },
-                    { field: "bankAmount", title: "Amount", width: 120, attributes:{style:"text-align:right;"} }
+                    { field: "rejection_app", title: "No.of Appl", width: 120, attributes:{style:"text-align:right;"} },
+                    { field: "rejection_shares", title: "No.of Shares", width: 130, attributes:{style:"text-align:right;"} },
+                    { field: "rejection_amount", title: "Amount", width: 120, attributes:{style:"text-align:right;"} }
                 ]
             },
 
@@ -200,22 +225,47 @@
                 title: "Final Rejections",
                 headerAttributes: { style: "text-align:center;font-weight:bold;" },
                 columns: [
-                    { field: "diffNoOfAppl", title: "No.of Appl", width: 120, attributes:{style:"text-align:right;color:red;"} },
-                    { field: "diffNoOfShares", title: "No.of Shares", width: 130, attributes:{style:"text-align:right;color:red;"} },
-                    { field: "diffAmount", title: "Amount", width: 120, attributes:{style:"text-align:right;color:red;"} }
+                    { field: "final_app", title: "No.of Appl", width: 120, attributes:{style:"text-align:right;color:red;"} },
+                    { field: "final_shares", title: "No.of Shares", width: 130, attributes:{style:"text-align:right;color:red;"} },
+                    { field: "final_amount", title: "Amount", width: 120, attributes:{style:"text-align:right;color:red;"} }
                 ]
-            }           
-        ]
-    });
-
-    });
-
-       function runrecon() {
-        var grid = $("#rejectionList").data("kendoGrid");
-        $("#btnGen").show();
-        $("#rejectionList").show();
-        grid.dataSource.read();
+            }
+        ];
+                 if ($("#rejectionList").data("kendoGrid")) {
+                    $("#rejectionList").data("kendoGrid").destroy();
+                    $("#rejectionList").empty();                    
+                 }
+                     $("#rejectionList").kendoGrid({
+                     dataSource: {
+                         data: data,
+                         pageSize: 20
+                     },
+                     height: 410,
+                     pageable: {
+                         pageSizes: [10, 20, 30],
+                         refresh: true
+                     },
+                     sortable: true,
+                     filterable: true,
+                     resizable: true,
+                     columns: columns,
+                      excel: {
+                        fileName: "Rejection_Summary_Report.xlsx",
+                        allPages: true,
+                        filterable: true
+                       },
+                     dataBound: function () {
+                        var grid = this;
+                        grid.tbody.find("tr").each(function () {
+                            var dataItem = grid.dataItem(this);
+                            if (selectedCodes.includes(dataItem.rule_code)) {
+                                $(this).find(".client-checkbox").prop("checked", true);
+                            }
+                        });
+                     }
+                 });
     }
+    
      $(document).on("click", "#selectAll", function () {
         var isChecked = this.checked;
 
@@ -223,4 +273,59 @@
             $(this).prop("checked", isChecked);
         });
     });
+
+     $(document).on("change", "#selectAll", function () {
+        var grid = $("#rejectionList").data("kendoGrid");
+
+        if (this.checked) {
+            var allData = grid.dataSource.data();
+            selectedCodes = allData.map(function (item) {
+             return item.rule_code;
+            });
+        } else {
+            selectedCodes = [];
+        }
+        grid.tbody.find(".client-checkbox").prop("checked", this.checked);
+    });
+
+    $(document).on("change", ".client-checkbox", function () {
+        var grid = $("#rejectionList").data("kendoGrid");
+        var row = $(this).closest("tr");
+        var dataItem = grid.dataItem(row);
+        var code = dataItem.rule_code;
+
+        if ($(this).is(":checked")) {
+            if (!selectedCodes.includes(code)) {
+                selectedCodes.push(code);
+            }
+        } else {
+            selectedCodes = selectedCodes.filter(x => x !== code);
+        }
+
+        console.log("Selected:", selectedCodes);
+    });
+
+    function exportSummary() {
+        var grid = $("#rejectionList").data("kendoGrid");
+        grid.saveAsExcel();
+    }
+
+    function exportdetailSummary() {
+
+        // if (selectedCodes.length === 0) {
+        //     $.alert({
+        //         title: 'IPO Web',
+        //         content: "Please select at least one bank",
+        //         type: 'red',
+        //     });
+        //     return;
+        // }
+        // var rule_code = selectedCodes.join(",");
+        // var offer_code = localStorage.getItem("selectedIPO");
+        // var url = '/Rejection/getdetailRejectionSummary'
+        //     + '?offer_code=' + encodeURIComponent(offer_code)
+        //     + '&rule_code=' + encodeURIComponent(rule_code);
+
+        // window.location.href = url;
+    }
 </script>

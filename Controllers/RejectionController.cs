@@ -1,4 +1,12 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using ClosedXML.Excel;
+using DocumentFormat.OpenXml.Bibliography;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Configuration;
+using Newtonsoft.Json;
+using System.Net;
+using System.Net.Http.Headers;
+using System.Security.Claims;
+using System.Data;
 
 namespace IPOWeb.Controllers
 {
@@ -9,46 +17,118 @@ namespace IPOWeb.Controllers
             return View();
         }
 
-        public IActionResult GetRejectionList(int? id)
+        private IConfiguration _configuration;
+        public RejectionController(IConfiguration configuration)
         {
-            var data = new List<DatasetModel>
+            _configuration = configuration;
+        }
+        string urlstring = "";
+        string APIcookieName = "";
+
+        [HttpGet]
+        public JsonResult getRejReason(string offer_code)
+        {
+            urlstring = Convert.ToString(_configuration.GetSection("Appsettings")["apiurl"]) + "getRejReason";
+            try
             {
-                new DatasetModel { Id = 1, bankName = "Pan Mismatch", Status = "Active" },
-                new DatasetModel { Id = 2, bankName = "Inactive Account", Status = "Active" },
-                new DatasetModel { Id = 3, bankName = "Invalid DPID/Client ID",  Status = "Active"},
-                new DatasetModel { Id = 3, bankName = "Multiple Application with Common Pan",  Status = "Active"},
-                new DatasetModel { Id = 4, bankName = "Bid by OCB",  Status = "Active"},
-                new DatasetModel { Id = 4, bankName = "Bid by OCB - Depository Receipt",  Status = "Active"},
-                new DatasetModel { Id = 5, bankName = "Application by Corporate in Retail Category",  Status = "Active"},
-                new DatasetModel { Id = 5, bankName = "Application not in Electronic Book",  Status = "Active"},
-                new DatasetModel { Id = 5, bankName = "Bid Not Banked",  Status = "Active"},
-                new DatasetModel { Id = 5, bankName = "Application with Insufficient Fund",  Status = "Active"},
-                new DatasetModel { Id = 5, bankName = "Withdrawal of Application",  Status = "Active"},
-                new DatasetModel { Id = 5, bankName = "Duplicate Bid",  Status = "Active"},
-                new DatasetModel { Id = 5, bankName = "Multiple Price Bid",  Status = "Active"},
-                new DatasetModel { Id = 5, bankName = "Bid not in Lot Size",  Status = "Active"},
-                new DatasetModel { Id = 5, bankName = "Difference in Quantity",  Status = "Active"},
-                new DatasetModel { Id = 5, bankName = "Ineligible Shareholers for Call Money",  Status = "Active"},
-                new DatasetModel { Id = 5, bankName = "Mismatch of Application Amount with Shares Applied",  Status = "Active"},
-                new DatasetModel { Id = 5, bankName = "Third Party Account",  Status = "Active"},
-                new DatasetModel { Id = 5, bankName = "Mismatch of Bid amount with Amount Blocked",  Status = "Active"},
-                new DatasetModel { Id = 5, bankName = "Application by Retail in QIB category",  Status = "Active"},
-                new DatasetModel { Id = 5, bankName = "Bids below Cut off Price",  Status = "Active"},
-                new DatasetModel { Id = 5, bankName = "Bids by Partnership Firm",  Status = "Active"},
-                new DatasetModel { Id = 5, bankName = "Bid from Banks other than 52 UPI Notified Banks",  Status = "Active"},
-                new DatasetModel { Id = 5, bankName = "Applicants with US Address",  Status = "Active"},
-                new DatasetModel { Id = 5, bankName = "Rejected by Exchange",  Status = "Active"},
-                new DatasetModel { Id = 5, bankName = "Employee bids above 500000",  Status = "Active"},
-                
-            };
+                using (var client = new HttpClient())
+                {
+                    client.Timeout = Timeout.InfiniteTimeSpan;
+                    APIcookieName = "APItoken-" + User.FindFirst(ClaimTypes.Name)?.Value.ToString() + "_" + User.FindFirst(ClaimTypes.Role)?.Value.ToString();
+                    string token = Request.Cookies[APIcookieName];
+                    client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+                    client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+                    string url = urlstring + "?offer_code=" + offer_code;
+                    var response = client.GetAsync(url).Result;
+                    if (response.StatusCode == HttpStatusCode.Unauthorized)
+                    {
+                        Response.Cookies.Delete(APIcookieName);
+                        return Json(new
+                        {
+                            success = false,
+                            authExpired = true
+                        });
+                    }
+                    if (response.IsSuccessStatusCode)
+                    {
+                        string resultMessage = response.Content.ReadAsStringAsync().Result;
+                        var companyData = JsonConvert.DeserializeObject<object>(resultMessage);
+                        return Json(new { success = true, data = companyData });
+                    }
+                    else
+                    {
+                        return Json(new { success = false, message = "API call failed: " + response.StatusCode });
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                return Json(new { success = false, message = ex.Message });
+            }
+        }
+        [HttpGet]
+        public IActionResult getdetailRejectionSummary(string offer_code, string rule_code)
+        {
+            urlstring = Convert.ToString(_configuration.GetSection("Appsettings")["apiurl"]) + "GetRejectiondetail";
+            try
+            {
+                using (var client = new HttpClient())
+                {
+                    client.Timeout = Timeout.InfiniteTimeSpan;
+                    APIcookieName = "APItoken-" + User.FindFirst(ClaimTypes.Name)?.Value.ToString() + "_" + User.FindFirst(ClaimTypes.Role)?.Value.ToString();
+                    string token = Request.Cookies[APIcookieName];
+                    client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+                    client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+                    string url = urlstring + "?offer_code=" + offer_code + "&rule_code=" + rule_code;
+                    var response = client.GetAsync(url).Result;
+                    if (response.StatusCode == HttpStatusCode.Unauthorized)
+                    {
+                        Response.Cookies.Delete(APIcookieName);
+                        return Json(new
+                        {
+                            success = false,
+                            authExpired = true
+                        });
+                    }
+                    if (response.IsSuccessStatusCode)
+                    {
+                        string resultMessage = response.Content.ReadAsStringAsync().Result;
+                        var jsonString = JsonConvert.DeserializeObject<string>(resultMessage);
+                        var dataTable = JsonConvert.DeserializeObject<DataTable>(jsonString);
 
-            if (id.HasValue)
-                data = data.Where(x => x.Id == id.Value).ToList();
+                        using (var workbook = new XLWorkbook())
+                        {
+                            workbook.Worksheets.Add(dataTable, "Rejection Report");
 
-            return Json(data);
+                            using (var stream = new MemoryStream())
+                            {
+                                workbook.SaveAs(stream);
+                                var content = stream.ToArray();
+                                return File(
+                                    content,
+                                    "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+                                    "Rejection_Report.xlsx"
+                                );
+                            }
+                        }
+                        // return Json(new { success = true, data = companyData });
+                    }
+                    else
+                    {
+                        return Json(new { success = false, message = "API call failed: " + response.StatusCode });
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                return Json(new { success = false, message = ex.Message });
+            }
         }
 
-        public class DatasetModel
+
+    }
+
+    public class DatasetModel
         {
             public int Id { get; set; }
             public string bankName { get; set; }
@@ -58,4 +138,4 @@ namespace IPOWeb.Controllers
             public string LastSyncStatus { get; set; }
         }
     }
-}
+
