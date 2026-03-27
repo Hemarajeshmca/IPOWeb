@@ -100,12 +100,16 @@
                         <input type="text" class="form-control" id="iponame" readonly />
                         <input type="text" class="form-control" id="ipocode" hidden />
                     </div>
-                    <div class="col-sm-2">
+                    <div class="col-sm-9">
+                        <span>
                         <button type="button" class="btn btn-primary" id="btnSave" onclick="runrecon()" style="padding: 3px 25px;margin-top:28px;">Run Recon</button>
+                        &nbsp;&nbsp;
+                        <button type="button" onclick="exportSummary()" class="btn btn-primary" id="btnGen" style="padding: 3px 25px;margin-top:28px;">Export Summary </button>
+                        &nbsp;&nbsp;
+                        <button type="button" onclick="exportdetailSummary()" class="btn btn-primary" id="btnGen" style="padding: 3px 25px;margin-top:28px; white-space: nowrap;">Export Detail Summary </button>
+                        </span>
                     </div>
-                    <div class="col-sm-2">
-                        <button type="button" onclick="exportSummary()" class="btn btn-primary" id="btnGen" style="float:right;padding: 3px 25px;margin-top:28px;width:75%">Export</button>
-                    </div>
+                    
                 </div>
                <div class="row" style="margin-top:20px;">
                     <div class="col-sm-12">
@@ -121,6 +125,7 @@
 
 </html>
 <script>
+    var selectedCodes = [];
       $(document).ready(function () {
           getBidBank();
         $('#navhead').text('Bid Vs Bank');
@@ -140,6 +145,37 @@
         $(".client-checkbox").each(function () {
             $(this).prop("checked", isChecked);
         });
+    });
+
+     $(document).on("change", "#selectAll", function () {
+        var grid = $("#banktList").data("kendoGrid");
+
+        if (this.checked) {
+            var allData = grid.dataSource.data();
+            selectedCodes = allData.map(function (item) {
+             return item.bnk_code;
+            });
+        } else {
+            selectedCodes = [];
+        }
+        grid.tbody.find(".client-checkbox").prop("checked", this.checked);
+    });
+
+    $(document).on("change", ".client-checkbox", function () {
+        var grid = $("#banktList").data("kendoGrid");
+        var row = $(this).closest("tr");
+        var dataItem = grid.dataItem(row);
+        var code = dataItem.bnk_code;
+
+        if ($(this).is(":checked")) {
+            if (!selectedCodes.includes(code)) {
+                selectedCodes.push(code);
+            }
+        } else {
+            selectedCodes = selectedCodes.filter(x => x !== code);
+        }
+
+        console.log("Selected:", selectedCodes);
     });
 
     function getBidBank(){
@@ -259,9 +295,13 @@
                         filterable: true
                        },
                      dataBound: function () {
-                         var grid = this;
-                         grid.columns.forEach(function (col, index) {
-                         });
+                        var grid = this;
+                        grid.tbody.find("tr").each(function () {
+                            var dataItem = grid.dataItem(this);
+                            if (selectedCodes.includes(dataItem.bnk_code)) {
+                                $(this).find(".client-checkbox").prop("checked", true);
+                            }
+                        });
                      }
                  });
     }
@@ -269,5 +309,24 @@
     function exportSummary() {
         var grid = $("#banktList").data("kendoGrid");
         grid.saveAsExcel();
+    }
+
+        function exportdetailSummary() {
+
+        if (selectedCodes.length === 0) {
+            $.alert({
+                title: 'IPO Web',
+                content: "Please select at least one bank",
+                type: 'red',
+            });
+            return;
+        }
+        var bank_code = selectedCodes.join(",");
+        var offer_code = localStorage.getItem("selectedIPO");
+        var url = '/BidBank/getdetailBankSummary'
+            + '?offer_code=' + encodeURIComponent(offer_code)
+            + '&bank_code=' + encodeURIComponent(bank_code);
+
+        window.location.href = url;
     }
 </script>
