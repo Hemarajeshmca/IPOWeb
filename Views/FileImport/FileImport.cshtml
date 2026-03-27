@@ -216,14 +216,19 @@
                                             <label class="form-label" for="pipeline" data-field="pipeline">Pipeline</label>&nbsp;<span style="font-size: 12px;color:red;font-weight: bold;">*</span>
                                             <input type="text" id="pipeline" class="form-control" readonly />
                                         </div>
-                                        <div class="col-sm-2">
+                                        <div class="col-sm-1">
                                             <img style="margin-top: 35px; height: 25px; width: 25px; cursor:pointer;" src="~/Assets/images/download.png" />
+                                        </div>
+                                        <div class="col-sm-2" style="margin-left:-50px;">
+                                            <label class="form-label" for="bank" data-field="bank">Select Bank</label>&nbsp;<span style="font-size: 12px;color:red;font-weight: bold;">*</span>
+                                           <select id="bank" class="form-control">                                                
+                                           </select>
                                         </div>
                                         <div class="col-sm-3">
                                             <label class="form-label" for="pipeline" data-field="pipeline">Choose Excel</label>&nbsp;<span style="font-size: 12px;color:red;font-weight: bold;">*</span>
                                             <input class="form-control" type="file" id="MultipleFile" multiple>
                                         </div>
-                                        <div class="col-sm-4">
+                                        <div class="col-sm-3">
                                             <button type="button" class="btn btn-primary" id="btnPre" style="float:right;padding: 3px 25px;margin-top:28px;width:40%">Previous</button>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<button type="button" class="btn btn-primary" id="btnStart" onclick="startprocess()" style="float:right;padding: 3px 25px;margin-top:28px;width:40%;margin-right:10px;">Start</button>
                                         </div>
                                     </div>
@@ -271,7 +276,7 @@
          var selectedPipeline = "";
         var selectedDataset = "";
                  $(document).ready(function () {
-
+                    
             $('#navhead').text('File Import');
 
             var ipoName = localStorage.getItem("selectedIPOText");
@@ -352,6 +357,44 @@
         });
     });
 
+
+    function loadBank(){
+         $.ajax({
+             type: "POST",
+            url: '@Url.Action("BankDetails", "FileImport")',
+            contentType: "application/json",
+            success: function (response) {
+                if (response.authExpired) {
+                    $.alert({
+                        title: 'Unauthorized',
+                        content: response.message || 'Unauthorized User',
+                        type: 'red',
+                        buttons: {
+                            ok: {
+                                text: 'OK',
+                                action: function () {
+                                    window.location.href = '/login/logout';
+                                }
+                            }
+                        }
+                    });
+                    return;
+                }
+                    var result = JSON.parse(response.data);
+                    $("#bank").empty();
+                $("#bank").append('<option value="">--- Select bank ---</option>');
+                $.each(result.Table, function (index, item) {
+                  $("#bank").append(
+                        '<option value="' + item.bank_code + '">' +
+                        item.bank_name +
+                        '</option>'
+                    );
+
+                });
+            }
+        });
+    }
+
       function showgrid() {
             $.ajax({
             type: "GET",
@@ -404,6 +447,7 @@
         }
 
       function nextprocess() {
+          loadBank();
             var selected = $("input[name='clientSelect']:checked");
             if (selected.length === 0) {
                 alert("Please select a dataset");
@@ -441,6 +485,8 @@
         }
 
         function startprocess() {
+            var bankCode = $("#bank").val();
+            console.log("Selected Bank Code:", bankCode);
             var fileInput = document.getElementById("MultipleFile");
             if (fileInput.files.length === 0) {
                 alert("Please choose a file");
