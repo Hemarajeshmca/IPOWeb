@@ -219,7 +219,7 @@
                                         <div class="col-sm-1">
                                             <img style="margin-top: 35px; height: 25px; width: 25px; cursor:pointer;" src="~/Assets/images/download.png" />
                                         </div>
-                                        <div class="col-sm-2" style="margin-left:-50px;">
+                                        <div id="bankrow" class="col-sm-2" style="margin-left:-50px;display:none;">
                                             <label class="form-label" for="bank" data-field="bank">Select Bank</label>&nbsp;<span style="font-size: 12px;color:red;font-weight: bold;">*</span>
                                            <select id="bank" class="form-control">                                                
                                            </select>
@@ -446,8 +446,8 @@
 
         }
 
-      function nextprocess() {
-          loadBank();
+      function nextprocess() {       
+          
             var selected = $("input[name='clientSelect']:checked");
             if (selected.length === 0) {
                 alert("Please select a dataset");
@@ -460,6 +460,12 @@
             console.log("Dataset GID:", dataset_gid);
             console.log("Dataset Code:", dataset_code);
             $("#datasetname").text(dataset_name );
+            if (typeof dataset_name === "string" && dataset_name.toLowerCase().includes("bank")) {
+                    $("#bankrow").show();
+                    loadBank();
+                } else {
+                    $("#bankrow").hide(); // 👈 good practice
+                }
             var tabTrigger = document.querySelector('button[data-bs-target="#navs-top-progress"]');
             var tab = new bootstrap.Tab(tabTrigger);
             tab.show();
