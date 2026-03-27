@@ -13,6 +13,11 @@ namespace IPOWeb.Models
 
     }
 
+    public class RefBankModel
+    {
+        public string reference_no { get; set; }
+        public string bank_code { get; set; }
+    }
     public class PipelineModel
     {
         public int pipeline_gid { get; set; }
