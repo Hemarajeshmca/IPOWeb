@@ -159,5 +159,57 @@ namespace IPOWeb.Controllers
                 });
             }
         }
+
+        [HttpPost]
+        public async Task<JsonResult> BankDetails()
+        {
+            string urlstring = Convert.ToString(_configuration.GetSection("Appsettings")["apiurl"]) + "BankDetails";
+
+            try
+            {
+                using (var client = new HttpClient())
+                {
+                    client.DefaultRequestHeaders.Accept.Clear();
+                    client.Timeout = Timeout.InfiniteTimeSpan;
+                    string APIcookieName = "APItoken-" + User.FindFirst(ClaimTypes.Name)?.Value + "_" + User.FindFirst(ClaimTypes.Role)?.Value;
+                    string token = Request.Cookies[APIcookieName];
+                    if (string.IsNullOrEmpty(token))
+                    {
+                        return Json(new { success = false, authExpired = true });
+                    }
+
+                    client.DefaultRequestHeaders.Authorization =  new AuthenticationHeaderValue("Bearer", token);
+                    client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+                    var content = new StringContent("", Encoding.UTF8, "application/json");
+                    var response = await client.PostAsync(urlstring, content);
+                    // 🔐 Unauthorized
+                    if (response.StatusCode == HttpStatusCode.Unauthorized)
+                    {
+                        Response.Cookies.Delete(APIcookieName);
+                        return Json(new { success = false, authExpired = true });
+                    }
+
+                    // ✅ Success
+                    if (response.IsSuccessStatusCode)
+                    {
+                        var resultMessage = await response.Content.ReadAsStringAsync();
+                        var companyData = JsonConvert.DeserializeObject<object>(resultMessage);
+                        return Json(new { success = true, data = companyData });
+                    }
+
+                    // ❌ Failure
+                    return Json(new
+                    {
+                        success = false,
+                        message = "API call failed: " + response.StatusCode
+                    });
+                }
+            }
+            catch (Exception ex)
+            {
+                return Json(new { success = false, message = ex.Message });
+            }
+        }
+
     }
 }

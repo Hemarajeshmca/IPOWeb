@@ -771,7 +771,7 @@
             }
             var isValid = true;
                  if(clientname) {
-          if(status === "Y" || status === "") {
+          if((status === "Y" && activeOfferStatus ==="false") || (status === "" && activeOfferStatus === "false")) {
                                    $.alert({
                                 title: 'Validation',
                                 content: 'Change the status to Draft and proceed...',
@@ -982,7 +982,7 @@
             if (!isValid) return;
 
                  if(clientname) {
-                      if(status === "Y") {
+                       if((status === "Y" && activeOfferStatus ==="false") || (status === "" && activeOfferStatus === "false")) {
                         $.alert({
                      title: 'Validation',
                      content: 'Change the status to Draft and proceed...',
@@ -1253,7 +1253,7 @@
                 var isValid = true;
                 if (!isValid) return;
                      if(clientname) {
-                                 if(status === "Y") {
+                                  if((status === "Y" && activeOfferStatus ==="false") || (status === "" && activeOfferStatus === "false")) {
                             $.alert({
                                  title: 'Validation',
                                  content: 'Change the status to Draft and proceed...',
@@ -1639,7 +1639,7 @@
                 var isValid = true;
                 if (!isValid) return;
                      if(clientname) {
-                             if(status === "Y") {
+                              if((status === "Y" && activeOfferStatus ==="false") || (status === "" && activeOfferStatus === "false")) {
                             $.alert({
                                      title: 'Validation',
                                      content: 'Change the status to Draft and proceed...',
@@ -1716,7 +1716,7 @@
             var isValid = true;
             if (!isValid) return;
                  if(clientname) {
-                         if(status === "Y") {
+                          if((status === "Y" && activeOfferStatus ==="false") || (status === "" && activeOfferStatus === "false")) {
                         $.alert({
                              title: 'Validation',
                              content: 'Change the status to Draft and proceed...',
