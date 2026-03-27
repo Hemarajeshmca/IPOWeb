@@ -3,6 +3,8 @@ using Newtonsoft.Json;
 using System.Net.Http.Headers;
 using System.Net;
 using System.Security.Claims;
+using ClosedXML.Excel;
+using System.Data;
 
 namespace IPOWeb.Controllers
 {
@@ -63,40 +65,66 @@ namespace IPOWeb.Controllers
             }
         }
 
-
-        public IActionResult GetBankList(int? id)
+        [HttpGet]
+        public IActionResult getdetailBankSummary(string offer_code, string bank_code)
         {
-            var data = new List<DatasetModel>
+            urlstring = Convert.ToString(_configuration.GetSection("Appsettings")["apiurl"]) + "GetbidBankdetail";
+            try
             {
-                new DatasetModel { Id = 1, bankName = "ICICI Bank", Status = "Tallied" },
-                new DatasetModel { Id = 2, bankName = "HDFC Bank", Status = "Tallied" },
-                new DatasetModel { Id = 3, bankName = "Axis Bank",  Status = "Not Tallied"},
-                new DatasetModel { Id = 4, bankName = "HBD Finance Groups",  Status = "Tallied"},
-                new DatasetModel { Id = 5, bankName = "Canara Bank",  Status = "Not Tallied"},
-                new DatasetModel { Id = 6, bankName = "SBI Bank",  Status = "Tallied"},
-                new DatasetModel { Id = 7, bankName = "IOB Bank",  Status = "Not Tallied"} ,               
-                new DatasetModel { Id = 8, bankName = "TMB Bank",  Status = "Not Tallied"},  
-                new DatasetModel { Id = 9, bankName = "KVB Bank",  Status = "Not Tallied"} ,               
-                new DatasetModel { Id = 10, bankName = "SC Bank",  Status = "Not Tallied"},                
-                new DatasetModel { Id = 11, bankName = "HSBC Bank",  Status = "Not Tallied"}           
-                          
-            };
+                using (var client = new HttpClient())
+                {
+                    client.Timeout = Timeout.InfiniteTimeSpan;
+                    APIcookieName = "APItoken-" + User.FindFirst(ClaimTypes.Name)?.Value.ToString() + "_" + User.FindFirst(ClaimTypes.Role)?.Value.ToString();
+                    string token = Request.Cookies[APIcookieName];
+                    client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+                    client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+                    string url = urlstring + "?offer_code=" + offer_code + "&bank_code=" + bank_code;
+                    var response = client.GetAsync(url).Result;
+                    if (response.StatusCode == HttpStatusCode.Unauthorized)
+                    {
+                        Response.Cookies.Delete(APIcookieName);
+                        return Json(new
+                        {
+                            success = false,
+                            authExpired = true
+                        });
+                    }
+                    if (response.IsSuccessStatusCode)
+                    {
+                        string resultMessage = response.Content.ReadAsStringAsync().Result;
+                        var jsonString = JsonConvert.DeserializeObject<string>(resultMessage);
+                        var dataTable = JsonConvert.DeserializeObject<DataTable>(jsonString);
 
-            if (id.HasValue)
-                data = data.Where(x => x.Id == id.Value).ToList();
+                        using (var workbook = new XLWorkbook())
+                        {
+                            workbook.Worksheets.Add(dataTable, "Bank Report");
 
-            return Json(data);
+                            using (var stream = new MemoryStream())
+                            {
+                                workbook.SaveAs(stream);
+                                var content = stream.ToArray();
+                                return File(
+                                    content,
+                                    "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+                                    "Bank_Report.xlsx"
+                                );
+                            }
+                        }
+                        // return Json(new { success = true, data = companyData });
+                    }
+                    else
+                    {
+                        return Json(new { success = false, message = "API call failed: " + response.StatusCode });
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                return Json(new { success = false, message = ex.Message });
+            }
         }
 
-        public class DatasetModel
-        {
-            public int Id { get; set; }
-            public string bankName { get; set; }
-            public string Category { get; set; }
-            public string Status { get; set; }
-            public string LastSyncDate { get; set; }
-            public string LastSyncStatus { get; set; }
-        }
+
     }
 
     public class BankReconModel
