@@ -66,6 +66,7 @@ namespace IPOWeb.Controllers
                 return Json(new { success = false, message = ex.Message });
             }
         }
+
         [HttpGet]
         public IActionResult getdetailRejectionSummary(string offer_code, string rule_code)
         {
