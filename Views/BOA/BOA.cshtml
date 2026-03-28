@@ -1,0 +1,210 @@
+﻿@{
+    Layout = "~/Views/Shared/_LayoutNew.cshtml";
+}
+<!DOCTYPE html>
+<html>  
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>Run Rejection</title>
+    <style>
+        .content-wrapper {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .nav-tabs .nav-link.active, .nav-tabs .nav-item.show .nav-link {
+            background-color: #027ed1 !important;
+            color: #fff !important;
+        }
+
+        .nav-tabs .nav-item .nav-link:not(.active) {
+            background-color: #716969;
+            color: #fff;
+        }
+
+        /* Alternate row color */
+        #rejectionList .k-grid-content tr.k-alt td {
+            background-color: #fff;
+            color: #000;
+        }
+
+        /* Consistent borders */
+        #rejectionList .k-grid-header th,
+        #rejectionList .k-grid-content td {
+            border-right: 1px solid #ddd;
+        }
+
+        /* Remove last border */
+        #rejectionList .k-grid-header th:last-child,
+        #rejectionList .k-grid-content td:last-child {
+            border-right: none;
+        }
+
+        /* Fixed layout for alignment */
+        #rejectionList .k-grid-header table,
+        #rejectionList .k-grid-content table {
+            table-layout: fixed;
+            width: 100%;
+        }
+
+        /* Prevent wrapping */
+        #rejectionList .k-grid-header th,
+        #rejectionList .k-grid-content td {
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        /* Compact size */
+        #rejectionList .k-grid-content td {
+            padding: 3px 6px;
+            font-size: 12px;
+            line-height: 18px;
+            background:#fff;
+        }
+
+        #rejectionList .k-grid-header th {
+            padding: 4px 6px;
+            font-size: 12px;
+            line-height: 18px;
+        }
+
+        /* Compact row height */
+        #rejectionList .k-grid-content tr {
+            height: 26px;
+        }
+
+        #rejectionList .k-grid-header tr {
+            height: 28px;
+        }
+
+        .k-grid td { 
+            padding: 2px 2px;
+            font-size:13px;
+        }
+    </style>
+</head>
+
+<body class="hold-transition skin-blue sidebar-mini fixed">
+    <div class="content-wrapper">
+        <div class="container-xxl flex-grow-1 container-p-y">
+            <div class="card-body" style="margin-top:5px;height: 556px;width: 103%;margin-left: -18px;">
+                <div class="row" style="margin-top:-17px;">
+                    <div class="col-sm-3">
+                        <label class="form-label" for="ctype" data-field="ctype">IPO Name</label>&nbsp;<span style="font-size: 12px;color:red;font-weight: bold;">*</span>
+                        <input type="text" class="form-control" id="iponame" readonly />
+                    </div>
+                    <div class="col-sm-2">
+                        <button type="button" class="btn btn-primary" id="btnSave" onclick="runboa()" style="padding: 3px 25px;margin-top:28px;">Run BOA</button>
+                    </div>
+                    <div class="col-sm-2">
+                        @* <button type="button" onclick="exportSummary()" class="btn btn-primary" id="btnGen" style="padding: 3px 25px;margin-top:28px;">Export Summary </button> *@
+                    </div>                    
+                </div>
+               <div class="row" style="margin-top:20px;">
+                    <div class="col-sm-12">
+                        <div id="BoaList"></div>
+                    </div>
+                   </div>
+               </div>
+            </div>
+        </div>  
+   
+</body>
+
+</html>
+<script>
+    var selectedCodes = [];
+         $(document).ready(function () {
+
+        $('#navhead').text('Run BOA');
+         var ipoName = localStorage.getItem("selectedIPOText");
+
+    $("#iponame").val(ipoName);
+
+        $("#BoaList").hide();   // Hide grid container
+
+    });
+
+     function runboa() {
+         var offer_code =  localStorage.getItem("selectedIPO");
+          try {
+            customAjax({
+                type: "GET",
+                url: '@Url.Action("getboalist", "BOA")',
+                data: {
+                offer_code: offer_code
+                },
+                success: function (response) {
+                    if (response && response.success) {
+                      var data = JSON.parse(response.data);
+                      fetchboagrid(data);
+                      console.log("DATAS:", data);
+                    }
+                    else {
+                        $.alert({
+                            title: 'IPO Allotment',
+                            content: 'Save failed!',
+                            type: 'red',
+                        });
+                    }
+                },
+                error: function (er) {
+                    console.log(er);
+                }
+            });
+        } catch (e) {
+            console.log(e);
+        }
+    }
+
+    function fetchboagrid(data){
+         $("#BoaList").show();
+        var columns =  [           
+             {
+             field: "application_no",
+             title: "Application No."    
+         },
+            {
+                field: "pan",
+                title: "PAN"              
+            }
+                    
+        ];
+                 if ($("#BoaList").data("kendoGrid")) {
+                    $("#BoaList").data("kendoGrid").destroy();
+                    $("#BoaList").empty();
+                 }
+                     $("#BoaList").kendoGrid({
+                     dataSource: {
+                         data: data,
+                         pageSize: 20
+                     },
+                     height: 410,
+                     pageable: {
+                         pageSizes: [10, 20, 30],
+                         refresh: true
+                     },
+                     sortable: true,
+                     filterable: true,
+                     resizable: true,
+                     columns: columns,
+                      excel: {
+                        fileName: "Rejection_Summary_Report.xlsx",
+                        allPages: true,
+                        filterable: true
+                       },
+                     dataBound: function () {
+                        var grid = this;
+                        grid.tbody.find("tr").each(function () {
+                            var dataItem = grid.dataItem(this);
+                            if (selectedCodes.includes(dataItem.rule_code)) {
+                                $(this).find(".client-checkbox").prop("checked", true);
+                            }
+                        });
+                     }
+                 });
+    }
+
+</script>
