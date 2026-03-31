@@ -385,7 +385,7 @@
                 }
                     var result = JSON.parse(response.data);
                     $("#bank").empty();
-                $("#bank").append('<option value="">--- Select bank ---</option>');
+                $("#bank").append('<option value="">--- Select Bank ---</option>');
                 $.each(result.Table, function (index, item) {
                   $("#bank").append(
                         '<option value="' + item.bank_code + '">' +

@@ -291,7 +291,7 @@
                                         </div>
                                         <div class="col-sm-3">
                                             <label class="form-label">Bank Name</label>
-                                            <input type="text" id="bankname" class="form-control" />
+                                            <select id="bank" class="form-control"></select>
                                         </div>
                                         <div class="col-sm-3">
                                             <label class="form-label">Address</label>
@@ -466,6 +466,17 @@
 <script>
       $( document ).ready(function() {
               $('#navhead').text('Issue Setup');
+              var mode = new URLSearchParams(window.location.search).get('mode');
+                var defaultStatus = sessionStorage.getItem("default_status");
+
+                loadMasterDropdown("QCD_STATUS", "status");
+
+                setTimeout(function () {
+                    if (mode === "Create" && defaultStatus) {
+                        $("#status").val(defaultStatus).trigger("change");
+                        sessionStorage.removeItem("default_status");
+                    }
+                }, 500); // increase if still not working
                   var activeTab = localStorage.getItem("activeTab");
                     if (activeTab) {
                         var triggerEl = document.querySelector('[data-bs-target="' + activeTab + '"]');
@@ -489,9 +500,10 @@
               loadMasterDropdown("QCD_MAST_OFFER_TYPE", "offer_type");
               loadMasterDropdown("QCD_MAST_LISTING", "listing");
               loadMasterDropdown("QCD_STATUS", "status");
-                  setTimeout(function () {
-                        $("#status").val("D");
-                    }, 300);
+               loadBank();
+                  // setTimeout(function () {
+                  //       $("#status").val("D");
+                  //   }, 300);
                       
                   loadMasterDropdown("QCD_PRICE_TYPE", "pricetype");
               loadMasterDropdown("QCD_BANK_TYPE", "banktype");
@@ -563,12 +575,49 @@
             }
         });
 
-    //  $('button[data-bs-target="#navs-top-bank"]').on('shown.bs.tab', function () {
-    //              loadMasterDropdown("QCD_MAST_BANK_TYPE", "banktype");   // QCD_BANK_TYPE
-    //      });
+     // $('button[data-bs-target="#navs-top-bank"]').on('shown.bs.tab', function () {
+     //           loadBank();
+     //     });
     // $('button[data-bs-target="#navs-top-sh"]').on('shown.bs.tab', function () {
     //             loadMasterDropdown("QCD_MAST_STAKEHOLDER_TYPE", "sh_type"); // QCD_STACK_HOLDER_TYPE
     // });
+
+    function loadBank(){
+         $.ajax({
+             type: "POST",
+            url: '@Url.Action("BankDetails", "FileImport")',
+            contentType: "application/json",
+            success: function (response) {
+                if (response.authExpired) {
+                    $.alert({
+                        title: 'Unauthorized',
+                        content: response.message || 'Unauthorized User',
+                        type: 'red',
+                        buttons: {
+                            ok: {
+                                text: 'OK',
+                                action: function () {
+                                    window.location.href = '/login/logout';
+                                }
+                            }
+                        }
+                    });
+                    return;
+                }
+                    var result = JSON.parse(response.data);
+                    $("#bank").empty();
+                $("#bank").append('<option value="">--- Select Bank ---</option>');
+                $.each(result.Table, function (index, item) {
+                  $("#bank").append(
+                        '<option value="' + item.bank_code + '">' +
+                        item.bank_name +
+                        '</option>'
+                    );
+
+                });
+            }
+        });
+    }
 
     function getclientlist(){
             var mymodel = {
@@ -637,6 +686,7 @@
                 payload.offer_listing_no = $("#listing").val();
                 payload.offer_isin = $("#isin").val();
                 payload.offer_status = $("#status").val();
+                payload.offer_empdiscount = $("#empdiscount").val();
                 payload.offer_remarks = $("#remarks").val();
                 payload.client_code = $("#clientcode").val();
                 payload.user_code = '@userName';
@@ -746,6 +796,7 @@
         }
 
         function fetchofferHeader(data){
+            debugger;
                 $("#offer_header_gid").val(data.offer_header_gid);
                 $("#createedit").val(data.offer_header_gid == 0 ? "CREATE": "EDIT");
                 $("#offer_code").val(data.offer_code);
@@ -753,6 +804,7 @@
                 $("#listing").val(data.offer_listing_no);
                 $("#isin").val(data.offer_isin);
                 $("#status").val(data.offer_status);
+                $("#empdiscount").val(data.offer_empdiscount);
                 $("#remarks").val(data.offer_remarks);
                 $("#clientcode").val(data.client_code);
                 $("#clientname").val(data.client_name);
@@ -761,14 +813,14 @@
                 } else {
                     $("#remarks").prop("readonly", true);
                 }
-                $("#status").change(function () {
-                  var selectedValue = $(this).val();     
-                  if((selectedValue === "D") || (selectedValue === "Y")) {
-                     $("#remarks").val("");
-                  } else {
-                      $("#remarks").val(data.offer_remarks);
-                  }
-    });
+    //             $("#status").change(function () {
+    //               var selectedValue = $(this).val();     
+    //               if((selectedValue === "D") || (selectedValue === "Y")) {
+    //                  $("#remarks").val("");
+    //               } else {
+    //                   $("#remarks").val(data.offer_remarks);
+    //               }                  
+    // });
             }
 
 
@@ -932,6 +984,11 @@
                             {
                                 field: "banker_type",
                                 title: "Bank Type",
+                                hidden:true
+                            },
+                              {
+                                field: "banker_type_name",
+                                title: "Bank Type",
                             },
                             {
                                 field: "banker_name",
@@ -1022,7 +1079,7 @@
                    var payload = {
                     banker_gid: $("#banker_gid").val() ? parseInt($("#banker_gid").val()) : 0,
                     banker_type: $("#banktype").val(),
-                    banker_name: $("#bankname").val(),
+                    banker_name: $("#bank").val(),
                     banker_address: $("#address").val(),
                     banker_city: $("#city").val(),
                     banker_state: $("#state").val(),
@@ -1083,7 +1140,7 @@
          function clearbankerform(){
             $("#banker_gid").val(0);
             $("#banktype").val("");
-            $("#bankname").val("");
+            $("#bank").val("");
             $("#acname").val("");
             $("#address").val("");
             $("#city").val("");
@@ -1110,7 +1167,7 @@
 
             $("#banker_gid").val(dataItem.banker_gid);
             $("#banktype").val(dataItem.banker_type);
-            $("#bankname").val(dataItem.banker_name);
+            $("#bank").val(dataItem.banker_name);
             $("#address").val(dataItem.banker_address);
             $("#pin").val(dataItem.banker_pincode);
             $("#acno").val(dataItem.banker_accountno);
@@ -1124,6 +1181,8 @@
         }
 
          function deleteBankGrid(e) {
+             var status = $("#status").val();
+             console.log("delstatus:", status);
             var grid = $("#offerBankGrid").data("kendoGrid");
             var row = $(e).closest("tr");
             var dataItem = grid.dataItem(row);
@@ -1159,9 +1218,15 @@
                             success: function (response) {
                             var result = JSON.parse(response.data);
                             if (result.length > 0) {
+                                    var message = "";
+                                if (status === "Y") {
+                                    message = result[0].out_msg + " and Offer Status updated to Draft";
+                                } else {
+                                    message = result[0].out_msg;
+                                }
                                 $.alert({
                                     title: 'IPO Web',
-                                    content: result[0].out_msg + " and Offer Status updated to Draft",
+                                    content: message,
                                     type: 'green',
                                     onClose: function () {
                                         fetchIssuesetup();
@@ -1216,6 +1281,11 @@
                                 },
                                 {
                                     field: "stack_type",
+                                    title: "Stack Type",
+                                    hidden:true
+                                },
+                                {
+                                    field: "stack_type_name",
                                     title: "Stack Type",
                                 },
                                 {
@@ -1443,9 +1513,15 @@
                               success: function (response) {
                             var result = JSON.parse(response.data);
                             if (result.length > 0) {
+                                var message = "";
+                                if (status === "Y") {
+                                    message = result[0].out_msg + " and Offer Status updated to Draft";
+                                } else {
+                                    message = result[0].out_msg;
+                                }
                                 $.alert({
                                     title: 'IPO Web',
-                                    content: result[0].out_msg + " and Offer Status updated to Draft",
+                                    content: message,
                                     type: 'green',
                                     onClose: function () {
                                         fetchIssuesetup();
@@ -1490,6 +1566,7 @@
                 data: JSON.stringify(mymodel),
                 success: function (response) {
                     var result = JSON.parse(response.data);
+                    console.log("resultcategory :", result);
                     var formattedData = result.map(function (item) {
                     return {
                         category_gid: item.master_gid,
@@ -1561,7 +1638,7 @@
             $("#offerCategoryGrid").kendoGrid({
                 dataSource: {
                     data: data,
-                    pageSize: 10,
+                    pageSize: 40,
                     aggregate: [
                         { field: "offer_cat_shares", aggregate: "sum" }
                     ],

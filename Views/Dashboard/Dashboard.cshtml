@@ -136,7 +136,7 @@
                                     <img id="plusIcon" onclick="navOfferPage()" style="width:11px; height:11px;margin-bottom:12px;cursor:pointer" src="~/Assets/images/plus.png" />
                                 </div>
                                 <div class="col-sm-6">
-                                    <i class='fas fa-file-excel' style='font-size:20px;color:green;float:right'></i>
+                                    <i class='fas fa-file-excel' onclick="exportOfferList()"  style='font-size:20px;cursor:pointer;color:green;float:right'></i>
                                 </div>
                             </div>
                             <div class="row">
@@ -151,7 +151,7 @@
                                     <img id="plusIcon" onclick="location.href='@Url.Action("ClientSetup", "ClientSetup", new { mode = "Create" })'" style="width:11px; height:11px;margin-bottom:12px;cursor:pointer" src="~/Assets/images/plus.png" />
                                 </div>
                                 <div class="col-sm-6">
-                                    <i class='fas fa-file-excel' style='font-size:20px;color:green;float:right'></i>
+                                    <i class='fas fa-file-excel' onclick="exportClientList()" style='font-size:20px;cursor:pointer;color:green;float:right'></i>
                                 </div>
                             </div>
                             <div class="row">
@@ -554,8 +554,13 @@
                         title: "Listing No"
                     },
                     {
-                        field: "offer_status",
+                        field: "master_name",
                         title: "Offer Status"
+                    },
+                     {
+                        field: "offer_status",
+                        title: "Offer Status",
+                        hidden:true
                     }
                 ];
                 if ($("#offerListGrid").data("kendoGrid")) {
@@ -594,6 +599,7 @@
     function navOfferPage(){
         sessionStorage.removeItem("edit_offer_code");
         sessionStorage.removeItem("edit_client_code");
+        sessionStorage.setItem("default_status", "D");
         window.location.href = "../IssueSetup/IssueSetup?mode=Create";     
     }
      
@@ -686,5 +692,14 @@
         }
         });
     }
-   
+    function exportOfferList() {
+        var grid = $("#offerListGrid").data("kendoGrid");
+        grid.saveAsExcel();
+    }
+
+    function exportClientList() {       
+        var grid = $("#clientListGrid").data("kendoGrid");
+        console.log("Grid:", grid);
+        grid.saveAsExcel();
+    }
 </script>
