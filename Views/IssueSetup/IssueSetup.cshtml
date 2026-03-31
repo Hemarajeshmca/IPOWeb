@@ -136,7 +136,7 @@
                         <span id="v_listing" class="validation"></span>
                     </div>
                 </div>
-                <div class="row" style="margin-top:5px;">
+                <div class="row" style="margin-top:15px;">
                     <div class="col-sm-3">
                         <label class="form-label">ISIN No.</label>&nbsp;<span style="font-size: 12px;color:red;font-weight: bold;">*</span>
                         <input type="text" id="isin" name="isin" class="form-control" />
@@ -147,13 +147,18 @@
                         <select name="status" id="status" class="form-control"></select>
                         <span id="v_status" class="validation"></span>
                     </div>
-                    <div class="col-sm-4">
+                    <div class="col-sm-2">
+                        <label class="form-label">Emp. Discount</label>
+                        <input type="text" id="empdiscount" name="empdiscount" class="form-control" />
+                        <span id="v_dis" class="validation"></span>
+                    </div>
+                    <div class="col-sm-3">
                         <label class="form-label">Remarks</label>
                         <input type="text" id="remarks" name="remarks" class="form-control" />
                         <span id="v_remarks" class="validation"></span>
                     </div>
-                    <div class="col-sm-2">
-                        <center><button type="button" onclick="offerHeaderSave()" class="btn btn-primary" id="btnSave" style="padding: 3px 25px;margin-top:30px;width:58%">Save</button></center>
+                    <div class="col-sm-1">
+                        <center><button type="button" onclick="offerHeaderSave()" class="btn btn-primary" id="btnSave" style="padding: 3px 25px;margin-top:30px;">Save</button></center>
                     </div>
                 </div>
                 <div class="row" style="margin-top:20px;">
@@ -226,7 +231,7 @@
                                             <input type="text" id="status" class="form-control" hidden />
                                         </div>
                                         <div class="col-sm-2">
-                                            <label class="form-label">Issue Size</label>
+                                            <label class="form-label">Offer Size</label>
                                             <input type="number" id="issuesize" onkeydown="setPostPrice()" class="form-control" />
                                         </div>
                                         <div class="col-sm-2">
@@ -537,6 +542,11 @@
             var value = $(this).val();
             if (value == "F") {
                 $("#fprice").prop("disabled", false);
+                 var facevalue = parseFloat($("#facevalue").val().replace(/,/g, '')) || 0;
+                 var premium = parseFloat($("#premium").val().replace(/,/g, '')) || 0;
+                var fprice = facevalue + premium;
+                 $("#fprice").val(fprice);
+
                 $("#minprice").prop("disabled", true).val("");
                 $("#maxprice").prop("disabled", true).val("");
                 $("#cutoffprice").prop("disabled", true).val("");
@@ -1598,7 +1608,7 @@
         }
 
        function validateCategoryTotal() {
-            var postIssue = parseFloat($("#postissue").val().replace(/,/g, '')) || 0;
+            var issuesize = parseFloat($("#issuesize").val().replace(/,/g, '')) || 0;
             var grid = $("#offerCategoryGrid").data("kendoGrid");
             if (!grid) return false;
             var data = grid.dataSource.view();
@@ -1606,17 +1616,16 @@
             data.forEach(function (item) {
                 total += parseFloat(item.offer_cat_shares) || 0;
             });
-            console.log("Post Issue:", postIssue);
+            console.log("Issue Size:", issuesize);
             console.log("Category Total:", total);
-            if (postIssue !== total) {
+            if (issuesize !== total) {
                 $.alert({
                     title: 'IPO Web',
-                    content: "Category Total (" + total + ") must match with Post Issue Total (" + postIssue + ")",
+                    content: "Category Total (" + total + ") must match with Issue Size (" + issuesize + ")",
                     type: 'red',
                 });
                 return false;
             }
-
             return true;
         }
 
