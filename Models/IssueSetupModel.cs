@@ -27,6 +27,7 @@ namespace IPOWeb.Models
         public string? offer_listing_no { get; set; }
         public string? offer_isin { get; set; }
         public string? offer_status { get; set; }
+        public string? offer_empdiscount { get; set; }
         public string? offer_remarks { get; set; }
         public string? client_code { get; set; }
         public string? user_code { get; set; }
