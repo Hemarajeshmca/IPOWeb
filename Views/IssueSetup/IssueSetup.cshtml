@@ -411,40 +411,48 @@
                                 <div class="tab-pane fade" id="navs-top-mile" role="tabpanel">
                                     <div class="row">
                                         <div class="col-md-2-4">
-                                            <label class="form-label">Offer Opening Date	</label>
+                                            <label class="form-label">Offer Opening Date	</label>&nbsp;<span style="font-size: 12px;color:red;font-weight: bold;">*</span>
                                             <input type="date" id="iod" class="form-control" />
                                             <input id="milestone_gid" class="form-control" hidden />
+                                            <span id="queryiod" style="color: red; font-size: 12px;position:relative;"></span>
                                         </div>
                                         <div class="col-md-2-4">
-                                            <label class="form-label">Offer closing Date	</label>
+                                            <label class="form-label">Offer closing Date	</label>&nbsp;<span style="font-size: 12px;color:red;font-weight: bold;">*</span>
                                             <input type="date" id="icd" class="form-control" />
+                                            <span id="queryicd" style="color: red; font-size: 12px;position:relative;"></span>
                                         </div>
                                         <div class="col-md-2-4">
-                                            <label class="form-label">Allotment Date	</label>
+                                            <label class="form-label">Allotment Date	</label>&nbsp;<span style="font-size: 12px;color:red;font-weight: bold;">*</span>
                                             <input type="date" id="alotdate" class="form-control" />
+                                            <span id="queryalotdate" style="color: red; font-size: 12px;position:relative;"></span>
                                         </div>
                                         <div class="col-md-2-4">
-                                            <label class="form-label">Approval Date	</label>
+                                            <label class="form-label">Approval Date	</label>&nbsp;<span style="font-size: 12px;color:red;font-weight: bold;">*</span>
                                             <input type="date" id="apdate" class="form-control" />
+                                            <span id="queryapdate" style="color: red; font-size: 12px;position:relative;"></span>
                                         </div>
                                         <div class="col-md-2-4">
-                                            <label class="form-label">Listing Date	</label>
+                                            <label class="form-label">Listing Date	</label>&nbsp;<span style="font-size: 12px;color:red;font-weight: bold;">*</span>
                                             <input type="date" id="ldate" class="form-control" />
+                                            <span id="queryldate" style="color: red; font-size: 12px;position:relative;"></span>
                                         </div>
                                     </div>
                                     <div class="row" style="margin-top:15px;">
 
                                         <div class="col-md-2-4">
-                                            <label class="form-label">NSDL CA Date	</label>
+                                            <label class="form-label">NSDL CA Date	</label>&nbsp;<span style="font-size: 12px;color:red;font-weight: bold;">*</span>
                                             <input type="date" id="nsdldate" class="form-control" />
+                                            <span id="querynsdldate" style="color: red; font-size: 12px;position:relative;"></span>
                                         </div>
                                         <div class="col-md-2-4">
-                                            <label class="form-label">CDSL CA Date	</label>
+                                            <label class="form-label">CDSL CA Date	</label>&nbsp;<span style="font-size: 12px;color:red;font-weight: bold;">*</span>
                                             <input type="date" id="cdsldate" class="form-control" />
+                                            <span id="querycdsldate" style="color: red; font-size: 12px;position:relative;"></span>
                                         </div>
                                         <div class="col-md-2-4">
-                                            <label class="form-label">Refund Date	</label>
+                                            <label class="form-label">Refund Date	</label>&nbsp;<span style="font-size: 12px;color:red;font-weight: bold;">*</span>
                                             <input type="date" id="refunddate" class="form-control" />
+                                            <span id="queryrefunddate" style="color: red; font-size: 12px;position:relative;"></span>
                                         </div>
                                         <div class="col-md-2-4">
                                             <center><button type="button" onclick="saveOfferMilstone()" class="btn btn-primary" id="btnSave" style="padding: 3px 25px;margin-top:30px;width:50%">Save</button></center>
@@ -465,7 +473,7 @@
 </html>
 <script>
       $( document ).ready(function() {
-              $('#navhead').text('Issue Setup');
+              $('#navhead').text('Issue Setup');              
               var mode = new URLSearchParams(window.location.search).get('mode');
                 var defaultStatus = sessionStorage.getItem("default_status");
 
@@ -1647,8 +1655,8 @@
                             id: "category_gid",
                             fields: {
                                 category_gid: { editable: false },
-                                offer_cat_code: { editable: false },
-                                offer_cat_name: { editable: false },
+                                category_code: { editable: false },
+                                category_name: { editable: false },
                                 offer_cat_shares: { type: "number", editable: true }
                             }
                         }
@@ -1668,6 +1676,14 @@
                 filterable: true,
                 resizable: true,
                 editable: "incell",
+                beforeEdit: function (e) {
+                var fieldName = e.container.find("input").attr("name");
+
+                // If no input OR not the correct field → block
+                if (!fieldName || fieldName !== "offer_cat_shares") {
+                    e.preventDefault();
+                }
+            },
                 columns: columns,
                 dataBound: function () {
                     $("#selectAll").off("click").on("click", function () {
@@ -1834,6 +1850,83 @@
         function saveOfferMilstone() {
                  var status = $("#status").val();
                   var clientname = $("#clientname").val();
+                  var iod = $("#iod").val();
+                  var icd = $("#icd").val();
+                  var alotdate = $("#alotdate").val();
+                  var apdate = $("#apdate").val();
+                  var ldate = $("#ldate").val();
+                  var nsdldate = $("#nsdldate").val();
+                  var cdsldate = $("#cdsldate").val();
+                  var refunddate = $("#refunddate").val();
+                      if(iod === "") {
+                        $("#queryiod").text("Please Select Offer Opening Date");
+                    isValid = false;
+                    } else {
+                        $("#queryiod").text("");
+                    }
+                     if(icd === "") {
+                        $("#queryicd").text("Please Select Offer Closing Date");
+                    isValid = false;
+                    }  else if(icd < iod) {
+                        $("#queryicd").text("Offer Closing Date must be greater than Offer Opening Date");
+                         isValid = false;
+                    } else {
+                        $("#queryicd").text("");
+                    }
+                     if(alotdate === "") {
+                        $("#queryalotdate").text("Please Select Allotment Date");
+                    isValid = false;
+                    }  else if(alotdate < icd) {
+                        $("#queryalotdate").text("Allotment Date must be greater than Offer Closing Date");
+                         isValid = false;
+                    } else {
+                        $("#queryalotdate").text("");
+                    }
+                    if(apdate === "") {
+                        $("#queryapdate").text("Please Select Approval Date");
+                    isValid = false;
+                    }  else if(apdate < alotdate) {
+                        $("#queryapdate").text("Approval Date must be greater than Allotment Date");
+                         isValid = false;
+                    }  else {
+                        $("#queryapdate").text("");
+                    }
+                    if(ldate === "") {
+                        $("#queryldate").text("Please Select Listing Date");
+                    isValid = false;
+                    } else if(ldate < apdate) {
+                        $("#queryldate").text("Listing Date must be greater than Offer Approval Date");
+                         isValid = false;
+                    } else {
+                        $("#queryldate").text("");
+                    }
+                     if(nsdldate === "") {
+                        $("#querynsdldate").text("Please Select NSDL CA Date");
+                    isValid = false;
+                    } else if(nsdldate < ldate) {
+                        $("#querynsdldate").text("NSDL CA Date must be greater than Listing Date");
+                         isValid = false;
+                    } else {
+                        $("#querynsdldate").text("");
+                    }
+                     if(cdsldate === "") {
+                        $("#querycdsldate").text("Please Select CDSL CA Date");
+                    isValid = false;
+                    } else if(cdsldate < nsdldate) {
+                        $("#querycdsldate").text("CDSL CA Date must be greater than NSDL CA Date");
+                         isValid = false;
+                    } else {
+                        $("#querycdsldate").text("");
+                    }
+                     if(refunddate === "") {
+                        $("#queryrefunddate").text("Please Select Refund Date");
+                    isValid = false;
+                    }  else if(refunddate < cdsldate) {
+                        $("#queryrefunddate").text("Refund Date must be greater than CDSL CA Date");
+                         isValid = false;
+                    } else {
+                        $("#queryrefunddate").text("");
+                    }
             var isValid = true;
             if (!isValid) return;
                  if(clientname) {
