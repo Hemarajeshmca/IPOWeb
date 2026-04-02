@@ -5,7 +5,7 @@
 <html>
 <head>
     <meta name="viewport" content="width=device-width" />
-    <title>Run Rejection</title>
+    <title>PAN Validate</title>
     <style>
         .content-wrapper {
             display: flex;
@@ -96,7 +96,7 @@
                         <input type="text" class="form-control" id="iponame" readonly />
                     </div>
                     <div class="col-sm-2">
-                        <button type="button" class="btn btn-primary" id="btnSave" onclick="" style="padding: 3px 25px;margin-top:28px;">Valid PAN</button>
+                        <button type="button" class="btn btn-primary" id="btnSave" onclick="runpanvalid()" style="padding: 3px 25px;margin-top:28px;">Valid PAN</button>
                     </div>
                     <div class="col-sm-2">
                         @* <button type="button" onclick="exportSummary()" class="btn btn-primary" id="btnGen" style="padding: 3px 25px;margin-top:28px;">Export Summary </button> *@
@@ -118,7 +118,7 @@
     var selectedCodes = [];
          $(document).ready(function () {
 
-        $('#navhead').text('Run BOA');
+        $('#navhead').text('PAN Validate');
          var ipoName = localStorage.getItem("selectedIPOText");
 
     $("#iponame").val(ipoName);
@@ -127,20 +127,33 @@
 
     });
 
-     function runboa() {
+     function runpanvalid() {
          var offer_code =  localStorage.getItem("selectedIPO");
+         console.log("offer_code : ", offer_code)
           try {
             customAjax({
                 type: "GET",
-                url: '@Url.Action("getboalist", "BOA")',
+                url: '@Url.Action("panvalidation", "PanValidate")',
                 data: {
                 offer_code: offer_code
                 },
                 success: function (response) {
                     if (response && response.success) {
-                      var data = JSON.parse(response.data);
-                      fetchboagrid(data);
+                      var data = JSON.parse(response.data);                    
                       console.log("DATAS:", data);
+                      if (data.length > 0 && data[0].out_msg === "SUCCESS") {
+                             $.alert({
+                                title: 'IPO Allotment',
+                                content: 'Pan Validated Successfully!!!!!',
+                                type: 'green',
+                            });
+                        } else {
+                             $.alert({
+                                title: 'IPO Allotment',
+                                content: 'Pan Validation Failed!!',
+                                type: 'red',
+                            });
+                        }
                     }
                     else {
                         $.alert({
@@ -159,52 +172,6 @@
         }
     }
 
-    function fetchboagrid(data){
-         $("#BoaList").show();
-        var columns =  [
-             {
-             field: "application_no",
-             title: "Application No."
-         },
-            {
-                field: "pan",
-                title: "PAN"
-            }
-
-        ];
-                 if ($("#BoaList").data("kendoGrid")) {
-                    $("#BoaList").data("kendoGrid").destroy();
-                    $("#BoaList").empty();
-                 }
-                     $("#BoaList").kendoGrid({
-                     dataSource: {
-                         data: data,
-                         pageSize: 20
-                     },
-                     height: 410,
-                     pageable: {
-                         pageSizes: [10, 20, 30],
-                         refresh: true
-                     },
-                     sortable: true,
-                     filterable: true,
-                     resizable: true,
-                     columns: columns,
-                      excel: {
-                        fileName: "Rejection_Summary_Report.xlsx",
-                        allPages: true,
-                        filterable: true
-                       },
-                     dataBound: function () {
-                        var grid = this;
-                        grid.tbody.find("tr").each(function () {
-                            var dataItem = grid.dataItem(this);
-                            if (selectedCodes.includes(dataItem.rule_code)) {
-                                $(this).find(".client-checkbox").prop("checked", true);
-                            }
-                        });
-                     }
-                 });
-    }
+    
 
 </script>
