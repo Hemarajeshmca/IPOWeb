@@ -1,12 +1,14 @@
 ﻿@{
     Layout = "~/Views/Shared/_LayoutNew.cshtml";
 }
+
 <!DOCTYPE html>
-<html>  
+<html>
 <head>
     <meta name="viewport" content="width=device-width" />
-    <title>Run Rejection</title>
+    <title>Basis of Allotments</title>
     <style>
+
         .content-wrapper {
             display: flex;
             justify-content: center;
@@ -23,188 +25,353 @@
             color: #fff;
         }
 
-        /* Alternate row color */
-        #rejectionList .k-grid-content tr.k-alt td {
+        .form-label{
             background-color: #fff;
-            color: #000;
+            border: none;
+            padding-left: 0px;
         }
 
-        /* Consistent borders */
-        #rejectionList .k-grid-header th,
-        #rejectionList .k-grid-content td {
-            border-right: 1px solid #ddd;
+        .main-container {
+            width: 95%;
+            margin: 20px auto;
+            padding: 20px;
         }
 
-        /* Remove last border */
-        #rejectionList .k-grid-header th:last-child,
-        #rejectionList .k-grid-content td:last-child {
-            border-right: none;
+        .header {
+            font-weight: bold;
+            margin-bottom: 15px;
         }
 
-        /* Fixed layout for alignment */
-        #rejectionList .k-grid-header table,
-        #rejectionList .k-grid-content table {
-            table-layout: fixed;
+        .row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-bottom: 12px;
+            align-items: center;
+        }
+
+        .col {
+            display: flex;
+            flex-direction: column;
+            min-width: 150px;
+        }
+
+            .col.small {
+                width: 100px;
+            }
+
+        input {
+            height: 26px;
+            padding: 3px;
+            border: 1px solid #999;
+            background: #fff;
+        }
+
+        .long-input {
+            width: 70%;
+        }
+
+        .radio-group {
+            margin-left: auto;
+        }
+
+        .section-box {
+            border: 1px solid #2c7a7b;
+            padding: 10px;
+            margin-top: 10px;
+        }
+
+        .section-title {
+            font-weight: bold;
+            margin-bottom: 8px;
+        }
+
+        .button-row {
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        button {
+            padding: 6px 20px;
+            margin: 0 10px;
+            border: none;
+            background: #ddd;
+            cursor: pointer;
+        }
+
+            button:hover {
+                background: #bbb;
+            }
+
+        .sign-section {
+            margin-top: 20px;
+        }
+
+        .sign-row {
+            display: flex;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .sign-label {
+            width: 120px;
+            font-weight: 600;
+        }
+
+        .sign-box {
+            width: 30%;
+            padding: 0 10px;
+        }
+
+        .sign-title {
+            text-align: center;
+            font-size: 13px;
+            margin-bottom: 5px;
+        }
+
+        .sign-box input {
             width: 100%;
-        }
-
-        /* Prevent wrapping */
-        #rejectionList .k-grid-header th,
-        #rejectionList .k-grid-content td {
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-        }
-
-        /* Compact size */
-        #rejectionList .k-grid-content td {
-            padding: 3px 6px;
-            font-size: 12px;
-            line-height: 18px;
-            background:#fff;
-        }
-
-        #rejectionList .k-grid-header th {
-            padding: 4px 6px;
-            font-size: 12px;
-            line-height: 18px;
-        }
-
-        /* Compact row height */
-        #rejectionList .k-grid-content tr {
             height: 26px;
         }
 
-        #rejectionList .k-grid-header tr {
-            height: 28px;
+        .radio-container {
+            display: flex;
+            align-items: center;
+            gap: 20px;
         }
 
-        .k-grid td { 
-            padding: 2px 2px;
-            font-size:13px;
+        .radio-item {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            margin: 0;
+        }
+
+        h5#navhead {
+            position: relative;
+            right: 340px;
+            width: 30%;
         }
     </style>
+
 </head>
 
 <body class="hold-transition skin-blue sidebar-mini fixed">
     <div class="content-wrapper">
         <div class="container-xxl flex-grow-1 container-p-y">
-            <div class="card-body" style="margin-top:5px;height: 556px;width: 103%;margin-left: -18px;">
-                <div class="row" style="margin-top:-17px;">
-                    <div class="col-sm-3">
-                        <label class="form-label" for="ctype" data-field="ctype">IPO Name</label>&nbsp;<span style="font-size: 12px;color:red;font-weight: bold;">*</span>
-                        <input type="text" class="form-control" id="iponame" readonly />
+            <div class="card-body" style="margin-top:5px;height: 556px;width: 103%;margin-left: -18px;overflow: auto;">
+                    <!-- File Path -->
+                    <div class="row">
+
+                        <div class="col-md-9">
+                            <label class="form-label">Output File for Minutes of Meeting</label>
+                        <input style="width: 100%;" class="form-control" type="text"
+                                   value="C:\MAIPO_2LOT_BB071\Reports\Annexure_16_Basis_of_Allotments.xlsx">
+                        </div>
+
+                    <div class="col radio-container col-md-2" style="display: flex;flex-direction: row; flex-direction: row; margin-top: 30px;">
+                        <label class="radio-item">
+                            <input type="radio" name="exchange"> NSE
+                        </label>
+
+                        <label class="radio-item">
+                            <input type="radio" name="exchange" checked> BSE
+                        </label>
                     </div>
-                    <div class="col-sm-2">
-                        <button type="button" class="btn btn-primary" id="btnSave" onclick="runboa()" style="padding: 3px 25px;margin-top:28px;">Run BOA</button>
+
                     </div>
-                    <div class="col-sm-2">
-                        @* <button type="button" onclick="exportSummary()" class="btn btn-primary" id="btnGen" style="padding: 3px 25px;margin-top:28px;">Export Summary </button> *@
-                    </div>                    
+
+                    <!-- Dates -->
+                    <div class="row">
+                        <div class="col">
+                            <label class="form-label">Opening Date</label>
+                        <input type="date" class="form-control" value="January 28, 2026">
+                        </div>
+
+                        <div class="col">
+                            <label class="form-label">Closing Date</label>
+                        <input type="date" class="form-control" value="January 30, 2026">
+                        </div>
+
+                        <div class="col">
+                            <label class="form-label">Final Prospectus Date</label>
+                        <input type="date" class="form-control" value="02/02/2026">
+                        </div>
+
+
+                    </div>
+
+                    <!-- Company Info -->
+                    <div class="row">
+                    <div class="col">
+                            <label class="form-label">CIN NO</label>
+                        <input type="text" class="form-control" value="U29309DL2019PLC353936">
+                        </div>
+
+                        <div class="col">
+                            <label class="form-label">ISIN NO</label>
+                        <input type="text" class="form-control" value="INE285L01011">
+                        </div>
+
+                        <div class="col">
+                            <label class="form-label">Face Value</label>
+                        <input type="number" class="form-control" value="10.00">
+                        </div>
+
+                        <div class="col">
+                            <label class="form-label">As Price</label>
+                        <input type="number" class="form-control" value="123.00">
+                        </div>
+
+                        <div class="col">
+                            <label class="form-label">Premium</label>
+                        <input type="text" class="form-control" value="113">
+                        </div>
+
+                        <div class="col">
+                            <label class="form-label">Lot Size</label>
+                        <input type="number" class="form-control" value="1000">
+                        </div>
+                    </div>
+
+                    <!-- Issue Details -->
+                    <div class="row">
+                        <div class="col">
+                            <label class="form-label">Pre Issue Size</label>
+                        <input type="number" class="form-control" value="16000000">
+                        </div>
+
+                        <div class="col">
+                            <label class="form-label">Current Issue Size</label>
+                        <input type="number" class="form-control" value="5400000">
+                        </div>
+
+                        <div class="col">
+                            <label class="form-label">Post Issue</label>
+                        <input type="number" class="form-control" value="20400000">
+                        </div>
+
+                        <div class="col">
+                            <label class="form-label">Market Maker Shares</label>
+                        <input type="number" class="form-control" value="298000">
+                        </div>
+
+                        <div class="col">
+                            <label class="form-label">QIB Shares</label>
+                        <input type="number" class="form-control" value="1017000">
+                        </div>
+
+                        <div class="col">
+                            <label class="form-label">Emp. Shares</label>
+                        <input type="number" class="form-control" value="0">
+                        </div>
+
+                        <div class="col">
+                            <label class="form-label">Net Issue of Shares</label>
+                        <input type="number" class="form-control" value="5102000">
+                        </div>
+                    </div>
+
+                    <!-- Net Quantum -->
+                    <div class="section-box">
+                        <div class="section-title">Net quantum available for allotment</div>
+
+                        <div class="row">
+                            <div class="col">
+                                <label class="form-label">Spill over from Retail to Non-Retail</label>
+                            <input type="number" class="form-control" value="0">
+                            </div>
+
+                            <div class="col">
+                                <label class="form-label">Retail - Net quantum available</label>
+                            <input type="number" class="form-control" value="1786000">
+                            </div>
+
+                            <div class="col">
+                                <label class="form-label">Non-Retail <= 100000</label>
+                            <input type="number" class="form-control" value="2871000">
+                            </div>
+
+                            <div class="col">
+                                <label class="form-label">Non-Retail > 100000</label>
+                            <input type="number" class="form-control" value="516000">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Signatories -->
+                <div class="sign-section">
+
+                    <!-- Name Row -->
+                    <div class="sign-row">
+                        <div class="sign-label">Name</div>
+
+                        <div class="sign-box">
+                            <div class="sign-title">Seren Capital Private Limited</div>
+                            <input type="text" class="form-control" value="MR. AKUN GOYAL">
+                        </div>
+
+                        <div class="sign-box">
+                            <div class="sign-title">Msafe Equipments Limited</div>
+                            <input type="text" class="form-control" value="MS. RENUKA UNIYAL">
+                        </div>
+
+                        <div class="sign-box">
+                            <div class="sign-title">Maashita Securities Pvt. Limited</div>
+                            <input type="text" class="form-control" value="MR. MUKUL AGRAWAL">
+                        </div>
+                    </div>
+
+                    <!-- Designation Row -->
+                    <div class="sign-row">
+                        <div class="sign-label">Designation</div>
+
+                        <div class="sign-box">
+                            <input type="text" class="form-control" value="AUTHORISED SIGNATORY">
+                        </div>
+
+                        <div class="sign-box">
+                            <input type="text" class="form-control" value="COMPANY SECRETARY & COMPLIANCE">
+                        </div>
+
+                        <div class="sign-box">
+                            <input type="text" class="form-control" value="DIRECTOR">
+                        </div>
+                    </div>
+
                 </div>
-               <div class="row" style="margin-top:20px;">
-                    <div class="col-sm-12">
-                        <div id="BoaList"></div>
+
+                    <!-- Buttons -->
+                    <div class="button-row">
+                    <button class="btn btn-primary" style="padding: 3px 25px;margin-bottom:20px;" id="generateBtn" onclick="generateReport()">Generate</button>
+                    <button class="btn btn-primary" style="border-color: red;background-color: red; border-radius: 5px;color: white;margin-bottom: 30px;margin-bottom: 20px;padding: 3px 25px;" id="exitBtn">
+                        Exit
+                    </button>
                     </div>
-                   </div>
-               </div>
-            </div>
-        </div>  
-   
-</body>
+                </div>
+             </div>
+         </div>
+    </body>
 
 </html>
-<script>
-    var selectedCodes = [];
-         $(document).ready(function () {
 
-        $('#navhead').text('Run BOA');
-         var ipoName = localStorage.getItem("selectedIPOText");
-
-    $("#iponame").val(ipoName);
-
-        $("#BoaList").hide();   // Hide grid container
-
+ <script>
+    $( document ).ready(function() {
+             $('#navhead').text('Basics of Allotment');
     });
 
-     function runboa() {
-         var offer_code =  localStorage.getItem("selectedIPO");
-          try {
-            customAjax({
-                type: "GET",
-                url: '@Url.Action("getboalist", "BOA")',
-                data: {
-                offer_code: offer_code
-                },
-                success: function (response) {
-                    if (response && response.success) {
-                      var data = JSON.parse(response.data);
-                      fetchboagrid(data);
-                      console.log("DATAS:", data);
-                    }
-                    else {
-                        $.alert({
-                            title: 'IPO Allotment',
-                            content: 'Save failed!',
-                            type: 'red',
-                        });
-                    }
-                },
-                error: function (er) {
-                    console.log(er);
-                }
-            });
-        } catch (e) {
-            console.log(e);
-        }
+    function generateReport() {
+        //  if (!offer_code) {
+        //     $.alert({
+        //         title: 'IPO Web',
+        //         content: "Please select IPO Name",
+        //         type: 'red',
+        //     });
+        //     return;
+        // }
+        var offer_code = localStorage.getItem("selectedIPO");
+        var url = '/BOA/getboareport'
+            + '?offer_code=' + encodeURIComponent(offer_code);
+        window.location.href = url;
     }
-
-    function fetchboagrid(data){
-         $("#BoaList").show();
-        var columns =  [           
-             {
-             field: "application_no",
-             title: "Application No."    
-         },
-            {
-                field: "pan",
-                title: "PAN"              
-            }
-                    
-        ];
-                 if ($("#BoaList").data("kendoGrid")) {
-                    $("#BoaList").data("kendoGrid").destroy();
-                    $("#BoaList").empty();
-                 }
-                     $("#BoaList").kendoGrid({
-                     dataSource: {
-                         data: data,
-                         pageSize: 20
-                     },
-                     height: 410,
-                     pageable: {
-                         pageSizes: [10, 20, 30],
-                         refresh: true
-                     },
-                     sortable: true,
-                     filterable: true,
-                     resizable: true,
-                     columns: columns,
-                      excel: {
-                        fileName: "Rejection_Summary_Report.xlsx",
-                        allPages: true,
-                        filterable: true
-                       },
-                     dataBound: function () {
-                        var grid = this;
-                        grid.tbody.find("tr").each(function () {
-                            var dataItem = grid.dataItem(this);
-                            if (selectedCodes.includes(dataItem.rule_code)) {
-                                $(this).find(".client-checkbox").prop("checked", true);
-                            }
-                        });
-                     }
-                 });
-    }
-
-</script>
+    </script>
