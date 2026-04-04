@@ -1,23 +1,23 @@
 {
   "format": 1,
   "restore": {
-    "E:\\user\\hema\\IPOProject\\IPOProject_Web\\IPOProject\\IPOWeb\\IPOWeb.csproj": {}
+    "E:\\Venki Shared Project\\IPO\\GIT\\IPOWeb\\IPOWeb.csproj": {}
   },
   "projects": {
-    "E:\\user\\hema\\IPOProject\\IPOProject_Web\\IPOProject\\IPOWeb\\IPOWeb.csproj": {
+    "E:\\Venki Shared Project\\IPO\\GIT\\IPOWeb\\IPOWeb.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "E:\\user\\hema\\IPOProject\\IPOProject_Web\\IPOProject\\IPOWeb\\IPOWeb.csproj",
+        "projectUniqueName": "E:\\Venki Shared Project\\IPO\\GIT\\IPOWeb\\IPOWeb.csproj",
         "projectName": "IPOWeb",
-        "projectPath": "E:\\user\\hema\\IPOProject\\IPOProject_Web\\IPOProject\\IPOWeb\\IPOWeb.csproj",
-        "packagesPath": "C:\\Users\\emp10176\\.nuget\\packages\\",
-        "outputPath": "E:\\user\\hema\\IPOProject\\IPOProject_Web\\IPOProject\\IPOWeb\\obj\\",
+        "projectPath": "E:\\Venki Shared Project\\IPO\\GIT\\IPOWeb\\IPOWeb.csproj",
+        "packagesPath": "C:\\Users\\emp10174\\.nuget\\packages\\",
+        "outputPath": "E:\\Venki Shared Project\\IPO\\GIT\\IPOWeb\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
         ],
         "configFilePaths": [
-          "C:\\Users\\emp10176\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Users\\emp10174\\AppData\\Roaming\\NuGet\\NuGet.Config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
@@ -26,6 +26,7 @@
         ],
         "sources": {
           "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
+          "https://nuget.telerik.com/v3/index.json": {},
           "https://www.nuget.org/api/v2/": {}
         },
         "frameworks": {
@@ -44,7 +45,7 @@
           "auditLevel": "low",
           "auditMode": "direct"
         },
-        "SdkAnalysisLevel": "9.0.100"
+        "SdkAnalysisLevel": "9.0.300"
       },
       "frameworks": {
         "net8.0": {
@@ -98,7 +99,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.101/PortableRuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.308/PortableRuntimeIdentifierGraph.json"
         }
       }
     }

@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("IPOWeb")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+a67d92a92de27d82cad7e63b97fb10ad03a54ff8")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+f2d3983c81ddeac25a8123322dfa0e38597e7f9c")]
 [assembly: System.Reflection.AssemblyProductAttribute("IPOWeb")]
 [assembly: System.Reflection.AssemblyTitleAttribute("IPOWeb")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
