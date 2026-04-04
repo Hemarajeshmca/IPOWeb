@@ -242,17 +242,8 @@
                       width: 120,
                       locked: true
                   },
-                  {
+                   {
               title: "As per Bid",
-              headerAttributes: { style: "text-align:center;font-weight:bold;" },
-              columns: [
-                  { field: "bid_appl_count", title: "No.of Appl", width: 120, attributes:{style:"text-align:right;"} },
-                  { field: "bid_quantity", title: "No.of Shares", width: 130, attributes:{style:"text-align:right;"} },
-                  { field: "bid_amount", title: "Amount", width: 120, attributes:{style:"text-align:right;"} }
-              ]
-          },
-          {
-              title: "As per Bank",
               headerAttributes: { style: "text-align:center;font-weight:bold;" },
               columns: [
                   { field: "bnk_appl_count", title: "No.of Appl", width: 120, attributes:{style:"text-align:right;"} },
@@ -260,6 +251,15 @@
                   { field: "bank_amount", title: "Amount", width: 120, attributes:{style:"text-align:right;"} }
               ]
           },
+                  {
+              title: "As per Bank",
+              headerAttributes: { style: "text-align:center;font-weight:bold;" },
+              columns: [
+                  { field: "bid_appl_count", title: "No.of Appl", width: 120, attributes:{style:"text-align:right;"} },
+                  { field: "bid_quantity", title: "No.of Shares", width: 130, attributes:{style:"text-align:right;"} },
+                  { field: "bid_amount", title: "Amount", width: 120, attributes:{style:"text-align:right;"} }
+              ]
+          },        
 
           {
               title: "Diff.",
