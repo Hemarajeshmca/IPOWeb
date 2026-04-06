@@ -370,6 +370,10 @@
                          data: gridData,
                              pageSize: 10
                          },
+                         excel: {
+                            fileName: "ClientList.xlsx",
+                            allPages: true
+                        },
                          height: 358,
                          pageable: {
                              pageSizes: [10, 20, 30],
@@ -513,6 +517,7 @@
                     return;
                 }
                 var gridData = JSON.parse(data._data);
+                console.log("Offerdats : ", gridData);
                 var columns = [
                     {
                         title: "Action",
@@ -534,12 +539,12 @@
                     },
                     {
                         field: "offer_code",
-                        title: "Offer Code",
-                        hidden: true
+                        title: "Offer Code"                       
                     },
                     {
                         field: "client_code",
-                        title: "Client Code"
+                        title: "Client Code",
+                         hidden: true
                     },
                     {
                         field: "client_name",
@@ -571,6 +576,10 @@
                     dataSource: {
                         data: gridData,
                         pageSize: 10
+                    },
+                    excel: {
+                        fileName: "OfferList.xlsx",
+                        allPages: true
                     },
                     height: 358,
                     pageable: {
@@ -692,14 +701,43 @@
         }
         });
     }
-    function exportOfferList() {
+       function exportOfferList() {
         var grid = $("#offerListGrid").data("kendoGrid");
-        grid.saveAsExcel();
+
+        var originalPageSize = grid.dataSource.pageSize();
+
+        // Set page size to total records
+        grid.dataSource.pageSize(grid.dataSource.total());
+
+        // Wait for data to load, then export
+        grid.one("dataBound", function () {
+            grid.saveAsExcel();
+
+            // Restore original page size after export
+            grid.dataSource.pageSize(originalPageSize);
+        });
     }
 
-    function exportClientList() {       
-        var grid = $("#clientListGrid").data("kendoGrid");
-        console.log("Grid:", grid);
-        grid.saveAsExcel();
+    // function exportClientList() {       
+    //     var grid = $("#clientListGrid").data("kendoGrid");
+    //     console.log("Grid:", grid);
+    //     grid.saveAsExcel();
+    // }
+
+        function exportClientList() {
+        var grid = $("#grid").data("kendoGrid");
+
+        var originalPageSize = grid.dataSource.pageSize();
+
+        // Set page size to total records
+        grid.dataSource.pageSize(grid.dataSource.total());
+
+        // Wait for data to load, then export
+        grid.one("dataBound", function () {
+            grid.saveAsExcel();
+
+            // Restore original page size after export
+            grid.dataSource.pageSize(originalPageSize);
+        });
     }
 </script>
