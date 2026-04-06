@@ -2359,6 +2359,18 @@
         //        sessionStorage.removeItem("edit_offer_code");
         //     }
         // });
+
+                function setColor(rows, resultData) {
+            for (var i = 0; i < rows.length; i++) {
+                var row = $(rows[i]);
+                row.css('backgroundColor', 'black');
+            }
+            var child_del = $('.k-grid-Delete').children('span:first');
+            $('.k-grid-Delete').html(child_del);
+
+            var child_copy = $('.k-grid-Copy').children('span:first');
+            $('.k-grid-Copy').html(child_copy);
+        }
     </script>
 
 </body>

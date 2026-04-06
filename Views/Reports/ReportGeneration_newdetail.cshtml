@@ -1,6 +1,7 @@
 ﻿@{
 	ViewData["Title"] = "Report Generation";
 	Layout = "~/Views/Shared/_LayoutNew.cshtml";
+	var userName = Context.Session.GetString("user_name");
 }
 <!Doctype html>
 <html>
@@ -1292,7 +1293,7 @@
 					"in_outputfile_flag": true,
 					"in_outputfile_type": 'csv',
 					"in_ip_addr": "",
-				    "in_user_code": sessionStorage.getItem("usrname"),
+					"in_user_code": '@userName',
 					//"in_user_code": 'test',
 					"file_name": $("#file_name").val(),
 					"in_report_name": concatName,
