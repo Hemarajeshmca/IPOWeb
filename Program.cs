@@ -2,9 +2,19 @@
 using FluentValidation.AspNetCore;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using IPOWeb;
+using Microsoft.AspNetCore.Http.Features;
 
 var builder = WebApplication.CreateBuilder(args);
 
+builder.WebHost.ConfigureKestrel(options =>
+{
+    // Set max request body size (500 MB)
+    options.Limits.MaxRequestBodySize = 524288000;
+});
+builder.Services.Configure<FormOptions>(options =>
+{
+    options.MultipartBodyLengthLimit = 524288000;
+});
 // ---------------- MVC ----------------
 
 // 1. Add services to the container
