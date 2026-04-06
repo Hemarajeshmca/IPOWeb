@@ -1,0 +1,118 @@
+{
+  "Version": 1,
+  "WorkspaceRootPath": "E:\\Venki Shared Project\\IPO\\GIT\\IPOWeb\\",
+  "Documents": [
+    {
+      "AbsoluteMoniker": "D:0:0:{43F32BE5-FDC7-4CC0-A7D6-B0BF449EDE53}|IPOWeb.csproj|e:\\venki shared project\\ipo\\git\\ipoweb\\views\\fileimport\\fileimport.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{43F32BE5-FDC7-4CC0-A7D6-B0BF449EDE53}|IPOWeb.csproj|solutionrelative:views\\fileimport\\fileimport.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{43F32BE5-FDC7-4CC0-A7D6-B0BF449EDE53}|IPOWeb.csproj|e:\\venki shared project\\ipo\\git\\ipoweb\\views\\bidupi\\bidupi.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{43F32BE5-FDC7-4CC0-A7D6-B0BF449EDE53}|IPOWeb.csproj|solutionrelative:views\\bidupi\\bidupi.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{43F32BE5-FDC7-4CC0-A7D6-B0BF449EDE53}|IPOWeb.csproj|e:\\venki shared project\\ipo\\git\\ipoweb\\views\\shared\\_layoutnew.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{43F32BE5-FDC7-4CC0-A7D6-B0BF449EDE53}|IPOWeb.csproj|solutionrelative:views\\shared\\_layoutnew.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{43F32BE5-FDC7-4CC0-A7D6-B0BF449EDE53}|IPOWeb.csproj|e:\\venki shared project\\ipo\\git\\ipoweb\\controllers\\bidupicontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{43F32BE5-FDC7-4CC0-A7D6-B0BF449EDE53}|IPOWeb.csproj|solutionrelative:controllers\\bidupicontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{43F32BE5-FDC7-4CC0-A7D6-B0BF449EDE53}|IPOWeb.csproj|e:\\venki shared project\\ipo\\git\\ipoweb\\controllers\\bidbankcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{43F32BE5-FDC7-4CC0-A7D6-B0BF449EDE53}|IPOWeb.csproj|solutionrelative:controllers\\bidbankcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{43F32BE5-FDC7-4CC0-A7D6-B0BF449EDE53}|IPOWeb.csproj|e:\\venki shared project\\ipo\\git\\ipoweb\\views\\bidbank\\bidbank.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{43F32BE5-FDC7-4CC0-A7D6-B0BF449EDE53}|IPOWeb.csproj|solutionrelative:views\\bidbank\\bidbank.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    }
+  ],
+  "DocumentGroupContainers": [
+    {
+      "Orientation": 0,
+      "VerticalTabListWidth": 256,
+      "DocumentGroups": [
+        {
+          "DockedWidth": 200,
+          "SelectedChildIndex": 5,
+          "Children": [
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "_LayoutNew.cshtml",
+              "DocumentMoniker": "E:\\Venki Shared Project\\IPO\\GIT\\IPOWeb\\Views\\Shared\\_LayoutNew.cshtml",
+              "RelativeDocumentMoniker": "Views\\Shared\\_LayoutNew.cshtml",
+              "ToolTip": "E:\\Venki Shared Project\\IPO\\GIT\\IPOWeb\\Views\\Shared\\_LayoutNew.cshtml",
+              "RelativeToolTip": "Views\\Shared\\_LayoutNew.cshtml",
+              "ViewState": "AgIAAAQCAAAAAAAAAAAawBACAAAsAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2026-04-03T11:00:41.861Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 4,
+              "Title": "BidBankController.cs",
+              "DocumentMoniker": "E:\\Venki Shared Project\\IPO\\GIT\\IPOWeb\\Controllers\\BidBankController.cs",
+              "RelativeDocumentMoniker": "Controllers\\BidBankController.cs",
+              "ToolTip": "E:\\Venki Shared Project\\IPO\\GIT\\IPOWeb\\Controllers\\BidBankController.cs",
+              "RelativeToolTip": "Controllers\\BidBankController.cs",
+              "ViewState": "AgIAAC8AAAAAAAAAAAAowEEAAAAJAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-04-03T10:54:32.478Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "BidUpi.cshtml",
+              "DocumentMoniker": "E:\\Venki Shared Project\\IPO\\GIT\\IPOWeb\\Views\\BidUpi\\BidUpi.cshtml",
+              "RelativeDocumentMoniker": "Views\\BidUpi\\BidUpi.cshtml",
+              "ToolTip": "E:\\Venki Shared Project\\IPO\\GIT\\IPOWeb\\Views\\BidUpi\\BidUpi.cshtml",
+              "RelativeToolTip": "Views\\BidUpi\\BidUpi.cshtml",
+              "ViewState": "AgIAAFYAAAAAAAAAAAAgwF0AAAAhAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2026-04-03T10:51:44.647Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 5,
+              "Title": "BidBank.cshtml",
+              "DocumentMoniker": "E:\\Venki Shared Project\\IPO\\GIT\\IPOWeb\\Views\\BidBank\\BidBank.cshtml",
+              "RelativeDocumentMoniker": "Views\\BidBank\\BidBank.cshtml",
+              "ToolTip": "E:\\Venki Shared Project\\IPO\\GIT\\IPOWeb\\Views\\BidBank\\BidBank.cshtml",
+              "RelativeToolTip": "Views\\BidBank\\BidBank.cshtml",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2026-04-03T10:51:08.249Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 3,
+              "Title": "BidUpiController.cs",
+              "DocumentMoniker": "E:\\Venki Shared Project\\IPO\\GIT\\IPOWeb\\Controllers\\BidUpiController.cs",
+              "RelativeDocumentMoniker": "Controllers\\BidUpiController.cs",
+              "ToolTip": "E:\\Venki Shared Project\\IPO\\GIT\\IPOWeb\\Controllers\\BidUpiController.cs",
+              "RelativeToolTip": "Controllers\\BidUpiController.cs",
+              "ViewState": "AgIAADMAAAAAAAAAAAAqwBoAAABpAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-04-03T10:50:45.176Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "FileImport.cshtml",
+              "DocumentMoniker": "E:\\Venki Shared Project\\IPO\\GIT\\IPOWeb\\Views\\FileImport\\FileImport.cshtml",
+              "RelativeDocumentMoniker": "Views\\FileImport\\FileImport.cshtml",
+              "ToolTip": "E:\\Venki Shared Project\\IPO\\GIT\\IPOWeb\\Views\\FileImport\\FileImport.cshtml",
+              "RelativeToolTip": "Views\\FileImport\\FileImport.cshtml",
+              "ViewState": "AgIAAMkAAAAAAAAAAAAYwNgAAABTAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2026-04-01T09:29:36.846Z",
+              "EditorCaption": ""
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

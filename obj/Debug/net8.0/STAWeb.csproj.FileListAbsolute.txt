@@ -1,0 +1,464 @@
+E:\Venki Shared Project\STAWeb\bin\Debug\net8.0\appsettings.Development.json
+E:\Venki Shared Project\STAWeb\bin\Debug\net8.0\appsettings.json
+E:\Venki Shared Project\STAWeb\bin\Debug\net8.0\STAWeb.staticwebassets.runtime.json
+E:\Venki Shared Project\STAWeb\bin\Debug\net8.0\STAWeb.staticwebassets.endpoints.json
+E:\Venki Shared Project\STAWeb\bin\Debug\net8.0\STAWeb.exe
+E:\Venki Shared Project\STAWeb\bin\Debug\net8.0\STAWeb.deps.json
+E:\Venki Shared Project\STAWeb\bin\Debug\net8.0\STAWeb.runtimeconfig.json
+E:\Venki Shared Project\STAWeb\bin\Debug\net8.0\STAWeb.dll
+E:\Venki Shared Project\STAWeb\bin\Debug\net8.0\STAWeb.pdb
+E:\Venki Shared Project\STAWeb\bin\Debug\net8.0\BouncyCastle.Crypto.dll
+E:\Venki Shared Project\STAWeb\bin\Debug\net8.0\ClosedXML.dll
+E:\Venki Shared Project\STAWeb\bin\Debug\net8.0\ClosedXML.Extensions.Mvc.dll
+E:\Venki Shared Project\STAWeb\bin\Debug\net8.0\ClosedXML.Parser.dll
+E:\Venki Shared Project\STAWeb\bin\Debug\net8.0\DocumentFormat.OpenXml.dll
+E:\Venki Shared Project\STAWeb\bin\Debug\net8.0\DocumentFormat.OpenXml.Framework.dll
+E:\Venki Shared Project\STAWeb\bin\Debug\net8.0\ExcelNumberFormat.dll
+E:\Venki Shared Project\STAWeb\bin\Debug\net8.0\itextsharp.dll
+E:\Venki Shared Project\STAWeb\bin\Debug\net8.0\System.Web.Razor.dll
+E:\Venki Shared Project\STAWeb\bin\Debug\net8.0\System.Web.Helpers.dll
+E:\Venki Shared Project\STAWeb\bin\Debug\net8.0\System.Web.WebPages.Deployment.dll
+E:\Venki Shared Project\STAWeb\bin\Debug\net8.0\System.Web.WebPages.Razor.dll
+E:\Venki Shared Project\STAWeb\bin\Debug\net8.0\System.Web.WebPages.dll
+E:\Venki Shared Project\STAWeb\bin\Debug\net8.0\Microsoft.Web.Infrastructure.dll
+E:\Venki Shared Project\STAWeb\bin\Debug\net8.0\Newtonsoft.Json.dll
+E:\Venki Shared Project\STAWeb\bin\Debug\net8.0\RBush.dll
+E:\Venki Shared Project\STAWeb\bin\Debug\net8.0\SixLabors.Fonts.dll
+E:\Venki Shared Project\STAWeb\bin\Debug\net8.0\System.IO.Packaging.dll
+E:\Venki Shared Project\STAWeb\obj\Debug\net8.0\STAWeb.csproj.AssemblyReference.cache
+E:\Venki Shared Project\STAWeb\obj\Debug\net8.0\rpswa.dswa.cache.json
+E:\Venki Shared Project\STAWeb\obj\Debug\net8.0\STAWeb.GeneratedMSBuildEditorConfig.editorconfig
+E:\Venki Shared Project\STAWeb\obj\Debug\net8.0\STAWeb.AssemblyInfoInputs.cache
+E:\Venki Shared Project\STAWeb\obj\Debug\net8.0\STAWeb.AssemblyInfo.cs
+E:\Venki Shared Project\STAWeb\obj\Debug\net8.0\STAWeb.csproj.CoreCompileInputs.cache
+E:\Venki Shared Project\STAWeb\obj\Debug\net8.0\STAWeb.MvcApplicationPartsAssemblyInfo.cs
+E:\Venki Shared Project\STAWeb\obj\Debug\net8.0\STAWeb.MvcApplicationPartsAssemblyInfo.cache
+E:\Venki Shared Project\STAWeb\obj\Debug\net8.0\STAWeb.RazorAssemblyInfo.cache
+E:\Venki Shared Project\STAWeb\obj\Debug\net8.0\STAWeb.RazorAssemblyInfo.cs
+E:\Venki Shared Project\STAWeb\obj\Debug\net8.0\STAWeb.sourcelink.json
+E:\Venki Shared Project\STAWeb\obj\Debug\net8.0\rjimswa.dswa.cache.json
+E:\Venki Shared Project\STAWeb\obj\Debug\net8.0\rjsmrazor.dswa.cache.json
+E:\Venki Shared Project\STAWeb\obj\Debug\net8.0\rjsmcshtml.dswa.cache.json
+E:\Venki Shared Project\STAWeb\obj\Debug\net8.0\scopedcss\Views\Shared\_Layout.cshtml.rz.scp.css
+E:\Venki Shared Project\STAWeb\obj\Debug\net8.0\scopedcss\bundle\STAWeb.styles.css
+E:\Venki Shared Project\STAWeb\obj\Debug\net8.0\scopedcss\projectbundle\STAWeb.bundle.scp.css
+E:\Venki Shared Project\STAWeb\obj\Debug\net8.0\staticwebassets.build.json
+E:\Venki Shared Project\STAWeb\obj\Debug\net8.0\staticwebassets.build.json.cache
+E:\Venki Shared Project\STAWeb\obj\Debug\net8.0\staticwebassets.development.json
+E:\Venki Shared Project\STAWeb\obj\Debug\net8.0\staticwebassets.build.endpoints.json
+E:\Venki Shared Project\STAWeb\obj\Debug\net8.0\staticwebassets.upToDateCheck.txt
+E:\Venki Shared Project\STAWeb\obj\Debug\net8.0\STAWeb.csproj.Up2Date
+E:\Venki Shared Project\STAWeb\obj\Debug\net8.0\STAWeb.dll
+E:\Venki Shared Project\STAWeb\obj\Debug\net8.0\refint\STAWeb.dll
+E:\Venki Shared Project\STAWeb\obj\Debug\net8.0\STAWeb.pdb
+E:\Venki Shared Project\STAWeb\obj\Debug\net8.0\STAWeb.genruntimeconfig.cache
+E:\Venki Shared Project\STAWeb\obj\Debug\net8.0\ref\STAWeb.dll
+E:\Venki Shared Project\STAWeb\bin\Debug\net8.0\FluentValidation.dll
+E:\Venki Shared Project\STAWeb\bin\Debug\net8.0\FluentValidation.AspNetCore.dll
+E:\Venki Shared Project\STAWeb\bin\Debug\net8.0\FluentValidation.DependencyInjectionExtensions.dll
+E:\Hariharan\STAWeb\obj\Debug\net8.0\STAWeb.csproj.AssemblyReference.cache
+E:\Hariharan\STAWeb\obj\Debug\net8.0\rpswa.dswa.cache.json
+E:\Hariharan\STAWeb\obj\Debug\net8.0\STAWeb.GeneratedMSBuildEditorConfig.editorconfig
+E:\Hariharan\STAWeb\obj\Debug\net8.0\STAWeb.AssemblyInfoInputs.cache
+E:\Hariharan\STAWeb\obj\Debug\net8.0\STAWeb.AssemblyInfo.cs
+E:\Hariharan\STAWeb\obj\Debug\net8.0\STAWeb.csproj.CoreCompileInputs.cache
+E:\Hariharan\STAWeb\obj\Debug\net8.0\STAWeb.MvcApplicationPartsAssemblyInfo.cs
+E:\Hariharan\STAWeb\obj\Debug\net8.0\STAWeb.MvcApplicationPartsAssemblyInfo.cache
+E:\Hariharan\STAWeb\obj\Debug\net8.0\STAWeb.RazorAssemblyInfo.cache
+E:\Hariharan\STAWeb\obj\Debug\net8.0\STAWeb.RazorAssemblyInfo.cs
+E:\Hariharan\STAWeb\obj\Debug\net8.0\STAWeb.sourcelink.json
+E:\Hariharan\STAWeb\obj\Debug\net8.0\STAWeb.dll
+E:\Hariharan\STAWeb\obj\Debug\net8.0\refint\STAWeb.dll
+E:\Hariharan\STAWeb\obj\Debug\net8.0\STAWeb.pdb
+E:\Hariharan\STAWeb\bin\Debug\net8.0\appsettings.Development.json
+E:\Hariharan\STAWeb\bin\Debug\net8.0\appsettings.json
+E:\Hariharan\STAWeb\bin\Debug\net8.0\STAWeb.staticwebassets.endpoints.json
+E:\Hariharan\STAWeb\bin\Debug\net8.0\STAWeb.staticwebassets.runtime.json
+E:\Hariharan\STAWeb\bin\Debug\net8.0\STAWeb.exe
+E:\Hariharan\STAWeb\bin\Debug\net8.0\STAWeb.deps.json
+E:\Hariharan\STAWeb\bin\Debug\net8.0\STAWeb.runtimeconfig.json
+E:\Hariharan\STAWeb\bin\Debug\net8.0\STAWeb.dll
+E:\Hariharan\STAWeb\bin\Debug\net8.0\STAWeb.pdb
+E:\Hariharan\STAWeb\bin\Debug\net8.0\BouncyCastle.Crypto.dll
+E:\Hariharan\STAWeb\bin\Debug\net8.0\ClosedXML.dll
+E:\Hariharan\STAWeb\bin\Debug\net8.0\ClosedXML.Extensions.Mvc.dll
+E:\Hariharan\STAWeb\bin\Debug\net8.0\ClosedXML.Parser.dll
+E:\Hariharan\STAWeb\bin\Debug\net8.0\DocumentFormat.OpenXml.dll
+E:\Hariharan\STAWeb\bin\Debug\net8.0\DocumentFormat.OpenXml.Framework.dll
+E:\Hariharan\STAWeb\bin\Debug\net8.0\ExcelNumberFormat.dll
+E:\Hariharan\STAWeb\bin\Debug\net8.0\FluentValidation.dll
+E:\Hariharan\STAWeb\bin\Debug\net8.0\FluentValidation.AspNetCore.dll
+E:\Hariharan\STAWeb\bin\Debug\net8.0\FluentValidation.DependencyInjectionExtensions.dll
+E:\Hariharan\STAWeb\bin\Debug\net8.0\itextsharp.dll
+E:\Hariharan\STAWeb\bin\Debug\net8.0\System.Web.Razor.dll
+E:\Hariharan\STAWeb\bin\Debug\net8.0\System.Web.Helpers.dll
+E:\Hariharan\STAWeb\bin\Debug\net8.0\System.Web.WebPages.Deployment.dll
+E:\Hariharan\STAWeb\bin\Debug\net8.0\System.Web.WebPages.Razor.dll
+E:\Hariharan\STAWeb\bin\Debug\net8.0\System.Web.WebPages.dll
+E:\Hariharan\STAWeb\bin\Debug\net8.0\Microsoft.Web.Infrastructure.dll
+E:\Hariharan\STAWeb\bin\Debug\net8.0\Newtonsoft.Json.dll
+E:\Hariharan\STAWeb\bin\Debug\net8.0\RBush.dll
+E:\Hariharan\STAWeb\bin\Debug\net8.0\SixLabors.Fonts.dll
+E:\Hariharan\STAWeb\bin\Debug\net8.0\System.IO.Packaging.dll
+E:\Hariharan\STAWeb\obj\Debug\net8.0\rjimswa.dswa.cache.json
+E:\Hariharan\STAWeb\obj\Debug\net8.0\rjsmrazor.dswa.cache.json
+E:\Hariharan\STAWeb\obj\Debug\net8.0\rjsmcshtml.dswa.cache.json
+E:\Hariharan\STAWeb\obj\Debug\net8.0\scopedcss\Views\Shared\_Layout.cshtml.rz.scp.css
+E:\Hariharan\STAWeb\obj\Debug\net8.0\scopedcss\bundle\STAWeb.styles.css
+E:\Hariharan\STAWeb\obj\Debug\net8.0\scopedcss\projectbundle\STAWeb.bundle.scp.css
+E:\Hariharan\STAWeb\obj\Debug\net8.0\staticwebassets.build.json
+E:\Hariharan\STAWeb\obj\Debug\net8.0\staticwebassets.build.json.cache
+E:\Hariharan\STAWeb\obj\Debug\net8.0\staticwebassets.development.json
+E:\Hariharan\STAWeb\obj\Debug\net8.0\staticwebassets.build.endpoints.json
+E:\Hariharan\STAWeb\obj\Debug\net8.0\staticwebassets.upToDateCheck.txt
+E:\Hariharan\STAWeb\obj\Debug\net8.0\STAWeb.csproj.Up2Date
+E:\Hariharan\STAWeb\obj\Debug\net8.0\STAWeb.genruntimeconfig.cache
+E:\Hariharan\STAWeb\obj\Debug\net8.0\ref\STAWeb.dll
+E:\Hariharan\STAWeb\STAWeb\bin\Debug\net8.0\appsettings.Development.json
+E:\Hariharan\STAWeb\STAWeb\bin\Debug\net8.0\appsettings.json
+E:\Hariharan\STAWeb\STAWeb\bin\Debug\net8.0\STAWeb.staticwebassets.endpoints.json
+E:\Hariharan\STAWeb\STAWeb\bin\Debug\net8.0\STAWeb.staticwebassets.runtime.json
+E:\Hariharan\STAWeb\STAWeb\bin\Debug\net8.0\STAWeb.exe
+E:\Hariharan\STAWeb\STAWeb\bin\Debug\net8.0\STAWeb.deps.json
+E:\Hariharan\STAWeb\STAWeb\bin\Debug\net8.0\STAWeb.runtimeconfig.json
+E:\Hariharan\STAWeb\STAWeb\bin\Debug\net8.0\STAWeb.dll
+E:\Hariharan\STAWeb\STAWeb\bin\Debug\net8.0\STAWeb.pdb
+E:\Hariharan\STAWeb\STAWeb\bin\Debug\net8.0\BouncyCastle.Crypto.dll
+E:\Hariharan\STAWeb\STAWeb\bin\Debug\net8.0\ClosedXML.dll
+E:\Hariharan\STAWeb\STAWeb\bin\Debug\net8.0\ClosedXML.Extensions.Mvc.dll
+E:\Hariharan\STAWeb\STAWeb\bin\Debug\net8.0\ClosedXML.Parser.dll
+E:\Hariharan\STAWeb\STAWeb\bin\Debug\net8.0\DocumentFormat.OpenXml.dll
+E:\Hariharan\STAWeb\STAWeb\bin\Debug\net8.0\DocumentFormat.OpenXml.Framework.dll
+E:\Hariharan\STAWeb\STAWeb\bin\Debug\net8.0\ExcelNumberFormat.dll
+E:\Hariharan\STAWeb\STAWeb\bin\Debug\net8.0\FluentValidation.dll
+E:\Hariharan\STAWeb\STAWeb\bin\Debug\net8.0\FluentValidation.AspNetCore.dll
+E:\Hariharan\STAWeb\STAWeb\bin\Debug\net8.0\FluentValidation.DependencyInjectionExtensions.dll
+E:\Hariharan\STAWeb\STAWeb\bin\Debug\net8.0\itextsharp.dll
+E:\Hariharan\STAWeb\STAWeb\bin\Debug\net8.0\System.Web.Razor.dll
+E:\Hariharan\STAWeb\STAWeb\bin\Debug\net8.0\System.Web.Helpers.dll
+E:\Hariharan\STAWeb\STAWeb\bin\Debug\net8.0\System.Web.WebPages.Deployment.dll
+E:\Hariharan\STAWeb\STAWeb\bin\Debug\net8.0\System.Web.WebPages.Razor.dll
+E:\Hariharan\STAWeb\STAWeb\bin\Debug\net8.0\System.Web.WebPages.dll
+E:\Hariharan\STAWeb\STAWeb\bin\Debug\net8.0\Microsoft.Web.Infrastructure.dll
+E:\Hariharan\STAWeb\STAWeb\bin\Debug\net8.0\Newtonsoft.Json.dll
+E:\Hariharan\STAWeb\STAWeb\bin\Debug\net8.0\RBush.dll
+E:\Hariharan\STAWeb\STAWeb\bin\Debug\net8.0\SixLabors.Fonts.dll
+E:\Hariharan\STAWeb\STAWeb\bin\Debug\net8.0\System.IO.Packaging.dll
+E:\Hariharan\STAWeb\STAWeb\obj\Debug\net8.0\STAWeb.csproj.AssemblyReference.cache
+E:\Hariharan\STAWeb\STAWeb\obj\Debug\net8.0\rpswa.dswa.cache.json
+E:\Hariharan\STAWeb\STAWeb\obj\Debug\net8.0\STAWeb.GeneratedMSBuildEditorConfig.editorconfig
+E:\Hariharan\STAWeb\STAWeb\obj\Debug\net8.0\STAWeb.AssemblyInfoInputs.cache
+E:\Hariharan\STAWeb\STAWeb\obj\Debug\net8.0\STAWeb.AssemblyInfo.cs
+E:\Hariharan\STAWeb\STAWeb\obj\Debug\net8.0\STAWeb.csproj.CoreCompileInputs.cache
+E:\Hariharan\STAWeb\STAWeb\obj\Debug\net8.0\STAWeb.MvcApplicationPartsAssemblyInfo.cs
+E:\Hariharan\STAWeb\STAWeb\obj\Debug\net8.0\STAWeb.MvcApplicationPartsAssemblyInfo.cache
+E:\Hariharan\STAWeb\STAWeb\obj\Debug\net8.0\STAWeb.RazorAssemblyInfo.cache
+E:\Hariharan\STAWeb\STAWeb\obj\Debug\net8.0\STAWeb.RazorAssemblyInfo.cs
+E:\Hariharan\STAWeb\STAWeb\obj\Debug\net8.0\STAWeb.sourcelink.json
+E:\Hariharan\STAWeb\STAWeb\obj\Debug\net8.0\rjimswa.dswa.cache.json
+E:\Hariharan\STAWeb\STAWeb\obj\Debug\net8.0\rjsmrazor.dswa.cache.json
+E:\Hariharan\STAWeb\STAWeb\obj\Debug\net8.0\rjsmcshtml.dswa.cache.json
+E:\Hariharan\STAWeb\STAWeb\obj\Debug\net8.0\scopedcss\Views\Shared\_Layout.cshtml.rz.scp.css
+E:\Hariharan\STAWeb\STAWeb\obj\Debug\net8.0\scopedcss\bundle\STAWeb.styles.css
+E:\Hariharan\STAWeb\STAWeb\obj\Debug\net8.0\scopedcss\projectbundle\STAWeb.bundle.scp.css
+E:\Hariharan\STAWeb\STAWeb\obj\Debug\net8.0\staticwebassets.build.json
+E:\Hariharan\STAWeb\STAWeb\obj\Debug\net8.0\staticwebassets.build.json.cache
+E:\Hariharan\STAWeb\STAWeb\obj\Debug\net8.0\staticwebassets.development.json
+E:\Hariharan\STAWeb\STAWeb\obj\Debug\net8.0\staticwebassets.build.endpoints.json
+E:\Hariharan\STAWeb\STAWeb\obj\Debug\net8.0\staticwebassets.upToDateCheck.txt
+E:\Hariharan\STAWeb\STAWeb\obj\Debug\net8.0\STAWeb.csproj.Up2Date
+E:\Hariharan\STAWeb\STAWeb\obj\Debug\net8.0\STAWeb.dll
+E:\Hariharan\STAWeb\STAWeb\obj\Debug\net8.0\refint\STAWeb.dll
+E:\Hariharan\STAWeb\STAWeb\obj\Debug\net8.0\STAWeb.pdb
+E:\Hariharan\STAWeb\STAWeb\obj\Debug\net8.0\STAWeb.genruntimeconfig.cache
+E:\Hariharan\STAWeb\STAWeb\obj\Debug\net8.0\ref\STAWeb.dll
+E:\Venki Shared Project\STAWeb_Hari\STAWeb\STAWeb\bin\Debug\net8.0\appsettings.Development.json
+E:\Venki Shared Project\STAWeb_Hari\STAWeb\STAWeb\bin\Debug\net8.0\appsettings.json
+E:\Venki Shared Project\STAWeb_Hari\STAWeb\STAWeb\bin\Debug\net8.0\STAWeb.staticwebassets.runtime.json
+E:\Venki Shared Project\STAWeb_Hari\STAWeb\STAWeb\bin\Debug\net8.0\STAWeb.staticwebassets.endpoints.json
+E:\Venki Shared Project\STAWeb_Hari\STAWeb\STAWeb\bin\Debug\net8.0\STAWeb.exe
+E:\Venki Shared Project\STAWeb_Hari\STAWeb\STAWeb\bin\Debug\net8.0\STAWeb.deps.json
+E:\Venki Shared Project\STAWeb_Hari\STAWeb\STAWeb\bin\Debug\net8.0\STAWeb.runtimeconfig.json
+E:\Venki Shared Project\STAWeb_Hari\STAWeb\STAWeb\bin\Debug\net8.0\STAWeb.dll
+E:\Venki Shared Project\STAWeb_Hari\STAWeb\STAWeb\bin\Debug\net8.0\STAWeb.pdb
+E:\Venki Shared Project\STAWeb_Hari\STAWeb\STAWeb\bin\Debug\net8.0\BouncyCastle.Crypto.dll
+E:\Venki Shared Project\STAWeb_Hari\STAWeb\STAWeb\bin\Debug\net8.0\ClosedXML.dll
+E:\Venki Shared Project\STAWeb_Hari\STAWeb\STAWeb\bin\Debug\net8.0\ClosedXML.Extensions.Mvc.dll
+E:\Venki Shared Project\STAWeb_Hari\STAWeb\STAWeb\bin\Debug\net8.0\ClosedXML.Parser.dll
+E:\Venki Shared Project\STAWeb_Hari\STAWeb\STAWeb\bin\Debug\net8.0\DocumentFormat.OpenXml.dll
+E:\Venki Shared Project\STAWeb_Hari\STAWeb\STAWeb\bin\Debug\net8.0\DocumentFormat.OpenXml.Framework.dll
+E:\Venki Shared Project\STAWeb_Hari\STAWeb\STAWeb\bin\Debug\net8.0\ExcelNumberFormat.dll
+E:\Venki Shared Project\STAWeb_Hari\STAWeb\STAWeb\bin\Debug\net8.0\FluentValidation.dll
+E:\Venki Shared Project\STAWeb_Hari\STAWeb\STAWeb\bin\Debug\net8.0\FluentValidation.AspNetCore.dll
+E:\Venki Shared Project\STAWeb_Hari\STAWeb\STAWeb\bin\Debug\net8.0\FluentValidation.DependencyInjectionExtensions.dll
+E:\Venki Shared Project\STAWeb_Hari\STAWeb\STAWeb\bin\Debug\net8.0\itextsharp.dll
+E:\Venki Shared Project\STAWeb_Hari\STAWeb\STAWeb\bin\Debug\net8.0\System.Web.Razor.dll
+E:\Venki Shared Project\STAWeb_Hari\STAWeb\STAWeb\bin\Debug\net8.0\System.Web.Helpers.dll
+E:\Venki Shared Project\STAWeb_Hari\STAWeb\STAWeb\bin\Debug\net8.0\System.Web.WebPages.Deployment.dll
+E:\Venki Shared Project\STAWeb_Hari\STAWeb\STAWeb\bin\Debug\net8.0\System.Web.WebPages.Razor.dll
+E:\Venki Shared Project\STAWeb_Hari\STAWeb\STAWeb\bin\Debug\net8.0\System.Web.WebPages.dll
+E:\Venki Shared Project\STAWeb_Hari\STAWeb\STAWeb\bin\Debug\net8.0\Microsoft.Web.Infrastructure.dll
+E:\Venki Shared Project\STAWeb_Hari\STAWeb\STAWeb\bin\Debug\net8.0\Newtonsoft.Json.dll
+E:\Venki Shared Project\STAWeb_Hari\STAWeb\STAWeb\bin\Debug\net8.0\RBush.dll
+E:\Venki Shared Project\STAWeb_Hari\STAWeb\STAWeb\bin\Debug\net8.0\SixLabors.Fonts.dll
+E:\Venki Shared Project\STAWeb_Hari\STAWeb\STAWeb\bin\Debug\net8.0\System.IO.Packaging.dll
+E:\Venki Shared Project\STAWeb_Hari\STAWeb\STAWeb\obj\Debug\net8.0\STAWeb.csproj.AssemblyReference.cache
+E:\Venki Shared Project\STAWeb_Hari\STAWeb\STAWeb\obj\Debug\net8.0\rpswa.dswa.cache.json
+E:\Venki Shared Project\STAWeb_Hari\STAWeb\STAWeb\obj\Debug\net8.0\STAWeb.GeneratedMSBuildEditorConfig.editorconfig
+E:\Venki Shared Project\STAWeb_Hari\STAWeb\STAWeb\obj\Debug\net8.0\STAWeb.AssemblyInfoInputs.cache
+E:\Venki Shared Project\STAWeb_Hari\STAWeb\STAWeb\obj\Debug\net8.0\STAWeb.AssemblyInfo.cs
+E:\Venki Shared Project\STAWeb_Hari\STAWeb\STAWeb\obj\Debug\net8.0\STAWeb.csproj.CoreCompileInputs.cache
+E:\Venki Shared Project\STAWeb_Hari\STAWeb\STAWeb\obj\Debug\net8.0\STAWeb.MvcApplicationPartsAssemblyInfo.cs
+E:\Venki Shared Project\STAWeb_Hari\STAWeb\STAWeb\obj\Debug\net8.0\STAWeb.MvcApplicationPartsAssemblyInfo.cache
+E:\Venki Shared Project\STAWeb_Hari\STAWeb\STAWeb\obj\Debug\net8.0\STAWeb.RazorAssemblyInfo.cache
+E:\Venki Shared Project\STAWeb_Hari\STAWeb\STAWeb\obj\Debug\net8.0\STAWeb.RazorAssemblyInfo.cs
+E:\Venki Shared Project\STAWeb_Hari\STAWeb\STAWeb\obj\Debug\net8.0\STAWeb.sourcelink.json
+E:\Venki Shared Project\STAWeb_Hari\STAWeb\STAWeb\obj\Debug\net8.0\rjimswa.dswa.cache.json
+E:\Venki Shared Project\STAWeb_Hari\STAWeb\STAWeb\obj\Debug\net8.0\rjsmrazor.dswa.cache.json
+E:\Venki Shared Project\STAWeb_Hari\STAWeb\STAWeb\obj\Debug\net8.0\rjsmcshtml.dswa.cache.json
+E:\Venki Shared Project\STAWeb_Hari\STAWeb\STAWeb\obj\Debug\net8.0\scopedcss\Views\Shared\_Layout.cshtml.rz.scp.css
+E:\Venki Shared Project\STAWeb_Hari\STAWeb\STAWeb\obj\Debug\net8.0\scopedcss\bundle\STAWeb.styles.css
+E:\Venki Shared Project\STAWeb_Hari\STAWeb\STAWeb\obj\Debug\net8.0\scopedcss\projectbundle\STAWeb.bundle.scp.css
+E:\Venki Shared Project\STAWeb_Hari\STAWeb\STAWeb\obj\Debug\net8.0\staticwebassets.build.json
+E:\Venki Shared Project\STAWeb_Hari\STAWeb\STAWeb\obj\Debug\net8.0\staticwebassets.build.json.cache
+E:\Venki Shared Project\STAWeb_Hari\STAWeb\STAWeb\obj\Debug\net8.0\staticwebassets.development.json
+E:\Venki Shared Project\STAWeb_Hari\STAWeb\STAWeb\obj\Debug\net8.0\staticwebassets.build.endpoints.json
+E:\Venki Shared Project\STAWeb_Hari\STAWeb\STAWeb\obj\Debug\net8.0\staticwebassets.upToDateCheck.txt
+E:\Venki Shared Project\STAWeb_Hari\STAWeb\STAWeb\obj\Debug\net8.0\STAWeb.csproj.Up2Date
+E:\Venki Shared Project\STAWeb_Hari\STAWeb\STAWeb\obj\Debug\net8.0\STAWeb.dll
+E:\Venki Shared Project\STAWeb_Hari\STAWeb\STAWeb\obj\Debug\net8.0\refint\STAWeb.dll
+E:\Venki Shared Project\STAWeb_Hari\STAWeb\STAWeb\obj\Debug\net8.0\STAWeb.pdb
+E:\Venki Shared Project\STAWeb_Hari\STAWeb\STAWeb\obj\Debug\net8.0\STAWeb.genruntimeconfig.cache
+E:\Venki Shared Project\STAWeb_Hari\STAWeb\STAWeb\obj\Debug\net8.0\ref\STAWeb.dll
+E:\Venki Shared Project\STAWeb_Final\STAWeb\STAWeb\bin\Debug\net8.0\appsettings.Development.json
+E:\Venki Shared Project\STAWeb_Final\STAWeb\STAWeb\bin\Debug\net8.0\appsettings.json
+E:\Venki Shared Project\STAWeb_Final\STAWeb\STAWeb\bin\Debug\net8.0\STAWeb.staticwebassets.runtime.json
+E:\Venki Shared Project\STAWeb_Final\STAWeb\STAWeb\bin\Debug\net8.0\STAWeb.staticwebassets.endpoints.json
+E:\Venki Shared Project\STAWeb_Final\STAWeb\STAWeb\bin\Debug\net8.0\STAWeb.exe
+E:\Venki Shared Project\STAWeb_Final\STAWeb\STAWeb\bin\Debug\net8.0\STAWeb.deps.json
+E:\Venki Shared Project\STAWeb_Final\STAWeb\STAWeb\bin\Debug\net8.0\STAWeb.runtimeconfig.json
+E:\Venki Shared Project\STAWeb_Final\STAWeb\STAWeb\bin\Debug\net8.0\STAWeb.dll
+E:\Venki Shared Project\STAWeb_Final\STAWeb\STAWeb\bin\Debug\net8.0\STAWeb.pdb
+E:\Venki Shared Project\STAWeb_Final\STAWeb\STAWeb\bin\Debug\net8.0\BouncyCastle.Crypto.dll
+E:\Venki Shared Project\STAWeb_Final\STAWeb\STAWeb\bin\Debug\net8.0\ClosedXML.dll
+E:\Venki Shared Project\STAWeb_Final\STAWeb\STAWeb\bin\Debug\net8.0\ClosedXML.Extensions.Mvc.dll
+E:\Venki Shared Project\STAWeb_Final\STAWeb\STAWeb\bin\Debug\net8.0\ClosedXML.Parser.dll
+E:\Venki Shared Project\STAWeb_Final\STAWeb\STAWeb\bin\Debug\net8.0\DocumentFormat.OpenXml.dll
+E:\Venki Shared Project\STAWeb_Final\STAWeb\STAWeb\bin\Debug\net8.0\DocumentFormat.OpenXml.Framework.dll
+E:\Venki Shared Project\STAWeb_Final\STAWeb\STAWeb\bin\Debug\net8.0\ExcelNumberFormat.dll
+E:\Venki Shared Project\STAWeb_Final\STAWeb\STAWeb\bin\Debug\net8.0\FluentValidation.dll
+E:\Venki Shared Project\STAWeb_Final\STAWeb\STAWeb\bin\Debug\net8.0\FluentValidation.AspNetCore.dll
+E:\Venki Shared Project\STAWeb_Final\STAWeb\STAWeb\bin\Debug\net8.0\FluentValidation.DependencyInjectionExtensions.dll
+E:\Venki Shared Project\STAWeb_Final\STAWeb\STAWeb\bin\Debug\net8.0\itextsharp.dll
+E:\Venki Shared Project\STAWeb_Final\STAWeb\STAWeb\bin\Debug\net8.0\System.Web.Razor.dll
+E:\Venki Shared Project\STAWeb_Final\STAWeb\STAWeb\bin\Debug\net8.0\System.Web.Helpers.dll
+E:\Venki Shared Project\STAWeb_Final\STAWeb\STAWeb\bin\Debug\net8.0\System.Web.WebPages.Deployment.dll
+E:\Venki Shared Project\STAWeb_Final\STAWeb\STAWeb\bin\Debug\net8.0\System.Web.WebPages.Razor.dll
+E:\Venki Shared Project\STAWeb_Final\STAWeb\STAWeb\bin\Debug\net8.0\System.Web.WebPages.dll
+E:\Venki Shared Project\STAWeb_Final\STAWeb\STAWeb\bin\Debug\net8.0\Microsoft.Web.Infrastructure.dll
+E:\Venki Shared Project\STAWeb_Final\STAWeb\STAWeb\bin\Debug\net8.0\Newtonsoft.Json.dll
+E:\Venki Shared Project\STAWeb_Final\STAWeb\STAWeb\bin\Debug\net8.0\RBush.dll
+E:\Venki Shared Project\STAWeb_Final\STAWeb\STAWeb\bin\Debug\net8.0\SixLabors.Fonts.dll
+E:\Venki Shared Project\STAWeb_Final\STAWeb\STAWeb\bin\Debug\net8.0\System.IO.Packaging.dll
+E:\Venki Shared Project\STAWeb_Final\STAWeb\STAWeb\obj\Debug\net8.0\STAWeb.csproj.AssemblyReference.cache
+E:\Venki Shared Project\STAWeb_Final\STAWeb\STAWeb\obj\Debug\net8.0\rpswa.dswa.cache.json
+E:\Venki Shared Project\STAWeb_Final\STAWeb\STAWeb\obj\Debug\net8.0\STAWeb.GeneratedMSBuildEditorConfig.editorconfig
+E:\Venki Shared Project\STAWeb_Final\STAWeb\STAWeb\obj\Debug\net8.0\STAWeb.AssemblyInfoInputs.cache
+E:\Venki Shared Project\STAWeb_Final\STAWeb\STAWeb\obj\Debug\net8.0\STAWeb.AssemblyInfo.cs
+E:\Venki Shared Project\STAWeb_Final\STAWeb\STAWeb\obj\Debug\net8.0\STAWeb.csproj.CoreCompileInputs.cache
+E:\Venki Shared Project\STAWeb_Final\STAWeb\STAWeb\obj\Debug\net8.0\STAWeb.MvcApplicationPartsAssemblyInfo.cs
+E:\Venki Shared Project\STAWeb_Final\STAWeb\STAWeb\obj\Debug\net8.0\STAWeb.MvcApplicationPartsAssemblyInfo.cache
+E:\Venki Shared Project\STAWeb_Final\STAWeb\STAWeb\obj\Debug\net8.0\STAWeb.RazorAssemblyInfo.cache
+E:\Venki Shared Project\STAWeb_Final\STAWeb\STAWeb\obj\Debug\net8.0\STAWeb.RazorAssemblyInfo.cs
+E:\Venki Shared Project\STAWeb_Final\STAWeb\STAWeb\obj\Debug\net8.0\STAWeb.sourcelink.json
+E:\Venki Shared Project\STAWeb_Final\STAWeb\STAWeb\obj\Debug\net8.0\rjimswa.dswa.cache.json
+E:\Venki Shared Project\STAWeb_Final\STAWeb\STAWeb\obj\Debug\net8.0\rjsmrazor.dswa.cache.json
+E:\Venki Shared Project\STAWeb_Final\STAWeb\STAWeb\obj\Debug\net8.0\rjsmcshtml.dswa.cache.json
+E:\Venki Shared Project\STAWeb_Final\STAWeb\STAWeb\obj\Debug\net8.0\scopedcss\Views\Shared\_Layout.cshtml.rz.scp.css
+E:\Venki Shared Project\STAWeb_Final\STAWeb\STAWeb\obj\Debug\net8.0\scopedcss\bundle\STAWeb.styles.css
+E:\Venki Shared Project\STAWeb_Final\STAWeb\STAWeb\obj\Debug\net8.0\scopedcss\projectbundle\STAWeb.bundle.scp.css
+E:\Venki Shared Project\STAWeb_Final\STAWeb\STAWeb\obj\Debug\net8.0\staticwebassets.build.json
+E:\Venki Shared Project\STAWeb_Final\STAWeb\STAWeb\obj\Debug\net8.0\staticwebassets.build.json.cache
+E:\Venki Shared Project\STAWeb_Final\STAWeb\STAWeb\obj\Debug\net8.0\staticwebassets.development.json
+E:\Venki Shared Project\STAWeb_Final\STAWeb\STAWeb\obj\Debug\net8.0\staticwebassets.build.endpoints.json
+E:\Venki Shared Project\STAWeb_Final\STAWeb\STAWeb\obj\Debug\net8.0\staticwebassets.upToDateCheck.txt
+E:\Venki Shared Project\STAWeb_Final\STAWeb\STAWeb\obj\Debug\net8.0\STAWeb.csproj.Up2Date
+E:\Venki Shared Project\STAWeb_Final\STAWeb\STAWeb\obj\Debug\net8.0\STAWeb.dll
+E:\Venki Shared Project\STAWeb_Final\STAWeb\STAWeb\obj\Debug\net8.0\refint\STAWeb.dll
+E:\Venki Shared Project\STAWeb_Final\STAWeb\STAWeb\obj\Debug\net8.0\STAWeb.pdb
+E:\Venki Shared Project\STAWeb_Final\STAWeb\STAWeb\obj\Debug\net8.0\STAWeb.genruntimeconfig.cache
+E:\Venki Shared Project\STAWeb_Final\STAWeb\STAWeb\obj\Debug\net8.0\ref\STAWeb.dll
+E:\Venki Shared Project\STAWeb_Final\STAWeb\STAWeb\STAWeb\STAWeb\bin\Debug\net8.0\appsettings.Development.json
+E:\Venki Shared Project\STAWeb_Final\STAWeb\STAWeb\STAWeb\STAWeb\bin\Debug\net8.0\appsettings.json
+E:\Venki Shared Project\STAWeb_Final\STAWeb\STAWeb\STAWeb\STAWeb\bin\Debug\net8.0\STAWeb.staticwebassets.endpoints.json
+E:\Venki Shared Project\STAWeb_Final\STAWeb\STAWeb\STAWeb\STAWeb\bin\Debug\net8.0\STAWeb.staticwebassets.runtime.json
+E:\Venki Shared Project\STAWeb_Final\STAWeb\STAWeb\STAWeb\STAWeb\bin\Debug\net8.0\STAWeb.exe
+E:\Venki Shared Project\STAWeb_Final\STAWeb\STAWeb\STAWeb\STAWeb\bin\Debug\net8.0\STAWeb.deps.json
+E:\Venki Shared Project\STAWeb_Final\STAWeb\STAWeb\STAWeb\STAWeb\bin\Debug\net8.0\STAWeb.runtimeconfig.json
+E:\Venki Shared Project\STAWeb_Final\STAWeb\STAWeb\STAWeb\STAWeb\bin\Debug\net8.0\STAWeb.dll
+E:\Venki Shared Project\STAWeb_Final\STAWeb\STAWeb\STAWeb\STAWeb\bin\Debug\net8.0\STAWeb.pdb
+E:\Venki Shared Project\STAWeb_Final\STAWeb\STAWeb\STAWeb\STAWeb\bin\Debug\net8.0\BouncyCastle.Crypto.dll
+E:\Venki Shared Project\STAWeb_Final\STAWeb\STAWeb\STAWeb\STAWeb\bin\Debug\net8.0\ClosedXML.dll
+E:\Venki Shared Project\STAWeb_Final\STAWeb\STAWeb\STAWeb\STAWeb\bin\Debug\net8.0\ClosedXML.Extensions.Mvc.dll
+E:\Venki Shared Project\STAWeb_Final\STAWeb\STAWeb\STAWeb\STAWeb\bin\Debug\net8.0\ClosedXML.Parser.dll
+E:\Venki Shared Project\STAWeb_Final\STAWeb\STAWeb\STAWeb\STAWeb\bin\Debug\net8.0\DocumentFormat.OpenXml.dll
+E:\Venki Shared Project\STAWeb_Final\STAWeb\STAWeb\STAWeb\STAWeb\bin\Debug\net8.0\DocumentFormat.OpenXml.Framework.dll
+E:\Venki Shared Project\STAWeb_Final\STAWeb\STAWeb\STAWeb\STAWeb\bin\Debug\net8.0\ExcelNumberFormat.dll
+E:\Venki Shared Project\STAWeb_Final\STAWeb\STAWeb\STAWeb\STAWeb\bin\Debug\net8.0\FluentValidation.dll
+E:\Venki Shared Project\STAWeb_Final\STAWeb\STAWeb\STAWeb\STAWeb\bin\Debug\net8.0\FluentValidation.AspNetCore.dll
+E:\Venki Shared Project\STAWeb_Final\STAWeb\STAWeb\STAWeb\STAWeb\bin\Debug\net8.0\FluentValidation.DependencyInjectionExtensions.dll
+E:\Venki Shared Project\STAWeb_Final\STAWeb\STAWeb\STAWeb\STAWeb\bin\Debug\net8.0\itextsharp.dll
+E:\Venki Shared Project\STAWeb_Final\STAWeb\STAWeb\STAWeb\STAWeb\bin\Debug\net8.0\System.Web.Razor.dll
+E:\Venki Shared Project\STAWeb_Final\STAWeb\STAWeb\STAWeb\STAWeb\bin\Debug\net8.0\System.Web.Helpers.dll
+E:\Venki Shared Project\STAWeb_Final\STAWeb\STAWeb\STAWeb\STAWeb\bin\Debug\net8.0\System.Web.WebPages.Deployment.dll
+E:\Venki Shared Project\STAWeb_Final\STAWeb\STAWeb\STAWeb\STAWeb\bin\Debug\net8.0\System.Web.WebPages.Razor.dll
+E:\Venki Shared Project\STAWeb_Final\STAWeb\STAWeb\STAWeb\STAWeb\bin\Debug\net8.0\System.Web.WebPages.dll
+E:\Venki Shared Project\STAWeb_Final\STAWeb\STAWeb\STAWeb\STAWeb\bin\Debug\net8.0\Microsoft.Web.Infrastructure.dll
+E:\Venki Shared Project\STAWeb_Final\STAWeb\STAWeb\STAWeb\STAWeb\bin\Debug\net8.0\Newtonsoft.Json.dll
+E:\Venki Shared Project\STAWeb_Final\STAWeb\STAWeb\STAWeb\STAWeb\bin\Debug\net8.0\RBush.dll
+E:\Venki Shared Project\STAWeb_Final\STAWeb\STAWeb\STAWeb\STAWeb\bin\Debug\net8.0\SixLabors.Fonts.dll
+E:\Venki Shared Project\STAWeb_Final\STAWeb\STAWeb\STAWeb\STAWeb\bin\Debug\net8.0\System.IO.Packaging.dll
+E:\Venki Shared Project\STAWeb_Final\STAWeb\STAWeb\STAWeb\STAWeb\obj\Debug\net8.0\STAWeb.csproj.AssemblyReference.cache
+E:\Venki Shared Project\STAWeb_Final\STAWeb\STAWeb\STAWeb\STAWeb\obj\Debug\net8.0\rpswa.dswa.cache.json
+E:\Venki Shared Project\STAWeb_Final\STAWeb\STAWeb\STAWeb\STAWeb\obj\Debug\net8.0\STAWeb.GeneratedMSBuildEditorConfig.editorconfig
+E:\Venki Shared Project\STAWeb_Final\STAWeb\STAWeb\STAWeb\STAWeb\obj\Debug\net8.0\STAWeb.AssemblyInfoInputs.cache
+E:\Venki Shared Project\STAWeb_Final\STAWeb\STAWeb\STAWeb\STAWeb\obj\Debug\net8.0\STAWeb.AssemblyInfo.cs
+E:\Venki Shared Project\STAWeb_Final\STAWeb\STAWeb\STAWeb\STAWeb\obj\Debug\net8.0\STAWeb.csproj.CoreCompileInputs.cache
+E:\Venki Shared Project\STAWeb_Final\STAWeb\STAWeb\STAWeb\STAWeb\obj\Debug\net8.0\STAWeb.MvcApplicationPartsAssemblyInfo.cs
+E:\Venki Shared Project\STAWeb_Final\STAWeb\STAWeb\STAWeb\STAWeb\obj\Debug\net8.0\STAWeb.MvcApplicationPartsAssemblyInfo.cache
+E:\Venki Shared Project\STAWeb_Final\STAWeb\STAWeb\STAWeb\STAWeb\obj\Debug\net8.0\STAWeb.RazorAssemblyInfo.cache
+E:\Venki Shared Project\STAWeb_Final\STAWeb\STAWeb\STAWeb\STAWeb\obj\Debug\net8.0\STAWeb.RazorAssemblyInfo.cs
+E:\Venki Shared Project\STAWeb_Final\STAWeb\STAWeb\STAWeb\STAWeb\obj\Debug\net8.0\STAWeb.sourcelink.json
+E:\Venki Shared Project\STAWeb_Final\STAWeb\STAWeb\STAWeb\STAWeb\obj\Debug\net8.0\rjimswa.dswa.cache.json
+E:\Venki Shared Project\STAWeb_Final\STAWeb\STAWeb\STAWeb\STAWeb\obj\Debug\net8.0\rjsmrazor.dswa.cache.json
+E:\Venki Shared Project\STAWeb_Final\STAWeb\STAWeb\STAWeb\STAWeb\obj\Debug\net8.0\rjsmcshtml.dswa.cache.json
+E:\Venki Shared Project\STAWeb_Final\STAWeb\STAWeb\STAWeb\STAWeb\obj\Debug\net8.0\scopedcss\Views\Shared\_Layout.cshtml.rz.scp.css
+E:\Venki Shared Project\STAWeb_Final\STAWeb\STAWeb\STAWeb\STAWeb\obj\Debug\net8.0\scopedcss\bundle\STAWeb.styles.css
+E:\Venki Shared Project\STAWeb_Final\STAWeb\STAWeb\STAWeb\STAWeb\obj\Debug\net8.0\scopedcss\projectbundle\STAWeb.bundle.scp.css
+E:\Venki Shared Project\STAWeb_Final\STAWeb\STAWeb\STAWeb\STAWeb\obj\Debug\net8.0\staticwebassets.build.json
+E:\Venki Shared Project\STAWeb_Final\STAWeb\STAWeb\STAWeb\STAWeb\obj\Debug\net8.0\staticwebassets.build.json.cache
+E:\Venki Shared Project\STAWeb_Final\STAWeb\STAWeb\STAWeb\STAWeb\obj\Debug\net8.0\staticwebassets.development.json
+E:\Venki Shared Project\STAWeb_Final\STAWeb\STAWeb\STAWeb\STAWeb\obj\Debug\net8.0\staticwebassets.build.endpoints.json
+E:\Venki Shared Project\STAWeb_Final\STAWeb\STAWeb\STAWeb\STAWeb\obj\Debug\net8.0\staticwebassets.upToDateCheck.txt
+E:\Venki Shared Project\STAWeb_Final\STAWeb\STAWeb\STAWeb\STAWeb\obj\Debug\net8.0\STAWeb.csproj.Up2Date
+E:\Venki Shared Project\STAWeb_Final\STAWeb\STAWeb\STAWeb\STAWeb\obj\Debug\net8.0\STAWeb.dll
+E:\Venki Shared Project\STAWeb_Final\STAWeb\STAWeb\STAWeb\STAWeb\obj\Debug\net8.0\refint\STAWeb.dll
+E:\Venki Shared Project\STAWeb_Final\STAWeb\STAWeb\STAWeb\STAWeb\obj\Debug\net8.0\STAWeb.pdb
+E:\Venki Shared Project\STAWeb_Final\STAWeb\STAWeb\STAWeb\STAWeb\obj\Debug\net8.0\STAWeb.genruntimeconfig.cache
+E:\Venki Shared Project\STAWeb_Final\STAWeb\STAWeb\STAWeb\STAWeb\obj\Debug\net8.0\ref\STAWeb.dll
+E:\Venki Shared Project\STAWeb_Final\STAWeb\STAWeb\STAWeb\bin\Debug\net8.0\appsettings.Development.json
+E:\Venki Shared Project\STAWeb_Final\STAWeb\STAWeb\STAWeb\bin\Debug\net8.0\appsettings.json
+E:\Venki Shared Project\STAWeb_Final\STAWeb\STAWeb\STAWeb\bin\Debug\net8.0\STAWeb.staticwebassets.runtime.json
+E:\Venki Shared Project\STAWeb_Final\STAWeb\STAWeb\STAWeb\bin\Debug\net8.0\STAWeb.staticwebassets.endpoints.json
+E:\Venki Shared Project\STAWeb_Final\STAWeb\STAWeb\STAWeb\bin\Debug\net8.0\STAWeb.exe
+E:\Venki Shared Project\STAWeb_Final\STAWeb\STAWeb\STAWeb\bin\Debug\net8.0\STAWeb.deps.json
+E:\Venki Shared Project\STAWeb_Final\STAWeb\STAWeb\STAWeb\bin\Debug\net8.0\STAWeb.runtimeconfig.json
+E:\Venki Shared Project\STAWeb_Final\STAWeb\STAWeb\STAWeb\bin\Debug\net8.0\STAWeb.dll
+E:\Venki Shared Project\STAWeb_Final\STAWeb\STAWeb\STAWeb\bin\Debug\net8.0\STAWeb.pdb
+E:\Venki Shared Project\STAWeb_Final\STAWeb\STAWeb\STAWeb\bin\Debug\net8.0\BouncyCastle.Crypto.dll
+E:\Venki Shared Project\STAWeb_Final\STAWeb\STAWeb\STAWeb\bin\Debug\net8.0\ClosedXML.dll
+E:\Venki Shared Project\STAWeb_Final\STAWeb\STAWeb\STAWeb\bin\Debug\net8.0\ClosedXML.Extensions.Mvc.dll
+E:\Venki Shared Project\STAWeb_Final\STAWeb\STAWeb\STAWeb\bin\Debug\net8.0\ClosedXML.Parser.dll
+E:\Venki Shared Project\STAWeb_Final\STAWeb\STAWeb\STAWeb\bin\Debug\net8.0\DocumentFormat.OpenXml.dll
+E:\Venki Shared Project\STAWeb_Final\STAWeb\STAWeb\STAWeb\bin\Debug\net8.0\DocumentFormat.OpenXml.Framework.dll
+E:\Venki Shared Project\STAWeb_Final\STAWeb\STAWeb\STAWeb\bin\Debug\net8.0\ExcelNumberFormat.dll
+E:\Venki Shared Project\STAWeb_Final\STAWeb\STAWeb\STAWeb\bin\Debug\net8.0\FluentValidation.dll
+E:\Venki Shared Project\STAWeb_Final\STAWeb\STAWeb\STAWeb\bin\Debug\net8.0\FluentValidation.AspNetCore.dll
+E:\Venki Shared Project\STAWeb_Final\STAWeb\STAWeb\STAWeb\bin\Debug\net8.0\FluentValidation.DependencyInjectionExtensions.dll
+E:\Venki Shared Project\STAWeb_Final\STAWeb\STAWeb\STAWeb\bin\Debug\net8.0\itextsharp.dll
+E:\Venki Shared Project\STAWeb_Final\STAWeb\STAWeb\STAWeb\bin\Debug\net8.0\System.Web.Razor.dll
+E:\Venki Shared Project\STAWeb_Final\STAWeb\STAWeb\STAWeb\bin\Debug\net8.0\System.Web.Helpers.dll
+E:\Venki Shared Project\STAWeb_Final\STAWeb\STAWeb\STAWeb\bin\Debug\net8.0\System.Web.WebPages.Deployment.dll
+E:\Venki Shared Project\STAWeb_Final\STAWeb\STAWeb\STAWeb\bin\Debug\net8.0\System.Web.WebPages.Razor.dll
+E:\Venki Shared Project\STAWeb_Final\STAWeb\STAWeb\STAWeb\bin\Debug\net8.0\System.Web.WebPages.dll
+E:\Venki Shared Project\STAWeb_Final\STAWeb\STAWeb\STAWeb\bin\Debug\net8.0\Microsoft.Web.Infrastructure.dll
+E:\Venki Shared Project\STAWeb_Final\STAWeb\STAWeb\STAWeb\bin\Debug\net8.0\Newtonsoft.Json.dll
+E:\Venki Shared Project\STAWeb_Final\STAWeb\STAWeb\STAWeb\bin\Debug\net8.0\RBush.dll
+E:\Venki Shared Project\STAWeb_Final\STAWeb\STAWeb\STAWeb\bin\Debug\net8.0\SixLabors.Fonts.dll
+E:\Venki Shared Project\STAWeb_Final\STAWeb\STAWeb\STAWeb\bin\Debug\net8.0\System.IO.Packaging.dll
+E:\Venki Shared Project\STAWeb_Final\STAWeb\STAWeb\STAWeb\obj\Debug\net8.0\STAWeb.csproj.AssemblyReference.cache
+E:\Venki Shared Project\STAWeb_Final\STAWeb\STAWeb\STAWeb\obj\Debug\net8.0\rpswa.dswa.cache.json
+E:\Venki Shared Project\STAWeb_Final\STAWeb\STAWeb\STAWeb\obj\Debug\net8.0\STAWeb.GeneratedMSBuildEditorConfig.editorconfig
+E:\Venki Shared Project\STAWeb_Final\STAWeb\STAWeb\STAWeb\obj\Debug\net8.0\STAWeb.AssemblyInfoInputs.cache
+E:\Venki Shared Project\STAWeb_Final\STAWeb\STAWeb\STAWeb\obj\Debug\net8.0\STAWeb.AssemblyInfo.cs
+E:\Venki Shared Project\STAWeb_Final\STAWeb\STAWeb\STAWeb\obj\Debug\net8.0\STAWeb.csproj.CoreCompileInputs.cache
+E:\Venki Shared Project\STAWeb_Final\STAWeb\STAWeb\STAWeb\obj\Debug\net8.0\STAWeb.MvcApplicationPartsAssemblyInfo.cs
+E:\Venki Shared Project\STAWeb_Final\STAWeb\STAWeb\STAWeb\obj\Debug\net8.0\STAWeb.MvcApplicationPartsAssemblyInfo.cache
+E:\Venki Shared Project\STAWeb_Final\STAWeb\STAWeb\STAWeb\obj\Debug\net8.0\STAWeb.RazorAssemblyInfo.cache
+E:\Venki Shared Project\STAWeb_Final\STAWeb\STAWeb\STAWeb\obj\Debug\net8.0\STAWeb.RazorAssemblyInfo.cs
+E:\Venki Shared Project\STAWeb_Final\STAWeb\STAWeb\STAWeb\obj\Debug\net8.0\STAWeb.sourcelink.json
+E:\Venki Shared Project\STAWeb_Final\STAWeb\STAWeb\STAWeb\obj\Debug\net8.0\rjimswa.dswa.cache.json
+E:\Venki Shared Project\STAWeb_Final\STAWeb\STAWeb\STAWeb\obj\Debug\net8.0\rjsmrazor.dswa.cache.json
+E:\Venki Shared Project\STAWeb_Final\STAWeb\STAWeb\STAWeb\obj\Debug\net8.0\rjsmcshtml.dswa.cache.json
+E:\Venki Shared Project\STAWeb_Final\STAWeb\STAWeb\STAWeb\obj\Debug\net8.0\scopedcss\Views\Shared\_Layout.cshtml.rz.scp.css
+E:\Venki Shared Project\STAWeb_Final\STAWeb\STAWeb\STAWeb\obj\Debug\net8.0\scopedcss\bundle\STAWeb.styles.css
+E:\Venki Shared Project\STAWeb_Final\STAWeb\STAWeb\STAWeb\obj\Debug\net8.0\scopedcss\projectbundle\STAWeb.bundle.scp.css
+E:\Venki Shared Project\STAWeb_Final\STAWeb\STAWeb\STAWeb\obj\Debug\net8.0\staticwebassets.build.json
+E:\Venki Shared Project\STAWeb_Final\STAWeb\STAWeb\STAWeb\obj\Debug\net8.0\staticwebassets.build.json.cache
+E:\Venki Shared Project\STAWeb_Final\STAWeb\STAWeb\STAWeb\obj\Debug\net8.0\staticwebassets.development.json
+E:\Venki Shared Project\STAWeb_Final\STAWeb\STAWeb\STAWeb\obj\Debug\net8.0\staticwebassets.build.endpoints.json
+E:\Venki Shared Project\STAWeb_Final\STAWeb\STAWeb\STAWeb\obj\Debug\net8.0\staticwebassets.upToDateCheck.txt
+E:\Venki Shared Project\STAWeb_Final\STAWeb\STAWeb\STAWeb\obj\Debug\net8.0\STAWeb.csproj.Up2Date
+E:\Venki Shared Project\STAWeb_Final\STAWeb\STAWeb\STAWeb\obj\Debug\net8.0\STAWeb.dll
+E:\Venki Shared Project\STAWeb_Final\STAWeb\STAWeb\STAWeb\obj\Debug\net8.0\refint\STAWeb.dll
+E:\Venki Shared Project\STAWeb_Final\STAWeb\STAWeb\STAWeb\obj\Debug\net8.0\STAWeb.pdb
+E:\Venki Shared Project\STAWeb_Final\STAWeb\STAWeb\STAWeb\obj\Debug\net8.0\STAWeb.genruntimeconfig.cache
+E:\Venki Shared Project\STAWeb_Final\STAWeb\STAWeb\STAWeb\obj\Debug\net8.0\ref\STAWeb.dll
+E:\Venki Shared Project\IPO\IPOWeb\bin\Debug\net8.0\appsettings.Development.json
+E:\Venki Shared Project\IPO\IPOWeb\bin\Debug\net8.0\appsettings.json
+E:\Venki Shared Project\IPO\IPOWeb\bin\Debug\net8.0\STAWeb.staticwebassets.endpoints.json
+E:\Venki Shared Project\IPO\IPOWeb\bin\Debug\net8.0\STAWeb.staticwebassets.runtime.json
+E:\Venki Shared Project\IPO\IPOWeb\bin\Debug\net8.0\STAWeb.exe
+E:\Venki Shared Project\IPO\IPOWeb\bin\Debug\net8.0\STAWeb.deps.json
+E:\Venki Shared Project\IPO\IPOWeb\bin\Debug\net8.0\STAWeb.runtimeconfig.json
+E:\Venki Shared Project\IPO\IPOWeb\bin\Debug\net8.0\STAWeb.dll
+E:\Venki Shared Project\IPO\IPOWeb\bin\Debug\net8.0\STAWeb.pdb
+E:\Venki Shared Project\IPO\IPOWeb\bin\Debug\net8.0\BouncyCastle.Crypto.dll
+E:\Venki Shared Project\IPO\IPOWeb\bin\Debug\net8.0\ClosedXML.dll
+E:\Venki Shared Project\IPO\IPOWeb\bin\Debug\net8.0\ClosedXML.Extensions.Mvc.dll
+E:\Venki Shared Project\IPO\IPOWeb\bin\Debug\net8.0\ClosedXML.Parser.dll
+E:\Venki Shared Project\IPO\IPOWeb\bin\Debug\net8.0\DocumentFormat.OpenXml.dll
+E:\Venki Shared Project\IPO\IPOWeb\bin\Debug\net8.0\DocumentFormat.OpenXml.Framework.dll
+E:\Venki Shared Project\IPO\IPOWeb\bin\Debug\net8.0\ExcelNumberFormat.dll
+E:\Venki Shared Project\IPO\IPOWeb\bin\Debug\net8.0\FluentValidation.dll
+E:\Venki Shared Project\IPO\IPOWeb\bin\Debug\net8.0\FluentValidation.AspNetCore.dll
+E:\Venki Shared Project\IPO\IPOWeb\bin\Debug\net8.0\FluentValidation.DependencyInjectionExtensions.dll
+E:\Venki Shared Project\IPO\IPOWeb\bin\Debug\net8.0\itextsharp.dll
+E:\Venki Shared Project\IPO\IPOWeb\bin\Debug\net8.0\System.Web.Razor.dll
+E:\Venki Shared Project\IPO\IPOWeb\bin\Debug\net8.0\System.Web.Helpers.dll
+E:\Venki Shared Project\IPO\IPOWeb\bin\Debug\net8.0\System.Web.WebPages.Deployment.dll
+E:\Venki Shared Project\IPO\IPOWeb\bin\Debug\net8.0\System.Web.WebPages.Razor.dll
+E:\Venki Shared Project\IPO\IPOWeb\bin\Debug\net8.0\System.Web.WebPages.dll
+E:\Venki Shared Project\IPO\IPOWeb\bin\Debug\net8.0\Microsoft.Web.Infrastructure.dll
+E:\Venki Shared Project\IPO\IPOWeb\bin\Debug\net8.0\Newtonsoft.Json.dll
+E:\Venki Shared Project\IPO\IPOWeb\bin\Debug\net8.0\RBush.dll
+E:\Venki Shared Project\IPO\IPOWeb\bin\Debug\net8.0\SixLabors.Fonts.dll
+E:\Venki Shared Project\IPO\IPOWeb\bin\Debug\net8.0\System.IO.Packaging.dll
+E:\Venki Shared Project\IPO\IPOWeb\obj\Debug\net8.0\STAWeb.csproj.AssemblyReference.cache
+E:\Venki Shared Project\IPO\IPOWeb\obj\Debug\net8.0\rpswa.dswa.cache.json
+E:\Venki Shared Project\IPO\IPOWeb\obj\Debug\net8.0\STAWeb.GeneratedMSBuildEditorConfig.editorconfig
+E:\Venki Shared Project\IPO\IPOWeb\obj\Debug\net8.0\STAWeb.AssemblyInfoInputs.cache
+E:\Venki Shared Project\IPO\IPOWeb\obj\Debug\net8.0\STAWeb.AssemblyInfo.cs
+E:\Venki Shared Project\IPO\IPOWeb\obj\Debug\net8.0\STAWeb.csproj.CoreCompileInputs.cache
+E:\Venki Shared Project\IPO\IPOWeb\obj\Debug\net8.0\STAWeb.MvcApplicationPartsAssemblyInfo.cs
+E:\Venki Shared Project\IPO\IPOWeb\obj\Debug\net8.0\STAWeb.MvcApplicationPartsAssemblyInfo.cache
+E:\Venki Shared Project\IPO\IPOWeb\obj\Debug\net8.0\STAWeb.RazorAssemblyInfo.cache
+E:\Venki Shared Project\IPO\IPOWeb\obj\Debug\net8.0\STAWeb.RazorAssemblyInfo.cs
+E:\Venki Shared Project\IPO\IPOWeb\obj\Debug\net8.0\STAWeb.sourcelink.json
+E:\Venki Shared Project\IPO\IPOWeb\obj\Debug\net8.0\rjimswa.dswa.cache.json
+E:\Venki Shared Project\IPO\IPOWeb\obj\Debug\net8.0\rjsmrazor.dswa.cache.json
+E:\Venki Shared Project\IPO\IPOWeb\obj\Debug\net8.0\rjsmcshtml.dswa.cache.json
+E:\Venki Shared Project\IPO\IPOWeb\obj\Debug\net8.0\scopedcss\Views\Shared\_Layout.cshtml.rz.scp.css
+E:\Venki Shared Project\IPO\IPOWeb\obj\Debug\net8.0\scopedcss\bundle\STAWeb.styles.css
+E:\Venki Shared Project\IPO\IPOWeb\obj\Debug\net8.0\scopedcss\projectbundle\STAWeb.bundle.scp.css
+E:\Venki Shared Project\IPO\IPOWeb\obj\Debug\net8.0\staticwebassets.build.json
+E:\Venki Shared Project\IPO\IPOWeb\obj\Debug\net8.0\staticwebassets.build.json.cache
+E:\Venki Shared Project\IPO\IPOWeb\obj\Debug\net8.0\staticwebassets.development.json
+E:\Venki Shared Project\IPO\IPOWeb\obj\Debug\net8.0\staticwebassets.build.endpoints.json
+E:\Venki Shared Project\IPO\IPOWeb\obj\Debug\net8.0\staticwebassets.upToDateCheck.txt
+E:\Venki Shared Project\IPO\IPOWeb\obj\Debug\net8.0\STAWeb.csproj.Up2Date
+E:\Venki Shared Project\IPO\IPOWeb\obj\Debug\net8.0\STAWeb.dll
+E:\Venki Shared Project\IPO\IPOWeb\obj\Debug\net8.0\refint\STAWeb.dll
+E:\Venki Shared Project\IPO\IPOWeb\obj\Debug\net8.0\STAWeb.pdb
+E:\Venki Shared Project\IPO\IPOWeb\obj\Debug\net8.0\STAWeb.genruntimeconfig.cache
+E:\Venki Shared Project\IPO\IPOWeb\obj\Debug\net8.0\ref\STAWeb.dll
