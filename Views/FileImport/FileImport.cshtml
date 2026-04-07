@@ -220,7 +220,7 @@
                                         </div>
                                         <div class="col-sm-1">
                                             <img style="margin-top: 35px; height: 25px; width: 25px; cursor:pointer;" onclick="downloadTemplate()" src="~/Assets/images/download.png" />
-                                        </div>
+                                        </div>                                      
                                         <div id="bankrow" class="col-sm-2" style="margin-left:-50px;display:none;">
                                             <label class="form-label" for="bank" data-field="bank">Select Bank</label>&nbsp;<span style="font-size: 12px;color:red;font-weight: bold;">*</span>
                                            <select id="bank" class="form-control">                                                
@@ -453,7 +453,12 @@
       function nextprocess() {                 
             var selected = $("input[name='clientSelect']:checked");
             if (selected.length === 0) {
-                alert("Please select a dataset");
+                // alert("Please select a dataset");
+                 $.alert({
+                    title: 'IPO Allotment' ,
+                    content: "Please select a dataset",
+                    type: 'red',
+                });
                 return;
             }
             document.getElementById("MultipleFile").value = "";
