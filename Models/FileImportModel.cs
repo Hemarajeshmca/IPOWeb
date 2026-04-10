@@ -17,6 +17,7 @@ namespace IPOWeb.Models
     {
         public string reference_no { get; set; }
         public string bank_code { get; set; }
+        public string asba_flag { get; set; }
     }
     public class PipelineModel
     {

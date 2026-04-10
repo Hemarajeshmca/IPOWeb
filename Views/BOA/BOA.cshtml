@@ -152,6 +152,12 @@
             right: 340px;
             width: 30%;
         }
+
+        .col-md-2-4 {
+            flex: 0 0 auto;
+            width: 19%;
+        }
+
     </style>
 
 </head>
@@ -159,101 +165,91 @@
 <body class="hold-transition skin-blue sidebar-mini fixed">
     <div class="content-wrapper">
         <div class="container-xxl flex-grow-1 container-p-y">
-            <div class="card-body" style="margin-top:5px;height: 556px;width: 103%;margin-left: -18px;overflow: auto;">
+            <div class="card-body" style="margin-top:5px;height: 556px;width: 103%;margin-left: -18px;">
                     <!-- File Path -->
                     <div class="row">
-
-                        <div class="col-md-9">
-                            <label class="form-label">Output File for Minutes of Meeting</label>
-                        <input style="width: 100%;" class="form-control" type="text"
-                                   value="C:\MAIPO_2LOT_BB071\Reports\Annexure_16_Basis_of_Allotments.xlsx">
-                        </div>
-
-                    <div class="col radio-container col-md-2" style="display: flex;flex-direction: row; flex-direction: row; margin-top: 30px;">
-                        <label class="radio-item">
+                    <div class="col-md-2-4">
+                        <label class="form-label">Output File for Minutes of Meeting</label>  
+                        <input type="hidden" id="ipocode" />
+                        <input type="hidden" id="clientid" />
+                        <input style="width: 126%;" class="form-control" type="text"
+                               value="C:\MAIPO_2LOT_BB071\Reports\Annexure_16_Basis_of_Allotments.xlsx">
+                      </div>
+                    <div class="col-md-2-4 d-flex align-items-center" style="position: relative;left: 75px;">
+                        <label class="radio-item me-3">
                             <input type="radio" name="exchange"> NSE
                         </label>
-
                         <label class="radio-item">
                             <input type="radio" name="exchange" checked> BSE
                         </label>
                     </div>
-
+                    <div class="col-md-2-4">
+                        <label class="form-label">Opening Date</label>
+                        <input type="date" class="form-control" id="offer_openingdate">
                     </div>
-
-                    <!-- Dates -->
-                    <div class="row">
-                        <div class="col">
-                            <label class="form-label">Opening Date</label>
-                        <input type="date" class="form-control" value="January 28, 2026">
-                        </div>
-
-                        <div class="col">
-                            <label class="form-label">Closing Date</label>
-                        <input type="date" class="form-control" value="January 30, 2026">
-                        </div>
-
-                        <div class="col">
-                            <label class="form-label">Final Prospectus Date</label>
-                        <input type="date" class="form-control" value="02/02/2026">
-                        </div>
-
-
+                    <div class="col-md-2-4">
+                        <label class="form-label">Closing Date</label>
+                        <input type="date" class="form-control" id="offer_closingdate">
                     </div>
-
-                    <!-- Company Info -->
-                    <div class="row">
+                    <div class="col-md-2-4">
+                        <label class="form-label">Final Prospectus Date</label>
+                        <input type="date" class="form-control" id="offer_listingdate">
+                    </div>
+                    </div>
+                <!-- Company Info -->
+                <div class="row">
                     <div class="col">
-                            <label class="form-label">CIN NO</label>
-                        <input type="text" class="form-control" value="U29309DL2019PLC353936">
-                        </div>
-
-                        <div class="col">
-                            <label class="form-label">ISIN NO</label>
-                        <input type="text" class="form-control" value="INE285L01011">
-                        </div>
-
-                        <div class="col">
-                            <label class="form-label">Face Value</label>
-                        <input type="number" class="form-control" value="10.00">
-                        </div>
-
-                        <div class="col">
-                            <label class="form-label">As Price</label>
-                        <input type="number" class="form-control" value="123.00">
-                        </div>
-
-                        <div class="col">
-                            <label class="form-label">Premium</label>
-                        <input type="text" class="form-control" value="113">
-                        </div>
-
-                        <div class="col">
-                            <label class="form-label">Lot Size</label>
-                        <input type="number" class="form-control" value="1000">
-                        </div>
+                        <label class="form-label">CIN NO</label>
+                        <input type="text" class="form-control" id="client_cin">
                     </div>
+
+                    <div class="col">
+                        <label class="form-label">ISIN NO</label>
+                        <input type="text" class="form-control" id="offer_isin" >
+                    </div>
+
+                    <div class="col">
+                        <label class="form-label">Face Value</label>
+                        <input type="number" class="form-control" id="offer_facevalue">
+                    </div>
+
+                    <div class="col">
+                        <label class="form-label">As Price</label>
+                        <input type="number" class="form-control" id="asprice">
+                    </div>
+
+                    <div class="col">
+                        <label class="form-label">Premium</label>
+                        <input type="number" class="form-control" id="offer_premiun">
+                    </div>
+
+                    <div class="col">
+                        <label class="form-label">Lot Size</label>
+                        <input type="number" class="form-control" id="offer_lotsize">
+                    </div>
+                  
+                </div>                  
 
                     <!-- Issue Details -->
                     <div class="row">
                         <div class="col">
                             <label class="form-label">Pre Issue Size</label>
-                        <input type="number" class="form-control" value="16000000">
+                        <input type="number" class="form-control" id="offer_precapital">
                         </div>
 
                         <div class="col">
                             <label class="form-label">Current Issue Size</label>
-                        <input type="number" class="form-control" value="5400000">
+                        <input type="number" class="form-control" id="offer_issuesize">
                         </div>
 
                         <div class="col">
                             <label class="form-label">Post Issue</label>
-                        <input type="number" class="form-control" value="20400000">
+                        <input type="number" class="form-control" id="offer_postcapital">
                         </div>
 
                         <div class="col">
                             <label class="form-label">Market Maker Shares</label>
-                        <input type="number" class="form-control" value="298000">
+                        <input type="number" class="form-control" id= "mm">
                         </div>
 
                         <div class="col">
@@ -263,7 +259,7 @@
 
                         <div class="col">
                             <label class="form-label">Emp. Shares</label>
-                        <input type="number" class="form-control" value="0">
+                        <input type="number" class="form-control" id="offer_empdiscount">
                         </div>
 
                         <div class="col">
@@ -355,10 +351,85 @@
 
 </html>
 
- <script>
-    $( document ).ready(function() {
-             $('#navhead').text('Basics of Allotment');
+ <script>     
+    $( document ).ready(function() {             
+             $('#navhead').text('Basics of Allotment');       
+             var ipocode = localStorage.getItem("selectedIPO");
+             var clientid = localStorage.getItem("selectedClientId");
+             $("#ipocode").val(ipocode);
+             $("#clientid").val(clientid);
+            fetchIssuesetup();
     });
+
+
+    function fetchIssuesetup(){         
+            var offer_code = $("#ipocode").val();
+            var client_code = $("#clientid").val();
+            
+            try {
+            $.ajax({
+                type: "GET",
+                url: '@Url.Action("OfferFetch", "IssueSetup")',
+                dataType: 'json',
+                contentType: 'application/json; charset=utf-8',
+                data: {
+                    client_code:client_code,
+                    offer_code:  offer_code
+                },
+                success: function (response) {
+                        if (response && response.success == true ) {
+                        var data = JSON.parse(response.data);
+                        offerHeader = data.Table;                        
+                        offerDetails = data.Table1;                       
+                        offerBank = data.Table2;
+                        offerStackHolder = data.Table3;
+                        offerCategory = data.Table4;
+                        offerMillstone = data.Table5;   
+                        var 
+                         console.log("offerDetails", offerDetails);
+                         var client_cin = offerHeader[0].client_cin;
+                        $('#client_cin').val(client_cin);
+                        var offer_isin = offerHeader[0].offer_isin;
+                        $('#offer_isin').val(offer_isin);
+                        var facevalue = offerDetails[0].offer_facevalue;
+                         $('#offer_facevalue').val(facevalue);
+                        var premium = offerDetails[0].offer_premiun;
+                         $('#offer_premiun').val(premium);
+                         var offersize = offerDetails[0].offer_issuesize;
+                         $('#offer_issuesize').val(offersize);
+                          var lotsize = offerDetails[0].offer_lotsize;
+                         $('#offer_lotsize').val(lotsize);
+                         var diff = offerDetails[0].offer_fixedprice -  offerDetails[0].offer_facevalue;
+                         $('#asprice').val(diff);
+                          var precapital = offerDetails[0].offer_precapital;
+                         $('#offer_precapital').val(precapital);
+                         var postcapital = offerDetails[0].offer_postcapital;
+                         $('#offer_postcapital').val(postcapital);
+                         var empshares = offerHeader[0].offer_empdiscount;
+                         $('#offer_empdiscount').val(empshares);
+                         var opendate = offerMillstone[0].offer_openingdate;
+                         var formattedDate = new Date(opendate).toISOString().split('T')[0];
+                        $('#offer_openingdate').val(formattedDate);
+                         var closedate = offerMillstone[0].offer_closingdate;
+                         var formattedCDate = new Date(closedate).toISOString().split('T')[0];
+                        $('#offer_closingdate').val(formattedCDate);
+                         var listdate = offerMillstone[0].offer_listingdate;
+                         var formattedLDate = new Date(listdate).toISOString().split('T')[0];
+                        $('#offer_listingdate').val(formattedLDate);
+                        }
+                    else {
+                    }
+                },
+                error: function (er) {
+                    alert(er)
+                    console.log(er)
+                }
+            });
+        }
+            catch (e) {
+                console.log(e)
+            }
+        }
 
     function generateReport() {
         //  if (!offer_code) {
@@ -369,9 +440,67 @@
         //     });
         //     return;
         // }
-        var offer_code = localStorage.getItem("selectedIPO");
-        var url = '/BOA/getboareport'
-            + '?offer_code=' + encodeURIComponent(offer_code);
-        window.location.href = url;
+        // var offer_code = localStorage.getItem("selectedIPO");
+        // var url = '/BOA/getboareport'
+        //     + '?offer_code=' + encodeURIComponent(offer_code);
+        // window.location.href = url;
+
+         var offer_code =  localStorage.getItem("selectedIPO");
+          try {
+            customAjax({
+                type: "GET",
+                url: '@Url.Action("getMomReports", "BOA")',
+                data: {
+                offer_code: offer_code
+                },
+                    success: function (response) {
+                        if (response && response.success) {
+                            var data = response.data;
+                            console.log("Datasets :", data);
+                            var table1 = data.table1;
+                            var row = table1[0];
+                            var table2 = data.table2;
+                            var table3 = data.table3;
+                            var table4 = data.table4;
+                            var table5 = data.table5;
+                            cin = row.client_cin;
+                            $('#cin').val(row.client_cin);
+                            $.ajax({
+                                url: '@Url.Action("generateReport", "BOA")',
+                                type: "POST",
+                                contentType: "application/json",
+                                data: JSON.stringify({
+                                    summary: row,
+                                    bankData: table2,
+                                    nonasbabankData: table3,
+                                    RejectionData: table4,
+                                    CategoryData: table5
+                                }),
+                                success: function (res) {                                   
+                                    var link = document.createElement('a');
+                                    link.href = res.filePath; 
+                                    link.download = "MOM_Report.docx";
+                                    document.body.appendChild(link);
+                                    link.click();
+                                    document.body.removeChild(link);
+                                }
+                            });
+                        }
+                        else {
+                        $.alert({
+                            title: 'IPO Allotment',
+                            content: 'Save failed!',
+                            type: 'red',
+                        });
+                    }
+                },
+                error: function (er) {
+                    console.log(er);
+                }
+            });
+        } catch (e) {
+            console.log(e);
+        }
+
     }
     </script>
