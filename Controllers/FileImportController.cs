@@ -109,6 +109,7 @@ namespace IPOWeb.Controllers
                 // Example: get first item
                 var reference_no = refBankList[0].reference_no;
                 var bank_code = refBankList[0].bank_code;
+                var asba_flag = refBankList[0].asba_flag;
 
                 string parameterJson = JsonConvert.SerializeObject(refBankList);
 

@@ -709,8 +709,12 @@
         $(document).on("change", "#iponames", function () {
         var ipoId = $(this).val();
         var ipoText = $("#iponames option:selected").text();
+        var clientId = ipoId.split('-')[0];
         localStorage.setItem("selectedIPO", ipoId);
         localStorage.setItem("selectedIPOText", ipoText);
+        localStorage.setItem("selectedClientId", clientId);
+        console.log("ipoId :", ipoId);
+        console.log("ipoText :", ipoText);
         });
         $(document).ready(function () {
             getofferList();
