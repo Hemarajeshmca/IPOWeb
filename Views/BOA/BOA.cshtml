@@ -155,9 +155,12 @@
 
         .col-md-2-4 {
             flex: 0 0 auto;
-            width: 19%;
+            width: 16%;
         }
 
+        .form-check {
+            margin-bottom: 0;
+        }
     </style>
 
 </head>
@@ -166,136 +169,136 @@
     <div class="content-wrapper">
         <div class="container-xxl flex-grow-1 container-p-y">
             <div class="card-body" style="margin-top:5px;height: 556px;width: 103%;margin-left: -18px;">
-                    <!-- File Path -->
-                    <div class="row">
+                <!-- File Path -->
+                <div class="row">
                     <div class="col-md-2-4">
-                        <label class="form-label">Output File for Minutes of Meeting</label>  
+
                         <input type="hidden" id="ipocode" />
                         <input type="hidden" id="clientid" />
-                        <input style="width: 126%;" class="form-control" type="text"
-                               value="C:\MAIPO_2LOT_BB071\Reports\Annexure_16_Basis_of_Allotments.xlsx">
-                      </div>
-                    <div class="col-md-2-4 d-flex align-items-center" style="position: relative;left: 75px;">
-                        <label class="radio-item me-3">
-                            <input type="radio" name="exchange"> NSE
-                        </label>
-                        <label class="radio-item">
-                            <input type="radio" name="exchange" checked> BSE
-                        </label>
+                        <label class="form-label">Listing</label><br />
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" type="radio" name="exchange" id="nse" value="NSE">
+                            <label class="form-check-label" for="nse">NSE</label>
+                        </div>
+
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" type="radio" name="exchange" id="bse" value="BSE" checked>
+                            <label class="form-check-label" for="bse">BSE</label>
+                        </div>
+
                     </div>
                     <div class="col-md-2-4">
                         <label class="form-label">Opening Date</label>
-                        <input type="date" class="form-control" id="offer_openingdate">
+                        <input type="date" class="form-control" id="offer_openingdate" readonly />
                     </div>
                     <div class="col-md-2-4">
                         <label class="form-label">Closing Date</label>
-                        <input type="date" class="form-control" id="offer_closingdate">
+                        <input type="date" class="form-control" id="offer_closingdate" readonly />
                     </div>
                     <div class="col-md-2-4">
                         <label class="form-label">Final Prospectus Date</label>
-                        <input type="date" class="form-control" id="offer_listingdate">
+                        <input type="date" class="form-control" id="offer_listingdate" readonly />
                     </div>
+                    <div class="col-md-2-4">
+                        <label class="form-label">CIN NO</label>
+                        <input type="text" class="form-control" id="client_cin" readonly />
                     </div>
+                    <div class="col-md-2-4">
+                        <label class="form-label">ISIN NO</label>
+                        <input type="text" class="form-control" id="offer_isin" readonly />
+                    </div>
+                </div>
+
                 <!-- Company Info -->
                 <div class="row">
                     <div class="col">
-                        <label class="form-label">CIN NO</label>
-                        <input type="text" class="form-control" id="client_cin">
-                    </div>
-
-                    <div class="col">
-                        <label class="form-label">ISIN NO</label>
-                        <input type="text" class="form-control" id="offer_isin" >
-                    </div>
-
-                    <div class="col">
                         <label class="form-label">Face Value</label>
-                        <input type="number" class="form-control" id="offer_facevalue">
+                        <input type="number" class="form-control" id="offer_facevalue" readonly />
                     </div>
 
                     <div class="col">
                         <label class="form-label">As Price</label>
-                        <input type="number" class="form-control" id="asprice">
+                        <input type="number" class="form-control" id="asprice" readonly />
                     </div>
 
                     <div class="col">
                         <label class="form-label">Premium</label>
-                        <input type="number" class="form-control" id="offer_premiun">
+                        <input type="number" class="form-control" id="offer_premiun" readonly />
                     </div>
 
                     <div class="col">
                         <label class="form-label">Lot Size</label>
-                        <input type="number" class="form-control" id="offer_lotsize">
+                        <input type="number" class="form-control" id="offer_lotsize" readonly />
                     </div>
-                  
-                </div>                  
 
-                    <!-- Issue Details -->
+                    <div class="col">
+                        <label class="form-label">Pre Issue Size</label>
+                        <input type="number" class="form-control" id="offer_precapital" readonly />
+                    </div>
+
+                    <div class="col">
+                        <label class="form-label">Current Issue Size</label>
+                        <input type="number" class="form-control" id="offer_issuesize" readonly />
+                    </div>
+
+                </div>
+
+                <!-- Issue Details -->
+
+                <div class="row">
+                    <div class="col-md-2-4">
+                        <label class="form-label">Post Issue</label>
+                        <input type="number" class="form-control" id="offer_postcapital" readonly />
+                    </div>
+
+                    <div class="col-md-2-4">
+                        <label class="form-label">Market Maker Shares</label>
+                        <input type="number" class="form-control" id="mm" readonly />
+                    </div>
+
+                    <div class="col-md-2-4">
+                        <label class="form-label">QIB Shares</label>
+                        <input type="number" class="form-control" value="1017000" readonly />
+                    </div>
+
+                    <div class="col-md-2-4">
+                        <label class="form-label">Emp. Shares</label>
+                        <input type="number" class="form-control" id="offer_empdiscount" readonly />
+                    </div>
+
+                    <div class="col-md-2-4">
+                        <label class="form-label">Net Issue of Shares</label>
+                        <input type="number" class="form-control" value="5102000" readonly />
+                    </div>
+                </div>
+                <!-- Net Quantum -->
+                <div class="section-box">
+                    <div class="section-title">Net quantum available for allotment</div>
+
                     <div class="row">
                         <div class="col">
-                            <label class="form-label">Pre Issue Size</label>
-                        <input type="number" class="form-control" id="offer_precapital">
+                            <label class="form-label">Spill over from Retail to Non-Retail</label>
+                            <input type="number" class="form-control" value="0" readonly />
                         </div>
 
                         <div class="col">
-                            <label class="form-label">Current Issue Size</label>
-                        <input type="number" class="form-control" id="offer_issuesize">
+                            <label class="form-label">Retail - Net quantum available</label>
+                            <input type="number" class="form-control" value="1786000" readonly />
                         </div>
 
                         <div class="col">
-                            <label class="form-label">Post Issue</label>
-                        <input type="number" class="form-control" id="offer_postcapital">
+                            <label class="form-label">Non-Retail <= 100000</label>
+                            <input type="number" class="form-control" value="2871000" readonly />
                         </div>
 
                         <div class="col">
-                            <label class="form-label">Market Maker Shares</label>
-                        <input type="number" class="form-control" id= "mm">
-                        </div>
-
-                        <div class="col">
-                            <label class="form-label">QIB Shares</label>
-                        <input type="number" class="form-control" value="1017000">
-                        </div>
-
-                        <div class="col">
-                            <label class="form-label">Emp. Shares</label>
-                        <input type="number" class="form-control" id="offer_empdiscount">
-                        </div>
-
-                        <div class="col">
-                            <label class="form-label">Net Issue of Shares</label>
-                        <input type="number" class="form-control" value="5102000">
+                            <label class="form-label">Non-Retail > 100000</label>
+                            <input type="number" class="form-control" value="516000" readonly />
                         </div>
                     </div>
+                </div>
 
-                    <!-- Net Quantum -->
-                    <div class="section-box">
-                        <div class="section-title">Net quantum available for allotment</div>
-
-                        <div class="row">
-                            <div class="col">
-                                <label class="form-label">Spill over from Retail to Non-Retail</label>
-                            <input type="number" class="form-control" value="0">
-                            </div>
-
-                            <div class="col">
-                                <label class="form-label">Retail - Net quantum available</label>
-                            <input type="number" class="form-control" value="1786000">
-                            </div>
-
-                            <div class="col">
-                                <label class="form-label">Non-Retail <= 100000</label>
-                            <input type="number" class="form-control" value="2871000">
-                            </div>
-
-                            <div class="col">
-                                <label class="form-label">Non-Retail > 100000</label>
-                            <input type="number" class="form-control" value="516000">
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Signatories -->
+                <!-- Signatories -->
                 <div class="sign-section">
 
                     <!-- Name Row -->
@@ -304,17 +307,17 @@
 
                         <div class="sign-box">
                             <div class="sign-title">Seren Capital Private Limited</div>
-                            <input type="text" class="form-control" value="MR. AKUN GOYAL">
+                            <input type="text" class="form-control" value="MR. AKUN GOYAL" readonly />
                         </div>
 
                         <div class="sign-box">
                             <div class="sign-title">Msafe Equipments Limited</div>
-                            <input type="text" class="form-control" value="MS. RENUKA UNIYAL">
+                            <input type="text" class="form-control" value="MS. RENUKA UNIYAL" readonly />
                         </div>
 
                         <div class="sign-box">
                             <div class="sign-title">Maashita Securities Pvt. Limited</div>
-                            <input type="text" class="form-control" value="MR. MUKUL AGRAWAL">
+                            <input type="text" class="form-control" value="MR. MUKUL AGRAWAL" readonly />
                         </div>
                     </div>
 
@@ -323,28 +326,25 @@
                         <div class="sign-label">Designation</div>
 
                         <div class="sign-box">
-                            <input type="text" class="form-control" value="AUTHORISED SIGNATORY">
+                            <input type="text" class="form-control" value="AUTHORISED SIGNATORY" readonly />
                         </div>
 
                         <div class="sign-box">
-                            <input type="text" class="form-control" value="COMPANY SECRETARY & COMPLIANCE">
+                            <input type="text" class="form-control" value="COMPANY SECRETARY & COMPLIANCE" readonly />
                         </div>
 
                         <div class="sign-box">
-                            <input type="text" class="form-control" value="DIRECTOR">
+                            <input type="text" class="form-control" value="DIRECTOR" readonly />
                         </div>
                     </div>
-
-                </div>
-
                     <!-- Buttons -->
                     <div class="button-row">
-                    <button class="btn btn-primary" style="padding: 3px 25px;margin-bottom:20px;" id="generateBtn" onclick="generateReport()">Generate</button>
-                    <button class="btn btn-primary" style="border-color: red;background-color: red; border-radius: 5px;color: white;margin-bottom: 30px;margin-bottom: 20px;padding: 3px 25px;" id="exitBtn">
-                        Exit
-                    </button>
+                        <button class="btn btn-primary" style="padding: 3px 25px;margin-bottom:20px;" id="generateBtn" onclick="generateReport()">Generate</button>
+                        <button class="btn btn-primary" style="border-color: red;background-color: red; border-radius: 5px;color: white;margin-bottom: 30px;margin-bottom: 20px;padding: 3px 25px;" id="exitBtn">
+                            Exit
+                        </button>
                     </div>
-                </div>
+            </div>
              </div>
          </div>
     </body>
@@ -384,8 +384,7 @@
                         offerBank = data.Table2;
                         offerStackHolder = data.Table3;
                         offerCategory = data.Table4;
-                        offerMillstone = data.Table5;   
-                        var 
+                        offerMillstone = data.Table5;                          
                          console.log("offerDetails", offerDetails);
                          var client_cin = offerHeader[0].client_cin;
                         $('#client_cin').val(client_cin);
@@ -463,6 +462,7 @@
                             var table3 = data.table3;
                             var table4 = data.table4;
                             var table5 = data.table5;
+                            var table6 = data.table6;
                             cin = row.client_cin;
                             $('#cin').val(row.client_cin);
                             $.ajax({
