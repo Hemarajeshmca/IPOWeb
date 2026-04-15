@@ -148,7 +148,7 @@
                         <span id="v_status" class="validation"></span>
                     </div>
                     <div class="col-sm-2">
-                        <label class="form-label">Emp. Discount</label>
+                        <label class="form-label">Emp. Discount (₹)</label>
                         <input type="text" id="empdiscount" name="empdiscount" class="form-control" />
                         <span id="v_dis" class="validation"></span>
                     </div>
@@ -411,40 +411,48 @@
                                 <div class="tab-pane fade" id="navs-top-mile" role="tabpanel">
                                     <div class="row">
                                         <div class="col-md-2-4">
-                                            <label class="form-label">Offer Opening Date	</label>
+                                            <label class="form-label">Offer Opening Date	</label>&nbsp;<span style="font-size: 12px;color:red;font-weight: bold;">*</span>
                                             <input type="date" id="iod" class="form-control" />
                                             <input id="milestone_gid" class="form-control" hidden />
+                                            <span id="queryiod" style="color: red; font-size: 12px;position:relative;"></span>
                                         </div>
                                         <div class="col-md-2-4">
-                                            <label class="form-label">Offer closing Date	</label>
+                                            <label class="form-label">Offer closing Date	</label>&nbsp;<span style="font-size: 12px;color:red;font-weight: bold;">*</span>
                                             <input type="date" id="icd" class="form-control" />
+                                            <span id="queryicd" style="color: red; font-size: 12px;position:relative;"></span>
                                         </div>
                                         <div class="col-md-2-4">
-                                            <label class="form-label">Allotment Date	</label>
+                                            <label class="form-label">Allotment Date	</label>&nbsp;<span style="font-size: 12px;color:red;font-weight: bold;">*</span>
                                             <input type="date" id="alotdate" class="form-control" />
+                                            <span id="queryalotdate" style="color: red; font-size: 12px;position:relative;"></span>
                                         </div>
                                         <div class="col-md-2-4">
-                                            <label class="form-label">Approval Date	</label>
+                                            <label class="form-label">Approval Date	</label>&nbsp;<span style="font-size: 12px;color:red;font-weight: bold;">*</span>
                                             <input type="date" id="apdate" class="form-control" />
+                                            <span id="queryapdate" style="color: red; font-size: 12px;position:relative;"></span>
                                         </div>
                                         <div class="col-md-2-4">
-                                            <label class="form-label">Listing Date	</label>
-                                            <input type="date" id="ldate" class="form-control" />
-                                        </div>
-                                    </div>
-                                    <div class="row" style="margin-top:15px;">
-
-                                        <div class="col-md-2-4">
-                                            <label class="form-label">NSDL CA Date	</label>
+                                            <label class="form-label">NSDL CA Date	</label>&nbsp;<span style="font-size: 12px;color:red;font-weight: bold;">*</span>
                                             <input type="date" id="nsdldate" class="form-control" />
+                                            <span id="querynsdldate" style="color: red; font-size: 12px;position:relative;"></span>
                                         </div>
+                                       
+                                    </div>
+                                    <div class="row" style="margin-top:15px;">                                        
                                         <div class="col-md-2-4">
-                                            <label class="form-label">CDSL CA Date	</label>
+                                            <label class="form-label">CDSL CA Date	</label>&nbsp;<span style="font-size: 12px;color:red;font-weight: bold;">*</span>
                                             <input type="date" id="cdsldate" class="form-control" />
+                                            <span id="querycdsldate" style="color: red; font-size: 12px;position:relative;"></span>
                                         </div>
                                         <div class="col-md-2-4">
-                                            <label class="form-label">Refund Date	</label>
+                                            <label class="form-label">Refund Date	</label>&nbsp;<span style="font-size: 12px;color:red;font-weight: bold;">*</span>
                                             <input type="date" id="refunddate" class="form-control" />
+                                            <span id="queryrefunddate" style="color: red; font-size: 12px;position:relative;"></span>
+                                        </div>
+                                        <div class="col-md-2-4">
+                                            <label class="form-label">Listing Date	</label>&nbsp;<span style="font-size: 12px;color:red;font-weight: bold;">*</span>
+                                            <input type="date" id="ldate" class="form-control" />
+                                            <span id="queryldate" style="color: red; font-size: 12px;position:relative;"></span>
                                         </div>
                                         <div class="col-md-2-4">
                                             <center><button type="button" onclick="saveOfferMilstone()" class="btn btn-primary" id="btnSave" style="padding: 3px 25px;margin-top:30px;width:50%">Save</button></center>
@@ -465,7 +473,7 @@
 </html>
 <script>
       $( document ).ready(function() {
-              $('#navhead').text('Issue Setup');
+              $('#navhead').text('Offer Setup');              
               var mode = new URLSearchParams(window.location.search).get('mode');
                 var defaultStatus = sessionStorage.getItem("default_status");
 
@@ -553,7 +561,7 @@
         $("#pricetype").change(function () {
             var value = $(this).val();
             if (value == "F") {
-                $("#fprice").prop("disabled", false);
+                $("#fprice").prop("disabled", true);
                  var facevalue = parseFloat($("#facevalue").val().replace(/,/g, '')) || 0;
                  var premium = parseFloat($("#premium").val().replace(/,/g, '')) || 0;
                 var fprice = facevalue + premium;
@@ -705,6 +713,7 @@
                             var data = JSON.parse(response.data);
                             $("#offer_header_gid").val(data[0].in_offer_header_gid);
                             $("#offer_code").val(data[0].in_offer_code);
+                            $("#issuestatus").val(data[0].issue_status);
                             fetchIssuesetup();
                             $.alert({
                             title: 'IPO Allotment',
@@ -796,7 +805,7 @@
         }
 
         function fetchofferHeader(data){
-            debugger;
+            debugger;            
                 $("#offer_header_gid").val(data.offer_header_gid);
                 $("#createedit").val(data.offer_header_gid == 0 ? "CREATE": "EDIT");
                 $("#offer_code").val(data.offer_code);
@@ -804,6 +813,11 @@
                 $("#listing").val(data.offer_listing_no);
                 $("#isin").val(data.offer_isin);
                 $("#status").val(data.offer_status);
+                if(data.offer_status == "Y") {
+                    $("#issuestatus").val("Active");
+                } else  if(data.offer_status == "D") {
+                    $("#issuestatus").val("Draft");
+                }                     
                 $("#empdiscount").val(data.offer_empdiscount);
                 $("#remarks").val(data.offer_remarks);
                 $("#clientcode").val(data.client_code);
@@ -952,7 +966,7 @@
                 $.alert({
                     title: 'IPO Web',
                     content: "Cut Off Price should be between Minimum and Maximum Price",
-                    type: 'green',
+                    type: 'red',
                 });
                 isValid = false;
             }
@@ -1647,8 +1661,8 @@
                             id: "category_gid",
                             fields: {
                                 category_gid: { editable: false },
-                                offer_cat_code: { editable: false },
-                                offer_cat_name: { editable: false },
+                                category_code: { editable: false },
+                                category_name: { editable: false },
                                 offer_cat_shares: { type: "number", editable: true }
                             }
                         }
@@ -1668,6 +1682,14 @@
                 filterable: true,
                 resizable: true,
                 editable: "incell",
+                beforeEdit: function (e) {
+                var fieldName = e.container.find("input").attr("name");
+
+                // If no input OR not the correct field → block
+                if (!fieldName || fieldName !== "offer_cat_shares") {
+                    e.preventDefault();
+                }
+            },
                 columns: columns,
                 dataBound: function () {
                     $("#selectAll").off("click").on("click", function () {
@@ -1698,7 +1720,7 @@
             if (issuesize !== total) {
                 $.alert({
                     title: 'IPO Web',
-                    content: "Category Total (" + total + ") must match with Issue Size (" + issuesize + ")",
+                    content: "Category Total ₹ (" + total + ") must match with Issue Size Total ₹ (" + issuesize + ")",
                     type: 'red',
                 });
                 return false;
@@ -1817,6 +1839,7 @@
 
              function fetchofferMillstone(data){
                  console.log("Milestones :", data);
+                 $("#milestone_gid").val(data.milestone_gid);
                 $("#iod").val(formatDate(data.offer_openingdate));
                 $("#icd").val(formatDate(data.offer_closingdate));
                 $("#alotdate").val(formatDate(data.offer_allotmentdate));
@@ -1832,9 +1855,87 @@
             }
 
         function saveOfferMilstone() {
+            var isValid = true;
                  var status = $("#status").val();
                   var clientname = $("#clientname").val();
-            var isValid = true;
+                  var iod = $("#iod").val();
+                  var icd = $("#icd").val();
+                  var alotdate = $("#alotdate").val();
+                  var apdate = $("#apdate").val();
+                  var ldate = $("#ldate").val();
+                  var nsdldate = $("#nsdldate").val();
+                  var cdsldate = $("#cdsldate").val();
+                  var refunddate = $("#refunddate").val();
+                  var milestoneId = parseInt($("#milestone_gid").val()) || 0;
+                      if(iod === "") {
+                        $("#queryiod").text("Please Select Offer Opening Date");
+                    isValid = false;
+                    } else {
+                        $("#queryiod").text("");
+                    }
+                     if(icd === "") {
+                        $("#queryicd").text("Please Select Offer Closing Date");
+                    isValid = false;
+                    }  else if(icd < iod) {
+                        $("#queryicd").text("Offer Closing Date must be greater than Offer Opening Date");
+                         isValid = false;
+                    } else {
+                        $("#queryicd").text("");
+                    }
+                     if(alotdate === "") {
+                        $("#queryalotdate").text("Please Select Allotment Date");
+                    isValid = false;
+                    }  else if(alotdate < icd) {
+                        $("#queryalotdate").text("Allotment Date must be greater than Offer Closing Date");
+                         isValid = false;
+                    } else {
+                        $("#queryalotdate").text("");
+                    }
+                    if(apdate === "") {
+                        $("#queryapdate").text("Please Select Approval Date");
+                    isValid = false;
+                    }  else if(apdate < alotdate) {
+                        $("#queryapdate").text("Approval Date must be greater than Allotment Date");
+                         isValid = false;
+                    }  else {
+                        $("#queryapdate").text("");
+                    }
+                    if(nsdldate === "") {
+                        $("#querynsdldate").text("Please Select NSDL CA Date");
+                    isValid = false;
+                    } else if(nsdldate < apdate) {
+                        $("#querynsdldate").text("NSDL CA Date must be greater than Offer Approval Date");
+                         isValid = false;
+                    } else {
+                        $("#querynsdldate").text("");
+                    }                    
+                     if(cdsldate === "") {
+                        $("#querycdsldate").text("Please Select CDSL CA Date");
+                    isValid = false;
+                    } else if(cdsldate < nsdldate) {
+                        $("#querycdsldate").text("CDSL CA Date must be greater than NSDL CA Date");
+                         isValid = false;
+                    } else {
+                        $("#querycdsldate").text("");
+                    }
+                     if(refunddate === "") {
+                        $("#queryrefunddate").text("Please Select Refund Date");
+                    isValid = false;
+                    }  else if(refunddate < cdsldate) {
+                        $("#queryrefunddate").text("Refund Date must be greater than CDSL CA Date");
+                         isValid = false;
+                    } else {
+                        $("#queryrefunddate").text("");
+                    }
+                     if(ldate === "") {
+                        $("#queryldate").text("Please Select Listing Date");
+                    isValid = false;
+                    }  else if(ldate < refunddate) {
+                        $("#queryldate").text("Listing Date must be greater than Refund  Date");
+                         isValid = false;
+                    } else {
+                        $("#queryldate").text("");
+                    }            
             if (!isValid) return;
                  if(clientname) {
                           if((status === "Y" && activeOfferStatus ==="false") || (status === "" && activeOfferStatus === "false")) {
@@ -1845,7 +1946,8 @@
                           });
                      } else {
                       var payload = {};
-                    payload.milestone_gid = parseInt($("#milestone_gid").val()) == 0 ? parseInt($("#milestone_gid").val()) : 0;
+                    // payload.milestone_gid = parseInt($("#milestone_gid").val()) == 0 ? parseInt($("#milestone_gid").val()) : 0;
+                    payload.milestone_gid = milestoneId;
                     payload.offer_openingdate = $("#iod").val();
                     payload.offer_closingdate = $("#icd").val();
                     payload.offer_allotmentdate = $("#alotdate").val();
@@ -1857,7 +1959,8 @@
                     payload.offer_code = $("#offer_code").val();
                     payload.client_code = $("#clientcode").val();
                     payload.user_code = '@userName';
-                    payload.action = parseInt($("#milestone_gid").val()) == 0 ? "INSERT" : "UPDATE";
+                    // payload.action = parseInt($("#milestone_gid").val()) == 0 ? "INSERT" : "UPDATE";
+                    payload.action = milestoneId === 0 ? "INSERT" : "UPDATE";
                     try {
                         customAjax({
                             type: "POST",
@@ -1875,11 +1978,11 @@
                                     });
                                 }
                                 else {
-                                    $.alert({
-                                        title: 'IPO Allotment',
-                                        content: 'Save failed!',
-                                        type: 'red',
-                                    });
+                                    // $.alert({
+                                    //     title: 'IPO Allotment',
+                                    //     content: 'Save failed!',
+                                    //     type: 'red',
+                                    // });
                                 }
                             }
                         });

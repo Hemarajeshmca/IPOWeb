@@ -19,6 +19,16 @@
             height: 170px !important;
         }
 
+        button#checkQuery {
+            background: #5490ff;
+            color: #fff;
+        }
+
+        button#popupSaveBtnQuerySp {
+            background: green;
+            color: #fff;
+        }
+
         .form-select1 {
             display: block;
             width: 75%;
@@ -1097,7 +1107,7 @@
             dataBound: function (e) {
                 resultData = e.sender._data;
                 var rows = $('#grid_Resultset').data('kendoGrid').tbody.children();
-               // setColor(rows, resultData);
+               setColor(rows, resultData);
                 if ($("#txtmode").val() == "View") {
                     $(".k-grid-save").hide();
                     $(".k-grid-delete").hide();

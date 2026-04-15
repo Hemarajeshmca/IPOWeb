@@ -215,10 +215,19 @@
                                     <div class="row">
                                         <div class="col-sm-3">
                                             <label class="form-label" for="pipeline" data-field="pipeline">Pipeline</label>&nbsp;<span style="font-size: 12px;color:red;font-weight: bold;">*</span>
-                                            <input type="text" id="pipeline" class="form-control" readonly />
+                                            @* <input type="text" id="pipeline" class="form-control" readonly /> *@
+                                            <select id="pipeline" onchange="getPipeline_code()" class="form-control"></select>
                                         </div>
                                         <div class="col-sm-1">
-                                            <img style="margin-top: 35px; height: 25px; width: 25px; cursor:pointer;" src="~/Assets/images/download.png" />
+                                            <img style="margin-top: 35px; height: 25px; width: 25px; cursor:pointer;" onclick="downloadTemplate()" src="~/Assets/images/download.png" />
+                                        </div>   
+                                        <div  class="col-sm-2" style="margin-left:-50px;margin-right:50px;">
+                                            <label class="form-label" for="bank" data-field="bank">Select Category</label>&nbsp;<span style="font-size: 12px;color:red;font-weight: bold;">*</span>
+                                            <select id="category" class="form-control">
+                                                <option value="">-- Select Category -- </option>
+                                                <option value="ASBA">ASBA</option>
+                                                <option value="Non ASBA">Non ASBA</option>
+                                            </select>
                                         </div>
                                         <div id="bankrow" class="col-sm-2" style="margin-left:-50px;display:none;">
                                             <label class="form-label" for="bank" data-field="bank">Select Bank</label>&nbsp;<span style="font-size: 12px;color:red;font-weight: bold;">*</span>
@@ -230,7 +239,7 @@
                                             <input class="form-control" type="file" id="MultipleFile" multiple>
                                         </div>
                                         <div class="col-sm-3">
-                                            <button type="button" class="btn btn-primary" id="btnPre" style="float:right;padding: 3px 25px;margin-top:28px;width:40%">Previous</button>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<button type="button" class="btn btn-primary" id="btnStart" onclick="startprocess()" style="float:right;padding: 3px 25px;margin-top:28px;width:40%;margin-right:10px;">Start</button>
+                                            <button type="button" class="btn btn-primary" id="btnPre" style="float:right;padding: 3px 25px;margin-top:28px;width:40%;margin-right: 25px;">Previous</button>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<button type="button" class="btn btn-primary" id="btnStart" onclick="startprocess()" style="float:right;padding: 3px 25px;margin-top:28px;width:40%;margin-right:10px;">Start</button>
                                         </div>
                                     </div>
                                 </div>
@@ -452,7 +461,12 @@
       function nextprocess() {                 
             var selected = $("input[name='clientSelect']:checked");
             if (selected.length === 0) {
-                alert("Please select a dataset");
+                // alert("Please select a dataset");
+                 $.alert({
+                    title: 'IPO Allotment' ,
+                    content: "Please select a dataset",
+                    type: 'red',
+                });
                 return;
             }
             document.getElementById("MultipleFile").value = "";
@@ -483,6 +497,15 @@
                         return;
                     }
                    var data = response.data;
+                   $("#pipeline").empty();
+                    $.each(data, function (i, item) {
+                        $("#pipeline").append(
+                            $('<option>', {
+                                value: item.pipeline_code,
+                                text: item.pipeline_name
+                            })
+                        );
+                    });
                    $("#pipeline").val(data[0].pipeline_name);
                    selectedPipeline = data[0].pipeline_code;
                    console.log(data);
@@ -495,7 +518,9 @@
 
         function startprocess() {
             var bankCode = $("#bank").val();
+            var category = $("#category").val();
             console.log("Selected Bank Code:", bankCode);
+            console.log("Category :", category);
             var fileInput = document.getElementById("MultipleFile");
             if (fileInput.files.length === 0) {
                 alert("Please choose a file");
@@ -508,7 +533,8 @@
             var refBankList = [
                 {
                     reference_no: $("#ipocode").val(),
-                    bank_code: bankCode
+                    bank_code: bankCode,
+                    asba_flag:category
                 }
             ];
             formData.append("ref_bank_data", JSON.stringify(refBankList));
@@ -543,5 +569,8 @@
                 console.log(err);
                 }
             });
+        } 
+        function getPipeline_code() {
+            selectedPipeline = $("#pipeline").val();
         }
 </script>

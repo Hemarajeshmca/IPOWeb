@@ -6,14 +6,15 @@ using System.Security.Claims;
 
 namespace IPOWeb.Controllers
 {
-    public class PanValidateController : Controller
+    public class BidUpiController : Controller
     {
-        public IActionResult PanValidate()
+        public IActionResult BidUpi()
         {
             return View();
         }
+
         private IConfiguration _configuration;
-        public PanValidateController(IConfiguration configuration)
+        public BidUpiController(IConfiguration configuration)
         {
             _configuration = configuration;
         }
@@ -21,9 +22,9 @@ namespace IPOWeb.Controllers
         string APIcookieName = "";
 
         [HttpGet]
-        public JsonResult panvalidation(string offer_code)
+        public JsonResult getBidUpi(string offer_code)
         {
-            urlstring = Convert.ToString(_configuration.GetSection("Appsettings")["apiurl"]) + "panvalidation";
+            urlstring = Convert.ToString(_configuration.GetSection("Appsettings")["apiurl"]) + "getBidUpi";
             try
             {
                 using (var client = new HttpClient())

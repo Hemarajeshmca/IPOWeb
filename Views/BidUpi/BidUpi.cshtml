@@ -5,7 +5,7 @@
 <html>  
 <head>
     <meta name="viewport" content="width=device-width" />
-    <title>Run Recon - Bid Vs Bank</title>
+    <title>Run Recon - Bid Vs UPI</title>
     <style>
         .content-wrapper {
             display: flex;
@@ -128,7 +128,7 @@
     var selectedCodes = [];
       $(document).ready(function () {
           getBidBank();
-        $('#navhead').text('Bid Vs Bank');
+        $('#navhead').text('Bid Vs UPI');
         var ipoName = localStorage.getItem("selectedIPOText");
         var ipocode = localStorage.getItem("selectedIPO");
         $("#iponame").val(ipoName);
@@ -183,7 +183,7 @@
           try {
             customAjax({
                 type: "GET",
-                url: '@Url.Action("getBidBank", "BidBank")',
+                url: '@Url.Action("getBidUpi", "BidUpi")',
                 data: {
                 offer_code: offer_code
                 },
@@ -211,20 +211,20 @@
 
     function fetchgrid(data){
         var columns = [
-                     {
-                        title: "Select",
-                        width: 45,
-                        locked: true,
-                        headerAttributes: { style: "text-align:center;" },
-                        attributes: { style: "text-align:center;" },
-                        headerTemplate:
-                            "<div style='text-align:center;'>" +
-                            "<input type='checkbox' id='selectAll' /> " +
-                            "<label for='selectAll' style='cursor:pointer;'>All</label>" +
-                            "</div>",
-                        template: "<input type='checkbox' class='client-checkbox' value='#= bnk_code #' />"
-                     },
-                     {
+                {
+                title: "Select",
+                width: 45,
+                locked: true,
+                headerAttributes: { style: "text-align:center;" },
+                attributes: { style: "text-align:center;" },
+                headerTemplate:
+                    "<div style='text-align:center;'>" +
+                    "<input type='checkbox' id='selectAll' /> " +
+                    "<label for='selectAll' style='cursor:pointer;'>All</label>" +
+                    "</div>",
+                template: "<input type='checkbox' class='client-checkbox' value='#= bnk_code #' />"
+                },
+                {
                 field: "bnk_code",
                 title: "Bank Code",
                 locked: true,
@@ -232,34 +232,34 @@
             },
             {
                 field: "bnk_name",
-                title: "Bank Name",
+                title: "UPI",
                 width: 150,
                 locked: true
             },
-               {
-                      field: "status",
-                      title: "Status",
-                      width: 120,
-                      locked: true
-                  },
-                   {
+            {
+                    field: "status",
+                    title: "Status",
+                    width: 120,
+                    locked: true
+                },
+                  {
               title: "As per Bid",
               headerAttributes: { style: "text-align:center;font-weight:bold;" },
               columns: [
                   { field: "bid_appl_count", title: "No.of Appl", width: 120, attributes:{style:"text-align:right;"} },
                   { field: "bid_quantity", title: "No.of Shares", width: 130, attributes:{style:"text-align:right;"} },
                   { field: "bid_amount", title: "Amount", width: 120, attributes:{style:"text-align:right;"} }
-              ]              
-          },
-                  {
-              title: "As per Bank",
-             headerAttributes: { style: "text-align:center;font-weight:bold;" },
-              columns: [
-                  { field: "bnk_appl_count", title: "No.of Appl", width: 120, attributes:{style:"text-align:right;"} },
-                  { field: "bnk_quantity", title: "No.of Shares", width: 130, attributes:{style:"text-align:right;"} },
-                  { field: "bank_amount", title: "Amount", width: 120, attributes:{style:"text-align:right;"} }
               ]
-          },        
+          },
+          {
+              title: "As per UPI",
+              headerAttributes: { style: "text-align:center;font-weight:bold;" },
+              columns: [
+                  { field: "upi_appl_count", title: "No.of Appl", width: 120, attributes:{style:"text-align:right;"} },
+                  { field: "upi_quantity", title: "No.of Shares", width: 130, attributes:{style:"text-align:right;"} },
+                  { field: "upi_amount", title: "Amount", width: 120, attributes:{style:"text-align:right;"} }
+              ]
+          },
 
           {
               title: "Diff.",
@@ -290,7 +290,7 @@
                      resizable: true,
                      columns: columns,
                       excel: {
-                        fileName: "BidBank_Summary_Report.xlsx",
+                        fileName: "BidUPI_Summary_Report.xlsx",
                         allPages: true,   
                         filterable: true
                        },

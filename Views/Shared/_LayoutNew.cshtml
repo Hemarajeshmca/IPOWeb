@@ -476,13 +476,7 @@
                                             <i class="bx bx-building fs-4 me-1"></i>
                                             <span class="align-middle">Bank Master</span>
                                         </a>
-                                    </li>
-                                    <li>
-                                        <a class="dropdown-item" href="~/CategoryMaster/CategoryMaster" data-language="fr">
-                                            <i class="bx bx-building fs-4 me-1"></i>
-                                            <span class="align-middle">Category Master</span>
-                                        </a>
-                                    </li>
+                                    </li>                                   
                                     <li>
                                         <a class="dropdown-item" href="~/ClientSetup/ClientSetup" data-language="fr">
                                             <i class="bx bxs-user-pin fs-4 me-1"></i>
@@ -529,23 +523,17 @@
                                         </a>
                                     </li>
                                     <li>
-                                        <a class="dropdown-item" href="#" data-language="fr">
-                                            <i class="bx bx-receipt fs-4 me-1"></i>
-                                            <span class="align-middle">Bendem Request</span>
+                                        <a class="dropdown-item" href="~/BidUpi/BidUpi" data-language="fr">
+                                            <i class="bx bx-git-compare fs-4 me-1"></i>
+                                            <span class="align-middle">Run Recon - Bid vs UPI</span>
                                         </a>
-                                    </li>
-                                    <li>
-                                        <a class="dropdown-item" href="#" data-language="fr">
-                                            <i class="bx bx-refresh fs-4 me-1"></i>
-                                            <span class="align-middle">Bendem Update</span>
-                                        </a>
-                                    </li>
-                                    <li>
-                                        <a class="dropdown-item" href="#" data-language="fr">
+                                    </li>                                   
+                                    @* <li>
+                                        <a class="dropdown-item" href="~/PanValidate/PanValidate" data-language="fr">
                                             <i class="bx bx-card fs-4 me-1"></i>
-                                            <span class="align-middle">PAN Listing</span>
+                                            <span class="align-middle">PAN Validate</span>
                                         </a>
-                                    </li>
+                                    </li> *@
                                     <li>
                                         <a class="dropdown-item" href="~/Rejection/Rejection" data-language="fr">
                                             <i class="bx bx-left-arrow-circle fs-4 me-1"></i>
@@ -557,13 +545,7 @@
                                             <i class="bx bx-search-alt fs-4 me-1"></i>
                                             <span class="align-middle">Run BOA</span>
                                         </a>
-                                    </li>
-                                    <li>
-                                        <a class="dropdown-item" href="#" data-language="fr">
-                                            <i class="bx bx-save fs-4 me-1"></i>
-                                            <span class="align-middle">Apply BOA</span>
-                                        </a>
-                                    </li>
+                                    </li>                                    
                                     <li>
                                         <a class="dropdown-item" href="~/JobsStatus/JobsStatus" data-language="fr">
                                             <i class="fa fa-ticket" aria-hidden="true"></i>&nbsp;
@@ -703,8 +685,12 @@
         $(document).on("change", "#iponames", function () {
         var ipoId = $(this).val();
         var ipoText = $("#iponames option:selected").text();
+        var clientId = ipoId.split('-')[0];
         localStorage.setItem("selectedIPO", ipoId);
         localStorage.setItem("selectedIPOText", ipoText);
+        localStorage.setItem("selectedClientId", clientId);
+        console.log("ipoId :", ipoId);
+        console.log("ipoText :", ipoText);
         });
         $(document).ready(function () {
             getofferList();
@@ -2353,6 +2339,18 @@
         //        sessionStorage.removeItem("edit_offer_code");
         //     }
         // });
+
+                function setColor(rows, resultData) {
+            for (var i = 0; i < rows.length; i++) {
+                var row = $(rows[i]);
+                row.css('backgroundColor', 'black');
+            }
+            var child_del = $('.k-grid-Delete').children('span:first');
+            $('.k-grid-Delete').html(child_del);
+
+            var child_copy = $('.k-grid-Copy').children('span:first');
+            $('.k-grid-Copy').html(child_copy);
+        }
     </script>
 
 </body>
