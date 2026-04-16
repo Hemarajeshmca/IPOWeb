@@ -384,8 +384,7 @@
                         offerBank = data.Table2;
                         offerStackHolder = data.Table3;
                         offerCategory = data.Table4;
-                        offerMillstone = data.Table5;                          
-                         console.log("offerDetails", offerDetails);
+                        offerMillstone = data.Table5;
                          var client_cin = offerHeader[0].client_cin;
                         $('#client_cin').val(client_cin);
                         var offer_isin = offerHeader[0].offer_isin;
@@ -431,76 +430,76 @@
         }
 
     function generateReport() {
-        //  if (!offer_code) {
-        //     $.alert({
-        //         title: 'IPO Web',
-        //         content: "Please select IPO Name",
-        //         type: 'red',
-        //     });
-        //     return;
-        // }
-        // var offer_code = localStorage.getItem("selectedIPO");
-        // var url = '/BOA/getboareport'
-        //     + '?offer_code=' + encodeURIComponent(offer_code);
-        // window.location.href = url;
-
-         var offer_code =  localStorage.getItem("selectedIPO");
-          try {
-            customAjax({
-                type: "GET",
-                url: '@Url.Action("getMomReports", "BOA")',
-                data: {
-                offer_code: offer_code
-                },
-                    success: function (response) {
-                        if (response && response.success) {
-                            var data = response.data;
-                            console.log("Datasets :", data);
-                            var table1 = data.table1;
-                            var row = table1[0];
-                            var table2 = data.table2;
-                            var table3 = data.table3;
-                            var table4 = data.table4;
-                            var table5 = data.table5;
-                            var table6 = data.table6;
-                            cin = row.client_cin;
-                            $('#cin').val(row.client_cin);
-                            $.ajax({
-                                url: '@Url.Action("generateReport", "BOA")',
-                                type: "POST",
-                                contentType: "application/json",
-                                data: JSON.stringify({
-                                    summary: row,
-                                    bankData: table2,
-                                    nonasbabankData: table3,
-                                    RejectionData: table4,
-                                    CategoryData: table5
-                                }),
-                                success: function (res) {                                   
-                                    var link = document.createElement('a');
-                                    link.href = res.filePath; 
-                                    link.download = "MOM_Report.docx";
-                                    document.body.appendChild(link);
-                                    link.click();
-                                    document.body.removeChild(link);
-                                }
-                            });
-                        }
-                        else {
-                        $.alert({
-                            title: 'IPO Allotment',
-                            content: 'Save failed!',
-                            type: 'red',
-                        });
-                    }
-                },
-                error: function (er) {
-                    console.log(er);
-                }
+         var offer_code = localStorage.getItem("selectedIPO");
+         if (!offer_code) {
+            $.alert({
+                title: 'IPO Web',
+                content: "Please select IPO Name",
+                type: 'red',
             });
-        } catch (e) {
-            console.log(e);
+            return;
         }
+        var url = '/BOA/getboareport'
+            + '?offer_code=' + encodeURIComponent(offer_code);
+        window.location.href = url;
+
+        //  var offer_code =  localStorage.getItem("selectedIPO");
+        //   try {
+        //     customAjax({
+        //         type: "GET",
+        //         url: '@Url.Action("getMomReports", "BOA")',
+        //         data: {
+        //         offer_code: offer_code
+        //         },
+        //             success: function (response) {
+        //                 if (response && response.success) {
+        //                     var data = response.data;
+        //                     console.log("Datasets :", data);
+        //                     var table1 = data.table1;
+        //                     var row = table1[0];
+        //                     var table2 = data.table2;
+        //                     var table3 = data.table3;
+        //                     var table4 = data.table4;
+        //                     var table5 = data.table5;
+        //                     var table6 = data.table6;
+        //                     cin = row.client_cin;
+        //                     $('#cin').val(row.client_cin);
+        //                     $.ajax({
+        //                         url: '@Url.Action("generateReport", "BOA")',
+        //                         type: "POST",
+        //                         contentType: "application/json",
+        //                         data: JSON.stringify({
+        //                             summary: row,
+        //                             bankData: table2,
+        //                             nonasbabankData: table3,
+        //                             RejectionData: table4,
+        //                             CategoryData: table5
+        //                         }),
+        //                         success: function (res) {                                   
+        //                             var link = document.createElement('a');
+        //                             link.href = res.filePath; 
+        //                             link.download = "MOM_Report.docx";
+        //                             document.body.appendChild(link);
+        //                             link.click();
+        //                             document.body.removeChild(link);
+        //                         }
+        //                     });
+        //                 }
+        //                 else {
+        //                 $.alert({
+        //                     title: 'IPO Allotment',
+        //                     content: 'Save failed!',
+        //                     type: 'red',
+        //                 });
+        //             }
+        //         },
+        //         error: function (er) {
+        //             console.log(er);
+        //         }
+        //     });
+        // } catch (e) {
+        //     console.log(e);
+        // }
 
     }
     </script>
