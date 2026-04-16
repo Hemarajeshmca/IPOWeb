@@ -91,39 +91,36 @@ namespace IPOWeb.Controllers
                 using (var client = new HttpClient())
                 {
                     client.Timeout = Timeout.InfiniteTimeSpan;
-
                     APIcookieName = "APItoken-" + User.FindFirst(ClaimTypes.Name)?.Value + "_" + User.FindFirst(ClaimTypes.Role)?.Value;
                     string token = Request.Cookies[APIcookieName];
-
                     client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
                     client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
-
                     string url = urlstring + "?offer_code=" + offer_code;
                     var response = client.GetAsync(url).Result;
-
                     if (response.StatusCode == HttpStatusCode.Unauthorized)
                     {
                         Response.Cookies.Delete(APIcookieName);
                         return Json(new { success = false, authExpired = true });
                     }
-
                     if (response.IsSuccessStatusCode)
                     {
                         string resultMessage = response.Content.ReadAsStringAsync().Result;
-
                         string d2 = JsonConvert.DeserializeObject<string>(resultMessage);
                         result = JsonConvert.DeserializeObject<DataSet>(d2);
                         DataTable dtNames = result.Tables[0];
-                        string templatePath = @"C:\Users\emp10176\Desktop\simple_boa_report_template1.xlsx";
+                        string templatePath = @"C:\Users\emp10176\Desktop\simple_boa_report_template2.xlsx";
                         string outputPath = @"E:\user\hema\IPOProject\Outputfiles\BOA_Report.xlsx";
-
                         System.IO.File.Copy(templatePath, outputPath, true);
-
                         using (XLWorkbook wb = new XLWorkbook(outputPath))
                         {
                             DataTable dtOfferDetails = result.Tables[0];
                             DataTable dtRetail = result.Tables[1];
-                            DataTable dtHNI = result.Tables[2]; // example
+                            DataTable dtemp = result.Tables[3];
+                            DataTable dtCO = result.Tables[4];
+                            DataTable dtQIB = result.Tables[5];
+                            DataTable dtNRB10L = result.Tables[6];
+                            DataTable dtNRA10L = result.Tables[7];
+                            DataTable dtMM = result.Tables[8];
 
                             var celA2 = "Public Issue of "
                                         + result.Tables[0].Rows[0]["Number of Shares"].ToString()
@@ -133,11 +130,12 @@ namespace IPOWeb.Controllers
                                         + result.Tables[0].Rows[0]["Issue Price Rs."].ToString()
                                         + " per share";
 
-                            // Pass the text here
                             WriteToSheet(wb, "Data", dtOfferDetails, celA2);
                             WriteToSheet(wb, "retail_data", dtRetail);
-                            WriteToSheet(wb, "nonretail_data", dtHNI);
-
+                            WriteToSheet(wb, "NRA10L_data", dtNRB10L);
+                            WriteToSheet(wb, "NRB10L_data", dtNRB10L);
+                            WriteToSheet(wb, "MM_data", dtMM);
+                            WriteToSheet(wb, "QIB_data", dtQIB);
                             wb.Save();
                         }
                         byte[] fileBytes = System.IO.File.ReadAllBytes(outputPath);
