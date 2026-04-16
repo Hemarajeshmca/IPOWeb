@@ -108,8 +108,8 @@ namespace IPOWeb.Controllers
                         string d2 = JsonConvert.DeserializeObject<string>(resultMessage);
                         result = JsonConvert.DeserializeObject<DataSet>(d2);
                         DataTable dtNames = result.Tables[0];
-                        string templatePath = @"C:\Users\emp10176\Desktop\simple_boa_report_template2.xlsx";
-                        string outputPath = @"E:\user\hema\IPOProject\Outputfiles\BOA_Report.xlsx";
+                        string templatePath = @"C:\Users\emp10174\Desktop\simple_boa_report_template2.xlsx";
+                        string outputPath = @"E:\IPO_MOM\BOA_Report.xlsx";
                         System.IO.File.Copy(templatePath, outputPath, true);
                         using (XLWorkbook wb = new XLWorkbook(outputPath))
                         {
@@ -145,63 +145,6 @@ namespace IPOWeb.Controllers
                             "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
                             "BOA_Report.xlsx"
                         );
-
-                        /* write multiplesheet  command by hema */
-                        //using (XLWorkbook wb = new XLWorkbook())
-                        //{
-                        //    HashSet<string> usedNames = new HashSet<string>();
-
-                        //    // ✅ Step 1: Create sheets based on cat_name
-                        //    foreach (DataRow row in dtNames.Rows)
-                        //    {
-                        //        string sheetName = row["cat_name"].ToString();
-
-                        //        // ✅ Handle empty
-                        //        if (string.IsNullOrWhiteSpace(sheetName))
-                        //            sheetName = "Sheet" + (dtNames.Rows.IndexOf(row) + 1);
-
-                        //        // ✅ Clean invalid characters
-                        //        sheetName = sheetName.Replace("/", "-")
-                        //                             .Replace("\\", "-")
-                        //                             .Replace("*", "")
-                        //                             .Replace("?", "")
-                        //                             .Replace("[", "")
-                        //                             .Replace("]", "");
-
-                        //        if (sheetName.Length > 31)
-                        //            sheetName = sheetName.Substring(0, 31);
-
-                        //        // ✅ Avoid duplicate names
-                        //        string original = sheetName;
-                        //        int i = 1;
-                        //        while (usedNames.Contains(sheetName))
-                        //        {
-                        //            sheetName = original + "_" + i++;
-                        //        }
-                        //        usedNames.Add(sheetName);
-
-                        //        // ✅ Create EMPTY sheet
-                        //        wb.Worksheets.Add(sheetName);
-                        //    }
-
-                        //    // 👉 Step 2 (later): you can write data like this
-                        //    /*
-                        //    var ws = wb.Worksheet("Retail");
-                        //    ws.Cell(1,1).Value = "Your Data";
-                        //    */
-
-                        //    using (MemoryStream stream = new MemoryStream())
-                        //    {
-                        //        wb.SaveAs(stream);
-                        //        stream.Position = 0;
-
-                        //        return File(
-                        //            stream.ToArray(),
-                        //            "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
-                        //            "BOA_Report.xlsx"
-                        //        );
-                        //    }
-                        //}
                     }
                     else
                     {
@@ -311,6 +254,36 @@ namespace IPOWeb.Controllers
                           .ToObject<Dictionary<string, object>>())
                           .ToList();
 
+                        var table6Data = ((IEnumerable<dynamic>)temp.Table5)
+                          .Select(row => ((Newtonsoft.Json.Linq.JObject)row)
+                          .ToObject<Dictionary<string, object>>())
+                          .ToList();
+
+                        var table7Data = ((IEnumerable<dynamic>)temp.Table6)
+                          .Select(row => ((Newtonsoft.Json.Linq.JObject)row)
+                          .ToObject<Dictionary<string, object>>())
+                          .ToList();
+
+                        var table8Data = ((IEnumerable<dynamic>)temp.Table7)
+                          .Select(row => ((Newtonsoft.Json.Linq.JObject)row)
+                          .ToObject<Dictionary<string, object>>())
+                          .ToList();
+
+                        var table9Data = ((IEnumerable<dynamic>)temp.Table8)
+                         .Select(row => ((Newtonsoft.Json.Linq.JObject)row)
+                         .ToObject<Dictionary<string, object>>())
+                         .ToList();
+
+                        var table10Data = ((IEnumerable<dynamic>)temp.Table9)
+                        .Select(row => ((Newtonsoft.Json.Linq.JObject)row)
+                        .ToObject<Dictionary<string, object>>())
+                        .ToList();
+
+                        var table11Data = ((IEnumerable<dynamic>)temp.Table10)
+                        .Select(row => ((Newtonsoft.Json.Linq.JObject)row)
+                        .ToObject<Dictionary<string, object>>())
+                        .ToList();
+
                         return Json(new
                         {
                             success = true,
@@ -321,6 +294,12 @@ namespace IPOWeb.Controllers
                                 table3 = table3Data,
                                 table4 = table4Data,
                                 table5 = table5Data,
+                                table6 = table6Data,
+                                table7 = table7Data,
+                                table8 = table8Data,
+                                table9 = table9Data,
+                                table10 = table10Data,
+                                table11 = table11Data,
                             }
                         });
                     }
@@ -344,6 +323,12 @@ namespace IPOWeb.Controllers
             var nonasbabankData = data.nonasbabankData;
             var rejectionData = data.rejectionData;
             var categoryData = data.categoryData;
+            var categoryINDData = data.categoryINDData;
+            var CategoryCo = data.categoryCo;
+            var CategoryNRA10L = data.categoryNRA10L;
+            var CategoryNRB10L = data.categoryNRB10L;
+            var BankUPIData = data.bankUPIData;
+            var bidApplRcd = data.bidApplRcd;
 
             string clientName = summary.client_name;
             int offer_issuesize = summary.offer_issuesize;
@@ -355,6 +340,22 @@ namespace IPOWeb.Controllers
             int total_mm = summary.total_mm;
             int public_shares = summary.public_shares;
             int net_issue = summary.net_issue;
+            long asba_total_bids = bidApplRcd.asba_total_bids;
+            long asba_total_quantity = bidApplRcd.asba_total_quantity;
+            long nonasba_total_bids = bidApplRcd.nonasba_total_bids;
+            long nonasba_total_quantity = bidApplRcd.nonasba_total_quantity;
+            long upi_total_bids = bidApplRcd.upi_total_bids;
+            long upi_total_quantity = bidApplRcd.upi_total_quantity;
+            long total_bids = bidApplRcd.total_bids;
+            long total_quantity = bidApplRcd.total_quantity;
+            long diff_bids = bidApplRcd.diff_bids;
+            long diff_quantity = bidApplRcd.diff_quantity;
+            long diff1 = bidApplRcd.total_bids - bidApplRcd.diff_bids;
+            long diff2 = bidApplRcd.total_quantity - bidApplRcd.diff_quantity;
+            long banknotbidbids = bidApplRcd.banknotbidbids;
+            long banknotbidqty = bidApplRcd.banknotbidqty;
+            long bank_bids = bidApplRcd.bank_bids;
+            long bank_bids_qty = bidApplRcd.bank_bids_qty;
 
             string templatePath = _configuration["Appsettings:templatePath"];
             string generatedFolder = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/Generated");
@@ -382,6 +383,22 @@ namespace IPOWeb.Controllers
                 ReplaceText(body, "{mm_shares}", mm_shares.ToString("N0"));
                 ReplaceText(body, "{public_shares}", public_shares.ToString("N0"));
                 ReplaceText(body, "{net_issue}", net_issue.ToString("N0"));
+                ReplaceText(body, "{asba_total_bids}", asba_total_bids.ToString("N0"));
+                ReplaceText(body, "{asba_total_quantity}", asba_total_quantity.ToString("N0"));
+                ReplaceText(body, "{nonasba_total_bids}", nonasba_total_bids.ToString("N0"));
+                ReplaceText(body, "{nonasba_total_quantity}", nonasba_total_quantity.ToString("N0"));
+                ReplaceText(body, "{upi_total_bids}", upi_total_bids.ToString("N0"));
+                ReplaceText(body, "{upi_total_quantity}", upi_total_quantity.ToString("N0"));
+                ReplaceText(body, "{total_bids}", total_bids.ToString("N0"));
+                ReplaceText(body, "{total_quantity}", total_quantity.ToString("N0"));
+                ReplaceText(body, "{diff_bids}", diff_bids.ToString("N0"));
+                ReplaceText(body, "{diff_quantity}", diff_quantity.ToString("N0"));
+                ReplaceText(body, "{diff1}", diff1.ToString("N0"));
+                ReplaceText(body, "{diff2}", diff2.ToString("N0"));
+                ReplaceText(body, "{banknotbidbids}", banknotbidbids.ToString("N0"));
+                ReplaceText(body, "{banknotbidqty}", banknotbidqty.ToString("N0"));
+                ReplaceText(body, "{bank_bids}", bank_bids.ToString("N0"));
+                ReplaceText(body, "{bank_bids_qty}", bank_bids_qty.ToString("N0"));
 
                 var para = body.Descendants<DocumentFormat.OpenXml.Wordprocessing.Paragraph>()
     .FirstOrDefault(p => p.InnerText.Contains("Net Collections of Non-institutional and Individual Investor Categories by ASBA"));
@@ -555,7 +572,7 @@ namespace IPOWeb.Controllers
                         // ✅ TOTAL ROW
                         var totalRow = new DocumentFormat.OpenXml.Wordprocessing.TableRow();
 
-                        totalRow.Append(                            
+                        totalRow.Append(
                             CreateCell("TOTAL", true, false),
                             CreateCell(rejectionData.Sum(x => x.rejection_count).ToString("N0", new CultureInfo("en-IN")), true, true),
                             CreateCell(rejectionData.Sum(x => x.total_quantity).ToString("N2", new CultureInfo("en-IN")), true, true)
@@ -601,7 +618,7 @@ namespace IPOWeb.Controllers
                             var row = new DocumentFormat.OpenXml.Wordprocessing.TableRow();
 
                             row.Append(
-                                CreateCell(srNo.ToString(), true, false),                                
+                                CreateCell(srNo.ToString(), true, false),
                                 CreateCell(category.ipo_category.ToUpper(), true, false),
                                 CreateCell(category.total_appl.ToString("N0", new CultureInfo("en-IN")), true, true),
                                 CreateCell(category.quantity.ToString("N0", new CultureInfo("en-IN")), true, true),
@@ -627,16 +644,267 @@ namespace IPOWeb.Controllers
                     }
                 }
 
+                var para3 = body.Descendants<DocumentFormat.OpenXml.Wordprocessing.Paragraph>()
+.FirstOrDefault(p => p.InnerText.Contains("B: 1- Retail Individual Investors Category (For 2 Lot)"));
+
+                if (para3 != null)
+                {
+                    DocumentFormat.OpenXml.Wordprocessing.Table catIndTable = null;
+
+                    var next = para3.NextSibling();
+
+                    while (next != null)
+                    {
+                        if (next is DocumentFormat.OpenXml.Wordprocessing.Table tbl)
+                        {
+                            catIndTable = tbl;
+                            break;
+                        }
+                        next = next.NextSibling();
+                    }
+
+                    if (catIndTable != null)
+                    {
+                        // ✅ Remove old rows except header
+                        var rows = catIndTable.Elements<DocumentFormat.OpenXml.Wordprocessing.TableRow>().ToList();
+
+                        for (int i = rows.Count - 1; i > 0; i--)
+                        {
+                            catIndTable.RemoveChild(rows[i]);
+                        }
+
+                        int srNo = 1;
+
+                        foreach (var catInd in categoryINDData)
+                        {
+                            var row = new DocumentFormat.OpenXml.Wordprocessing.TableRow();
+
+                            row.Append(
+                                CreateCell(catInd.total_appl.ToString("N0", new CultureInfo("en-IN")), true, true),
+                                CreateCell(catInd.total_quantity.ToString("N0", new CultureInfo("en-IN")), true, true),
+                                CreateCell(catInd.offer_cat_shares.ToString("N0", new CultureInfo("en-IN")), true, true)
+                            );
+
+                            catIndTable.Append(row);
+                            srNo++;
+                        }
+                    }
+                }
+
+                var para4 = body.Descendants<DocumentFormat.OpenXml.Wordprocessing.Paragraph>()
+.FirstOrDefault(p => p.InnerText.Contains("CO Allotments"));
+
+                if (para4 != null)
+                {
+                    DocumentFormat.OpenXml.Wordprocessing.Table catCoTable = null;
+
+                    var next = para4.NextSibling();
+
+                    while (next != null)
+                    {
+                        if (next is DocumentFormat.OpenXml.Wordprocessing.Table tbl)
+                        {
+                            catCoTable = tbl;
+                            break;
+                        }
+                        next = next.NextSibling();
+                    }
+
+                    if (catCoTable != null)
+                    {
+                        // ✅ Remove old rows except header
+                        var rows = catCoTable.Elements<DocumentFormat.OpenXml.Wordprocessing.TableRow>().ToList();
+
+                        for (int i = rows.Count - 1; i > 0; i--)
+                        {
+                            catCoTable.RemoveChild(rows[i]);
+                        }
+
+                        int srNo = 1;
+
+                        foreach (var catCo in CategoryCo)
+                        {
+                            var row = new DocumentFormat.OpenXml.Wordprocessing.TableRow();
+
+                            row.Append(
+                                CreateCell(catCo.total_appl.ToString("N0", new CultureInfo("en-IN")), true, true),
+                                CreateCell(catCo.total_quantity.ToString("N0", new CultureInfo("en-IN")), true, true),
+                                CreateCell(catCo.offer_cat_shares.ToString("N0", new CultureInfo("en-IN")), true, true)
+                            );
+
+                            catCoTable.Append(row);
+                            srNo++;
+                        }
+                    }
+                }
+
+                var para5 = body.Descendants<DocumentFormat.OpenXml.Wordprocessing.Paragraph>()
+.FirstOrDefault(p => p.InnerText.Contains("B: 3- Other than Retail Individual Investors (above 2 Lots and Share Apply Amount > 1000000)"));
+
+                if (para5 != null)
+                {
+                    DocumentFormat.OpenXml.Wordprocessing.Table catNRA10LTable = null;
+
+                    var next = para5.NextSibling();
+
+                    while (next != null)
+                    {
+                        if (next is DocumentFormat.OpenXml.Wordprocessing.Table tbl)
+                        {
+                            catNRA10LTable = tbl;
+                            break;
+                        }
+                        next = next.NextSibling();
+                    }
+
+                    if (catNRA10LTable != null)
+                    {
+                        // ✅ Remove old rows except header
+                        var rows = catNRA10LTable.Elements<DocumentFormat.OpenXml.Wordprocessing.TableRow>().ToList();
+
+                        for (int i = rows.Count - 1; i > 0; i--)
+                        {
+                            catNRA10LTable.RemoveChild(rows[i]);
+                        }
+
+                        int srNo = 1;
+
+                        foreach (var categoryNRA10L in CategoryNRA10L)
+                        {
+                            var row = new DocumentFormat.OpenXml.Wordprocessing.TableRow();
+
+                            row.Append(
+                                CreateCell(categoryNRA10L.total_appl.ToString("N0", new CultureInfo("en-IN")), true, true),
+                                CreateCell(categoryNRA10L.total_quantity.ToString("N0", new CultureInfo("en-IN")), true, true),
+                                CreateCell(categoryNRA10L.offer_cat_shares.ToString("N0", new CultureInfo("en-IN")), true, true)
+                            );
+
+                            catNRA10LTable.Append(row);
+                            srNo++;
+                        }
+                    }
+                }
+
+                var para6 = body.Descendants<DocumentFormat.OpenXml.Wordprocessing.Paragraph>()
+.FirstOrDefault(p => p.InnerText.Contains("B: 2- Other than Retail Individual Investors (above 2 Lots and Share Apply Amount <= 1000000)"));
+
+                if (para6 != null)
+                {
+                    DocumentFormat.OpenXml.Wordprocessing.Table catNRB10LTable = null;
+
+                    var next = para6.NextSibling();
+
+                    while (next != null)
+                    {
+                        if (next is DocumentFormat.OpenXml.Wordprocessing.Table tbl)
+                        {
+                            catNRB10LTable = tbl;
+                            break;
+                        }
+                        next = next.NextSibling();
+                    }
+
+                    if (catNRB10LTable != null)
+                    {
+                        // ✅ Remove old rows except header
+                        var rows = catNRB10LTable.Elements<DocumentFormat.OpenXml.Wordprocessing.TableRow>().ToList();
+
+                        for (int i = rows.Count - 1; i > 0; i--)
+                        {
+                            catNRB10LTable.RemoveChild(rows[i]);
+                        }
+
+                        int srNo = 1;
+
+                        foreach (var categoryNRB10L in CategoryNRB10L)
+                        {
+                            var row = new DocumentFormat.OpenXml.Wordprocessing.TableRow();
+
+                            row.Append(
+                                CreateCell(categoryNRB10L.total_appl.ToString("N0", new CultureInfo("en-IN")), true, true),
+                                CreateCell(categoryNRB10L.total_quantity.ToString("N0", new CultureInfo("en-IN")), true, true),
+                                CreateCell(categoryNRB10L.offer_cat_shares.ToString("N0", new CultureInfo("en-IN")), true, true)
+                            );
+
+                            catNRB10LTable.Append(row);
+                            srNo++;
+                        }
+                    }
+                }
+
+                var para7 = body.Descendants<DocumentFormat.OpenXml.Wordprocessing.Paragraph>()
+.FirstOrDefault(p => p.InnerText.Contains("Net Collections of Non-institutional and Individual Investor Categories (UPI)"));
+
+                if (para7 != null)
+                {
+                    DocumentFormat.OpenXml.Wordprocessing.Table bankUPITable = null;
+
+                    var next = para7.NextSibling();
+
+                    while (next != null)
+                    {
+                        if (next is DocumentFormat.OpenXml.Wordprocessing.Table tbl)
+                        {
+                            bankUPITable = tbl;
+                            break;
+                        }
+                        next = next.NextSibling();
+                    }
+
+                    if (bankUPITable != null)
+                    {
+                        // ✅ Remove old rows except header
+                        var rows = bankUPITable.Elements<DocumentFormat.OpenXml.Wordprocessing.TableRow>().ToList();
+
+                        for (int i = rows.Count - 1; i > 0; i--)
+                        {
+                            bankUPITable.RemoveChild(rows[i]);
+                        }
+
+                        int srNo = 1;
+
+                        foreach (var bankUPI in BankUPIData)
+                        {
+                            var row = new DocumentFormat.OpenXml.Wordprocessing.TableRow();
+
+                            row.Append(
+                                CreateCell(srNo.ToString(), true, false),
+                                CreateCell(bankUPI.bank_name.ToUpper(), true, false),
+                                CreateCell(bankUPI.no_of_bids.ToString("N0", new CultureInfo("en-IN")), true, true),
+                                CreateCell(bankUPI.no_of_shares_applied.ToString("N0", new CultureInfo("en-IN")), true, true),
+                                CreateCell(bankUPI.total_amount.ToString("N2", new CultureInfo("en-IN")), true, true)
+                            );
+
+                            bankUPITable.Append(row);
+                            srNo++;
+                        }
+
+                        // ✅ TOTAL ROW
+                        var totalRow = new DocumentFormat.OpenXml.Wordprocessing.TableRow();
+
+                        totalRow.Append(
+                            CreateCell("", true, false),
+                            CreateCell("TOTAL", true, false),
+                            CreateCell(BankUPIData.Sum(x => x.no_of_bids).ToString("N0", new CultureInfo("en-IN")), true, true),
+                            CreateCell(BankUPIData.Sum(x => x.no_of_shares_applied).ToString("N0", new CultureInfo("en-IN")), true, true),
+                            CreateCell(BankUPIData.Sum(x => x.total_amount).ToString("N2", new CultureInfo("en-IN")), true, true)
+                        );
+
+                        bankUPITable.Append(totalRow);
+                    }
+                }
+
                 // 🔥 NEXT STEP: Bank Table (you will add here)
 
                 doc.MainDocumentPart.Document.Save();
             }
+            byte[] fileBytes = System.IO.File.ReadAllBytes(newFilePath);
+            Response.Headers.Add("Content-Disposition", "attachment; filename=MOM_Report.docx");
 
-            return Ok(new
-            {
-                success = true,
-                filePath = "/Generated/" + fileName
-            });
+            return File(
+                    fileBytes,
+                    "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+                );
         }
 
         private void ReplaceText(Body body, string placeholder, string newValue)
@@ -687,5 +955,5 @@ namespace IPOWeb.Controllers
             return new DocumentFormat.OpenXml.Wordprocessing.TableCell(para);
         }
     }
-    }
+}
 
