@@ -96,7 +96,7 @@
                         <input type="text" class="form-control" id="iponame" readonly />
                     </div>
                     <div class="col-sm-2">
-                        <button type="button" class="btn btn-primary" id="btnSave" onclick="runrecon()" style="padding: 3px 25px;margin-top:28px;">Run Rejection</button>
+                        <button type="button" class="btn btn-primary" id="btnSave" onclick="runrecon(true)" style="padding: 3px 25px;margin-top:28px;">Run Rejection</button>
                     </div>
                     <div class="col-sm-2">
                         <button type="button" onclick="exportSummary()" class="btn btn-primary" id="btnGen" style="padding: 3px 25px;margin-top:28px;">Export Summary </button>
@@ -120,30 +120,30 @@
 <script>
     var selectedCodes = [];
          $(document).ready(function () {
+            $('#navhead').text('Run Rejection');
+            var ipoName = localStorage.getItem("selectedIPOText");
+            $("#iponame").val(ipoName);
+            $("#rejectionList").hide(); 
+            var offer_code =  localStorage.getItem("selectedIPO");
+            if(offer_code){
+                runrecon(false);
+            }
+        });
 
-        $('#navhead').text('Run Rejection');
-         var ipoName = localStorage.getItem("selectedIPOText");
-
-    $("#iponame").val(ipoName);
-
-        $("#rejectionList").hide();   // Hide grid container         
-
-    });
-
-       function runrecon() {       
+       function runrecon(runRule) {       
          var offer_code =  localStorage.getItem("selectedIPO");
           try {
             customAjax({
                 type: "GET",
                 url: '@Url.Action("getRejReason", "Rejection")',
                 data: {
-                offer_code: offer_code
+                offer_code: offer_code,
+                runRule : runRule
                 },
                 success: function (response) {
                     if (response && response.success) {
                       var data = JSON.parse(response.data);
                       fetchrejgrid(data);
-                      console.log("DATAS:", data);
                     }
                     else {
                         $.alert({
