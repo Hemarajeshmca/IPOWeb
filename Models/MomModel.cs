@@ -15,6 +15,11 @@ namespace IPOWeb.Models
         public List<CategoryNRB10L> categoryNRB10L { get; set; }
         public List<BankUPIData> bankUPIData { get; set; }
         public bidApplRcdData bidApplRcd { get; set; }
+        public List<ValidAppln> validAppln { get; set; }
+        public List<AllotmentSummary> allotmentSummary { get; set; }
+        public List<BankMaster> bankMaster { get; set; }
+        public List<CategoryQIB> categoryQIB { get; set; }
+        public List<CategoryMM> categoryMM { get; set; }
     }
 
     public class SummaryData
@@ -22,31 +27,31 @@ namespace IPOWeb.Models
         public string offer_code { get; set; }
         public string client_code { get; set; }
         public string client_name { get; set; }
-        public int offer_issuesize { get; set; }
+        public long offer_issuesize { get; set; }
         public int offer_facevalue { get; set; }
         public int offer_premiun { get; set; }
         public int offer_fixedprice { get; set; }
-        public int total_iposize { get; set; }
-        public int mm_shares { get; set; }
-        public int total_mm { get; set; }
-        public int public_shares { get; set; }
-        public int net_issue { get; set; }
+        public long total_iposize { get; set; }
+        public long mm_shares { get; set; }
+        public long total_mm { get; set; }
+        public long public_shares { get; set; }
+        public long net_issue { get; set; }
     }
 
     public class BankData
     {
         public string bnk_code { get; set; }
-        public string bank_name { get; set; }
-        public int bnk_appl_count { get; set; }
-        public int bnk_quantity { get; set; }
+        public string? bank_name { get; set; }
+        public long bnk_appl_count { get; set; }
+        public long bnk_quantity { get; set; }
         public decimal bank_amount { get; set; }
     }
 
     public class RejectionData
     {
-        public string rejected_reason { get; set; }       
-        public int total_quantity { get; set; }
-        public int rejection_count { get; set; }        
+        public string? rejected_reason { get; set; }
+        public long total_quantity { get; set; }
+        public long rejection_count { get; set; }
     }
 
     public class CategoryData
@@ -115,4 +120,50 @@ namespace IPOWeb.Models
         public long bank_bids { get; set; }
         public long bank_bids_qty { get; set; }
     }
- }
+
+    public class ValidAppln
+    {
+        public string? ipo_category { get; set; }
+        public long gross_appln { get; set; }
+        public long gross_shares { get; set; }
+        public long valid_appln { get; set; }
+        public long valid_shares { get; set; }
+        public long rejected_appln { get; set; }
+        public long rejected_shares { get; set; }
+    }
+
+    public class AllotmentSummary
+    {
+        public string? ipo_category { get; set; }
+        public long gross_appln { get; set; }
+        public long gross_shares { get; set; }
+        public long valid_appln { get; set; }
+        public long valid_shares { get; set; }
+        public long rejected_appln { get; set; }
+        public long rejected_shares { get; set; }
+        public long allotment_appln { get; set; }
+        public long allotment_shares { get; set; }
+    }
+
+    public class BankMaster
+    {
+        public string? bank_name { get; set; }
+    }
+
+    public class CategoryQIB
+    {
+        public string bank_name { get; set; }
+        public int no_of_applications { get; set; }
+        public long no_of_shares { get; set; }
+        public long total_amount { get; set; }
+    }
+
+    public class CategoryMM
+    {
+        public string bank_name { get; set; }
+        public int no_of_applications { get; set; }
+        public long no_of_shares { get; set; }
+        public long total_amount { get; set; }
+    }
+
+}
