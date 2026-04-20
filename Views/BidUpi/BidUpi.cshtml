@@ -106,7 +106,7 @@
                         &nbsp;&nbsp;
                         <button type="button" onclick="exportSummary()" class="btn btn-primary" id="btnGen" style="padding: 3px 25px;margin-top:28px;">Export Summary </button>
                         &nbsp;&nbsp;
-                        <button type="button" onclick="exportdetailSummary()" class="btn btn-primary" id="btnGen" style="padding: 3px 25px;margin-top:28px; white-space: nowrap;">Export Detail Summary </button>
+                            <button type="button" onclick="exportdetailSummary()" class="btn btn-primary" id="btnGensummary" style="padding: 3px 25px;margin-top:28px; white-space: nowrap;">Export Detail Summary </button>
                         </span>
                     </div>
                     
@@ -132,12 +132,23 @@
         var ipoName = localStorage.getItem("selectedIPOText");
         var ipocode = localStorage.getItem("selectedIPO");
         $("#iponame").val(ipoName);
-        $("#ipocode").val(ipocode);
+        $("#ipocode").val(ipocode); 
     });
 
-    function runrecon() {
-        getBidBank();
-    }
+    function runrecon() { 
+            var offer_code = localStorage.getItem("selectedIPO");
+            if (offer_code) {
+                getBidBank(); 
+            } else {
+                $("#btnGensummary").hide();
+                $("#btnGen").hide();
+                $.alert({
+                    title: 'IPO Allotment',
+                    content: 'IPO Code not selected',
+                    type: 'red',
+                });
+            }
+        }   
 
     $(document).on("click", "#selectAll", function () {
         var isChecked = this.checked;
@@ -191,16 +202,29 @@
                     if (response && response.success) {
                       var data = JSON.parse(response.data);
                       fetchgrid(data);
+                      if(data.length==0){
+                        $("#btnGen").hide();
+                        $("#btnGensummary").hide();
+                      }
+                      else{
+                          $("#btnGen").show();
+                        $("#btnGensummary").show();
+                      }
+                   
                     }
                     else {
+                        $("#btnGen").hide();
+                        $("#btnGensummary").hide();
                         $.alert({
                             title: 'IPO Allotment',
-                            content: 'Save failed!',
+                            content: 'getBidBank CSSGroupingRule listed failed!',
                             type: 'red',
                         });
                     }
                 },
                 error: function (er) {
+                    $("#btnGen").hide();
+                    $("#btnGensummary").hide();
                     console.log(er);
                 }
             });
@@ -311,22 +335,27 @@
         grid.saveAsExcel();
     }
 
-        function exportdetailSummary() {
-
+        function exportdetailSummary() { 
+        $("#btnGensummary").prop("disabled", true);
         if (selectedCodes.length === 0) {
+            $("#btnGensummary").prop("disabled", false);
             $.alert({
                 title: 'IPO Web',
                 content: "Please select at least one bank",
                 type: 'red',
             });
             return;
-        }
-        var bank_code = selectedCodes.join(",");
-        var offer_code = localStorage.getItem("selectedIPO");
-        var url = '/BidBank/getdetailBankSummary'
-            + '?offer_code=' + encodeURIComponent(offer_code)
-            + '&bank_code=' + encodeURIComponent(bank_code);
-
-        window.location.href = url;
+        } 
+        
+            var bank_code = selectedCodes.join(",");
+            var offer_code = localStorage.getItem("selectedIPO");
+            var url = '/BidUpi/getdetailUPISummary'
+                + '?offer_code=' + encodeURIComponent(offer_code)
+                + '&bank_code=' + encodeURIComponent(bank_code);
+        
+            window.location.href = url; 
+            $("#btnGensummary").prop("disabled", false);
     }
+
+    
 </script>
