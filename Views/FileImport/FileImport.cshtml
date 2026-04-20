@@ -221,7 +221,7 @@
                                         <div class="col-sm-1">
                                             <img style="margin-top: 35px; height: 25px; width: 25px; cursor:pointer;" onclick="downloadTemplate()" src="~/Assets/images/download.png" />
                                         </div>   
-                                        <div  class="col-sm-2" style="margin-left:-50px;margin-right:50px;">
+                                        <div id="categoryrow" class="col-sm-2" style="margin-left:-50px;margin-right:50px;">
                                             <label class="form-label" for="bank" data-field="bank">Select Category</label>&nbsp;<span style="font-size: 12px;color:red;font-weight: bold;">*</span>
                                             <select id="category" class="form-control">
                                                 <option value="">-- Select Category -- </option>
@@ -479,9 +479,15 @@
             $("#datasetname").text(dataset_name );
             if (typeof dataset_name === "string" && dataset_name.toLowerCase().includes("bank")) {
                     $("#bankrow").show();
+                    $("#categoryrow").show();
                     loadBank();
                 } else {
                     $("#bankrow").hide(); 
+                }
+                if ((typeof dataset_name === "string" && dataset_name.toLowerCase().includes("bendem")) || 
+                (typeof dataset_name === "string" && dataset_name.toLowerCase().includes("exchange upi")))
+                {                   
+                    $("#categoryrow").hide();
                 }
             var tabTrigger = document.querySelector('button[data-bs-target="#navs-top-progress"]');
             var tab = new bootstrap.Tab(tabTrigger);

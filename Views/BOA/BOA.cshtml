@@ -187,6 +187,7 @@
                         </div>
 
                     </div>
+
                     <div class="col-md-2-4">
                         <label class="form-label">Opening Date</label>
                         <input type="date" class="form-control" id="offer_openingdate" readonly />
@@ -253,12 +254,12 @@
 
                     <div class="col-md-2-4">
                         <label class="form-label">Market Maker Shares</label>
-                        <input type="number" class="form-control" id="mm" readonly />
+                        <input type="number" class="form-control" id="mm" value="100" readonly />
                     </div>
 
                     <div class="col-md-2-4">
                         <label class="form-label">QIB Shares</label>
-                        <input type="number" class="form-control" value="1017000" readonly />
+                        <input type="number" class="form-control" id="qib" readonly />
                     </div>
 
                     <div class="col-md-2-4">
@@ -268,7 +269,7 @@
 
                     <div class="col-md-2-4">
                         <label class="form-label">Net Issue of Shares</label>
-                        <input type="number" class="form-control" value="5102000" readonly />
+                        <input type="number" class="form-control" id="net" readonly />
                     </div>
                 </div>
                 <!-- Net Quantum -->
@@ -283,17 +284,17 @@
 
                         <div class="col">
                             <label class="form-label">Retail - Net quantum available</label>
-                            <input type="number" class="form-control" value="1786000" readonly />
+                            <input type="number" class="form-control" id="net" readonly />
                         </div>
 
                         <div class="col">
                             <label class="form-label">Non-Retail <= 100000</label>
-                            <input type="number" class="form-control" value="2871000" readonly />
+                            <input type="number" class="form-control" id="NRB10L" readonly />
                         </div>
 
                         <div class="col">
                             <label class="form-label">Non-Retail > 100000</label>
-                            <input type="number" class="form-control" value="516000" readonly />
+                            <input type="number" class="form-control" id="NRA10L" readonly />
                         </div>
                     </div>
                 </div>
@@ -339,7 +340,8 @@
                     </div>
                     <!-- Buttons -->
                     <div class="button-row">
-                        <button class="btn btn-primary" style="padding: 3px 25px;margin-bottom:20px;" id="generateBtn" onclick="generateReport()">Generate</button>
+                        <button class="btn btn-primary" style="padding: 3px 25px;margin-bottom:20px;" id="generateBtn" onclick="runboa()">Generate</button>
+                        <button class="btn btn-primary" style="border-color: green;background-color: green; border-radius: 5px;color: white;margin-bottom: 30px;margin-bottom: 20px;padding: 3px 25px;" id="generateBtn" onclick="generateReport()">Download</button>
                         <button class="btn btn-primary" style="border-color: red;background-color: red; border-radius: 5px;color: white;margin-bottom: 30px;margin-bottom: 20px;padding: 3px 25px;" id="exitBtn">
                             Exit
                         </button>
@@ -362,10 +364,10 @@
     });
 
 
-    function fetchIssuesetup(){         
+        function fetchIssuesetup(){
             var offer_code = $("#ipocode").val();
             var client_code = $("#clientid").val();
-            
+
             try {
             $.ajax({
                 type: "GET",
@@ -379,17 +381,22 @@
                 success: function (response) {
                         if (response && response.success == true ) {
                         var data = JSON.parse(response.data);
-                        offerHeader = data.Table;                        
-                        offerDetails = data.Table1;                       
+                        offerHeader = data.Table;
+                        offerDetails = data.Table1;
                         offerBank = data.Table2;
                         offerStackHolder = data.Table3;
                         offerCategory = data.Table4;
-                        offerMillstone = data.Table5;                          
-                         console.log("offerDetails", offerDetails);
+                        offerMillstone = data.Table5;
+                        console.log("offerCategory :", offerCategory);
                          var client_cin = offerHeader[0].client_cin;
                         $('#client_cin').val(client_cin);
                         var offer_isin = offerHeader[0].offer_isin;
                         $('#offer_isin').val(offer_isin);
+                        var listing = offerHeader[0].offer_listing_no;
+                        $('input[name="exchange"][value="' + listing + '"]').prop('checked', true);
+                        $('input[name="exchange"]').on('click', function (e) {
+                            e.preventDefault();
+                        });
                         var facevalue = offerDetails[0].offer_facevalue;
                          $('#offer_facevalue').val(facevalue);
                         var premium = offerDetails[0].offer_premiun;
@@ -415,6 +422,15 @@
                          var listdate = offerMillstone[0].offer_listingdate;
                          var formattedLDate = new Date(listdate).toISOString().split('T')[0];
                         $('#offer_listingdate').val(formattedLDate);
+                         var qib = (offerCategory || []).find(x => x.category_code === "QIB");
+                        $('#qib').val(qib ? qib.offer_cat_shares : 0);
+                         var nrb10lData = (offerCategory || []).find(x => x.category_code === "NRB10L");
+                        $('#NRB10L').val(nrb10lData ? nrb10lData.offer_cat_shares : 0);
+                        var nra10lData = (offerCategory || []).find(x => x.category_code === "NRA10L");
+                        $('#NRA10L').val(nra10lData ? nra10lData.offer_cat_shares : 0);
+                        var mm = 100;
+                        var net = offersize - (mm + empshares);
+                        $("#net").val(net);
                         }
                     else {
                     }
@@ -430,66 +446,153 @@
             }
         }
 
-    function generateReport() {
-        //  if (!offer_code) {
-        //     $.alert({
-        //         title: 'IPO Web',
-        //         content: "Please select IPO Name",
-        //         type: 'red',
-        //     });
-        //     return;
-        // }
-        // var offer_code = localStorage.getItem("selectedIPO");
-        // var url = '/BOA/getboareport'
-        //     + '?offer_code=' + encodeURIComponent(offer_code);
-        // window.location.href = url;
+    // function generateReport() {
+    //      var offer_code = localStorage.getItem("selectedIPO");
+    //      if (!offer_code) {
+    //         $.alert({
+    //             title: 'IPO Web',
+    //             content: "Please select IPO Name",
+    //             type: 'red',
+    //         });
+    //         return;
+    //     }
+    //       var url = '/BOA/getboareport'
+    //                                 + '?offer_code=' + encodeURIComponent(offer_code);
+    //                             window.location.href = url;
+    //     //   try {
+    //     //     customAjax({
+    //     //         type: "GET",
+    //     //         url: '@Url.Action("getMomReports", "BOA")',
+    //     //         data: {
+    //     //         offer_code: offer_code
+    //     //         },
+    //     //             success: function (response) {
+    //     //                 if (response && response.success) {
+    //     //                     var data = response.data;
+    //     //                     console.log("Datasets :", data);
+    //     //                     var details = data.table1;
+    //     //                     var row = details[0];
+    //     //                     var bank = data.table2;
+    //     //                     var table3 = data.table3;
+    //     //                     var table4 = data.table4;
+    //     //                     var table5 = data.table5;
+    //     //                     var table6 = data.table6;
+    //     //                     table6 = (table6 || []).map(x => ({
+    //     //                     ...x,
+    //     //                     times_subs: x.times_subs ? Number(x.times_subs) : 0
+    //     //                 }));
+    //     //                  var table7 = data.table7;
+    //     //                   table7 = (table7 || []).map(x => ({
+    //     //                     ...x,
+    //     //                     times_subs: x.times_subs ? Number(x.times_subs) : 0
+    //     //                 }));
+    //     //                  var table8 = data.table8;
+    //     //                   table8 = (table8 || []).map(x => ({
+    //     //                     ...x,
+    //     //                     times_subs: x.times_subs ? Number(x.times_subs) : 0
+    //     //                 }));
+    //     //                  var table9 = data.table9;
+    //     //                   table9 = (table9 || []).map(x => ({
+    //     //                     ...x,
+    //     //                     times_subs: x.times_subs ? Number(x.times_subs) : 0
+    //     //                 }));
+    //     //                 var table10 = data.table10;
+    //     //                     table10 = (table10 || []).map(x => ({
+    //     //                     bank_name: x.bank_name || "",
+    //     //                     no_of_bids: Number(x.no_of_bids) || 0,
+    //     //                     no_of_shares_applied: Number(x.no_of_shares_applied) || 0,
+    //     //                     total_amount: Number(x.total_amount) || 0
+    //     //                 }));
+    //     //                  var table11 = data.table11;
+    //     //                  var table12 = data.table12;
+    //     //                  var table13 = data.table13;
+    //     //                  var table14 = data.table14;
+    //     //                     cin = row.client_cin;
+    //     //                     $('#cin').val(row.client_cin);
+    //     //                            fetch('@Url.Action("generateReport", "BOA")', {
+    //     //                                     method: 'POST',
+    //     //                                     headers: {
+    //     //                                         'Content-Type': 'application/json'
+    //     //                                     },
+    //     //                                     body: JSON.stringify({
+    //     //                                         summary: row,
+    //     //                                         bankData: bank,
+    //     //                                         nonasbabankData: table3,
+    //     //                                         rejectionData: table4,
+    //     //                                         categoryData: table5,
+    //     //                                         categoryINDData: table6,
+    //     //                                         categoryCo: table7,
+    //     //                                         categoryNRA10L: table8,
+    //     //                                         categoryNRB10L: table9,
+    //     //                                         bankUPIData: table10,
+    //     //                                         bidApplRcd: table11[0],
+    //     //                                         validAppln: table12,
+    //     //                                         allotmentSummary: table13,
+    //     //                                         bankMaster:table14
+    //     //                                     })
+    //     //                                 })
+    //     //                                 .then(response => {
+    //     //                                     if (!response.ok) {
+    //     //                                         throw new Error("File download failed");
+    //     //                                     }
+    //     //                                     return response.blob();
+    //     //                                 })
+    //     //                                 .then(blob => {
+    //     //                                     const url = window.URL.createObjectURL(blob);
+    //     //                                     const a = document.createElement('a');
+    //     //                                     a.href = url;
+    //     //                                     a.download = "MOM_Report.docx";
+    //     //                                     document.body.appendChild(a);
+    //     //                                     a.click();
+    //     //                                     a.remove();
+    //     //                                     window.URL.revokeObjectURL(url);
+    //     //                                 })
+    //     //                                 .catch(error => {
+    //     //                                     console.error("Download failed:", error);
+    //     //                                 });
+    //     //                                         var url = '/BOA/getboareport'
+    //     //                             + '?offer_code=' + encodeURIComponent(offer_code);
+    //     //                         window.location.href = url;
+    //     //                 }
+    //     //                 else {
+    //     //                 $.alert({
+    //     //                     title: 'IPO Allotment',
+    //     //                     content: 'Save failed!',
+    //     //                     type: 'red',
+    //     //                 });
+    //     //             }
+    //     //         },
+    //     //         error: function (er) {
+    //     //             console.log(er);
+    //     //         }
+    //     //     });
+    //     // } catch (e) {
+    //     //     console.log(e);
+    //     // }
 
+    // }
+
+    function runboa(){
          var offer_code =  localStorage.getItem("selectedIPO");
           try {
             customAjax({
                 type: "GET",
-                url: '@Url.Action("getMomReports", "BOA")',
+                url: '@Url.Action("runRejection", "Rejection")',
                 data: {
                 offer_code: offer_code
                 },
-                    success: function (response) {
-                        if (response && response.success) {
-                            var data = response.data;
-                            console.log("Datasets :", data);
-                            var table1 = data.table1;
-                            var row = table1[0];
-                            var table2 = data.table2;
-                            var table3 = data.table3;
-                            var table4 = data.table4;
-                            var table5 = data.table5;
-                            var table6 = data.table6;
-                            cin = row.client_cin;
-                            $('#cin').val(row.client_cin);
-                            $.ajax({
-                                url: '@Url.Action("generateReport", "BOA")',
-                                type: "POST",
-                                contentType: "application/json",
-                                data: JSON.stringify({
-                                    summary: row,
-                                    bankData: table2,
-                                    nonasbabankData: table3,
-                                    RejectionData: table4,
-                                    CategoryData: table5
-                                }),
-                                success: function (res) {                                   
-                                    var link = document.createElement('a');
-                                    link.href = res.filePath; 
-                                    link.download = "MOM_Report.docx";
-                                    document.body.appendChild(link);
-                                    link.click();
-                                    document.body.removeChild(link);
-                                }
-                            });
-                        }
-                        else {
+                success: function (response) {
+                    if (response && response.success) {                   
                         $.alert({
                             title: 'IPO Allotment',
-                            content: 'Save failed!',
+                            content: 'Success .!',
+                            type: 'blue',
+                        });
+                    }
+                    else {
+                        $.alert({
+                            title: 'IPO Allotment',
+                            content: 'Failed!',
                             type: 'red',
                         });
                     }
@@ -501,6 +604,123 @@
         } catch (e) {
             console.log(e);
         }
+    }
+
+        async function generateReport() {
+         var offer_code = localStorage.getItem("selectedIPO");
+         if (!offer_code) {
+            $.alert({
+                title: 'IPO Web',
+                content: "Please select IPO Name",
+                type: 'red',
+            });
+            return;
+        }
+        showProgress();
+          try {
+            customAjax({
+                type: "GET",
+                url: '@Url.Action("getMomReports", "BOA")',
+                data: {
+                offer_code: offer_code
+                },
+                    success: function (response) {
+                        if (response && response.success) {
+                            var data = response.data;
+                            console.log("Datasets :", data);
+                            var details = data.table1;
+                            var row = details[0];
+                            var bank = data.table2;
+                            var table3 = data.table3;
+                            var table4 = data.table4;
+                            var table5 = data.table5;
+                            var table6 = data.table6;
+                             var table7 = data.table7;
+                             var table8 = data.table8;
+                             var table9 = data.table9;
+                            var table10 = data.table10;
+                            table10 = (table10 || []).map(x => ({
+                            bank_name: x.bank_name || "",
+                            no_of_bids: Number(x.no_of_bids) || 0,
+                            no_of_shares_applied: Number(x.no_of_shares_applied) || 0,
+                            total_amount: Number(x.total_amount) || 0
+                        }));
+                         var table11 = data.table11;
+                         var table12 = data.table12;
+                         var table13 = data.table13;
+                         var table14 = data.table14;
+                         var table15 = data.table15;
+                         var table16 = data.table16;
+                            cin = row.client_cin;
+                            $('#cin').val(row.client_cin);
+                                      fetch('/BOA/downloadAllReports', {
+                                        method: 'POST',
+                                        headers: {
+                                            'Content-Type': 'application/json'
+                                        },
+                                        body: JSON.stringify({
+                                            summary: row,
+                                            bankData: bank,
+                                            nonasbabankData: table3,
+                                            rejectionData: table4,
+                                            categoryData: table5,
+                                            categoryINDData: table6,
+                                            categoryCo: table7,
+                                            categoryNRA10L: table8,
+                                            categoryNRB10L: table9,
+                                            bankUPIData: table10,
+                                            bidApplRcd: table11[0],
+                                            validAppln: table12,
+                                            allotmentSummary: table13,
+                                            bankMaster: table14,
+                                            categoryQIB: table15,
+                                            categoryMm: table16
+                                        })
+                                    })
+                                    .then(response => {
+                                        if (!response.ok) {
+                                            throw new Error("Download failed");
+                                        }
+                                        return response.blob();
+                                    })
+                                    .then(blob => {
+                                        const url = window.URL.createObjectURL(blob);
+
+                                        const a = document.createElement('a');
+                                        a.href = url;
+                                        a.download = "IPO_Reports.zip"; // ✅ IMPORTANT (ZIP now)
+
+                                        document.body.appendChild(a);
+                                        a.click();
+                                        a.remove();
+
+                                        window.URL.revokeObjectURL(url);
+                                        hideProgress();
+                                    })
+                                    .catch(error => {
+                                        console.error("Download failed:", error);
+                                        hideProgress();
+                                    });
+                       }
+                        else {
+                            hideProgress();
+                        $.alert({
+                            title: 'IPO Allotment',
+                            content: 'Save failed!',
+                            type: 'red',
+                        });
+                    }
+                },
+                error: function (er) {
+                    console.log(er);
+                    hideProgress();
+                }
+            });
+        } catch (e) {
+            console.log(e);
+            hideProgress();
+        }
 
     }
-    </script>
+
+</script>
