@@ -254,13 +254,13 @@
 
                     <div class="col-md-2-4">
                         <label class="form-label">Market Maker Shares</label>
-                        <input type="number" class="form-control" id="mm" value="100" readonly />
+                        <input type="number" class="form-control" id="mm"  readonly />
                     </div>
 
-                    <div class="col-md-2-4">
+                    @* <div class="col-md-2-4">
                         <label class="form-label">QIB Shares</label>
                         <input type="number" class="form-control" id="qib" readonly />
-                    </div>
+                    </div> *@
 
                     <div class="col-md-2-4">
                         <label class="form-label">Emp. Shares</label>
@@ -283,8 +283,18 @@
                         </div>
 
                         <div class="col">
-                            <label class="form-label">Retail - Net quantum available</label>
-                            <input type="number" class="form-control" id="net" readonly />
+                            <label class="form-label">QIB</label>
+                            <input type="number" class="form-control" id="qibs" readonly />
+                        </div>
+
+                        <div class="col">
+                            <label class="form-label">Bodies Corporte</label>
+                            <input type="number" class="form-control" id="bo" readonly />
+                        </div>
+
+                        <div class="col">
+                            <label class="form-label">Retail</label>
+                            <input type="number" class="form-control" id="retail" readonly />
                         </div>
 
                         <div class="col">
@@ -422,14 +432,24 @@
                          var listdate = offerMillstone[0].offer_listingdate;
                          var formattedLDate = new Date(listdate).toISOString().split('T')[0];
                         $('#offer_listingdate').val(formattedLDate);
-                         var qib = (offerCategory || []).find(x => x.category_code === "QIB");
-                        $('#qib').val(qib ? qib.offer_cat_shares : 0);
+                        //  var qib = (offerCategory || []).find(x => x.category_code === "QIB");
+                        // $('#qib').val(qib ? qib.offer_cat_shares : 0);
+                        var qibs = (offerCategory || []).find(x => x.category_code === "QIB");
+                        $('#qibs').val(qibs ? qibs.offer_cat_shares : 0);
+                        var bo = (offerCategory || []).find(x => x.category_code === "CO");
+                        $('#bo').val(bo ? bo.offer_cat_shares : 0);
+                        var retail = (offerCategory || []).find(x => x.category_code === "IND");
+                        $('#retail').val(retail ? retail.offer_cat_shares : 0);
                          var nrb10lData = (offerCategory || []).find(x => x.category_code === "NRB10L");
                         $('#NRB10L').val(nrb10lData ? nrb10lData.offer_cat_shares : 0);
                         var nra10lData = (offerCategory || []).find(x => x.category_code === "NRA10L");
                         $('#NRA10L').val(nra10lData ? nra10lData.offer_cat_shares : 0);
-                        var mm = 100;
-                        var net = offersize - (mm + empshares);
+                        var mm = (offerCategory || []).find(x => x.category_code === "MM");
+                       var mmShares = Number(mm?.offer_cat_shares) || 0;
+                       $('#mm').val(mmShares);                       
+                        var public = offersize - mmShares;
+                        console.log("PUBLIC : ", public);
+                        var net = public * (premium + facevalue);
                         $("#net").val(net);
                         }
                     else {
@@ -651,6 +671,10 @@
                          var table14 = data.table14;
                          var table15 = data.table15;
                          var table16 = data.table16;
+                         var table17 = data.table17;
+                         var table18 = data.table18;
+                         var table19 = data.table19;
+                         var table20 = data.table20;
                             cin = row.client_cin;
                             $('#cin').val(row.client_cin);
                                       fetch('/BOA/downloadAllReports', {
@@ -674,7 +698,11 @@
                                             allotmentSummary: table13,
                                             bankMaster: table14,
                                             categoryQIB: table15,
-                                            categoryMm: table16
+                                            categoryMm: table16,
+                                            categoryEMP: table17,
+                                            categoryNIIC: table18,
+                                            categorySOA: table19,
+                                            categoryEXMMSOA: table20
                                         })
                                     })
                                     .then(response => {

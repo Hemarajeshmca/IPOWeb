@@ -20,6 +20,10 @@ namespace IPOWeb.Models
         public List<BankMaster> bankMaster { get; set; }
         public List<CategoryQIB> categoryQIB { get; set; }
         public List<CategoryMM> categoryMM { get; set; }
+        public List<CategoryEMP> categoryEMP { get; set; }
+        public List<CategoryNIIC> categoryNIIC { get; set; }
+        public List<CategorySOA> categorySOA { get; set; }
+        public List<CategoryEXMMSOA> categoryEXMMSOA { get; set; }        
     }
 
     public class SummaryData
@@ -36,6 +40,7 @@ namespace IPOWeb.Models
         public long total_mm { get; set; }
         public long public_shares { get; set; }
         public long net_issue { get; set; }
+        public string offer_openingdate { get; set; }
     }
 
     public class BankData
@@ -165,5 +170,43 @@ namespace IPOWeb.Models
         public long no_of_shares { get; set; }
         public long total_amount { get; set; }
     }
+
+    public class CategoryEMP
+    {
+        public string bank_name { get; set; }
+        public int no_of_applications { get; set; }
+        public long no_of_shares { get; set; }
+        public long total_amount { get; set; }
+    }
+
+    public class CategoryNIIC
+    {
+        public string? Particulars { get; set; }
+        public long nii_no_of_applications { get; set; }
+        public long nii_no_of_shares { get; set; }
+        public long ind_no_of_applications { get; set; }
+        public long ind_no_of_shares { get; set; }
+        public long total_no_of_applications { get; set; }
+        public long total_no_of_shares { get; set; }      
+    }
+
+    public class CategorySOA
+    {
+        public string? ipo_category { get; set; }
+        public long offer_cat_shares { get; set; }
+        public long valid_shares_received { get; set; }
+        public long equity_shares_allotted { get; set; }
+        public long total_allotment_amount { get; set; }        
+    }
+
+    public class CategoryEXMMSOA
+    {
+        public string? ipo_category { get; set; }
+        public long offer_cat_shares { get; set; }
+        public long valid_shares_received { get; set; }
+        public long equity_shares_allotted { get; set; }
+        public long total_allotment_amount { get; set; }
+    }
+
 
 }
