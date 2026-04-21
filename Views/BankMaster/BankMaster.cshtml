@@ -1,5 +1,20 @@
 ﻿@{
     Layout = "~/Views/Shared/_LayoutNew.cshtml";
+    var menuJson = Context.Session.GetString("UserMenus");
+    var menus = new List<MenuModel>();
+
+    if (!string.IsNullOrEmpty(menuJson))
+    {
+        menus = System.Text.Json.JsonSerializer.Deserialize<List<MenuModel>>(menuJson);
+    }
+
+    var currentPath = Context.Request.Path.Value.ToLower();
+    var currentMenu = menus.FirstOrDefault(x => x.menu_url.ToLower() == currentPath);
+    var menuId = currentMenu?.menu_id;
+    var addPerm = currentMenu?.add_perm;
+    var modPerm = currentMenu?.mod_perm;
+    var viewPerm = currentMenu?.view_perm;
+    var delPerm = currentMenu?.delete_perm;
 }
 <!DOCTYPE html>
 <html>  
@@ -89,20 +104,20 @@
             <div class="card-body" style="margin-top:5px;height: 556px;width: 103%;margin-left: -18px;">
                 <div id="list">
                 <div class="row">
-                    <div class="col-sm-6">
+                   @*  <div class="col-sm-6">
                             <img id="plusIcon"
                                  data-bs-toggle="modal"
                                  data-bs-target="#myModal"
                                  style="width:11px; height:11px;margin-bottom:12px;cursor:pointer"
                                  src="/Assets/images/plus.png">
-                    </div>
+                    </div> *@
                     <div class="col-sm-6">
                        
                     </div>
                 </div>
                 <div class="row">
-                  <div class="col-sm-12">
-                       <div id="bankGrid"></div>
+                        <div class="col-sm-12" id="bankGrid">
+                            <div id="grid"></div>
                   </div>
                 </div>    
                 </div>               
@@ -161,9 +176,9 @@
 <script>
     
     $(document).ready(function () {
-        $('#navhead').text('Bank Master');    
+        $('#navhead').text('Bank Master');
 
- $("#bankGrid").kendoGrid({
+     $("#grid").kendoGrid({
             dataSource: {
                 data: [
                     {
@@ -232,6 +247,145 @@
                 ]
         });
 });
+     $(document).ready(function () {
+             grid_load();
+    });
 
 
+function grid_load(){
+            $("#grid").remove();
+                $('#bankGrid').append('<div id="grid" style="margin-top: 6px;margin-left: 4px;"></div>');
+            var data = {};
+            data.in_user_code = "1";//sessionStorage.getItem("usrname");
+            
+                $.ajax({
+                type: "POST",
+                url: "../Bankmaster/getallbankmaster",
+                dataType: "json",
+                data: JSON.stringify({ in_user_code: data.in_user_code }),
+                contentType: 'application/json; charset=utf-8',
+                success: function (data) {
+                         if (data.authExpired) {
+                                $.alert({
+                                     title: 'Unauthorized',
+                                    content: data.message || 'Unauthorized User',
+                                    type: 'red',
+                                    buttons: {
+                                        ok: {
+                                            text: 'OK',
+                                            action: function () {
+                                                window.location.href = '/login/logout';
+                                            }
+                                        }
+                                    }
+                                });
+                                return;
+                            }
+                    if (data != null) {
+                        grid_dataset_details(data);
+                    } else {
+                        grid_dataset_details([]);
+                    }
+                }
+            });
+    }
+
+        function grid_dataset_details(data) {
+             var modPerm = '@modPerm';
+             var viewPerm = '@viewPerm';
+             var delPerm = '@delPerm';
+                var commandList = [];
+
+                     
+            try {
+                
+                $("#grid").kendoGrid({
+                    dataSource: {
+                        type: "odata",
+                        data: data,
+                        pageSize: 15,
+                        schema: {
+                            model: {
+                                fields: {
+                                  //  Action: { type: "string" },
+                                    bank_id: { type: "int" },
+                                    bank_code: { type: "string" },
+                                    bank_name: { type: "string" },
+                                    ifsc_code: { type: "string" }
+                                    }
+                            }
+                        }
+                    },
+                    height: 350,
+                    groupable: false,
+                    dataBound: function (e) {
+                        resultData = e.sender._data;
+                        var rows = $('#grid').data('kendoGrid').tbody.children();
+                        setColor(rows, resultData);
+                        if ($("#system_flag").val() == "Y") {
+                            $(".k-grid-edit").hide();
+                            $(".k-grid-delete").hide();
+                        }
+                    },
+                    pageable: {
+                        refresh: false,
+                        pageSizes: [10, 15, 20, 25, 50],
+                        buttonCount: 5
+                    },
+                    sortable: true,
+                    selectable: true,
+                    filterable: true,
+                    navigatable: true,
+                    resizable: true,
+                    columns: [
+                    // {
+                    //     command: commandList,
+                    //     title: "Action",
+                    //     width: "25px",
+                    //     attributes: {
+                    //         style: "text-align: left;"
+                    //     }
+                    // },
+                    {
+                            field: "bank_id",
+                        title: "Bank Gid",
+                        width: 10,
+                        hidden: true
+                    },
+                    {
+                        field: "bank_code",
+                        title: "Bank code",
+                        width: 15 
+                    },
+                    {
+                        field: "bank_name",
+                        title: "Bank Name", 
+                        width: 60
+                        // resizable: false,
+                        // filterable: {
+                        //     ui: priorityFilter,
+                        //     extra: false,
+                        //     operators: {
+                        //         string: {
+                        //             eq: "Is equal to",
+                        //             neq: "Not equal to"
+                        //         }
+                        //     },
+                        // },
+                    },
+                    {
+                        field: "ifsc_code",
+                        title: "IFSC",
+                        width: 15 
+                    }
+                    ],
+                    editable: false,
+                    resizable: false
+                }); 
+            }
+            catch (err) {
+                console.log(err)
+
+            }
+        }
 </script>

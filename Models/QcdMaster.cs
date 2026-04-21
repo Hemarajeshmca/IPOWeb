@@ -19,4 +19,13 @@
         public string system_flag { get; set; }
 
     }
+
+    public class BankMasterModel
+    {
+        public int bank_id { get; set; }
+        public string bank_code { get; set; }
+        public string bank_name { get; set; }
+        public string ifsc_code { get; set; }
+
+    }
 }
