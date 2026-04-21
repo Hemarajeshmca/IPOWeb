@@ -95,7 +95,7 @@
                         <label class="form-label" for="ctype" data-field="ctype">IPO Name</label>&nbsp;<span style="font-size: 12px;color:red;font-weight: bold;">*</span>
                         <input type="text" class="form-control" id="iponame" readonly />
                     </div>
-                    <div class="col-sm-2">
+                   @*  <div class="col-sm-2">
                         <button type="button" class="btn btn-primary" id="btnSave" onclick="runrecon(true)" style="padding: 3px 25px;margin-top:28px;">Run Rejection</button>
                     </div>
                     <div class="col-sm-2">
@@ -103,6 +103,15 @@
                     </div>
                     <div class="col-sm-2">
                         <button type="button" onclick="exportdetailSummary()" class="btn btn-primary" id="btnGen" style="padding: 3px 25px;margin-top:28px; white-space: nowrap;">Export Detail Summary </button>
+                    </div> *@
+                    <div class="col-sm-9">
+                        <span>
+                            <button type="button" class="btn btn-primary" id="btnSave" onclick="runrecon()" style="padding: 3px 25px;margin-top:28px;">Run Recon</button>
+                            &nbsp;&nbsp;
+                            <button type="button" onclick="exportSummary()" class="btn btn-primary" id="btnGen" style="padding: 3px 25px;margin-top:28px;">Export Summary </button>
+                            &nbsp;&nbsp;
+                            <button type="button" onclick="exportdetailSummary()" class="btn btn-primary" id="btnGensummary" style="padding: 3px 25px;margin-top:28px; white-space: nowrap;">Export Detail Summary </button>
+                        </span>
                     </div>
                 </div>
                <div class="row" style="margin-top:20px;">
@@ -310,7 +319,7 @@
         grid.saveAsExcel();
     }
 
-    function exportdetailSummary() {
+    function exportdetailSummary_old() {
 
         // if (selectedCodes.length === 0) {
         //     $.alert({
@@ -327,5 +336,24 @@
         //     + '&rule_code=' + encodeURIComponent(rule_code);
 
         // window.location.href = url;
+    }
+
+    function exportdetailSummary() {
+
+        if (selectedCodes.length === 0) {
+            $.alert({
+                title: 'IPO Web',
+                content: "Please select at least one Reason",
+                type: 'red',
+            });
+            return;
+        }
+        var rule_code = selectedCodes.join(",");
+        var offer_code = localStorage.getItem("selectedIPO");
+        var url = '/Rejection/getdetailRejectionSummary'
+            + '?offer_code=' + encodeURIComponent(offer_code)
+            + '&rule_code=' + encodeURIComponent(rule_code);
+
+        window.location.href = url;
     }
 </script>
