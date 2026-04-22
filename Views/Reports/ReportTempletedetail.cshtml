@@ -1,6 +1,7 @@
 ﻿@{
     ViewData["Title"] = "Custom Report";
     Layout = "~/Views/Shared/_LayoutNew.cshtml";
+    var userName = Context.Session.GetString("user_name");
 }
 <!Doctype html>
 <html>
@@ -703,7 +704,7 @@
 
         // system flag
         var in_master_code = "QCD_YN";
-        var in_user_code = "";
+        var in_user_code = '@userName';
         $.ajax({
             type: "POST",
             url: '../Common/Qcdmaster',
@@ -729,7 +730,7 @@
 
         var reconcode = sessionStorage.getItem("reconcode");
         var data = getlocalStorage("ls_pageList");
-        var in_user_code = sessionStorage.getItem("usrname");
+        var in_user_code = '@userName';
         $.ajax({
              type: "POST",
              url: '../Reports/StandardReportList',
@@ -761,7 +762,7 @@
 
         // system flag
         var in_master_code = "QCD_YN";
-        var in_user_code = "";
+        var in_user_code = '@userName';
         $.ajax({
             type: "POST",
             url: '../Common/Qcdmaster',
@@ -796,7 +797,7 @@
         var data = {};
         data.in_user_gid = 0;
         data.in_active_status = '';
-        data.in_user_code = sessionStorage.getItem("usrname");
+        data.in_user_code = '@userName';
         var Context = data;
         $.ajax({
             type: "POST",
@@ -1493,7 +1494,7 @@
 
         function combo_editor_resultset(container, cmbid, datafield, code_datafield, grid_id) {
         var arr1 = [];
-        var in_user_code = sessionStorage.getItem("usrname");
+        var in_user_code = '@userName';
         var reconcode = sessionStorage.getItem("reconcode");
         $.ajax({
             type: "POST",
@@ -1832,7 +1833,7 @@
     function combo_editor_man1(container, cmbid, datasource, datafield, code_datafield, grid_id, Sdata) {
         var arr = [];
         var in_master_code = "QCD_RP_CONSTRAINT";
-        var in_user_code = sessionStorage.getItem("usrname");
+        var in_user_code = '@userName';
         $.ajax({
             type: "POST",
             url: '../Common/Qcdmaster',
@@ -2879,7 +2880,7 @@
 
 
                             var data = getlocalStorage("ls_pageList");
-                            var in_user_code = sessionStorage.getItem("usrname");
+                            var in_user_code = '@userName';
 
                             $.ajax({
                                 type: "POST",
@@ -3475,7 +3476,7 @@
                 });
                 return;
         }
-        const txtusername = sessionStorage.getItem("usrname");
+        const txtusername = '@userName';
         const selected_template = getlocalStorage("selectedTemplate");
         const recon_code = selected_template.recon_code;
         Object.keys(grouped).forEach(reportCode => {
