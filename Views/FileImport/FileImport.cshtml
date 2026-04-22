@@ -485,7 +485,9 @@
                     $("#bankrow").hide(); 
                 }
                 if ((typeof dataset_name === "string" && dataset_name.toLowerCase().includes("bendem")) || 
-                (typeof dataset_name === "string" && dataset_name.toLowerCase().includes("exchange upi")))
+                (typeof dataset_name === "string" && dataset_name.toLowerCase().includes("exchange upi")) ||
+                 (typeof dataset_name === "string" && dataset_name.toLowerCase().includes("exchange pan")) 
+                )
                 {                   
                     $("#categoryrow").hide();
                 }
