@@ -572,7 +572,7 @@
 			data.in_user_gid = 0;
 			data.in_active_status = '';
 			// data.in_user_code = sessionStorage.getItem("usrname");
-			data.in_user_code = 'test';
+			data.in_user_code = '@userName';
 			var Context = data;
 			$.ajax({
 				type: "POST",
@@ -1124,7 +1124,7 @@
 			function combo_editor_man1(container, cmbid, datasource, datafield, code_datafield, grid_id, Sdata) {
 				var arr = [];
 				var in_master_code = "QCD_RP_CONSTRAINT";
-				var in_user_code = "";
+				var in_user_code = '@userName';
 				$.ajax({
 					type: "POST",
 					url: '../Common/Qcdmaster',
@@ -1541,7 +1541,7 @@
 					data.in_reporttemplateresultset_code = $("#resultsetname").val();
 					data.in_recon_code = selected_template.recon_code;
 					data.in_report_code = exec_type_code != 'M' ? selected_template.report_code : '';
-					data.in_action_by = 'test';
+					data.in_action_by = '@userName';
 					$.ajax({
 						type: "POST",
 						url: '../Reports/getPageNoReport',
@@ -1836,7 +1836,7 @@
 					}
 				var template_code = getlocalStorage("ls_pageList");
 				// var txtusername = sessionStorage.getItem("usrname");
-				var txtusername = 'test';
+				var txtusername = '@userName';
 
 				var str = $("#rt_name").val();
 				var concatName = str.replace(/[^\w\s]|_/gi, '').replace(/\s+/g, '');
@@ -1853,7 +1853,7 @@
 					"file_name": $("#file_name").val(),
 					"in_report_name": concatName,
 					// "in_action_by": sessionStorage.getItem("usrname"),
-					"in_action_by": 'test',
+					"in_action_by": '@userName',
 					"in_reporttemplateresultset_code": ""
 				};
 				dataArray.push(dataset1);
@@ -1936,7 +1936,7 @@
 					} else {
 
 					var condition = buildReportConditionFromGrid("#grid_tempfilter", 'Query');
-					var txtusername = 'test';
+					var txtusername = '@userName';
 					var selected_template = getlocalStorage("selectedTemplate");
 					var str = $("#rt_name").val();
 					var dataset1 = {
@@ -2623,7 +2623,7 @@
 			let completed = 0;
 			let hasError = false;
 			let successMessages = "";
-			const txtusername = sessionStorage.getItem("usrname");
+		const txtusername = '@userName';
 			const selected_template = getlocalStorage("selectedTemplate");
 			const recon_code = selected_template.recon_code;
 			Object.keys(grouped).forEach(reportCode => {

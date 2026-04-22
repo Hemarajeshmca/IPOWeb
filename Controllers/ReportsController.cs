@@ -2535,6 +2535,7 @@ namespace IPOWeb.Controllers
                         StreamReader reader = new StreamReader(data);
                         post_data = reader.ReadToEnd();
                         string d2 = JsonConvert.DeserializeObject<string>(post_data);
+                        response = client.PostAsync("reportScheduler", null).Result;                        
                         Table1 = JsonConvert.DeserializeObject<DataTable>(d2);
                         return Json(d2);
                     }

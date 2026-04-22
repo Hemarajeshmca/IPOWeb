@@ -348,7 +348,6 @@ namespace IPOWeb.Controllers
             fileconfigmodel FileDownload = new fileconfigmodel();
             var context = _configuration["Appsettings:" + confing_val];
             FileDownload.in_config_name = context;
-
             try
             {
                 using (var client = new HttpClient())
@@ -389,7 +388,8 @@ namespace IPOWeb.Controllers
 
         public IActionResult Downloads(string jobid, string filetype, string file_name, string username)
         {
-            var myObjects = getfilepath("fileconfig_value", username);
+            string typekey = filetype == "csv" ? "fileconfig_value" : "download_xls_folder";
+            var myObjects = getfilepath(typekey, username);
             string filepath = "";
             if (myObjects != null && myObjects.Count > 0)
             {

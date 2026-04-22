@@ -696,7 +696,7 @@
         var extenstion = result.extension;
         var file_name = result.fileName;
         var user_code = '@userName';
-        if(extenstion != 'xlsx') {
+        if(dataItem.file_type != 'xlsx') {
            window.location.href = '@Url.Action("Downloads", "JobsStatus")?jobid=' + jobId + '&filetype=' + 'csv' + '&file_name=' + file_name + '' + '&username=' + user_code + '';
         } else {
             window.location.href = '@Url.Action("Downloads", "JobsStatus")?jobid=' + jobId + '&filetype=' + 'xlsx' + '&file_name=' + file_name + '' + '&username=' + user_code + '';
