@@ -23,7 +23,9 @@ namespace IPOWeb.Models
         public List<CategoryEMP> categoryEMP { get; set; }
         public List<CategoryNIIC> categoryNIIC { get; set; }
         public List<CategorySOA> categorySOA { get; set; }
-        public List<CategoryEXMMSOA> categoryEXMMSOA { get; set; }        
+        public List<CategoryEXMMSOA> categoryEXMMSOA { get; set; }
+
+        public List<CategoryMARMAK> categoryMARMAK { get; set; }
     }
 
     public class SummaryData
@@ -41,6 +43,7 @@ namespace IPOWeb.Models
         public long public_shares { get; set; }
         public long net_issue { get; set; }
         public string offer_openingdate { get; set; }
+        public string offer_closingdate { get; set; }
     }
 
     public class BankData
@@ -208,5 +211,12 @@ namespace IPOWeb.Models
         public long total_allotment_amount { get; set; }
     }
 
+    public class CategoryMARMAK
+    {
+        public int mm_offer_cat_shares { get; set; }
+        public int mm_total_appl { get; set; }
+        public int mm_total_quantity { get; set; }
+        public decimal? mm_times_subs { get; set; }
+    }
 
 }

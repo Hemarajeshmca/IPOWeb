@@ -92,6 +92,8 @@
         #offerStackGrid {
             overflow-y: hidden;
         }
+
+       
     </style>
 </head>
 
@@ -127,12 +129,12 @@
                     </div>
                     <div class="col-sm-3">
                         <label class="form-label">Offer Type</label>&nbsp;<span style="font-size: 12px;color:red;font-weight: bold;">*</span>
-                        <select name="offer_type" id="offer_type" class="form-control"></select>
+                        <select name="offer_type" id="offer_type" class="form-select"></select>
                         <span id="v_offer_type" class="validation"></span>
                     </div>
                     <div class="col-sm-3">
                         <label class="form-label" for="listing" data-field="listing">Listing</label>&nbsp;<span style="font-size: 12px;color:red;font-weight: bold;">*</span>
-                        <select name="listing" id="listing" class="form-control"> </select>
+                        <select name="listing" id="listing" class="form-select"> </select>
                         <span id="v_listing" class="validation"></span>
                     </div>
                 </div>
@@ -144,7 +146,7 @@
                     </div>
                     <div class="col-sm-3">
                         <label class="form-label">Status</label>
-                        <select name="status" id="status" class="form-control"></select>
+                        <select name="status" id="status" class="form-select"></select>
                         <span id="v_status" class="validation"></span>
                     </div>
                     <div class="col-sm-2">
@@ -254,7 +256,7 @@
                                     <div class="row" style="margin-top:20px;">
                                         <div class="col-sm-2">
                                             <label class="form-label"> Price Type</label>
-                                            <select name="pricetype" id="pricetype" class="form-control"></select>
+                                            <select name="pricetype" id="pricetype" class="form-select"></select>
                                         </div>
                                         <div class="col-sm-2">
                                             <label class="form-label">Fixed Price</label>
@@ -286,12 +288,12 @@
                                     <div class="row">
                                         <div class="col-sm-2">
                                             <label class="form-label" for="banktype" data-field="banktype">Bank Type</label>
-                                            <select name="banktype" id="banktype" class="form-control"></select>
+                                            <select name="banktype" id="banktype" class="form-select"></select>
                                             <input id="banker_gid" class="form-control" hidden />
                                         </div>
                                         <div class="col-sm-3">
                                             <label class="form-label">Bank Name</label>
-                                            <select id="bank" class="form-control"></select>
+                                            <select id="bank" class="form-select"></select>
                                         </div>
                                         <div class="col-sm-3">
                                             <label class="form-label">Address</label>
@@ -299,11 +301,11 @@
                                         </div>
                                         <div class="col-sm-2">
                                             <label class="form-label">State</label>
-                                            <select name="state" id="state" onchange="stateChange('city', this)" class="form-control"></select>
+                                            <select name="state" id="state" onchange="stateChange('city', this)" class="form-select"></select>
                                         </div>
                                         <div class="col-sm-2">
                                             <label class="form-label">City</label>
-                                            <select name="city" id="city" class="form-control"></select>
+                                            <select name="city" id="city" class="form-select"></select>
                                         </div>
 
                                     </div>
@@ -338,7 +340,7 @@
                                     <div class="row">
                                         <div class="col-sm-2">
                                             <label class="form-label">Stake Holder Type</label>
-                                            <select name="sh" id="sh_type" class="form-control"></select>
+                                            <select name="sh" id="sh_type" class="form-select"></select>
                                             <input id="stack_gid" class="form-control" hidden />
                                             <input id="stack_code" class="form-control" hidden />
                                         </div>
@@ -352,11 +354,11 @@
                                         </div>
                                         <div class="col-sm-3">
                                             <label class="form-label">State</label>
-                                            <select name="sh_state" id="sh_state" onchange="stateChange('sh_city', this)" class="form-control"> </select>
+                                            <select name="sh_state" id="sh_state" onchange="stateChange('sh_city', this)" class="form-select"> </select>
                                         </div>
                                         <div class="col-sm-2">
                                             <label class="form-label">City</label>
-                                            <select name="sh_city" id="sh_city" class="form-control"></select>
+                                            <select name="sh_city" id="sh_city" class="form-select"></select>
                                         </div>
 
                                     </div>

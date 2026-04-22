@@ -218,13 +218,13 @@
                     </div>
 
                     <div class="col">
-                        <label class="form-label">As Price</label>
-                        <input type="number" class="form-control" id="asprice" readonly />
+                        <label class="form-label">Premium</label>
+                        <input type="number" class="form-control" id="offer_premiun" readonly />
                     </div>
 
                     <div class="col">
-                        <label class="form-label">Premium</label>
-                        <input type="number" class="form-control" id="offer_premiun" readonly />
+                        <label class="form-label">Fixed Price</label>
+                        <input type="number" class="form-control" id="asprice" readonly />
                     </div>
 
                     <div class="col">
@@ -288,7 +288,7 @@
                         </div>
 
                         <div class="col">
-                            <label class="form-label">Bodies Corporte</label>
+                            <label class="form-label">Corporate</label>
                             <input type="number" class="form-control" id="bo" readonly />
                         </div>
 
@@ -352,9 +352,9 @@
                     <div class="button-row">
                         <button class="btn btn-primary" style="padding: 3px 25px;margin-bottom:20px;" id="generateBtn" onclick="runboa()">Generate</button>
                         <button class="btn btn-primary" style="border-color: green;background-color: green; border-radius: 5px;color: white;margin-bottom: 30px;margin-bottom: 20px;padding: 3px 25px;" id="generateBtn" onclick="generateReport()">Download</button>
-                        <button class="btn btn-primary" style="border-color: red;background-color: red; border-radius: 5px;color: white;margin-bottom: 30px;margin-bottom: 20px;padding: 3px 25px;" id="exitBtn">
+                        @* <button class="btn btn-primary" style="border-color: red;background-color: red; border-radius: 5px;color: white;margin-bottom: 30px;margin-bottom: 20px;padding: 3px 25px;" id="exitBtn">
                             Exit
-                        </button>
+                        </button> *@
                     </div>
             </div>
              </div>
@@ -397,7 +397,7 @@
                         offerStackHolder = data.Table3;
                         offerCategory = data.Table4;
                         offerMillstone = data.Table5;
-                        console.log("offerCategory :", offerCategory);
+                        console.log("offerMillstone :", offerMillstone);
                          var client_cin = offerHeader[0].client_cin;
                         $('#client_cin').val(client_cin);
                         var offer_isin = offerHeader[0].offer_isin;
@@ -415,8 +415,8 @@
                          $('#offer_issuesize').val(offersize);
                           var lotsize = offerDetails[0].offer_lotsize;
                          $('#offer_lotsize').val(lotsize);
-                         var diff = offerDetails[0].offer_fixedprice -  offerDetails[0].offer_facevalue;
-                         $('#asprice').val(diff);
+                         var diff = offerDetails[0].offer_fixedprice -  offerDetails[0].offer_facevalue;                        
+                         $('#asprice').val(offerDetails[0].offer_fixedprice);
                           var precapital = offerDetails[0].offer_precapital;
                          $('#offer_precapital').val(precapital);
                          var postcapital = offerDetails[0].offer_postcapital;
@@ -424,14 +424,15 @@
                          var empshares = offerHeader[0].offer_empdiscount;
                          $('#offer_empdiscount').val(empshares);
                          var opendate = offerMillstone[0].offer_openingdate;
-                         var formattedDate = new Date(opendate).toISOString().split('T')[0];
+                         var formattedDate =  opendate.split('T')[0];
                         $('#offer_openingdate').val(formattedDate);
                          var closedate = offerMillstone[0].offer_closingdate;
-                         var formattedCDate = new Date(closedate).toISOString().split('T')[0];
+                         var formattedCDate = closedate.split('T')[0];
                         $('#offer_closingdate').val(formattedCDate);
-                         var listdate = offerMillstone[0].offer_listingdate;
-                         var formattedLDate = new Date(listdate).toISOString().split('T')[0];
-                        $('#offer_listingdate').val(formattedLDate);
+                        console.log("formattedCDate" , formattedCDate);
+                         var listingdate = offerMillstone[0].offer_listingdate;
+                         var formattedLDate =  listingdate.split('T')[0];
+                        $('#offer_listingdate').val(formattedLDate);                        
                         //  var qib = (offerCategory || []).find(x => x.category_code === "QIB");
                         // $('#qib').val(qib ? qib.offer_cat_shares : 0);
                         var qibs = (offerCategory || []).find(x => x.category_code === "QIB");
@@ -605,8 +606,8 @@
                     if (response && response.success) {                   
                         $.alert({
                             title: 'IPO Allotment',
-                            content: 'Success .!',
-                            type: 'blue',
+                            content: 'Basis of allotment successfully completed .!',
+                            type: 'green',
                         });
                     }
                     else {
@@ -675,6 +676,7 @@
                          var table18 = data.table18;
                          var table19 = data.table19;
                          var table20 = data.table20;
+                         var table21 = data.table21;
                             cin = row.client_cin;
                             $('#cin').val(row.client_cin);
                                       fetch('/BOA/downloadAllReports', {
@@ -702,7 +704,8 @@
                                             categoryEMP: table17,
                                             categoryNIIC: table18,
                                             categorySOA: table19,
-                                            categoryEXMMSOA: table20
+                                            categoryEXMMSOA: table20,
+                                            categoryMARMAK: table21
                                         })
                                     })
                                     .then(response => {

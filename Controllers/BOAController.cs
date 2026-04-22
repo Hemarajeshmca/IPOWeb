@@ -1046,7 +1046,24 @@ namespace IPOWeb.Controllers
                 wb.Worksheet("co_data").Visibility = XLWorksheetVisibility.Hidden;
                 wb.Worksheet("Data").Visibility = XLWorksheetVisibility.Hidden;
 
+                HandleSheet(wb, "RETAIL", dtRetail);
+                HandleSheet(wb, "NRA10L", dtNRA10L);
+                HandleSheet(wb, "NRB10L", dtNRB10L);
+                HandleSheet(wb, "Market Maker", dtMM);
+                HandleSheet(wb, "QIB", dtQIB);
+                HandleSheet(wb, "Corporate", dtCO);
+
                 wb.Save();
+            }
+        }
+
+        void HandleSheet(XLWorkbook wb, string sheetName, DataTable dt)
+        {
+            //  WriteToSheet(wb, sheetName, dt);
+
+            if (dt == null || dt.Rows.Count == 0)
+            {
+                wb.Worksheet(sheetName).Hide();
             }
         }
         void WriteToSheet(XLWorkbook wb, string sheetName, DataTable dt, string topText = null)
@@ -1220,6 +1237,11 @@ namespace IPOWeb.Controllers
                       .ToObject<Dictionary<string, object>>())
                       .ToList();
 
+                      var table21Data = ((IEnumerable<dynamic>)temp.Table20)
+                     .Select(row => ((Newtonsoft.Json.Linq.JObject)row)
+                     .ToObject<Dictionary<string, object>>())
+                     .ToList();
+
 
                         return Json(new
                         {
@@ -1246,6 +1268,7 @@ namespace IPOWeb.Controllers
                                 table18 = table18Data,
                                 table19 = table19Data,
                                 table20 = table20Data,
+                                table21 = table21Data,
                             }
                         });
                     }
@@ -2170,6 +2193,7 @@ namespace IPOWeb.Controllers
             var CategoryNIIC = data.categoryNIIC;
             var CategorySOA = data.categorySOA;
             var CategoryEXMMSOA = data.categoryEXMMSOA;
+            var CategoryMARMAK = data.categoryMARMAK;
 
             string clientName = summary.client_name;
             long offer_issuesize = summary.offer_issuesize;
@@ -2182,6 +2206,7 @@ namespace IPOWeb.Controllers
             long public_shares = summary.public_shares;
             long net_issue = summary.net_issue;
             string offer_openingdate = summary.offer_openingdate;
+            string offer_closingdate = summary.offer_closingdate;
             long asba_total_bids = bidApplRcd.asba_total_bids;
             long asba_total_quantity = bidApplRcd.asba_total_quantity;
             long nonasba_total_bids = bidApplRcd.nonasba_total_bids;
@@ -2218,6 +2243,8 @@ namespace IPOWeb.Controllers
                 ReplaceText(body, "{mm_shares}", mm_shares.ToString("N0"));
                 DateTime openingDate = Convert.ToDateTime(summary.offer_openingdate);
                 ReplaceText(body, "{offer_openingdate}",openingDate.ToString("dd MMMM yyyy"));
+                DateTime closingDate = Convert.ToDateTime(summary.offer_closingdate);
+                ReplaceText(body, "{offer_closingdate}", closingDate.ToString("dd MMMM yyyy"));
                 ReplaceText(body, "{public_shares}", public_shares.ToString("N0"));
                 ReplaceText(body, "{net_issue}", net_issue.ToString("N0"));
                 ReplaceText(body, "{asba_total_bids}", asba_total_bids.ToString("N0"));
@@ -2877,11 +2904,11 @@ namespace IPOWeb.Controllers
                 }
 
                 var para10 = body.Descendants<DocumentFormat.OpenXml.Wordprocessing.Paragraph>()
-    .FirstOrDefault(p => p.InnerText.Contains("Certified Syndicate Banks (SCSBs) for collection of Applications under ASBA Process."));
+      .FirstOrDefault(p => p.InnerText.Contains("Certified Syndicate Banks (SCSBs) for collection of Applications under ASBA Process."));
 
                 if (para10 != null)
                 {
-                    DocumentFormat.OpenXml.Wordprocessing.Table bankMasterTable = null;
+                    DocumentFormat.OpenXml.Wordprocessing.Table oldTable = null;
 
                     var next = para10.NextSibling();
 
@@ -2889,75 +2916,121 @@ namespace IPOWeb.Controllers
                     {
                         if (next is DocumentFormat.OpenXml.Wordprocessing.Table tbl)
                         {
-                            bankMasterTable = tbl;
+                            oldTable = tbl;
                             break;
                         }
                         next = next.NextSibling();
                     }
 
-                    if (bankMasterTable != null)
+                    if (oldTable != null)
                     {
-                        // ✅ Remove old rows except header (keep first 2 rows)
-                        var rows = bankMasterTable.Elements<DocumentFormat.OpenXml.Wordprocessing.TableRow>().ToList();
+                        var parent = oldTable.Parent;
 
-                        for (int i = rows.Count - 1; i > 1; i--)
-                        {
-                            bankMasterTable.RemoveChild(rows[i]);
-                        }
+                        // ❌ Remove old broken table
+                        parent.RemoveChild(oldTable);
 
+                        // ✅ Create NEW clean table
+                        var table = new DocumentFormat.OpenXml.Wordprocessing.Table();
+
+                        // Table properties
+                        table.AppendChild(
+                            new DocumentFormat.OpenXml.Wordprocessing.TableProperties(
+                                new DocumentFormat.OpenXml.Wordprocessing.TableBorders(
+                                    new DocumentFormat.OpenXml.Wordprocessing.TopBorder { Val = BorderValues.Single, Size = 6 },
+                                    new DocumentFormat.OpenXml.Wordprocessing.BottomBorder { Val = BorderValues.Single, Size = 6 },
+                                    new DocumentFormat.OpenXml.Wordprocessing.LeftBorder { Val = BorderValues.Single, Size = 6 },
+                                    new DocumentFormat.OpenXml.Wordprocessing.RightBorder { Val = BorderValues.Single, Size = 6 },
+                                    new DocumentFormat.OpenXml.Wordprocessing.InsideHorizontalBorder { Val = BorderValues.Single, Size = 6 },
+                                    new DocumentFormat.OpenXml.Wordprocessing.InsideVerticalBorder { Val = BorderValues.Single, Size = 6 }
+                                ),
+                                new DocumentFormat.OpenXml.Wordprocessing.TableLayout()
+                                {
+                                    Type = DocumentFormat.OpenXml.Wordprocessing.TableLayoutValues.Fixed
+                                }
+                            )
+                        );
+
+                        // ✅ Define 4 columns (VERY IMPORTANT)
+                        table.AppendChild(
+                            new DocumentFormat.OpenXml.Wordprocessing.TableGrid(
+                                new DocumentFormat.OpenXml.Wordprocessing.GridColumn() { Width = "1000" },
+                                new DocumentFormat.OpenXml.Wordprocessing.GridColumn() { Width = "4000" },
+                                new DocumentFormat.OpenXml.Wordprocessing.GridColumn() { Width = "1000" },
+                                new DocumentFormat.OpenXml.Wordprocessing.GridColumn() { Width = "4000" }
+                            )
+                        );
+
+                        // ✅ HEADER ROW
+                        var header = new DocumentFormat.OpenXml.Wordprocessing.TableRow();
+                        header.Append(
+                            CreateCell("Sr No", true, false),
+                            CreateCell("Bank Name", true, false),
+                            CreateCell("Sr No", true, false),
+                            CreateCell("Bank Name", true, false)
+                        );
+                        table.Append(header);
+
+                        // ✅ DATA
                         var bankMasterList = BankMaster ?? new List<BankMaster>();
 
                         int total = bankMasterList.Count;
                         int half = (int)Math.Ceiling(total / 2.0);
 
+                        int leftSerial = 1;
+                        int rightSerial = half + 1;
+
                         for (int i = 0; i < half; i++)
                         {
-                            var row = new TableRow();
+                            var row = new DocumentFormat.OpenXml.Wordprocessing.TableRow();
 
-                            // ✅ LEFT SIDE
+                            string leftSr = "";
+                            string leftName = "";
+                            string rightSr = "";
+                            string rightName = "";
+
                             if (i < total)
                             {
-                                var leftBank = bankMasterList[i];
-
-                                row.Append(
-                                    CreateCell((i + 1).ToString(), true, false),
-                                    CreateCell((leftBank.bank_name ?? "").ToUpper(), true, false)
-                                );
+                                leftSr = leftSerial.ToString();
+                                leftName = bankMasterList[i].bank_name?.ToUpper() ?? "";
+                                leftSerial++;
                             }
 
-                            // ✅ RIGHT SIDE
                             if (i + half < total)
                             {
-                                var rightBank = bankMasterList[i + half];
-
-                                row.Append(
-                                    CreateCell((i + half + 1).ToString(), true, false),
-                                    CreateCell((rightBank.bank_name ?? "").ToUpper(), true, false)
-                                );
-                            }
-                            else
-                            {
-                                // Empty cells if no right-side data
-                                row.Append(
-                                    CreateCell("", true, false),
-                                    CreateCell("", true, false)
-                                );
+                                rightSr = rightSerial.ToString();
+                                rightName = bankMasterList[i + half].bank_name?.ToUpper() ?? "";
+                                rightSerial++;
                             }
 
-                            bankMasterTable.Append(row);
-                        
-                    }
-                        
+                            row.Append(
+                                CreateCell(leftSr, false, false),
+                                CreateCell(leftName, false, false),
+                                CreateCell(rightSr, false, false),
+                                CreateCell(rightName, false, false)
+                            );
+
+                            table.Append(row);
                         }
+
+                        // ✅ Insert new table after paragraph
+                        var spacerPara = new DocumentFormat.OpenXml.Wordprocessing.Paragraph(
+                            new DocumentFormat.OpenXml.Wordprocessing.Run(
+                                new DocumentFormat.OpenXml.Wordprocessing.Text(" ")
+                            )
+                        );
+
+                para10.InsertAfterSelf(spacerPara);
+                spacerPara.InsertAfterSelf(table);
                     }
-                
+                }
+
 
                 var para11 = body.Descendants<DocumentFormat.OpenXml.Wordprocessing.Paragraph>()
-   .FirstOrDefault(p => p.InnerText.Contains("of Applications under Syndicate ASBA process. The list is as mentioned below:"));
+      .FirstOrDefault(p => p.InnerText.Contains("of Applications under Syndicate ASBA process. The list is as mentioned below:"));
 
                 if (para11 != null)
                 {
-                    DocumentFormat.OpenXml.Wordprocessing.Table bankMasterTable = null;
+                    DocumentFormat.OpenXml.Wordprocessing.Table oldTable = null;
 
                     var next = para11.NextSibling();
 
@@ -2965,66 +3038,111 @@ namespace IPOWeb.Controllers
                     {
                         if (next is DocumentFormat.OpenXml.Wordprocessing.Table tbl)
                         {
-                            bankMasterTable = tbl;
+                            oldTable = tbl;
                             break;
                         }
                         next = next.NextSibling();
                     }
 
-                    if (bankMasterTable != null)
+                    if (oldTable != null)
                     {
-                        // ✅ Remove old rows except header (keep first 2 rows)
-                        var rows = bankMasterTable.Elements<DocumentFormat.OpenXml.Wordprocessing.TableRow>().ToList();
+                        var parent = oldTable.Parent;
 
-                        for (int i = rows.Count - 1; i > 1; i--)
-                        {
-                            bankMasterTable.RemoveChild(rows[i]);
-                        }
+                        // ❌ Remove old broken table
+                        parent.RemoveChild(oldTable);
 
+                        // ✅ Create NEW clean table
+                        var table = new DocumentFormat.OpenXml.Wordprocessing.Table();
+
+                        // Table properties
+                        table.AppendChild(
+                            new DocumentFormat.OpenXml.Wordprocessing.TableProperties(
+                                new DocumentFormat.OpenXml.Wordprocessing.TableBorders(
+                                    new DocumentFormat.OpenXml.Wordprocessing.TopBorder { Val = BorderValues.Single, Size = 6 },
+                                    new DocumentFormat.OpenXml.Wordprocessing.BottomBorder { Val = BorderValues.Single, Size = 6 },
+                                    new DocumentFormat.OpenXml.Wordprocessing.LeftBorder { Val = BorderValues.Single, Size = 6 },
+                                    new DocumentFormat.OpenXml.Wordprocessing.RightBorder { Val = BorderValues.Single, Size = 6 },
+                                    new DocumentFormat.OpenXml.Wordprocessing.InsideHorizontalBorder { Val = BorderValues.Single, Size = 6 },
+                                    new DocumentFormat.OpenXml.Wordprocessing.InsideVerticalBorder { Val = BorderValues.Single, Size = 6 }
+                                ),
+                                new DocumentFormat.OpenXml.Wordprocessing.TableLayout()
+                                {
+                                    Type = DocumentFormat.OpenXml.Wordprocessing.TableLayoutValues.Fixed
+                                }
+                            )
+                        );
+
+                        // ✅ Define 4 columns (VERY IMPORTANT)
+                        table.AppendChild(
+                            new DocumentFormat.OpenXml.Wordprocessing.TableGrid(
+                                new DocumentFormat.OpenXml.Wordprocessing.GridColumn() { Width = "1000" },
+                                new DocumentFormat.OpenXml.Wordprocessing.GridColumn() { Width = "4000" },
+                                new DocumentFormat.OpenXml.Wordprocessing.GridColumn() { Width = "1000" },
+                                new DocumentFormat.OpenXml.Wordprocessing.GridColumn() { Width = "4000" }
+                            )
+                        );
+
+                        // ✅ HEADER ROW
+                        var header = new DocumentFormat.OpenXml.Wordprocessing.TableRow();
+                        header.Append(
+                            CreateCell("Sr No", true, false),
+                            CreateCell("Bank Name", true, false),
+                            CreateCell("Sr No", true, false),
+                            CreateCell("Bank Name", true, false)
+                        );
+                        table.Append(header);
+
+                        // ✅ DATA
                         var bankMasterList = BankMaster ?? new List<BankMaster>();
 
                         int total = bankMasterList.Count;
                         int half = (int)Math.Ceiling(total / 2.0);
 
-                        int srNoLeft = 1;
-                        int srNoRight = half + 1;
+                        int leftSerial = 1;
+                        int rightSerial = half + 1;
 
                         for (int i = 0; i < half; i++)
                         {
                             var row = new DocumentFormat.OpenXml.Wordprocessing.TableRow();
 
-                            // ✅ LEFT SIDE
-                            var leftBank = bankMasterList[i];
+                            string leftSr = "";
+                            string leftName = "";
+                            string rightSr = "";
+                            string rightName = "";
 
-                            row.Append(
-                                CreateCell(srNoLeft.ToString(), true, false),
-                                CreateCell((leftBank.bank_name ?? "").ToUpper(), true, false)
-                            );
+                            if (i < total)
+                            {
+                                leftSr = leftSerial.ToString();
+                                leftName = bankMasterList[i].bank_name?.ToUpper() ?? "";
+                                leftSerial++;
+                            }
 
-                            // ✅ RIGHT SIDE
                             if (i + half < total)
                             {
-                                var rightBank = bankMasterList[i + half];
-
-                                row.Append(
-                                    CreateCell(srNoRight.ToString(), true, false),
-                                    CreateCell((rightBank.bank_name ?? "").ToUpper(), true, false)
-                                );
-                            }
-                            else
-                            {
-                                // Empty cells if odd number
-                                row.Append(
-                                    CreateCell("", true, false),
-                                    CreateCell("", true, false)
-                                );
+                                rightSr = rightSerial.ToString();
+                                rightName = bankMasterList[i + half].bank_name?.ToUpper() ?? "";
+                                rightSerial++;
                             }
 
-                            bankMasterTable.Append(row);
+                            row.Append(
+                                CreateCell(leftSr, false, false),
+                                CreateCell(leftName, false, false),
+                                CreateCell(rightSr, false, false),
+                                CreateCell(rightName, false, false)
+                            );
 
-                            srNoLeft++;
-                            srNoRight++;
+                            table.Append(row);
                         }
+
+                        // ✅ Insert new table after paragraph
+                        var spacerPara = new DocumentFormat.OpenXml.Wordprocessing.Paragraph(
+                            new DocumentFormat.OpenXml.Wordprocessing.Run(
+                                new DocumentFormat.OpenXml.Wordprocessing.Text(" ")
+                            )
+                        );
+
+                        para11.InsertAfterSelf(spacerPara);
+                        spacerPara.InsertAfterSelf(table);
                     }
                 }
 
@@ -3472,6 +3590,62 @@ namespace IPOWeb.Controllers
 
                         categoryEXMMSOATable.Append(totalRow);
                     }
+                }
+
+                var para19 = body.Descendants<DocumentFormat.OpenXml.Wordprocessing.Paragraph>()
+.FirstOrDefault(p => p.InnerText.Contains("Equity Shares reserved for this category resulting in subscription"));
+
+                if (para19 != null)
+                {
+                    DocumentFormat.OpenXml.Wordprocessing.Table catMARMAKTable = null;
+
+                    var next = para19.NextSibling();
+
+                    while (next != null)
+                    {
+                        if (next is DocumentFormat.OpenXml.Wordprocessing.Table tbl)
+                        {
+                            catMARMAKTable = tbl;
+                            break;
+                        }
+                        next = next.NextSibling();
+                    }
+
+                    if (catMARMAKTable != null)
+                    {
+                        // ✅ Remove old rows except header
+                        var rows = catMARMAKTable.Elements<DocumentFormat.OpenXml.Wordprocessing.TableRow>().ToList();
+
+                        for (int i = rows.Count - 1; i > 0; i--)
+                        {
+                            catMARMAKTable.RemoveChild(rows[i]);
+                        }
+
+                        int srNo = 1;
+
+                        foreach (var categoryMARMAK in CategoryMARMAK)
+                        {
+                            var row = new DocumentFormat.OpenXml.Wordprocessing.TableRow();
+
+                            row.Append(
+                                CreateCell(categoryMARMAK.mm_total_appl.ToString("N0", new CultureInfo("en-IN")), true, true),
+                                CreateCell(categoryMARMAK.mm_total_quantity.ToString("N0", new CultureInfo("en-IN")), true, true),
+                                CreateCell(categoryMARMAK.mm_offer_cat_shares.ToString("N0", new CultureInfo("en-IN")), true, true),
+                                CreateCell(categoryMARMAK.mm_times_subs?.ToString("N4", new CultureInfo("en-IN")), true, true)
+                            );
+
+                            catMARMAKTable.Append(row);
+                            srNo++;
+                        }
+
+                    }
+
+                    var item = CategoryMARMAK.FirstOrDefault();
+
+                    ReplaceText(body, "{mm_total_appl}", item.mm_total_appl.ToString("N0", new CultureInfo("en-IN")));
+                    ReplaceText(body, "{mm_total_quantity}", item.mm_total_quantity.ToString("N0", new CultureInfo("en-IN")));
+                    ReplaceText(body, "{mm_offer_cat_shares}", item.mm_offer_cat_shares.ToString("N0", new CultureInfo("en-IN")));
+                    ReplaceText(body, "{mm_times_subs}", item.mm_times_subs?.ToString("N2", new CultureInfo("en-IN")) ?? "0.00");
                 }
 
                 // 🔥 NEXT STEP: Bank Table (you will add here)
