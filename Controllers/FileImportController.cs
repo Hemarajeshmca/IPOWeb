@@ -5,9 +5,11 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json;
 using System.Data;
+using System.Data;
 using System.Net;
 using System.Net.Http.Headers;
 using System.Security.Claims;
+using System.Security.Cryptography;
 using System.Text;
 
 namespace IPOWeb.Controllers
@@ -210,6 +212,119 @@ namespace IPOWeb.Controllers
                 return Json(new { success = false, message = ex.Message });
             }
         }
+
+
+        [HttpPost]
+        public async Task<JsonResult> datasethistory([FromBody] FileInfoRequest req)
+        {
+            DataSet ds = new DataSet();
+            string urlstring = Convert.ToString(_configuration.GetSection("Appsettings")["apiurl"]) + "fileinfo";
+
+            try
+            {
+                using (var client = new HttpClient())
+                {
+                    client.DefaultRequestHeaders.Accept.Clear();
+                    client.Timeout = Timeout.InfiniteTimeSpan;
+
+                    string APIcookieName = "APItoken-" + User.FindFirst(ClaimTypes.Name)?.Value + "_" + User.FindFirst(ClaimTypes.Role)?.Value;
+                    string token = Request.Cookies[APIcookieName];
+
+                    if (string.IsNullOrEmpty(token))
+                    {
+                        return Json(new { success = false, authExpired = true });
+                    }
+
+                    client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+                    client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+
+                    // 🔹 Send request
+                    var json = JsonConvert.SerializeObject(req);
+                    var content = new StringContent(json, Encoding.UTF8, "application/json");
+
+                    var response = await client.PostAsync(urlstring, content);
+
+                    if (response.StatusCode == HttpStatusCode.Unauthorized)
+                    {
+                        Response.Cookies.Delete(APIcookieName);
+                        return Json(new { success = false, authExpired = true });
+                    }
+
+                    if (!response.IsSuccessStatusCode)
+                    {
+                        return Json(new
+                        {
+                            success = false,
+                            message = "API call failed: " + response.StatusCode
+                        });
+                    }
+
+                    // 🔹 Read API response
+                    var resultMessage = await response.Content.ReadAsStringAsync();
+
+                    if (string.IsNullOrWhiteSpace(resultMessage))
+                    {
+                        return Json(new { success = false, message = "Empty response from API" });
+                    }
+
+                    try
+                    {
+                        var actualJson = JsonConvert.DeserializeObject<string>(resultMessage);
+                        ds = JsonConvert.DeserializeObject<DataSet>(actualJson);
+                    }
+                    catch (Exception ex)
+                    {
+                        return Json(new { success = false, message = "JSON Parse Error: " + ex.Message });
+                    }
+
+                    var list = ds.Tables.Count > 0 ? ConvertToDatasetJobList(ds.Tables[0]) : new List<DatasetJob>();
+                    return Json(new
+                    {
+                        success = true,
+                        data = list
+                    });
+                }
+            }
+            catch (Exception ex)
+            {
+                return Json(new { success = false, data ="" });
+            }
+        }
+        public static List<DatasetJob> ConvertToDatasetJobList(DataTable dt)
+        {
+            var list = new List<DatasetJob>();
+
+            foreach (DataRow dr in dt.Rows)
+            {
+                list.Add(new DatasetJob
+                {
+                    dataset_name = dr["dataset_name"]?.ToString(),
+                    job_status = dr["job_status"]?.ToString(),
+                    job_remark = dr["job_remark"] != DBNull.Value ? Convert.ToInt32(dr["job_remark"]) : 0,
+                    job_initiated_by = dr["job_initiated_by"]?.ToString(),
+                    start_date = dr["start_date"] != DBNull.Value ? Convert.ToDateTime(dr["start_date"]) : DateTime.MinValue,
+                    //reference_no = dr["reference_no"]?.ToString()
+                });
+            }
+
+            return list;
+        }
+
+        public class FileInfoRequest
+        {
+            public string ipo_code { get; set; }
+            public string dataset_code { get; set; }
+        }
+        public class DatasetJob
+        {
+            public string dataset_name { get; set; }
+            public string job_status { get; set; }
+            public int job_remark { get; set; }
+            public string job_initiated_by { get; set; }
+            public DateTime start_date { get; set; }
+           // public string reference_no { get; set; }
+        }
+
 
     }
 }

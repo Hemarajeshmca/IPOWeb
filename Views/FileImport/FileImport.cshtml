@@ -269,7 +269,11 @@
                     <hr style="margin-top:-6px;" />
                     <div class="row">
                         <div class="col-sm-12">
-                            <div id="infoGrid"></div>
+                            @* <div id="infoGrid"></div> *@
+                            <div id="gd_jobhistory">
+                                <div id="grid_jobhistory">
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -285,7 +289,7 @@
 <script>
          var selectedPipeline = "";
         var selectedDataset = "";
-                 $(document).ready(function () {                    
+        $(document).ready(function () {                    
             $('#navhead').text('File Import');
            var ipoName = localStorage.getItem("selectedIPOText");
             var ipocode = localStorage.getItem("selectedIPO");           
@@ -298,67 +302,9 @@
            
             $("#ipocode").val(ipocode);   // or .text()
               showgrid();
-            $("#infoGrid").kendoGrid({
-            dataSource: {
-                data: [
-                    {
-                        jobDescription: "Bid NSE File",
-                        jobDate: "07-01-2026 16:40:53",
-                        jobBy: "Admin",
-                        jobStatus: "Completed",
-                        jobRemarks: "Imported 1 record(s)"
-                    },
-                    {
-                        jobDescription: "Bid NSE File",
-                        jobDate: "18-01-2026 12:40:53",
-                        jobBy: "Admin",
-                        jobStatus: "Completed",
-                        jobRemarks: "Imported 1 record(s)"
-                    },
-                    {
-                        jobDescription: "Bid NSE File",
-                        jobDate: "22-01-2026 02:40:53",
-                        jobBy: "Admin",
-                        jobStatus: "Completed",
-                        jobRemarks: "Imported 3 record(s)"
-                    },
-                    {
-                        jobDescription: "Bid NSE File",
-                        jobDate: "12-02-2026 12:30:53",
-                        jobBy: "Admin",
-                        jobStatus: "Completed",
-                        jobRemarks: "Imported 5 record(s)"
-                    },
-                     {
-                        jobDescription: "Bid NSE File",
-                        jobDate: "16-02-2026 12:30:53",
-                        jobBy: "Admin",
-                        jobStatus: "Completed",
-                        jobRemarks: "Imported 15 record(s)"
-                    },
-                     {
-                        jobDescription: "Bid NSE File",
-                        jobDate: "24-02-2026 12:30:53",
-                        jobBy: "Admin",
-                        jobStatus: "Completed",
-                        jobRemarks: "Imported 1 record(s)"
-                    }
-                ],
-                pageSize: 10
-            },
+              grid_jobhistory([]);
 
-            height: 225,
-            sortable: true,
-            pageable: true,
-
-            columns: [
-                { field: "jobDescription", title: "Job Description" },
-                { field: "jobDate", title: "Job Initiated Date" },
-                { field: "jobBy", title: "Job Initiated By" },
-                { field: "jobStatus", title: "Job Status" },
-                { field: "jobRemarks", title: "Job Remarks" }
-            ]
-        });
+       
 
         $("#btnPre").click(function () {
 
@@ -368,7 +314,6 @@
             $("#datasetList").show();
         });
     });
-
 
     function loadBank(){
          $.ajax({
@@ -394,13 +339,13 @@
                 }
                     var result = JSON.parse(response.data);
                     $("#bank").empty();
-                $("#bank").append('<option value="">--- Select Bank ---</option>');
-                $.each(result.Table, function (index, item) {
-                  $("#bank").append(
-                        '<option value="' + item.bank_code + '">' +
-                        item.bank_name +
-                        '</option>'
-                    );
+                    $("#bank").append('<option value="">--- Select Bank ---</option>');
+                    $.each(result.Table, function (index, item) {
+                        $("#bank").append(
+                            '<option value="' + item.bank_code + '">' +
+                            item.bank_name +
+                            '</option>'
+                        );
 
                 });
             }
@@ -446,7 +391,9 @@
                                 {
                                     title: "Info",
                                     width: 80,
-                                    template: '<img src="/Assets/images/topnotes.png" style="cursor:pointer;width:18px;" data-bs-toggle="modal" data-bs-target="\\#myModal" />'
+                                    template: '<img src="/Assets/images/topnotes.png" style="cursor:pointer;width:18px;" onclick="openInfoModel(\'#=dataset_code#\')" data-bs-toggle="modal" data-bs-target="\\#myModal" />'
+                                    //template: "<a href='' style='cursor:pointer;' onclick='openInfoModel(this)' value='edit' data-bs-toggle='modal'><img style='height:17px;width:17px' src = '../Assets/images/topnotes.png'></a>&nbsp;&nbsp;&nbsp;",
+						
                                 }
                                 ]
                     });
@@ -458,37 +405,41 @@
 
         }
 
-      function nextprocess() {                 
-            var selected = $("input[name='clientSelect']:checked");
-            if (selected.length === 0) {
-                // alert("Please select a dataset");
-                 $.alert({
-                    title: 'IPO Allotment' ,
-                    content: "Please select a dataset",
-                    type: 'red',
-                });
-                return;
+      function nextprocess() 
+      {                 
+        var selected = $("input[name='clientSelect']:checked");
+        if (selected.length === 0) 
+        { 
+                $.alert({
+                title: 'IPO Allotment' ,
+                content: "Please select a dataset",
+                type: 'red',
+            });
+            return;
+        }
+        document.getElementById("MultipleFile").value = "";
+        var dataset_gid = selected.val();
+        var dataset_code = selected.data("code");
+        var dataset_name = selected.data("name");
+        selectedDataset = selected.data("code");
+        console.log("Dataset GID:", dataset_gid);
+        console.log("Dataset Code:", dataset_code);
+        $("#datasetname").text(dataset_name );
+            if (typeof dataset_name === "string" && dataset_name.toLowerCase().includes("bank")) 
+            {
+                $("#bankrow").show();
+                $("#categoryrow").show();
+                loadBank();
+            } else {
+                $("#bankrow").hide(); 
             }
-            document.getElementById("MultipleFile").value = "";
-            var dataset_gid = selected.val();
-            var dataset_code = selected.data("code");
-            var dataset_name = selected.data("name");
-            selectedDataset = selected.data("code");
-            console.log("Dataset GID:", dataset_gid);
-            console.log("Dataset Code:", dataset_code);
-            $("#datasetname").text(dataset_name );
-            if (typeof dataset_name === "string" && dataset_name.toLowerCase().includes("bank")) {
-                    $("#bankrow").show();
-                    $("#categoryrow").show();
-                    loadBank();
-                } else {
-                    $("#bankrow").hide(); 
-                }
-                if ((typeof dataset_name === "string" && dataset_name.toLowerCase().includes("bendem")) || 
-                (typeof dataset_name === "string" && dataset_name.toLowerCase().includes("exchange upi")))
-                {                   
-                    $("#categoryrow").hide();
-                }
+             if ((typeof dataset_name === "string" && dataset_name.toLowerCase().includes("bendem")) ||
+    (typeof dataset_name === "string" && dataset_name.toLowerCase().includes("exchange upi")) ||
+     (typeof dataset_name === "string" && dataset_name.toLowerCase().includes("exchange pan"))
+    )
+    {
+        $("#categoryrow").hide();
+            }
             var tabTrigger = document.querySelector('button[data-bs-target="#navs-top-progress"]');
             var tab = new bootstrap.Tab(tabTrigger);
             tab.show();
@@ -502,8 +453,8 @@
                         console.log(response.message);
                         return;
                     }
-                   var data = response.data;
-                   $("#pipeline").empty();
+                    var data = response.data;
+                    $("#pipeline").empty();
                     $.each(data, function (i, item) {
                         $("#pipeline").append(
                             $('<option>', {
@@ -512,9 +463,9 @@
                             })
                         );
                     });
-                   $("#pipeline").val(data[0].pipeline_name);
-                   selectedPipeline = data[0].pipeline_code;
-                   console.log(data);
+                    $("#pipeline").val(data[0].pipeline_name);
+                    selectedPipeline = data[0].pipeline_code;
+                    console.log(data);
                 },
                 error: function (xhr) {
                     console.log("Error:", xhr.responseText);
@@ -579,4 +530,134 @@
         function getPipeline_code() {
             selectedPipeline = $("#pipeline").val();
         }
+
+         function infopopupGrid_old(e) {
+            var grid = $("#infoGrid").data("kendoGrid");
+            var row = $(e).closest("tr");
+            var dataItem = grid.dataItem(row);
+            var dscode=dataItem.dataset_code; alert(dscode); consile.log(dscode);
+            window.location.href = "../IssueSetup/IssueSetup";
+        }
+        function openInfoModel(dataset_code) {
+            try {
+        customAjax({
+            type: "POST",
+            url: '@Url.Action("datasethistory", "FileImport")',
+            dataType: 'json',
+            contentType: "application/json",
+            data: JSON.stringify({
+                ipo_code: $("#ipocode").val().trim(),
+                dataset_code: dataset_code
+            }),
+            success: function (response) { 
+                if (response.authExpired) {
+                    $.alert({
+                        title: 'Unauthorized',
+                        content: response.message || 'Unauthorized User',
+                        type: 'red',
+                        buttons: {
+                            ok: function () {
+                                window.location.href = '/login/logout';
+                            }
+                        }
+                    });
+                    return;
+                } 
+                console.log("Response:", response.data);
+                var grid = $("#grid_jobhistory").data("kendoGrid");
+                grid.dataSource.data([]);
+                if (grid && response.success) { 
+                        let data = response.data; 
+                        if (data && data.Table) {
+                            data = data.Table;
+                        } 
+                        grid.dataSource.data(data || []);
+                        $("#myModal").modal("show");
+                    } else {
+                        grid.dataSource.data([]);
+                    }
+                
+            },
+            error: function (xhr) {
+                console.log("Error:", xhr.responseText);
+                alert("Something went wrong while fetching info.");
+            }
+        });
+         } catch (e) {
+            console.log(e);
+        }
+            }
+</script>
+
+<script>
+     
+
+    function grid_jobhistory(data) {
+        $("#grid_jobhistory").kendoGrid({
+            dataSource: {
+                data: data,
+                pageSize: 10,
+                schema: {
+                    model: {
+                        fields: {
+                            dataset_name: { type: "string" },
+                            start_date: { type: "string"},
+                            job_initiated_by: { type: "string" },
+                            job_status: { type: "string" },
+                            job_remark: { type: "string" },
+                            job_name: { type: "string" }
+                        }
+                    }
+                }
+            },
+            height: 250,
+            pageable: true,
+            selectable: "row",
+            dataBound: function (e) {
+                var grid = this;
+                var gridContent = grid.element.find(".k-grid-content"); 
+                gridContent.height(177);  
+            },
+            pageable: {
+                refresh: false,
+                pageSizes: [10,20],
+                buttonCount: 5
+            },
+            columns: [
+                {
+                    field: "dataset_name",
+                    title: "Job Description",
+                    width: 240,
+                },
+
+                {
+                    field: "start_date",
+                    title: "Job Initiated Date-Time",
+                    template: "#= kendo.toString(new Date(start_date), 'dd-MM-yyyy HH:mm:ss') #",
+                    width: 140,
+                },
+                {
+                    field: "job_initiated_by",
+                    title: "Job Initiated By",
+                    width: 150,
+                },
+                {
+                    field: "job_status",
+                    title: "Job Status",
+                    width: 80,
+                },
+                {
+                    field: "job_name",
+                    title: "job_name",
+                    hidden: true,
+                },
+                {
+                    field: "job_remark",
+                    title: "Job Count",
+                    width: 80,
+                }],
+            editable: false,
+
+        });
+    }
 </script>
