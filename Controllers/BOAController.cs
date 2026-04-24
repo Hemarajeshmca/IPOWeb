@@ -357,6 +357,11 @@ namespace IPOWeb.Controllers
                     .ToObject<Dictionary<string, object>>())
                     .ToList();
 
+                        var table23Data = ((IEnumerable<dynamic>)temp.Table22)
+                    .Select(row => ((Newtonsoft.Json.Linq.JObject)row)
+                    .ToObject<Dictionary<string, object>>())
+                    .ToList();
+
                         return Json(new
                         {
                             success = true,
@@ -384,6 +389,7 @@ namespace IPOWeb.Controllers
                                 table20 = table20Data,
                                 table21 = table21Data,
                                 table22 = table22Data,
+                                table23 = table23Data,
                             }
                         });
                     }
@@ -424,6 +430,7 @@ namespace IPOWeb.Controllers
             var CategoryEXMMSOA = data.categoryEXMMSOA;
             var CategoryMARMAK = data.categoryMARMAK;
             var CategoryTechRej = data.categoryTechRej;
+            var categoryUPISummary = data.categoryUPISummary;
 
             string clientName = summary.client_name;
             long offer_issuesize = summary.offer_issuesize;
@@ -453,6 +460,13 @@ namespace IPOWeb.Controllers
             long banknotbidqty = bidApplRcd.banknotbidqty;
             long bank_bids = bidApplRcd.bank_bids;
             long bank_bids_qty = bidApplRcd.bank_bids_qty;
+            long upisum_total_bids = categoryUPISummary.upisum_total_bids;
+            long upisum_total_shares = categoryUPISummary.upisum_total_shares;
+            long appl_blocked_bids = categoryUPISummary.appl_blocked_bids;
+            long appl_blocked_amount = categoryUPISummary.appl_blocked_amount;
+            long bid_reg_not_bank_bids = categoryUPISummary.bid_reg_not_bank_bids;
+            long bid_reg_not_bank_amount = categoryUPISummary.bid_reg_not_bank_amount;
+            long unique_appln = categoryUPISummary.unique_appln;
 
             string templatePath = _configuration["Appsettings:templatePath"];
 
@@ -493,6 +507,13 @@ namespace IPOWeb.Controllers
                 ReplaceText(body, "{banknotbidqty}", banknotbidqty.ToString("N0"));
                 ReplaceText(body, "{bank_bids}", bank_bids.ToString("N0"));
                 ReplaceText(body, "{bank_bids_qty}", bank_bids_qty.ToString("N0"));
+                ReplaceText(body, "{upisum_total_bids}", upisum_total_bids.ToString("N0"));
+                ReplaceText(body, "{upisum_total_shares}", upisum_total_shares.ToString("N0"));
+                ReplaceText(body, "{appl_blocked_bids}", appl_blocked_bids.ToString("N0"));
+                ReplaceText(body, "{appl_blocked_amount}", appl_blocked_amount.ToString("N0"));
+                ReplaceText(body, "{bid_reg_not_bank_bids}", bid_reg_not_bank_bids.ToString("N0"));
+                ReplaceText(body, "{bid_reg_not_bank_amount}", bid_reg_not_bank_amount.ToString("N0"));
+                ReplaceText(body, "{unique_appln}", unique_appln.ToString("N0"));
 
                 var para = body.Descendants<DocumentFormat.OpenXml.Wordprocessing.Paragraph>()
     .FirstOrDefault(p => p.InnerText.Contains("Net Collections of Non-institutional and Individual Investor Categories by ASBA"));
@@ -1694,6 +1715,18 @@ namespace IPOWeb.Controllers
 
                         catSOATable.Append(totalRow);
                     }
+                    var qibData = CategorySOA
+                        .FirstOrDefault(x => x.ipo_category != null
+                                          && x.ipo_category.ToUpper().Contains("QIB"));
+
+                                        string qibOfferShares = qibData != null
+                                            ? qibData.offer_cat_shares.ToString("N0", new CultureInfo("en-IN"))
+                                            : "0";
+                                        string qibNoOfShares = qibData != null
+                                        ? qibData.valid_shares_received.ToString("N0", new CultureInfo("en-IN"))
+                                        : "0";
+                    ReplaceText(body, "{offer_cat_shares}", qibOfferShares);
+                    ReplaceText(body, "{qib_no_of_shares}", qibNoOfShares);
                 }
 
                 var para17 = body.Descendants<DocumentFormat.OpenXml.Wordprocessing.Paragraph>()

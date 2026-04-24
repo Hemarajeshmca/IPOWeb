@@ -26,6 +26,8 @@ namespace IPOWeb.Models
         public List<CategoryEXMMSOA> categoryEXMMSOA { get; set; }
         public List<CategoryMARMAK> categoryMARMAK { get; set; }
         public List<CategoryTechRej> categoryTechRej { get; set; }
+
+        public categoryUPISummary categoryUPISummary { get; set; }
     }
 
     public class SummaryData
@@ -231,5 +233,17 @@ namespace IPOWeb.Models
         public long net_appl_shares { get; set; }
         public long net_appl_amount { get; set; }
     }
+
+    public class categoryUPISummary
+    {
+        public long upisum_total_bids { get; set; }
+        public long upisum_total_shares { get; set; }
+        public long appl_blocked_bids { get; set; }
+        public long appl_blocked_amount { get; set; }
+        public long bid_reg_not_bank_bids { get; set; }
+        public long bid_reg_not_bank_amount { get; set; }
+        public long unique_appln { get; set; }
+    }
+
 
 }

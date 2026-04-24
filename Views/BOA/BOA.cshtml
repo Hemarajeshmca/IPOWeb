@@ -678,6 +678,7 @@
                          var table20 = data.table20;
                          var table21 = data.table21;
                          var table22 = data.table22;
+                         var table23 = data.table23;
                             cin = row.client_cin;
                             $('#cin').val(row.client_cin);
                                       fetch('/BOA/downloadAllReports', {
@@ -707,7 +708,8 @@
                                             categorySOA: table19,
                                             categoryEXMMSOA: table20,
                                             categoryMARMAK: table21,
-                                            categoryTechRej: table22
+                                            categoryTechRej: table22,
+                                            categoryUPISummary: table23[0]
                                         })
                                     })
                                     .then(response => {
