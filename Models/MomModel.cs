@@ -24,8 +24,8 @@ namespace IPOWeb.Models
         public List<CategoryNIIC> categoryNIIC { get; set; }
         public List<CategorySOA> categorySOA { get; set; }
         public List<CategoryEXMMSOA> categoryEXMMSOA { get; set; }
-
         public List<CategoryMARMAK> categoryMARMAK { get; set; }
+        public List<CategoryTechRej> categoryTechRej { get; set; }
     }
 
     public class SummaryData
@@ -217,6 +217,19 @@ namespace IPOWeb.Models
         public int mm_total_appl { get; set; }
         public int mm_total_quantity { get; set; }
         public decimal? mm_times_subs { get; set; }
+    }
+
+    public class CategoryTechRej
+    {
+        public long total_appls { get; set; }
+        public long total_appl_shares { get; set; }
+        public long total_appl_amount { get; set; }
+        public long rejected_appls { get; set; }
+        public long rejected_appl_shares { get; set; }
+        public long rejected_appl_amount { get; set; }
+        public long net_appls { get; set; }
+        public long net_appl_shares { get; set; }
+        public long net_appl_amount { get; set; }
     }
 
 }
