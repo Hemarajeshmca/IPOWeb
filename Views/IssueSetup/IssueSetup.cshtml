@@ -479,7 +479,7 @@
               var mode = new URLSearchParams(window.location.search).get('mode');
                 var defaultStatus = sessionStorage.getItem("default_status");
 
-                loadMasterDropdown("QCD_STATUS", "status");
+                loadMasterDropdown("QCD_STATUS", "status", "D");
 
                 setTimeout(function () {
                     if (mode === "Create" && defaultStatus) {
@@ -509,7 +509,7 @@
               $("#offer_code").val(offer_code);
               loadMasterDropdown("QCD_MAST_OFFER_TYPE", "offer_type");
               loadMasterDropdown("QCD_MAST_LISTING", "listing");
-              loadMasterDropdown("QCD_STATUS", "status");
+              loadMasterDropdown("QCD_STATUS", "status", "D");
                loadBank();
                   // setTimeout(function () {
                   //       $("#status").val("D");
