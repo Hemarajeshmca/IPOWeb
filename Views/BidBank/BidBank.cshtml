@@ -107,8 +107,7 @@
                             <button type="button" onclick="exportSummary()" class="btn btn-primary" id="btnGen" style="padding: 3px 25px;margin-top:28px;">Export Summary </button>
                         &nbsp;&nbsp;
                         <button type="button" onclick="exportdetailSummary()" class="btn btn-primary" id="btnGensummary" style="padding: 3px 25px;margin-top:28px; white-space: nowrap;">Export Detail Summary </button>
-                            &nbsp;&nbsp;
-                            <button type="button" onclick="bankPDF()" class="btn btn-primary" id="Pdf" style="padding: 3px 25px;margin-top:28px; white-space: nowrap;">Bank PDF </button>
+                         
                         </span>
                     </div>
                     
@@ -356,36 +355,6 @@
         window.location.href = url;
     }
 
-     function bankPDF() {
-        var offer_code = localStorage.getItem("selectedIPO");
-
-        $.ajax({
-            type: "GET",
-            url: '@Url.Action("getBankDetails", "BidBank")',
-            data: { offer_code: offer_code },
-
-            success: function (response) {
-
-                console.log("Full Response:", response);
-
-                // ✅ FIX HERE
-                var summary = response.summary;
-                var banker = response.banker;
-
-                console.log("Bank Summary:", summary);
-                console.log("Banker Data:", banker);
-
-                if (summary && summary.length > 0) {
-                    window.location.href = '/BidBank/DownloadBankZip?offer_code=' + offer_code;
-                } else {
-                    alert("No bank data found");
-                }
-            },
-
-            error: function (xhr) {
-                console.log("Error:", xhr.responseText);
-            }
-        });
-    }
+    
 
 </script>
