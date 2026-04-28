@@ -745,7 +745,7 @@
         }
         // Function to populate child dropdown filtered
         function populateDropdownchild(data, id, value = 'default', text = 'default') {
-            debugger;
+            
             var dropdown = $('#' + id);
 
             // Clear existing options
@@ -768,10 +768,10 @@
                         localStorage.setItem("isinNumber", item.isin_id);
                     }
                 }
-                //debugger;
+                //
 
             });
-            debugger;
+            
             var itemCount = $("#Isin option").length;
             if (itemCount >= 2) {
                 $("#Isin option:nth-child(2)").prop("selected", true);
@@ -790,7 +790,7 @@
 
         // Function to populate dropdown
         function populateDropdown(data, id, value = 'default', text = 'default') {
-            debugger;
+            
             var dropdown = $('#' + id);
 
             // Clear existing options
@@ -826,7 +826,7 @@
                     }
 
                 }
-                //debugger;
+                //
 
             });
             $("#Entity option").each(function () {
@@ -849,7 +849,7 @@
         }
 
         $(document).ready(function () {
-            debugger;
+            
             //localStorage.setItem("entityId", 0);
             //localStorage.setItem("isinNumber", 0);
            // console.log("ISIN", isinid);
@@ -873,7 +873,7 @@
             //loaddynamiccolumns('');
             //$.when(loaddynamiccolumns('')).then(restore_existingheader());
             $("#showcoursetable").click(function () {
-                debugger;
+                
                 $("#showcoursetables").show();
             })
             $("#showcoursetable2").click(function () {
@@ -892,7 +892,7 @@
                 $("#tableshow41").show();
             });
             $("#collapse_div").click(function () {
-                debugger;
+                
                 if ($('#collapse_org').css('display') == 'none') {
                     $('#collapse_org').show();
                     $('#collapse_img2').css('display', 'block');
@@ -930,7 +930,7 @@
 
         var spinnerVisible = false;
         function getconcatval(mastercode) {
-            debugger;
+            
             var master = "";
             if (mastercode != null) {
                 master = "'" + mastercode + "'";
@@ -953,7 +953,7 @@
         }
 
         function showProgress() {
-            debugger;
+            
             if (!spinnerVisible) {
                // alert("showP");
                 $("div#spinner").fadeIn("fast");
@@ -962,7 +962,7 @@
             }
         }
         function hideProgress() {
-            debugger;
+            
             if (spinnerVisible) {
                 //alert("hidep");
                 var spinner = $("div#spinner");
@@ -973,7 +973,7 @@
         }
 
         function Editcustdetails() {
-            debugger;
+            
             $.ajax({
                 type: "POST",
                 contentType: "application/json; charset=utf-8",
@@ -981,7 +981,7 @@
                 dataType: "html",
                 url: '@Url.Action("EmpProfilePartialView", "_Layout")',
                 success: function (data) {
-                    debugger;
+                    
                     //  $("#Newcust1").html(data);
                     var obj = $.parseJSON(data);
                     $("#empname").text(obj['EmpName']);
@@ -1008,7 +1008,7 @@
             localStorage.setItem("isinNumber", $("#Isin").val());
             var myLabel = document.getElementById("orglvlNavigate");
             myLabel.innerHTML = $("#Entity").find('option:selected').text() + "&nbsp;&nbsp;/&nbsp;&nbsp;" + $("#Isin").find('option:selected').text();
-            debugger;
+            
             if ($('#collapse_org').css('display') == 'none') {
                 $('#collapse_org').show();
                 $('#collapse_img2').css('display', 'block');
@@ -1027,7 +1027,7 @@
                 datatype: 'json',
                 async: false,
                 success: function (result) {
-                    debugger;
+                    
 
                     location.reload();
 
@@ -1044,12 +1044,12 @@
         }
 
         function storeheader() {
-            debugger;
+            
             location.reload();
         }
 
         function get_orgarray(_idval) {
-            debugger;
+            
             var arr = [];
             var obj = {};
             $('#' + _idval + ' option').each(function () {
@@ -1068,7 +1068,7 @@
         }
 
         /*function Signout() {
-            debugger;
+            
             var url = '@Url.Action("Login", "Login")';
             window.location.href = url;
             /* sessionStorage.removeItem('arr1');
@@ -1102,14 +1102,14 @@
         }*/
 
         function showchangepasswordscreen() {
-            debugger;
+            
             var url = '@Url.Action("ChangePassword", "Login")'
             window.location.href = url;
         }
 
         function onChangeunit(sel, idval) {
             //    alert(this.value());
-            debugger;
+            
             var id = idval;
             // alert(idval);
 
@@ -1134,10 +1134,10 @@
                     return false;
                 }
                 else {
-                    debugger;
+                    
                     $.getJSON("DocGroupNamesNew/DocGroupMaster?parentcode=" + master1 + "&dependcode=" + master + "&maxorg=" + maxorglvl + "&currentorg=" + curentorg_,
                         function (result) {
-                            debugger;
+                            
                             var _dt1 = JSON.parse(result.Data1);
                             var _dt2 = JSON.parse(result.Data2);
                             var _dt3 = JSON.parse(result.Data3);
@@ -1169,7 +1169,7 @@
             }
         }
         function assigndropdownvalue(dt_, idval_) {
-            debugger;
+            
             if (dt_.length > 0) {
                 //$("#" + idval_).removeAttr('multiple');
                 $("#" + idval_).empty();
@@ -1195,7 +1195,7 @@
                     url: '@Url.Action("getlabellist", "DocGroupMaster")',
                     data: "{}",
                     success: function (data) {
-                        debugger;
+                        
                         // var orglevelcode1 = data[0].orghierarchy_code;
                         maxorglvl = data.length;
                         // alert(maxorglvl);
@@ -1229,7 +1229,7 @@
                                     type: "GET",
                                     data: { 'parentcode': orglevelcode1, "dependcode": "" },
                                     success: function (data) {
-                                        debugger;
+                                        
                                         $("#orglvl1valO option").remove();
                                         $("#orglvl1valN option").remove();
                                         for (var i = 0; i < data.length; i++) {
@@ -1282,7 +1282,7 @@
                                     type: "GET",
                                     data: { 'parentcode': orglevelcode2, "dependcode": "" },
                                     success: function (data) {
-                                        debugger;
+                                        
                                         $("#orglvl2valO option").remove();
                                         $("#orglvl2valN option").remove();
                                         for (var i = 0; i < data.length; i++) {
@@ -1337,7 +1337,7 @@
                                     type: "GET",
                                     data: { 'parentcode': orglevelcode3, "dependcode": "" },
                                     success: function (data) {
-                                        debugger;
+                                        
                                         $("#orglvl3valO option").remove();
                                         $("#orglvl3valN option").remove();
                                         for (var i = 0; i < data.length; i++) {
@@ -1389,7 +1389,7 @@
                                     type: "GET",
                                     data: { 'parentcode': orglevelcode4, "dependcode": "" },
                                     success: function (data) {
-                                        debugger;
+                                        
                                         $("#orglvl4valO option").remove();
                                         $("#orglvl4valN option").remove();
                                         for (var i = 0; i < data.length; i++) {
@@ -1436,7 +1436,7 @@
 
 
         //function restore_existingheader() {
-        //    debugger;
+        //    
         //    var arr1_ = JSON.parse(sessionStorage.getItem('arr1'));
         //    var arr2_ = JSON.parse(sessionStorage.getItem('arr2'));
         //    var arr3_ = JSON.parse(sessionStorage.getItem('arr3'));
@@ -1456,7 +1456,7 @@
         //}
 
         function bindmultiselectvalues(arr, _id) {
-            debugger;
+            
             if (arr != null) {
                 $("#" + _id).empty();
                 for (var t = 0; t < arr.length; t++) {
@@ -1471,7 +1471,7 @@
                 }
                 // $('#' + _id).multiselect('reload');
             }
-            debugger;
+            
             //var orglvl2val = $("#orglvl2valO").val();//"
             //$("#QCD_ORG_tUnit").val(orglvl2val);
             //$("#QCD_ORG_tUnit").data("kendoDropDownList").trigger("change");
@@ -1479,7 +1479,7 @@
             //var orglvl1val = $("#orglvl1valO").val();//
             //$("#QCD_ORG_tDepartment").val(orglvl1val);
             //$("#QCD_ORG_tDepartment").data("kendoDropDownList").trigger("change");
-            debugger;
+            
             // Set the inner HTML of the label
 
             //  $("#orglvlNavigate").innerHTML($("#orglvl1valO").find('option:selected').text() + "&nbsp;&nbsp;/&nbsp;&nbsp;" + $("#orglvl2valO").find('option:selected').text());
@@ -1495,7 +1495,7 @@
                     data: "{}",
                     success: function (data) {
                         maxorglvl = data.length;
-                        debugger;
+                        
                         // var orglevelcode1 = data[0].orghierarchy_code;
                         if (data.length >= 1) {
                             orglevelcode1 = data[0].orghierarchy_code;
@@ -1530,7 +1530,7 @@
             }
         }
         function testt() {
-            debugger;
+            
             alert($('#orglvl1valO').val());
         }
 
@@ -1538,7 +1538,7 @@
             //if (isMapAttribute == 'N') {
             //    $('#applyfilter').modal('hide');
             //}
-            debugger;
+            
             $('#applyfilter').modal('hide');
             $('#docloaddd').height(245);
             $('#docloadddlocal').height(245);
@@ -1560,13 +1560,13 @@
 
 
         function gridshow() {
-            debugger;
+            
         }
         //$(function () {
         //    $('#add').click(function () {
         //        clicks += 1;
         //        // document.getElementById("add").innerHTML = clicks;
-        //        debugger;
+        //        
 
         //        $("#submissionTable").show();
         //    });
@@ -1587,7 +1587,7 @@
                 }
                 clicks += 1;
                 // document.getElementById("add").innerHTML = clicks;
-                debugger;
+                
 
                 $("#submissionTable").show();
 
@@ -1623,7 +1623,7 @@
                     '</tr>').appendTo('#submissionTable');
 
 
-                debugger;
+                
 
                 var indexval = counter;
                 $('#contselect' + indexval).append('<option value="' + "Is equal to" + '">' + "Is equal to" + '</option>');
@@ -1650,7 +1650,7 @@
             });
         });
         function removeTr(index) {
-            debugger;
+            
             if (counter > 1) {
                 $('#tablerow' + index).remove();
                 counter -= 1;
@@ -1665,7 +1665,7 @@
         }
 
         function dropaddition() {
-            debugger;
+            
             //  $("#add").hide();
             // dro();
             var dgroupid = '@ViewBag.dgroupid';
@@ -1684,7 +1684,7 @@
 
 
         function getdata() {
-            debugger;
+            
             reportcondition = "";
             parcheck = 0;
             parchecksec = 0;

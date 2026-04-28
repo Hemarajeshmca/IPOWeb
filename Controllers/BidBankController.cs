@@ -15,7 +15,6 @@ using PdfDocument = iTextSharp.text.Document;
 using PdfFont = iTextSharp.text.Font;
 using PdfFontFactory = iTextSharp.text.FontFactory;
 using PdfWriter = iTextSharp.text.pdf.PdfWriter;
-using Word = Microsoft.Office.Interop.Word;
 using Microsoft.AspNetCore.Hosting;
 
 namespace IPOWeb.Controllers
