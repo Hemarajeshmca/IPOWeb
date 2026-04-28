@@ -2084,8 +2084,81 @@ namespace IPOWeb.Controllers
                     System.IO.File.Delete(path);
             }
             catch { /* ignore */ }
-        }        
+        }
 
+        [HttpGet]
+        public IActionResult Export_allotment(string offer_code)
+        {
+            string urlstring = Convert.ToString(_configuration.GetSection("Appsettings")["apiurl"]) + "Export_allotment";
+
+            try
+            {
+                using (var client = new HttpClient())
+                {
+                    client.Timeout = Timeout.InfiniteTimeSpan;
+
+                    APIcookieName = "APItoken-" + User.FindFirst(ClaimTypes.Name)?.Value + "_" + User.FindFirst(ClaimTypes.Role)?.Value;
+                    string token = Request.Cookies[APIcookieName];
+
+                    client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+
+                    var response = client.GetAsync(urlstring + "?offer_code=" + offer_code).Result;
+
+                    if (!response.IsSuccessStatusCode)
+                        return Problem("API call failed");
+
+                    string resultMessage = response.Content.ReadAsStringAsync().Result;
+
+                    // var jsonString = JsonConvert.DeserializeObject<string>(resultMessage);
+                    var ds = JsonConvert.DeserializeObject<DataSet>(resultMessage);
+
+                    var stream = new MemoryStream();
+
+                    using (var archive = new ZipArchive(stream, ZipArchiveMode.Create, true))
+                    {
+                        // 📄 FILE 1
+                        var entry1 = archive.CreateEntry("ipo_output_CDSL.txt");
+                        using (var writer = new StreamWriter(entry1.Open()))
+                        {
+                            writer.WriteLine("DP-ID".PadRight(10) + "CLNT-ID".PadRight(10) + "ALLOTED QUANTITY".PadRight(150));
+
+                            foreach (DataRow row in ds.Tables[0].Rows)
+                            {
+                                writer.WriteLine(
+                                    row["dp_id"]?.ToString().PadRight(10) +
+                                    row["client_id"]?.ToString().PadRight(10) +
+                                    row["alloted_quantity"]?.ToString().PadRight(150)
+                                );
+                            }
+                        }
+
+                        // 📄 FILE 2
+                        var entry2 = archive.CreateEntry("ipo_output_NSDL.txt");
+                        using (var writer = new StreamWriter(entry2.Open()))
+                        {
+                            writer.WriteLine("DP-ID".PadRight(10) + "CLNT-ID".PadRight(10) + "ALLOTED QUANTITY".PadRight(150));
+
+                            foreach (DataRow row in ds.Tables[1].Rows)
+                            {
+                                writer.WriteLine(
+                                    row["dp_id"]?.ToString().PadRight(10) +
+                                    row["client_id"]?.ToString().PadRight(10) +
+                                    row["alloted_quantity"]?.ToString().PadRight(150)
+                                );
+                            }
+                        }
+                    }
+
+                    stream.Position = 0;
+
+                    return File(stream, "application/zip", "ipo_allotment.zip");
+                }
+            }
+            catch (Exception ex)
+            {
+                return Problem(ex.Message);
+            }
+        }
     }
 }
 
