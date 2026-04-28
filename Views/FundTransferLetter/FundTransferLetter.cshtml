@@ -1,0 +1,441 @@
+﻿@{
+    Layout = "~/Views/Shared/_LayoutNew.cshtml";
+}
+<!DOCTYPE html>
+<html>  
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>Fund Transfer Letter</title>
+    <style>
+        .content-wrapper {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .nav-tabs .nav-link.active, .nav-tabs .nav-item.show .nav-link {
+            background-color: #027ed1 !important;
+            color: #fff !important;
+        }
+
+        .nav-tabs .nav-item .nav-link:not(.active) {
+            background-color: #716969;
+            color: #fff;
+        }
+
+        /* Alternate row color */
+        #banktList .k-grid-content tr.k-alt td {
+            background-color: #fff;
+            color: #000;
+        }
+
+        /* Consistent borders */
+        #banktList .k-grid-header th,
+        #banktList .k-grid-content td {
+            border-right: 1px solid #ddd;
+        }
+
+            /* Remove last border */
+            #banktList .k-grid-header th:last-child,
+            #banktList .k-grid-content td:last-child {
+                border-right: none;
+            }
+
+        /* Fixed layout for alignment */
+        #banktList .k-grid-header table,
+        #banktList .k-grid-content table {
+            table-layout: fixed;
+            width: 100%;
+        }
+
+        /* Prevent wrapping */
+        #banktList .k-grid-header th,
+        #banktList .k-grid-content td {
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        /* Compact size */
+        #banktList .k-grid-content td {
+            padding: 3px 6px;
+            font-size: 12px;
+            line-height: 18px;
+            background: #fff;
+        }
+
+        #banktList .k-grid-header th {
+            padding: 4px 6px;
+            font-size: 12px;
+            line-height: 18px;
+        }
+
+        /* Compact row height */
+        #banktList .k-grid-content tr {
+            height: 26px;
+        }
+
+        #banktList .k-grid-header tr {
+            height: 28px;
+        }
+
+        .k-grid td {
+            padding: 2px 2px;
+            font-size: 13px;
+        }
+
+        #banktList { 
+            margin-top:-12px;
+        }
+
+        h5#navhead {
+            position: relative;
+            right: 340px;
+            width: 31%;
+        }
+    </style>
+</head>
+
+<body class="hold-transition skin-blue sidebar-mini fixed">
+    <div class="content-wrapper">
+        <div class="container-xxl flex-grow-1 container-p-y">
+            <div class="card-body" style="margin-top:5px;height: 556px;width: 103%;margin-left: -18px;">
+                <div class="row" style="margin-top: -17px;">
+                    <div class="col-sm-3">
+                        <label class="form-label" for="ctype" data-field="ctype">IPO Name</label>&nbsp;<span style="font-size: 12px;color:red;font-weight: bold;">*</span>
+                        <input type="text" class="form-control" id="iponame" readonly />
+                        <input type="text" class="form-control" id="ipocode" hidden />
+                    </div>                 
+                    <div class="col-sm-3">
+                        <label class="form-label" for="ctype" data-field="ctype">Letter Date</label>
+                        <input type="text" id="curdate" class="form-control" readonly/>
+                    </div>
+                    <div class="col-sm-3">
+                        <label class="form-label" for="ctype" data-field="ctype">Transfer Fund On Or Before</label>
+                        <input type="date" id="trandate" class="form-control" />
+                    </div>
+                </div>
+               <div class="row" style="margin-top:20px;">
+                    <div class="col-sm-4">
+                        <div id="banktList"></div>
+                    </div>
+                    <div class="col-sm-8">
+                        <div class="row" style="border: 1px solid #c5c5c5;padding: 14px;border-radius:5px;margin-top:-11px;">
+                            <div class="row">
+                                <div class="col-sm-5">
+                                    <label class="form-label" for="ctype" data-field="ctype">Bank Name</label>
+                                    <input type="text" id="bankname" class="form-control" />
+                                </div>
+                                <div class="col-sm-7">
+                                    <label class="form-label" for="ctype" data-field="ctype">Branch Name</label>
+                                    <input type="text" id="branchname" class="form-control" />
+                                </div>
+                            </div>
+                            <div class="row" style="margin-top:20px;">
+                                <div class="col-sm-12">
+                                    <div id="bankerGrid"></div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-sm-12">
+                                    <center><button type="button" onclick="bankPDF()" class="btn btn-primary" id="Pdf" style="padding: 3px 25px;margin-top:28px; white-space: nowrap;">Generate Fund Transfer Letter </button></center>
+                                </div>                               
+                            </div>
+                        </div>
+                    </div>
+                    </div>             
+                   </div>
+               </div>
+            </div>  
+        
+   
+</body>
+
+</html>
+<script>
+    var selectedCodes = [];
+    var nameString= "";
+    var accountTitle = "";
+      $(document).ready(function () {
+          var today = new Date();
+    var formattedDate = today.toLocaleDateString("en-GB", {
+        day: "2-digit",
+        month: "long",
+        year: "numeric"
+    });
+
+    $("#curdate").val(formattedDate);
+          getBidBank();
+          loadbankdetails();
+        $('#navhead').text('Fund Transfer Letter');
+        var ipoName = localStorage.getItem("selectedIPOText");
+        var ipocode = localStorage.getItem("selectedIPO");
+        $("#iponame").val(ipoName);
+        $("#ipocode").val(ipocode); 
+        console.log("Namesss :",ipoName);
+        nameString  = ipoName;
+        console.log("nameString :", nameString);
+
+    });
+
+      
+
+    $(document).on("click", "#selectAll", function () {
+        var isChecked = this.checked;
+
+        $(".client-checkbox").each(function () {
+            $(this).prop("checked", isChecked);
+        });
+    });
+
+     $(document).on("change", "#selectAll", function () {
+        var grid = $("#banktList").data("kendoGrid");
+
+        if (this.checked) {
+            var allData = grid.dataSource.data();
+            selectedCodes = allData.map(function (item) {
+             return item.bnk_code;
+            });
+        } else {
+            selectedCodes = [];
+        }
+        grid.tbody.find(".client-checkbox").prop("checked", this.checked);
+    });
+
+    $(document).on("change", ".client-checkbox", function () {
+        var grid = $("#banktList").data("kendoGrid");
+        var row = $(this).closest("tr");
+        var dataItem = grid.dataItem(row);
+        var code = dataItem.bnk_code;
+
+        if ($(this).is(":checked")) {
+            if (!selectedCodes.includes(code)) {
+                selectedCodes.push(code);
+            }
+        } else {
+            selectedCodes = selectedCodes.filter(x => x !== code);
+        }
+
+        console.log("Selected:", selectedCodes);
+    });
+
+    function getBidBank(){
+        var offer_code =  localStorage.getItem("selectedIPO");
+          try {
+            customAjax({
+                type: "GET",
+                url: '@Url.Action("getBidBank", "BidBank")',
+                data: {
+                offer_code: offer_code
+                },
+                success: function (response) {
+                    if (response && response.success) {
+                      var data = JSON.parse(response.data);
+                      fetchgrid(data);
+                      if(data.length==0){
+                        $("#btnGen").hide();
+                        $("#btnGensummary").hide();
+                      }
+                      else{
+                        $("#btnGen").show();
+                        $("#btnGensummary").show();
+                      }
+                    }
+                    else {
+                        $("#btnGen").hide();
+                        $("#btnGensummary").hide();
+                        $.alert({
+                            title: 'IPO Allotment',
+                            content: 'Bid Bank listed failed!',
+                            type: 'red',
+                        });
+                    }
+                },
+                error: function (er) {
+                    $("#btnGen").hide();
+                    $("#btnGensummary").hide();
+                    console.log(er);
+                }
+            });
+        } catch (e) {
+            console.log(e);
+        }
+    }
+
+    function fetchgrid(data){
+        var columns = [
+                     {
+                        title: "Select",
+                        width: 45,
+                        locked: true,
+                        headerAttributes: { style: "text-align:center;" },
+                        attributes: { style: "text-align:center;" },
+                        headerTemplate:
+                            "<div style='text-align:center;'>" +
+                            "<input type='checkbox' id='selectAll' /> " +
+                            "<label for='selectAll' style='cursor:pointer;'>All</label>" +
+                            "</div>",
+                        template: "<input type='checkbox' class='client-checkbox' value='#= bnk_code #' />"
+                     },
+                     {
+                field: "bnk_code",
+                title: "Bank Code",                
+                hidden: true
+            },
+            {
+                field: "bnk_name",
+                title: "Bank Name",
+                width:350                
+            }
+            
+                 ];
+                 if ($("#banktList").data("kendoGrid")) {
+                    $("#banktList").data("kendoGrid").destroy();
+                    $("#banktList").empty();
+                 }
+                     $("#banktList").kendoGrid({
+                     dataSource: {
+                         data: data,
+                         pageSize: 100
+                     },
+                     height: 410,                     
+                     sortable: true,
+                     filterable: true,
+                     resizable: true,
+                     columns: columns,
+                      excel: {
+                        fileName: "BidBank_Summary_Report.xlsx",
+                        allPages: true,   
+                        filterable: true
+                       },
+                     dataBound: function () {
+                        var grid = this;
+                        grid.tbody.find("tr").each(function () {
+                            var dataItem = grid.dataItem(this);
+                            if (selectedCodes.includes(dataItem.bnk_code)) {
+                                $(this).find(".client-checkbox").prop("checked", true);
+                            }
+                        });
+                     }
+                 });
+    }
+
+    function bankPDF() {
+        var offer_code = localStorage.getItem("selectedIPO");
+        var curdate = $("#curdate").val();     // e.g. 27 April 2026
+        var trandate = $("#trandate").val();
+        var grid = $("#banktList").data("kendoGrid");
+        var totalBanks = grid.dataSource.data().length;
+        var selectedBanks = $(".client-checkbox:checked").length;
+        if (totalBanks !== selectedBanks) {
+         $.alert({
+                title: 'IPO Allotment',
+                content: 'Please select all the banks!',
+                type: 'red',
+            });
+        return;
+    }
+        $.ajax({
+            type: "GET",
+            url: '@Url.Action("getBankDetails", "FundTransferLetter")',
+            data: { offer_code: offer_code },
+
+            success: function (response) {
+
+                console.log("Full Response:", response);
+
+                // ✅ FIX HERE
+                var summary = response.summary;
+                var banker = response.banker;
+
+                console.log("Bank Summary:", summary);
+                console.log("Banker Data:", banker);
+
+                if (summary && summary.length > 0) {
+                    window.location.href = '/FundTransferLetter/DownloadBankZip?offer_code='
+                        + offer_code
+                        + '&curdate=' + encodeURIComponent(curdate)
+                        + '&trandate=' + encodeURIComponent(trandate);
+                } else {
+                    alert("No bank data found");
+                }
+            },
+
+            error: function (xhr) {
+                console.log("Error:", xhr.responseText);
+            }
+        });
+    }
+
+     function loadbankdetails() {
+        var offer_code = localStorage.getItem("selectedIPO");
+
+        $.ajax({
+            type: "GET",
+            url: '@Url.Action("getBankDetails", "FundTransferLetter")',
+            data: { offer_code: offer_code },
+
+            success: function (response) {
+
+                console.log("Full Response:", response);
+
+                // ✅ FIX HERE
+                var summary = response.summary;
+                var banker = response.banker;
+
+                console.log("Bank Summary:", summary);
+                console.log("Banker Data:", banker);            
+                if (banker && banker.length > 0) {
+                var bankData = banker[0];
+
+                    
+                    if (nameString && nameString.includes(" - ")) {
+                        accountTitle = nameString.split(" - ")[1].trim();
+                    }
+
+                var gridData = banker.map(function (item) {
+                        return {
+                            bank_name: item.bank_name,
+                            account_no: item.banker_accountno,
+                            ifsc: item.banker_ifsc,
+                            account_title: accountTitle      // or change if you have separate field
+                        };
+                    });
+
+                // ✅ Bind values to input fields
+                $("#bankname").val(bankData.bank_name || "");
+                $("#branchname").val(bankData.banker_address || "");
+
+                $("#bankerGrid").kendoGrid({
+                        dataSource: {
+                            data: gridData                            
+                        },                       
+                        scrollable: false,
+                        height: 150,
+                        columns: [
+                              {
+                                title: "Select",
+                                template: "<input type='radio' name='bankSelect' class='rowRadio' />",
+                                width: 60,
+                                attributes: { style: "text-align: center;" },
+                                headerAttributes: { style: "text-align: center;" }
+                            },
+                            { field: "bank_name", title: "Bank Name" },
+                            { field: "account_no", title: "Account No" },
+                            { field: "ifsc", title: "IFSC Code / RTGS / NEFT" },
+                            { field: "account_title", title: "Account Title" }
+                        ]
+                    });
+            }
+            },
+
+            error: function (xhr) {
+                console.log("Error:", xhr.responseText);
+            }
+        });
+    }
+
+    // Venki push
+
+
+</script>
