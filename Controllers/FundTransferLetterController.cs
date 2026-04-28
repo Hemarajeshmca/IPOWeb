@@ -275,7 +275,6 @@ namespace IPOWeb.Controllers
                         AddCell(table1, accountNo, normalFont);
                         AddCell(table1, ifsc, normalFont);
                         AddCell(table1, bank.client_name, normalFont);
-
                         doc.Add(table1);
 
                         doc.Add(new Paragraph("\n"));
