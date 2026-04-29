@@ -351,8 +351,8 @@
                     <!-- Buttons -->
                     <div class="button-row">
                         <button class="btn btn-primary" style="padding: 3px 25px;margin-bottom:20px;" id="generateBtn" onclick="runboa()">Generate</button>
-                        <button class="btn btn-primary" style="border-color: green;background-color: green; border-radius: 5px;color: white;margin-bottom: 30px;margin-bottom: 20px;padding: 3px 25px;" id="generateBtn" onclick="generateReport()">Download</button>
-                        <button class="btn btn-primary" style="border-color: darkslategrey;background-color: darkslategrey; border-radius: 5px;color: white;margin-bottom: 30px;margin-bottom: 20px;padding: 3px 25px;" id="generateBtn" onclick="export_allotment()">Export Allotment</button>
+                        <button class="btn btn-primary" style="border-color: green;background-color: green; border-radius: 5px;color: white;margin-bottom: 30px;margin-bottom: 20px;padding: 3px 25px;" id="generateBtn" onclick="generateReport()">Download</button>                      
+                        <button class="btn btn-primary" style="border-color: blue;background-color: blue; border-radius: 5px;color: white;margin-bottom: 30px;margin-bottom: 20px;padding: 3px 25px;" id="exportBtn" onclick="export_allotment()">Export Allotment</button>
                         @* <button class="btn btn-primary" style="border-color: red;background-color: red; border-radius: 5px;color: white;margin-bottom: 30px;margin-bottom: 20px;padding: 3px 25px;" id="exitBtn">
                             Exit
                         </button> *@
@@ -757,11 +757,11 @@
             hideProgress();
         }
 
-    }
-        function export_allotment() {
-        var offer_code = localStorage.getItem("selectedIPO");
+    }       
 
+       function export_allotment() {
+        var offer_code = localStorage.getItem("selectedIPO");
         window.location.href =
-            '/BOA/Export_allotment?offer_code=' + encodeURIComponent(offer_code);
+            '/BOA/Export_allotment_bo?offer_code=' + encodeURIComponent(offer_code);
     }
 </script>

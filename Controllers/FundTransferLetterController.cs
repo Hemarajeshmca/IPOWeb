@@ -1,7 +1,10 @@
-﻿using iTextSharp.text;
+﻿using DocumentFormat.OpenXml.Presentation;
+using iTextSharp.text;
 using iTextSharp.text.pdf;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
+using System.Data;
 using System.IO.Compression;
 using System.Net;
 using System.Net.Http.Headers;
@@ -11,7 +14,6 @@ using PdfFont = iTextSharp.text.Font;
 using PdfFontFactory = iTextSharp.text.FontFactory;
 using PdfWriter = iTextSharp.text.pdf.PdfWriter;
 using Word = Microsoft.Office.Interop.Word;
-using Microsoft.AspNetCore.Hosting;
 
 namespace IPOWeb.Controllers
 {
@@ -33,11 +35,11 @@ namespace IPOWeb.Controllers
         string APIcookieName = "";
 
         [HttpGet]
-        public IActionResult getBankDetails(string offer_code)
+        public IActionResult getBankFundDetails(string offer_code)
         {
             try
             {
-                string urlstring = _configuration["Appsettings:apiurl"] + "getBankDetails";
+                string urlstring = _configuration["Appsettings:apiurl"] + "getBankFundDetails";
 
                 using (var client = new HttpClient())
                 {
@@ -80,33 +82,49 @@ namespace IPOWeb.Controllers
         }
 
         [HttpGet]
-        public IActionResult DownloadBankZip(string offer_code, string curdate, string trandate)
+        public IActionResult DownloadAllZip(string offer_code, string curdate,string trandate,string bank_name,string banker_address, string account_no, string ifsc,string account_title)
         {
             try
             {
-                string urlstring = _configuration["Appsettings:apiurl"] + "getBankDetails";
+                // =========================
+                // ✅ TEMP FOLDER
+                // =========================
+                string tempFolder = Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString());
+                Directory.CreateDirectory(tempFolder);
 
+                var pdfFolder = Path.Combine(tempFolder, "PDFs");
+                var txtFolder = Path.Combine(tempFolder, "Allotment");
+
+                Directory.CreateDirectory(pdfFolder);
+                Directory.CreateDirectory(txtFolder);
+
+                // =========================
+                // ✅ FORMAT DATES
+                // =========================
                 string formattedCurDate = curdate;
 
-                // Convert trandate (yyyy-MM-dd → dd MMMM yyyy)
                 string formattedTranDate = "";
-
                 if (!string.IsNullOrEmpty(trandate))
                 {
                     DateTime dt = DateTime.Parse(trandate);
                     formattedTranDate = dt.ToString("dd MMMM yyyy");
                 }
 
-                List<BankData> bankList;
-                List<BankerData> bankerList;
+                // =========================
+                // ✅ CALL BANK API
+                // =========================
+                string urlstring = _configuration["Appsettings:apiurl"] + "getBankFundDetails";
+
+                List<NSBBankData> nsbbankList;
+                List<SBBankData> sbbankList;
 
                 using (var client = new HttpClient())
                 {
                     client.Timeout = Timeout.InfiniteTimeSpan;
 
                     string cookieName = "APItoken-" +
-                                        User.FindFirst(ClaimTypes.Name)?.Value + "_" +
-                                        User.FindFirst(ClaimTypes.Role)?.Value;
+                        User.FindFirst(ClaimTypes.Name)?.Value + "_" +
+                        User.FindFirst(ClaimTypes.Role)?.Value;
 
                     string token = Request.Cookies[cookieName];
 
@@ -125,88 +143,83 @@ namespace IPOWeb.Controllers
 
                     var apiData = JsonConvert.DeserializeObject<BankApiResponse>(result);
 
-                    bankList = apiData?.summary ?? new List<BankData>();
-
-                    // IMPORTANT: banker is SINGLE RECORD (not per bank)
-                    bankerList = apiData?.banker ?? new List<BankerData>();
+                    nsbbankList = apiData?.nsbsummary ?? new List<NSBBankData>();
+                    sbbankList = apiData?.sbsummary ?? new List<SBBankData>();
                 }
 
-                // ✔ Single banker record
-                var banker = bankerList.FirstOrDefault();
+                // =========================
+                // ✅ PDF GENERATION
+                // =========================            
 
-                string accountNo = banker?.banker_accountno ?? "";
-                string ifsc = banker?.banker_ifsc ?? "";
-                string bankerAddress = banker?.banker_address ?? "";
-                string bankerBankName = banker?.bank_name ?? "";
-
-                string tempFolder = Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString());
-                Directory.CreateDirectory(tempFolder);
-
-                foreach (var bank in bankList)
+                foreach (var bank in sbbankList)
                 {
-                    string bankName = bank.bank_name ?? "UnknownBank";
+                    // 🔍 find matching NSB bank
+                    var nsb = nsbbankList
+                        .FirstOrDefault(x =>
+                            x.bank_name?.Trim().ToUpper() ==
+                            bank.bank_name?.Trim().ToUpper());
 
                     string safeName = string.Join("_",
-                        bankName.Split(Path.GetInvalidFileNameChars()));
+                        (bank.bank_name ?? "UnknownBank")
+                        .Split(Path.GetInvalidFileNameChars()));
 
-                    string pdfPath = Path.Combine(tempFolder, $"{safeName}.pdf");               
+                    string pdfPath = Path.Combine(pdfFolder, $"{safeName}.pdf");
 
                     using (FileStream fs = new FileStream(pdfPath, FileMode.Create))
                     {
-                        var doc = new iTextSharp.text.Document(iTextSharp.text.PageSize.A4, 40, 40, 40, 40);
+                        var doc = new iTextSharp.text.Document(
+                            iTextSharp.text.PageSize.A4, 40, 40, 40, 40);
+
                         PdfWriter.GetInstance(doc, fs);
                         doc.Open();
 
-                        // ===== HEADER (LOGO + ADDRESS) =====
+                        // ===== HEADER =====
                         PdfPTable headerTable = new PdfPTable(3);
                         headerTable.WidthPercentage = 100;
                         headerTable.SetWidths(new float[] { 20f, 60f, 20f });
 
-                        // LEFT - LOGO
                         string logoPath = Path.Combine(_env.WebRootPath, "assets", "images", "logognsaupdated.jpg");
-                        iTextSharp.text.Image logo = iTextSharp.text.Image.GetInstance(logoPath);
+                        var logo = iTextSharp.text.Image.GetInstance(logoPath);
                         logo.ScaleToFit(70f, 70f);
 
-                        PdfPCell logoCell = new PdfPCell(logo);
-                        logoCell.Border = Rectangle.NO_BORDER;
-                        logoCell.HorizontalAlignment = Element.ALIGN_LEFT;
+                        PdfPCell logoCell = new PdfPCell(logo)
+                        {
+                            Border = Rectangle.NO_BORDER,
+                            HorizontalAlignment = Element.ALIGN_LEFT
+                        };
                         headerTable.AddCell(logoCell);
 
-                        // CENTER - ADDRESS
-                        Paragraph address = new Paragraph();
-                        address.Alignment = Element.ALIGN_CENTER;
-                        address.Font = FontFactory.GetFont(FontFactory.HELVETICA, 10);
-                        Font companyboldFont = FontFactory.GetFont(FontFactory.HELVETICA_BOLD, 10);
+                        Paragraph address = new Paragraph
+                        {
+                            Alignment = Element.ALIGN_CENTER,
+                            Font = FontFactory.GetFont(FontFactory.HELVETICA, 10)
+                        };
+
+                        var companyboldFont = FontFactory.GetFont(FontFactory.HELVETICA_BOLD, 10);
+                        var titleFont = FontFactory.GetFont(FontFactory.HELVETICA_BOLD, 12);
+                        var normalFont = FontFactory.GetFont(FontFactory.HELVETICA, 10);
+                        var boldFont = FontFactory.GetFont(FontFactory.HELVETICA_BOLD, 10);
 
                         address.Add(new Chunk("GNSA Infotech (P) Ltd. \n", companyboldFont));
                         address.Add("Category II Share Transfer Agent Registration No. INR200003967\n");
-                        address.Add("CIN: U65993TN1994PTC027878\n");
-                        address.Add("\n");
+                        address.Add("CIN: U65993TN1994PTC027878\n\n");
 
                         address.Add(new Chunk("Registered address of Branch Office : \n", companyboldFont));
                         address.Add("4th and 5th Floors, F-Block, Nelson Chambers\n");
                         address.Add("No.115, Nelson Manickam Road, Aminjikarai, Chennai 600030\n");
-                        address.Add("Tel : +91- 44 – 4296 2025, Email: sta@gnsaindia.com\n");
+                        address.Add("Tel : +91-44-4296 2025, Email: sta@gnsaindia.com\n");
 
-                        PdfPCell addressCell = new PdfPCell(address);
-                        addressCell.Border = Rectangle.NO_BORDER;
-                        addressCell.HorizontalAlignment = Element.ALIGN_CENTER;
+                        PdfPCell addressCell = new PdfPCell(address)
+                        {
+                            Border = Rectangle.NO_BORDER,
+                            HorizontalAlignment = Element.ALIGN_CENTER
+                        };
                         headerTable.AddCell(addressCell);
 
-                        // RIGHT - EMPTY
-                        PdfPCell emptyCell = new PdfPCell(new Phrase(""));
-                        emptyCell.Border = Rectangle.NO_BORDER;
-                        headerTable.AddCell(emptyCell);
+                        headerTable.AddCell(new PdfPCell(new Phrase("")) { Border = Rectangle.NO_BORDER });
 
-                        // ADD HEADER TO DOC
                         doc.Add(headerTable);
-
-                        // SPACE AFTER HEADER
                         doc.Add(new Paragraph("\n"));
-
-                        var titleFont = FontFactory.GetFont(FontFactory.HELVETICA_BOLD, 12);
-                        var normalFont = FontFactory.GetFont(FontFactory.HELVETICA, 10);
-                        var boldFont = FontFactory.GetFont(FontFactory.HELVETICA_BOLD, 10);
 
                         // DATE
                         doc.Add(new Paragraph(formattedCurDate, normalFont));
@@ -224,32 +237,41 @@ namespace IPOWeb.Controllers
                         doc.Add(new Paragraph(
                             "We hereby instruct you to transfer the amount adjusted towards shares allotted pertaining to your ASBA / Non ASBA application as per the data attached with contained the details of the investors from whose accounts the money should be transferred to the Public Issue Account.",
                             normalFont));
+
                         doc.Add(new Paragraph("\n"));
 
                         // ===== TABLE 1 =====
                         PdfPTable table = new PdfPTable(4);
                         table.WidthPercentage = 100;
-                        table.SetWidths(new float[] { 15, 30, 30, 25 });
 
-                        AddCell(table, "Member Type", boldFont);
-                        AddCell(table, "Blocked Amount (Rs.)", boldFont);
-                        AddCell(table, "Transfer Amount (Rs.)", boldFont);
-                        AddCell(table, "Unblocked Amount (Rs.)", boldFont);
+                        AddCell(table, "Member Type", companyboldFont);
+                        AddCell(table, "Blocked Amount (Rs.)", companyboldFont);
+                        AddCell(table, "Transfer Amount (Rs.)", companyboldFont);
+                        AddCell(table, "Unblocked Amount (Rs.)", companyboldFont);
 
                         AddCell(table, "NSM", normalFont);
-                        AddCell(table, "", normalFont);
-                        AddCell(table, "", normalFont);
-                        AddCell(table, "", normalFont);
+                        AddCell(table,
+                         nsb != null ? nsb.nsb_allocated_block_amount.ToString("N2") : "0.00",
+                         normalFont, Element.ALIGN_RIGHT);
+
+                        AddCell(table,
+                            nsb != null ? nsb.nsb_total_amount.ToString("N2") : "0.00",
+                            normalFont, Element.ALIGN_RIGHT);
+
+                    AddCell(table,
+                        nsb != null ? nsb.nsb_unblocked_amount.ToString("N2") : "0.00",
+                        normalFont, Element.ALIGN_RIGHT);
 
                         AddCell(table, "SM", normalFont);
-                        AddCell(table, bank.allocated_block_amount.ToString("N2"), normalFont, Element.ALIGN_RIGHT);
-                        AddCell(table, bank.total_amount.ToString("N2"), normalFont, Element.ALIGN_RIGHT);
-                        AddCell(table, bank.unblocked_amount.ToString("N2"), normalFont, Element.ALIGN_RIGHT);
+                        AddCell(table, bank.sb_allocated_block_amount.ToString("N2"), normalFont, Element.ALIGN_RIGHT);
+                        AddCell(table, bank.sb_total_amount.ToString("N2"), normalFont, Element.ALIGN_RIGHT);
+                        AddCell(table, bank.sb_unblocked_amount.ToString("N2"), normalFont, Element.ALIGN_RIGHT);
 
                         AddCell(table, "Total", boldFont);
                         AddCell(table, "", normalFont);
                         AddCell(table, "", normalFont);
                         AddCell(table, "", normalFont);
+
 
                         doc.Add(table);
                         doc.Add(new Paragraph("\n"));
@@ -258,8 +280,8 @@ namespace IPOWeb.Controllers
                         doc.Add(new Paragraph("The detail of the Public Issue Account is below :", normalFont));
                         doc.Add(new Paragraph("\n"));
 
-                        doc.Add(new Paragraph($"Bank Name : {bankerBankName}", normalFont));
-                        doc.Add(new Paragraph($"Branch Name : {bankerAddress}", normalFont));
+                        doc.Add(new Paragraph($"Bank Name : {bank_name}", normalFont));
+                        doc.Add(new Paragraph($"Branch Name : {banker_address}", normalFont));
                         doc.Add(new Paragraph("\n"));
 
                         // ===== TABLE 2 =====
@@ -271,10 +293,10 @@ namespace IPOWeb.Controllers
                         AddCell(table1, "IFSC / RTGS / NEFT", boldFont);
                         AddCell(table1, "Account Title", boldFont);
 
-                        AddCell(table1, bankerBankName, normalFont);
-                        AddCell(table1, accountNo, normalFont);
+                        AddCell(table1, bank_name, normalFont);
+                        AddCell(table1, account_no, normalFont);
                         AddCell(table1, ifsc, normalFont);
-                        AddCell(table1, bank.client_name, normalFont);
+                        AddCell(table1, account_title, normalFont);
                         doc.Add(table1);
 
                         doc.Add(new Paragraph("\n"));
@@ -286,17 +308,67 @@ namespace IPOWeb.Controllers
                     }
                 }
 
-                // ===== ZIP CREATION =====
+                // =========================
+                // ✅ ALLOTMENT FILES
+                // =========================
+                string urlstring1 = _configuration["Appsettings:apiurl"] + "Export_allotment";
+
+                using (var client = new HttpClient())
+                {
+                    string token = Request.Cookies["APItoken-" +
+                        User.FindFirst(ClaimTypes.Name)?.Value + "_" +
+                        User.FindFirst(ClaimTypes.Role)?.Value];
+
+                    client.DefaultRequestHeaders.Authorization =
+                        new AuthenticationHeaderValue("Bearer", token);
+
+                    var response = client.GetAsync(urlstring1 + "?offer_code=" + offer_code).Result;
+
+                    string result = response.Content.ReadAsStringAsync().Result;
+                    var ds = JsonConvert.DeserializeObject<DataSet>(result);
+
+                    // FILE 1
+                    string file1 = Path.Combine(txtFolder, "ipo_output_CDSL.txt");
+                    using (var writer = new StreamWriter(file1))
+                    {
+                        foreach (DataRow row in ds.Tables[0].Rows)
+                        {
+                            writer.WriteLine(
+                                row["dp_id"]?.ToString().PadRight(10) +
+                                row["client_id"]?.ToString().PadRight(10) +
+                                row["alloted_quantity"]?.ToString().PadRight(150));
+                        }
+                    }
+
+                    // FILE 2
+                    string file2 = Path.Combine(txtFolder, "ipo_output_NSDL.txt");
+                    using (var writer = new StreamWriter(file2))
+                    {
+                        foreach (DataRow row in ds.Tables[1].Rows)
+                        {
+                            writer.WriteLine(
+                                row["dp_id"]?.ToString().PadRight(10) +
+                                row["client_id"]?.ToString().PadRight(10) +
+                                row["alloted_quantity"]?.ToString().PadRight(150));
+                        }
+                    }
+                }
+
+                // =========================
+                // ✅ FINAL ZIP
+                // =========================
                 using (var memoryStream = new MemoryStream())
                 {
                     using (var zip = new ZipArchive(memoryStream, ZipArchiveMode.Create, true))
                     {
-                        foreach (var file in Directory.GetFiles(tempFolder, "*.pdf"))
+                        foreach (var file in Directory.GetFiles(tempFolder, "*.*", SearchOption.AllDirectories))
                         {
-                            var entry = zip.CreateEntry(Path.GetFileName(file));
+                            string entryName = file.Replace(tempFolder + Path.DirectorySeparatorChar, "");
+
+                            var entry = zip.CreateEntry(entryName);
 
                             using (var entryStream = entry.Open())
-                            using (var fs = new FileStream(file, FileMode.Open, FileAccess.Read))
+                            using (var fs = new FileStream(file, FileMode.Open))
                             {
                                 fs.CopyTo(entryStream);
                             }
@@ -305,9 +377,7 @@ namespace IPOWeb.Controllers
 
                     Directory.Delete(tempFolder, true);
 
-                    return File(memoryStream.ToArray(),
-                        "application/zip",
-                        "BankDocuments.zip");
+                    return File(memoryStream.ToArray(), "application/zip", "Final_Output.zip");
                 }
             }
             catch (Exception ex)
@@ -316,23 +386,31 @@ namespace IPOWeb.Controllers
             }
         }
 
-        private void AddCell(PdfPTable table, string text, Font font, int alignment = Element.ALIGN_LEFT)
+        private void AddCell(PdfPTable table, string text, iTextSharp.text.Font font, int align = Element.ALIGN_LEFT)
         {
             PdfPCell cell = new PdfPCell(new Phrase(text, font));
-            cell.HorizontalAlignment = alignment;
-            cell.VerticalAlignment = Element.ALIGN_MIDDLE;
-            cell.Padding = 5;
+            cell.HorizontalAlignment = align;
             table.AddCell(cell);
         }
 
-        public class BankData
+        public class NSBBankData
         {
             public string bank_code { get; set; }
             public string bank_name { get; set; }
             public string client_name { get; set; }
-            public long total_amount { get; set; }
-            public long allocated_block_amount { get; set; }
-            public long unblocked_amount { get; set; }
+            public long nsb_total_amount { get; set; }
+            public long nsb_allocated_block_amount { get; set; }
+            public long nsb_unblocked_amount { get; set; }
+        }
+
+        public class SBBankData
+        {
+            public string bank_code { get; set; }
+            public string bank_name { get; set; }
+            public string client_name { get; set; }
+            public long sb_total_amount { get; set; }
+            public long sb_allocated_block_amount { get; set; }
+            public long sb_unblocked_amount { get; set; }
         }
 
 
@@ -347,7 +425,8 @@ namespace IPOWeb.Controllers
 
         public class BankApiResponse
         {
-            public List<BankData> summary { get; set; }
+            public List<NSBBankData> nsbsummary { get; set; }
+            public List<SBBankData> sbsummary { get; set; }
             public List<BankerData> banker { get; set; }
         }
     }

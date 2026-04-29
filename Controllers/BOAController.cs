@@ -2087,9 +2087,10 @@ namespace IPOWeb.Controllers
         }
 
         [HttpGet]
-        public IActionResult Export_allotment(string offer_code)
+        public IActionResult Export_allotment_bo(string offer_code)
         {
-            string urlstring = Convert.ToString(_configuration.GetSection("Appsettings")["apiurl"]) + "Export_allotment";
+            string urlstring = Convert.ToString(
+                _configuration.GetSection("Appsettings")["apiurl"]) + "Export_allotment_bo";
 
             try
             {
@@ -2097,10 +2098,15 @@ namespace IPOWeb.Controllers
                 {
                     client.Timeout = Timeout.InfiniteTimeSpan;
 
-                    APIcookieName = "APItoken-" + User.FindFirst(ClaimTypes.Name)?.Value + "_" + User.FindFirst(ClaimTypes.Role)?.Value;
+                    string APIcookieName =
+                        "APItoken-" +
+                        User.FindFirst(ClaimTypes.Name)?.Value + "_" +
+                        User.FindFirst(ClaimTypes.Role)?.Value;
+
                     string token = Request.Cookies[APIcookieName];
 
-                    client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+                    client.DefaultRequestHeaders.Authorization =
+                        new AuthenticationHeaderValue("Bearer", token);
 
                     var response = client.GetAsync(urlstring + "?offer_code=" + offer_code).Result;
 
@@ -2109,41 +2115,54 @@ namespace IPOWeb.Controllers
 
                     string resultMessage = response.Content.ReadAsStringAsync().Result;
 
-                    // var jsonString = JsonConvert.DeserializeObject<string>(resultMessage);
                     var ds = JsonConvert.DeserializeObject<DataSet>(resultMessage);
 
                     var stream = new MemoryStream();
 
                     using (var archive = new ZipArchive(stream, ZipArchiveMode.Create, true))
                     {
-                        // 📄 FILE 1
+                        // =========================
+                        // 📄 FILE 1 → CDSL
+                        // =========================
                         var entry1 = archive.CreateEntry("ipo_output_CDSL.txt");
+
                         using (var writer = new StreamWriter(entry1.Open()))
                         {
-                            writer.WriteLine("DP-ID".PadRight(10) + "CLNT-ID".PadRight(10) + "ALLOTED QUANTITY".PadRight(150));
+                            writer.WriteLine(
+                                "DP-ID".PadRight(10) +
+                                "CLNT-ID".PadRight(10) +
+                                "ALLOTED QUANTITY".PadRight(150)
+                            );
 
                             foreach (DataRow row in ds.Tables[0].Rows)
                             {
                                 writer.WriteLine(
-                                    row["dp_id"]?.ToString().PadRight(10) +
-                                    row["client_id"]?.ToString().PadRight(10) +
-                                    row["alloted_quantity"]?.ToString().PadRight(150)
+                                    (row["dp_id"]?.ToString() ?? "").PadRight(10) +
+                                    (row["client_id"]?.ToString() ?? "").PadRight(10) +
+                                    (row["alloted_quantity"]?.ToString() ?? "").PadRight(150)
                                 );
                             }
                         }
 
-                        // 📄 FILE 2
+                        // =========================
+                        // 📄 FILE 2 → NSDL
+                        // =========================
                         var entry2 = archive.CreateEntry("ipo_output_NSDL.txt");
+
                         using (var writer = new StreamWriter(entry2.Open()))
                         {
-                            writer.WriteLine("DP-ID".PadRight(10) + "CLNT-ID".PadRight(10) + "ALLOTED QUANTITY".PadRight(150));
+                            writer.WriteLine(
+                                "DP-ID".PadRight(10) +
+                                "CLNT-ID".PadRight(10) +
+                                "ALLOTED QUANTITY".PadRight(150)
+                            );
 
                             foreach (DataRow row in ds.Tables[1].Rows)
                             {
                                 writer.WriteLine(
-                                    row["dp_id"]?.ToString().PadRight(10) +
-                                    row["client_id"]?.ToString().PadRight(10) +
-                                    row["alloted_quantity"]?.ToString().PadRight(150)
+                                    (row["dp_id"]?.ToString() ?? "").PadRight(10) +
+                                    (row["client_id"]?.ToString() ?? "").PadRight(10) +
+                                    (row["alloted_quantity"]?.ToString() ?? "").PadRight(150)
                                 );
                             }
                         }
@@ -2159,6 +2178,7 @@ namespace IPOWeb.Controllers
                 return Problem(ex.Message);
             }
         }
+
     }
 }
 
