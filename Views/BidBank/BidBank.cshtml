@@ -1,5 +1,6 @@
 ﻿@{
     Layout = "~/Views/Shared/_LayoutNew.cshtml";
+    var userName = Context.Session.GetString("user_name");
 }
 <!DOCTYPE html>
 <html>  
@@ -106,8 +107,10 @@
                         &nbsp;&nbsp;
                             <button type="button" onclick="exportSummary()" class="btn btn-primary" id="btnGen" style="padding: 3px 25px;margin-top:28px;">Export Summary </button>
                         &nbsp;&nbsp;
-                        <button type="button" onclick="exportdetailSummary()" class="btn btn-primary" id="btnGensummary" style="padding: 3px 25px;margin-top:28px; white-space: nowrap;">Export Detail Summary </button>
-                         
+                        <button type="button" onclick="exportdetailSummary()" class="btn btn-primary" id="btnGensummary" style="padding: 3px 25px;margin-top:28px; white-space: nowrap;">Export Matched Summary </button>
+                            &nbsp;&nbsp;
+                            <button type="button" onclick="exportdifferenceSummary()" class="btn btn-primary" id="btnGenDiffsummary" style="padding: 3px 25px;margin-top:28px; white-space: nowrap;">Export Difference Summary </button>
+
                         </span>
                     </div>
                     
@@ -355,6 +358,13 @@
         window.location.href = url;
     }
 
-    
+    function exportdifferenceSummary(){
+        var offer_code = localStorage.getItem("selectedIPO");
+        var url = '/BidBank/getdetaildifferenceSummary'
+            + '?offer_code=' + encodeURIComponent(offer_code)
+            + '&user_code=' + encodeURIComponent('@userName');
+
+        window.location.href = url;
+    }
 
 </script>
