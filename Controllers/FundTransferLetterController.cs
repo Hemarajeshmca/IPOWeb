@@ -93,7 +93,7 @@ namespace IPOWeb.Controllers
                 Directory.CreateDirectory(tempFolder);
 
                 var pdfFolder = Path.Combine(tempFolder, "PDFs");
-                var txtFolder = Path.Combine(tempFolder, "Allotment");
+                var txtFolder = Path.Combine(tempFolder, "BankDetails");
 
                 Directory.CreateDirectory(pdfFolder);
                 Directory.CreateDirectory(txtFolder);
@@ -311,7 +311,9 @@ namespace IPOWeb.Controllers
                 // =========================
                 // ✅ ALLOTMENT FILES
                 // =========================
-                string urlstring1 = _configuration["Appsettings:apiurl"] + "Export_allotment";
+                string urlstring1 =
+     _configuration["Appsettings:apiurl"] +
+     "Fund_Transfer_bank_details";
 
                 using (var client = new HttpClient())
                 {
@@ -322,35 +324,32 @@ namespace IPOWeb.Controllers
                     client.DefaultRequestHeaders.Authorization =
                         new AuthenticationHeaderValue("Bearer", token);
 
-                    var response = client.GetAsync(urlstring1 + "?offer_code=" + offer_code).Result;
+                    client.DefaultRequestHeaders.Accept.Add(
+                        new MediaTypeWithQualityHeaderValue("application/json"));
 
-                    string result = response.Content.ReadAsStringAsync().Result;
-                    var ds = JsonConvert.DeserializeObject<DataSet>(result);
+                    var response =
+                        client.GetAsync(urlstring1 + "?offer_code=" + offer_code).Result;
 
-                    // FILE 1
-                    string file1 = Path.Combine(txtFolder, "ipo_output_CDSL.txt");
-                    using (var writer = new StreamWriter(file1))
+                    if (!response.IsSuccessStatusCode)
+                        return BadRequest("Excel API failed");
+
+                    // ✅ READ JSON
+                    string result =
+                        response.Content.ReadAsStringAsync().Result;
+
+                    // ✅ DESERIALIZE
+                    var excelFiles =
+                        JsonConvert.DeserializeObject<List<ExcelFileModel>>(result);
+
+                    // ✅ SAVE EXCEL FILES
+                    foreach (var file in excelFiles)
                     {
-                        foreach (DataRow row in ds.Tables[0].Rows)
-                        {
-                            writer.WriteLine(
-                                row["dp_id"]?.ToString().PadRight(10) +
-                                row["client_id"]?.ToString().PadRight(10) +
-                                row["alloted_quantity"]?.ToString().PadRight(150));
-                        }
-                    }
+                        string filePath =
+                            Path.Combine(txtFolder, file.FileName);
 
-                    // FILE 2
-                    string file2 = Path.Combine(txtFolder, "ipo_output_NSDL.txt");
-                    using (var writer = new StreamWriter(file2))
-                    {
-                        foreach (DataRow row in ds.Tables[1].Rows)
-                        {
-                            writer.WriteLine(
-                                row["dp_id"]?.ToString().PadRight(10) +
-                                row["client_id"]?.ToString().PadRight(10) +
-                                row["alloted_quantity"]?.ToString().PadRight(150));
-                        }
+                        System.IO.File.WriteAllBytes(
+                            filePath,
+                            file.Content);
                     }
                 }
 
@@ -391,6 +390,13 @@ namespace IPOWeb.Controllers
             PdfPCell cell = new PdfPCell(new Phrase(text, font));
             cell.HorizontalAlignment = align;
             table.AddCell(cell);
+        }
+
+        public class ExcelFileModel
+        {
+            public string FileName { get; set; }
+
+            public byte[] Content { get; set; }
         }
 
         public class NSBBankData
