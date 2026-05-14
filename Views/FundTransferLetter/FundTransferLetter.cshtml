@@ -148,7 +148,7 @@
                             </div>
                             <div class="row">
                                 <div class="col-sm-12">
-                                    <center><button type="button" onclick="bankPDF()" class="btn btn-primary" id="Pdf" style="padding: 3px 25px;margin-top:28px; white-space: nowrap;">Generate Fund Transfer & Allotment Details </button>
+                                    <center><button type="button" onclick="bankPDF()" class="btn btn-primary" id="Pdf" style="padding: 3px 25px;margin-top:28px; white-space: nowrap;">Generate Fund Transfer & Bank Details </button>
                                         @* <button class="btn btn-primary" style="border-color: darkslategrey;background-color: darkslategrey; border-radius: 5px;color: white;margin-bottom: 30px;margin-bottom: 20px;padding: 3px 25px;" id="generateBtn" onclick="export_allotment()">Export Allotment</button> *@
                                     </center>
                                 </div>                               
@@ -397,7 +397,22 @@
                         '&ifsc=' + encodeURIComponent(selectedData.ifsc) +
                         '&account_title=' + encodeURIComponent(selectedData.account_title);
                     window.location.href = url;
-                } else {
+                } 
+                
+                 if (sbsummary && sbsummary.length > 0) {
+                   var url = '/FundTransferLetter/DownloadAllZip?' +
+                        'offer_code=' + offer_code +
+                        '&curdate=' + encodeURIComponent(curdate) +
+                        '&trandate=' + encodeURIComponent(trandate) +
+                        '&bank_name=' + encodeURIComponent(selectedData.bank_name) +
+                        '&banker_address=' + encodeURIComponent(selectedData.banker_address) +
+                        '&account_no=' + encodeURIComponent(selectedData.account_no) +
+                        '&ifsc=' + encodeURIComponent(selectedData.ifsc) +
+                        '&account_title=' + encodeURIComponent(selectedData.account_title);
+                    window.location.href = url;
+                }
+                
+                else {
                     alert("No bank data found");
                 }
             },

@@ -117,8 +117,9 @@ namespace IPOWeb.Controllers
             if (result.Tables.Count == 0 || result.Tables[0].Rows.Count == 0)
                 throw new Exception("No data returned from API");
 
-            string templatePath = @"C:\Users\emp10174\Desktop\simple_boa_report_template2.xlsx";
-            System.IO.File.Copy(templatePath, excelPath, true);
+            //string templateExcelPath = @"C:\Users\emp10174\Desktop\simple_boa_report_template2.xlsx";
+            string templateExcelPath = _configuration["Appsettings:templateExcelPath"];
+            System.IO.File.Copy(templateExcelPath, excelPath, true);
 
             using (XLWorkbook wb = new XLWorkbook(excelPath))
             {

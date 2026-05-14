@@ -416,10 +416,10 @@
             document.getElementById("MultipleFile").value = "";
             var dataset_gid = selected.val();
             var dataset_code = selected.data("code");
-            var dataset_name = selected.data("name");
+            var dataset_name = selected.data("name");           
             selectedDataset = selected.data("code");
             console.log("Dataset GID:", dataset_gid);
-            console.log("Dataset Code:", dataset_code);
+            console.log("Dataset Code:", dataset_code);           
             $("#datasetname").text(dataset_name );
             if (typeof dataset_name === "string" && dataset_name.toLowerCase().includes("bank")) {
                     $("#bankrow").show();
@@ -430,7 +430,8 @@
                 }
                 if ((typeof dataset_name === "string" && dataset_name.toLowerCase().includes("bendem")) || 
                 (typeof dataset_name === "string" && dataset_name.toLowerCase().includes("exchange upi")) ||
-                 (typeof dataset_name === "string" && dataset_name.toLowerCase().includes("exchange pan")) 
+                 (typeof dataset_name === "string" && dataset_name.toLowerCase().includes("exchange pan")) ||
+                 (typeof dataset_name === "string" && dataset_name.toLowerCase().includes("market"))
                 )
                 {                   
                     $("#categoryrow").hide();

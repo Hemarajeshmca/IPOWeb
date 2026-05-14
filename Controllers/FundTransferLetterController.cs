@@ -151,17 +151,31 @@ namespace IPOWeb.Controllers
                 // ✅ PDF GENERATION
                 // =========================            
 
-                foreach (var bank in sbbankList)
+                var allBanks = nsbbankList
+                    .Select(x => x.bank_name?.Trim().ToUpper())
+                    .Union(
+                        sbbankList.Select(x => x.bank_name?.Trim().ToUpper())
+                    )
+                    .Where(x => !string.IsNullOrWhiteSpace(x))
+                    .Distinct()
+                    .ToList();
+
+                foreach (var bankName in allBanks)
                 {
                     // 🔍 find matching NSB bank
+                    // NSB record
                     var nsb = nsbbankList
                         .FirstOrDefault(x =>
-                            x.bank_name?.Trim().ToUpper() ==
-                            bank.bank_name?.Trim().ToUpper());
+                            x.bank_name?.Trim().ToUpper() == bankName);
+
+                    // SB record
+                    var sb = sbbankList
+                        .FirstOrDefault(x =>
+                            x.bank_name?.Trim().ToUpper() == bankName);
+
 
                     string safeName = string.Join("_",
-                        (bank.bank_name ?? "UnknownBank")
-                        .Split(Path.GetInvalidFileNameChars()));
+                         bankName.Split(Path.GetInvalidFileNameChars()));
 
                     string pdfPath = Path.Combine(pdfFolder, $"{safeName}.pdf");
 
@@ -227,10 +241,16 @@ namespace IPOWeb.Controllers
 
                         // HEADER
                         doc.Add(new Paragraph("The Manager,", companyboldFont));
-                        doc.Add(new Paragraph(bank.bank_name, companyboldFont));
+                        //doc.Add(new Paragraph(bankName, companyboldFont));
+                        doc.Add(new Paragraph(
+                                sb?.bank_name ?? nsb?.bank_name ?? bankName,
+                                companyboldFont));
                         doc.Add(new Paragraph("\n"));
 
-                        doc.Add(new Paragraph($"Sub : SME PUBLIC ISSUE OF {bank.client_name}", companyboldFont));
+                        //doc.Add(new Paragraph($"Sub : SME PUBLIC ISSUE OF {bank.client_name}", companyboldFont));
+                        doc.Add(new Paragraph(
+                            $"Sub : SME PUBLIC ISSUE OF {sb?.client_name ?? nsb?.client_name}",
+                            companyboldFont));
                         doc.Add(new Paragraph("\n"));
 
                         doc.Add(new Paragraph("Dear Sir,", normalFont));
@@ -263,9 +283,24 @@ namespace IPOWeb.Controllers
                         normalFont, Element.ALIGN_RIGHT);
 
                         AddCell(table, "SM", normalFont);
-                        AddCell(table, bank.sb_allocated_block_amount.ToString("N2"), normalFont, Element.ALIGN_RIGHT);
-                        AddCell(table, bank.sb_total_amount.ToString("N2"), normalFont, Element.ALIGN_RIGHT);
-                        AddCell(table, bank.sb_unblocked_amount.ToString("N2"), normalFont, Element.ALIGN_RIGHT);
+                        //AddCell(table, bank.sb_allocated_block_amount.ToString("N2"), normalFont, Element.ALIGN_RIGHT);
+                        //AddCell(table, bank.sb_total_amount.ToString("N2"), normalFont, Element.ALIGN_RIGHT);
+                        //AddCell(table, bank.sb_unblocked_amount.ToString("N2"), normalFont, Element.ALIGN_RIGHT);
+
+                        AddCell(table,
+                            sb != null ? sb.sb_allocated_block_amount.ToString("N2") : "0.00",
+                            normalFont,
+                            Element.ALIGN_RIGHT);
+
+                        AddCell(table,
+                            sb != null ? sb.sb_total_amount.ToString("N2") : "0.00",
+                            normalFont,
+                            Element.ALIGN_RIGHT);
+
+                        AddCell(table,
+                            sb != null ? sb.sb_unblocked_amount.ToString("N2") : "0.00",
+                            normalFont,
+                            Element.ALIGN_RIGHT);
 
                         AddCell(table, "Total", boldFont);
                         AddCell(table, "", normalFont);
