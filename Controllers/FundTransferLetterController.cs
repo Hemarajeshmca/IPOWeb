@@ -288,12 +288,12 @@ namespace IPOWeb.Controllers
                         //AddCell(table, bank.sb_unblocked_amount.ToString("N2"), normalFont, Element.ALIGN_RIGHT);
 
                         AddCell(table,
-                            sb != null ? sb.sb_allocated_block_amount.ToString("N2") : "0.00",
+                            sb != null ? sb.sb_total_amount.ToString("N2") : "0.00",
                             normalFont,
                             Element.ALIGN_RIGHT);
 
                         AddCell(table,
-                            sb != null ? sb.sb_total_amount.ToString("N2") : "0.00",
+                            sb != null ? sb.sb_allocated_block_amount.ToString("N2") : "0.00",
                             normalFont,
                             Element.ALIGN_RIGHT);
 
