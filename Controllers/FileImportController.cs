@@ -63,10 +63,14 @@ namespace IPOWeb.Controllers
         }
 
         [HttpPost]
-        public async Task<JsonResult> GetPipelinetList(string dataset)
+        public async Task<JsonResult> GetPipelinetList()
         {
+            //urlstring = _configuration.GetSection("Appsettings")["connector_api"]
+            //            + "Pipeline/getPipelinelistData?dataset=" + dataset;
+
             urlstring = _configuration.GetSection("Appsettings")["connector_api"]
-                        + "Pipeline/getPipelinelistData?dataset=" + dataset;
+                        + "Pipeline/getpipelines";
+
             try
             {
                 using (var client = new HttpClient())                {
@@ -74,8 +78,7 @@ namespace IPOWeb.Controllers
                     APIcookieName = "APItoken-" + User.FindFirst(ClaimTypes.Name)?.Value + "_" + User.FindFirst(ClaimTypes.Role)?.Value;
                     string token = Request.Cookies[APIcookieName];
                     client.DefaultRequestHeaders.Authorization =   new AuthenticationHeaderValue("Bearer", token);
-                    // ✅ POST call instead of GET
-                    var response = await client.PostAsync(urlstring, null);
+                    var response = await client.GetAsync(urlstring);
                     var responseString = await response.Content.ReadAsStringAsync();
                     var result = JsonConvert.DeserializeObject<List<PipelineModel>>(responseString);
                     return Json(new
@@ -287,6 +290,55 @@ namespace IPOWeb.Controllers
                 return Json(new { success = false, data = "" });
             }
         }
+
+        [HttpGet]
+        public async Task<JsonResult> GetDatasettList(string Pipeline_code)
+        {
+            string urlstring =
+                Convert.ToString(_configuration.GetSection("Appsettings")["apiurl"])
+                + "getdatasetPipeline?Pipeline_code=" + Pipeline_code;
+
+            try
+            {
+                using (var client = new HttpClient())
+                {
+                    client.Timeout = Timeout.InfiniteTimeSpan;
+
+                    APIcookieName = "APItoken-" +
+                                    User.FindFirst(ClaimTypes.Name)?.Value + "_" +
+                                    User.FindFirst(ClaimTypes.Role)?.Value;
+
+                    string token = Request.Cookies[APIcookieName];
+
+                    client.DefaultRequestHeaders.Authorization =
+                        new AuthenticationHeaderValue("Bearer", token);
+
+                    var response = await client.GetAsync(urlstring);
+
+                    response.EnsureSuccessStatusCode();
+
+                    var responseString = await response.Content.ReadAsStringAsync();
+
+                    // ✅ Correct deserialization
+                    var result =
+                        JsonConvert.DeserializeObject<DatasetResponse>(responseString);
+
+                    return Json(new
+                    {
+                        success = true,
+                        data = result.Table
+                    });
+                }
+            }
+            catch (Exception ex)
+            {
+                return Json(new
+                {
+                    success = false,
+                    message = ex.Message
+                });
+            }
+        }
         public static List<DatasetJob> ConvertToDatasetJobList(DataTable dt)
         {
             var list = new List<DatasetJob>();
@@ -322,5 +374,9 @@ namespace IPOWeb.Controllers
             // public string reference_no { get; set; }
         }
 
+        public class DatasetResponse
+        {
+            public List<FileImportModel> Table { get; set; }
+        }
     }
 }

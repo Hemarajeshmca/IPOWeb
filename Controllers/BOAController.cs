@@ -844,9 +844,9 @@ namespace IPOWeb.Controllers
                             var row = new DocumentFormat.OpenXml.Wordprocessing.TableRow();
 
                             row.Append(
-                                CreateCell(catCo.total_appl.ToString("N0", new CultureInfo("en-IN")), true, true),
-                                CreateCell(catCo.total_quantity.ToString("N0", new CultureInfo("en-IN")), true, true),
-                                CreateCell(catCo.offer_cat_shares.ToString("N0", new CultureInfo("en-IN")), true, true),
+                                CreateCell(catCo.total_appl?.ToString("N0", new CultureInfo("en-IN")), true, true),
+                                CreateCell(catCo.total_quantity?.ToString("N0", new CultureInfo("en-IN")), true, true),
+                                CreateCell(catCo.offer_cat_shares?.ToString("N0", new CultureInfo("en-IN")), true, true),
                                 CreateCell(catCo.times_subs?.ToString("N4", new CultureInfo("en-IN")), true, true)
 
                             );

@@ -81,9 +81,9 @@ namespace IPOWeb.Models
     }
     public class CategoryCo
     {
-        public int offer_cat_shares { get; set; }
-        public int total_appl { get; set; }
-        public int total_quantity { get; set; }
+        public int? offer_cat_shares { get; set; }
+        public int? total_appl { get; set; }
+        public int? total_quantity { get; set; }
         public decimal? times_subs { get; set; }
     }
 
