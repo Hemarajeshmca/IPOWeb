@@ -177,7 +177,7 @@
     });
 
     $("#curdate").val(formattedDate);
-          getBidBank();
+          getBidBank("ASBA");
           loadbankdetails();
         $('#navhead').text('Fund Transfer Letter');
         var ipoName = localStorage.getItem("selectedIPOText");
@@ -231,14 +231,15 @@
         console.log("Selected:", selectedCodes);
     });
 
-    function getBidBank(){
+    function getBidBank(category){
         var offer_code =  localStorage.getItem("selectedIPO");
           try {
             customAjax({
                 type: "GET",
                 url: '@Url.Action("getBidBank", "BidBank")',
                 data: {
-                offer_code: offer_code
+                offer_code: offer_code,
+                category: category
                 },
                 success: function (response) {
                     if (response && response.success) {
@@ -451,6 +452,7 @@
                 var gridData = banker.map(function (item) {
                         return {
                             bank_name: item.bank_name,
+                            bank_type: item.bank_type,
                             banker_address: item.banker_address,
                             account_no: item.banker_accountno,
                             ifsc: item.banker_ifsc,
@@ -477,6 +479,7 @@
                                 headerAttributes: { style: "text-align: center;" }
                             },
                             { field: "bank_name", title: "Bank Name" },
+                            { field: "bank_type", title: "Bank Type" },
                             { field: "banker_address", title: "Bank Address" },
                             { field: "account_no", title: "Account No" },
                             { field: "ifsc", title: "IFSC Code / RTGS / NEFT" },

@@ -388,7 +388,10 @@ namespace IPOWeb.Controllers
 
         public IActionResult Downloads(string jobid, string filetype, string file_name, string username)
         {
+            // Windows
             string typekey = filetype == "csv" ? "fileconfig_value" : "download_xls_folder";
+            // Linux 
+           // string typekey = filetype == "csv" ? "linux_fileconfig_value" : "linux_download_xls_folder";
             var myObjects = getfilepath(typekey, username);
             string filepath = "";
             if (myObjects != null && myObjects.Count > 0)
@@ -437,7 +440,10 @@ namespace IPOWeb.Controllers
                     // ================= XLSX FILE =================
                     else
                     {
+                        // Windows
                         var obj_outresult = getfilepath("download_xls_folder", username);
+
+                        //var obj_outresult = getfilepath("linux_download_xls_folder", username);
 
                         string out_filepath = "";
                         if (obj_outresult != null && obj_outresult.Count > 0)
@@ -482,6 +488,7 @@ namespace IPOWeb.Controllers
                 objcom.errorlog(ex.Message, "files");
                 return Json(ex.Message);
             }
+        
         }
         public class fileModel
         {
