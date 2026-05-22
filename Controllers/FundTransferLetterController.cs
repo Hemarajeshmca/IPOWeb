@@ -459,6 +459,7 @@ namespace IPOWeb.Controllers
         {
             public string bank_code { get; set; }
             public string bank_name { get; set; }
+            public string bank_type { get; set; }
             public string banker_address { get; set; }
             public string banker_accountno { get; set; }
             public string banker_ifsc { get; set; }
