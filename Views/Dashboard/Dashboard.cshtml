@@ -21,10 +21,10 @@
             color: #fff;
         }
        #legends {            
-            border-radius: 10px;           
-            width: 23%;
+            border-radius: 10px;
+            width: 15%;
             margin: 10px;
-            padding: 8px;
+            padding: 7px 2px 2px 4px;
         }
         #border {
             border: 1px solid #efdada;          
@@ -86,47 +86,43 @@
                     <div class="tab-content" style="height: 508px;">
                         <div class="tab-pane fade show active" id="navs-top-dashboard" role="tabpanel">
                             <div class="row" style="margin-top: -20px;">
-                                <div class="col-sm-2" id="legends" style="background:#12526f">
-                                    <p>1200</p>
+                                <div class="col-sm-2" id="legends" style="background:#186449">
+                                    <p id="clientsCount">0</p>
                                     <p>No .Of Clients</p>
                                 </div>
-                                <div class="col-sm-2" id="legends" style="background:#db5b17">
-                                    <p>1800</p>
+                                <div class="col-sm-2" id="legends" style="background:#ad0888">
+                                    <p id="totalipos">0</p>
                                     <p>Total IPOs</p>
                                 </div>
                                 <div class="col-sm-2" id="legends" style="background:#428d27">
-                                    <p>15 (Rs.6.8L)</p>
+                                    <p id="mainboardipocount">0</p>
                                     <p>Mainboard IPOs</p>
                                 </div>
                                 <div class="col-sm-2" id="legends" style="background:#0d8bbb">
-                                    <p>4 (Rs.11L)</p>
+                                    <p id="smeipocount">0</p>
                                     <p>SME IPOs</p>
                                 </div>
-                            </div>
-                            <div class="row" style="margin-top:10px;">
                                 <div class="col-sm-2" id="legends" style="background:#12526f">
-                                    <p>23 (Rs.8.2L)</p>
+                                    <p id="completedipos">0</p>
                                     <p>IPOs In Progress</p>
                                 </div>
                                 <div class="col-sm-2" id="legends" style="background:#db5b17">
-                                    <p>36 (Rs.3.4L)</p>
+                                    <p id="inprogressipos">0</p>
                                     <p>IPOs Completed</p>
                                 </div>
-                                <div class="col-sm-2" id="legends" style="background:#428d27">
-                                    <p>11 (Rs.3.8L)</p>
-                                    <p>IPOs Listed</p>
+                            </div>                           
+                            <div class="row justify-content-center align-items-center mt-4">
+                                <div class="col-sm-5 text-center" id="border" style="margin-right: 149px;">
+                                    <h5 style="color:#000">Mainboard IPOs vs SME IPOs</h5>
+                                    <div id="piechart_3d"
+                                         style="width: 100%; height: 300px; margin: auto;">
+                                    </div>
                                 </div>
-                                <div class="col-sm-2" id="legends" style="background:#0d8bbb">
-                                    <p>9 (Rs.9L)</p>
-                                    <p>IPOs Closure</p>
-                                </div>
-                            </div>
-                            <div class="row" style="margin-top:18px;margin-left: 0px;">
-                                <div class="col-sm-5" id="border">
-                                    <div id="piechart_3d" style="width: 450px; height: 230px;"></div>
-                                </div>
-                                <div class="col-sm-5" id="border" style="margin-left:165px;">
-                                    <div id="curve_chart" style="width: 450px; height: 230px"></div>
+                                <div class="col-sm-5 text-center ms-4" id="border">
+                                    <h5 style="color:#000">IPO Status</h5>
+                                    <div id="curve_chart"
+                                         style="width: 100%; height: 300px; margin: auto;position: relative;top: -13px;">
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -172,6 +168,7 @@
 <script>    
      $( document ).ready(function() {
           $('#navhead').text('Dashboard');
+          showdashboarddetails();
          const tab = new URLSearchParams(window.location.search).get('tab');
             if (tab) {
                 const triggerEl = document.querySelector(`[data-bs-target="#navs-top-${tab}"]`);
@@ -191,47 +188,54 @@
 
      google.charts.load("current", {packages:["corechart"]});
       google.charts.setOnLoadCallback(drawChart);
-      function drawChart() {
+    function drawChart(mainboard, sme) {
+
         var data = google.visualization.arrayToDataTable([
-          ['Task', 'Hours per Day'],
-          ['Companies',     11],
-          ['Issues',      2],
-          ['Mainboard IPO',  2],
-          ['SME IPOs', 2]         
+            ['IPO Type', 'Count'],
+            ['Mainboard IPO', mainboard],
+            ['SME IPO', sme]
         ]);
 
-        var options = {
-          title: 'IPO Details',
-          is3D: true,
+        var options = {           
+            is3D: true,
+            colors: ['#428d27', '#0d8bbb']
         };
 
-        var chart = new google.visualization.PieChart(document.getElementById('piechart_3d'));
+        var chart = new google.visualization.PieChart(
+            document.getElementById('piechart_3d')
+        );
+
         chart.draw(data, options);
-      }
+    }
 
 
      google.charts.load('current', {'packages':['corechart']});
       google.charts.setOnLoadCallback(drawCharts);
 
-      function drawCharts() {
+       function drawBarChart(inprogress, completed) {
+
         var data = google.visualization.arrayToDataTable([
-          ['Year', 'IPOs Listed', 'IPOs Completed'],
-          ['2004',  1000,      400],
-          ['2005',  1170,      460],
-          ['2006',  660,       1120],
-          ['2007',  1030,      540]
+            ['IPO Status', 'Count', { role: 'style' }],
+
+            ['In Progress', completed, '#12526f'],
+            ['Completed', inprogress, '#db5b17']
         ]);
 
-        var options = {
-          title: 'IPO Reports',
-          curveType: 'function',
-          legend: { position: 'bottom' }
+        var options = {           
+            legend: { position: 'none' },
+
+            chartArea: {
+                width: '70%',
+                height: '50%'
+            }
         };
 
-        var chart = new google.visualization.LineChart(document.getElementById('curve_chart'));
+        var chart = new google.visualization.BarChart(
+            document.getElementById('curve_chart')
+        );
 
         chart.draw(data, options);
-      }
+    }
 
     var issueGridLoaded = false;
     
@@ -289,6 +293,38 @@
         }
 
     });
+
+    function showdashboarddetails() {
+         $.ajax({
+             type: "GET",
+             url: '@Url.Action("GetDashboardDetails", "Dashboard")',
+             dataType: "json",
+             success: function (response) {
+               console.log(response);       
+               var data = JSON.parse(response._data);
+            // Get first row
+            var result = data[0];
+            // Bind clients value
+            $("#clientsCount").text(result.clients);
+            $("#totalipos").text(result.total_ipos);
+            $("#mainboardipocount").text(result.main_board_ipo_count + " (Rs. " + result.mainboard_total_shares + ")");
+            $("#smeipocount").text(result.sme_ipo_count +" (Rs. " + result.sme_total_shares + ")");
+            $("#completedipos").text(result.completed_ipos);
+            $("#inprogressipos").text(result.inprogress_ipos);
+            drawChart(
+                result.main_board_ipo_count,
+                result.sme_ipo_count
+            );
+            drawBarChart(
+                result.inprogress_ipos,
+                result.completed_ipos
+            );
+             },
+             error: function (er) {
+                 console.log(er);
+             }
+         });
+    }
 
     function showclientGrid() {
         var mymodel = {
