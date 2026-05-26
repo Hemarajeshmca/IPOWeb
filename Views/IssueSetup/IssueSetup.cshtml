@@ -1708,17 +1708,15 @@
             });
         }
 
-       function validateCategoryTotal() {
+       function validateCategoryTotal_old() {
             var issuesize = parseFloat($("#issuesize").val().replace(/,/g, '')) || 0;
             var grid = $("#offerCategoryGrid").data("kendoGrid");
             if (!grid) return false;
             var data = grid.dataSource.view();
             var total = 0;
-            data.forEach(function (item) {
+            data.forEach(function (item) {                 
                 total += parseFloat(item.offer_cat_shares) || 0;
             });
-            console.log("Issue Size:", issuesize);
-            console.log("Category Total:", total);
             if (issuesize !== total) {
                 $.alert({
                     title: 'IPO Web',
@@ -1730,6 +1728,53 @@
             return true;
         }
 
+
+            function validateCategoryTotal() {
+
+        var issuesize = parseFloat($("#issuesize").val().replace(/,/g, '')) || 0;
+
+        var grid = $("#offerCategoryGrid").data("kendoGrid");
+        if (!grid) return false;
+
+        var data = grid.dataSource.view();
+
+        var total = 0;
+        var isINDValid = false;
+
+        data.forEach(function (item) {
+
+            var shares = parseFloat(item.offer_cat_shares) || 0;
+
+            total += shares;
+
+            // IND category validation
+            if (item.category_code === "IND" && shares > 0) {
+                isINDValid = true;
+            }
+        });
+
+        // Validate issue size total
+        if (issuesize !== total) {
+            $.alert({
+                title: 'IPO Web',
+                content: "Category Total ₹ (" + total + ") must match with Issue Size Total ₹ (" + issuesize + ")",
+                type: 'red',
+            });
+            return false;
+        }
+
+        // Validate IND category mandatory
+        if (!isINDValid) {
+            $.alert({
+                title: 'IPO Web',
+                content: "IND category is mandatory and shares should be greater than 0.",
+                type: 'red',
+            });
+            return false;
+        }
+
+        return true;
+    }
 
      function formatIndianNumber(x) {
                 if (x == null) return "";
@@ -1760,19 +1805,18 @@
                 container.find("input").css("text-align", "left");
             }
 
-            function saveofferCategory() {
-                    var status = $("#status").val();
-                   var clientname = $("#clientname").val();
-
+            function saveofferCategory() {               
+                var status = $("#status").val();
+                var clientname = $("#clientname").val();
                 if (!validateCategoryTotal()) {
-                return;   // ❌ STOP SAVE
+                return;   // STOP SAVE
                   }
                 var grid = $("#offerCategoryGrid").data("kendoGrid");
                 var selectedData = [];
                 $("#offerCategoryGrid tbody tr").each(function () {
                     var checkbox = $(this).find(".rowCheckbox");
                     if (checkbox.is(":checked")) {
-                        var dataItem = grid.dataItem(this);
+                        var dataItem = grid.dataItem(this);                       
                         selectedData.push({
                             category_gid: dataItem.category_gid,
                             offer_cat_code: dataItem.category_code,
@@ -1780,7 +1824,7 @@
                             offer_cat_shares: dataItem.offer_cat_shares
                         });
                     }
-                });
+                });               
                 var isValid = true;
                 if (!isValid) return;
                      if(clientname) {
@@ -1871,13 +1915,13 @@
                   var milestoneId = parseInt($("#milestone_gid").val()) || 0;
                       if(iod === "") {
                         $("#queryiod").text("Please Select Offer Opening Date");
-                    isValid = false;
+                        isValid = false;
                     } else {
                         $("#queryiod").text("");
                     }
                      if(icd === "") {
                         $("#queryicd").text("Please Select Offer Closing Date");
-                    isValid = false;
+                        isValid = false;
                     }  else if(icd < iod) {
                         $("#queryicd").text("Offer Closing Date must be greater than Offer Opening Date");
                          isValid = false;
@@ -1886,7 +1930,7 @@
                     }
                      if(alotdate === "") {
                         $("#queryalotdate").text("Please Select Allotment Date");
-                    isValid = false;
+                        isValid = false;
                     }  else if(alotdate < icd) {
                         $("#queryalotdate").text("Allotment Date must be greater than Offer Closing Date");
                          isValid = false;
@@ -1895,7 +1939,7 @@
                     }
                     if(apdate === "") {
                         $("#queryapdate").text("Please Select Approval Date");
-                    isValid = false;
+                        isValid = false;
                     }  else if(apdate < alotdate) {
                         $("#queryapdate").text("Approval Date must be greater than Allotment Date");
                          isValid = false;
@@ -1904,7 +1948,7 @@
                     }
                     if(nsdldate === "") {
                         $("#querynsdldate").text("Please Select NSDL CA Date");
-                    isValid = false;
+                        isValid = false;
                     } else if(nsdldate < apdate) {
                         $("#querynsdldate").text("NSDL CA Date must be greater than Offer Approval Date");
                          isValid = false;
@@ -1913,7 +1957,7 @@
                     }                    
                      if(cdsldate === "") {
                         $("#querycdsldate").text("Please Select CDSL CA Date");
-                    isValid = false;
+                        isValid = false;
                     } else if(cdsldate < nsdldate) {
                         $("#querycdsldate").text("CDSL CA Date must be greater than NSDL CA Date");
                          isValid = false;
@@ -1922,7 +1966,7 @@
                     }
                      if(refunddate === "") {
                         $("#queryrefunddate").text("Please Select Refund Date");
-                    isValid = false;
+                        isValid = false;
                     }  else if(refunddate < cdsldate) {
                         $("#queryrefunddate").text("Refund Date must be greater than CDSL CA Date");
                          isValid = false;
@@ -1931,13 +1975,31 @@
                     }
                      if(ldate === "") {
                         $("#queryldate").text("Please Select Listing Date");
-                    isValid = false;
+                        isValid = false;
                     }  else if(ldate < refunddate) {
                         $("#queryldate").text("Listing Date must be greater than Refund  Date");
-                         isValid = false;
-                    } else {
-                        $("#queryldate").text("");
-                    }            
+                        isValid = false;
+                        } else if(nsdldate < apdate) {
+                            $("#querynsdldate").text("NSDL CA Date must be greater than Approval Date");
+                            isValid = false;
+                        }
+                        // CDSL Date
+                        else if(cdsldate < apdate) {
+                            $("#querycdsldate").text("CDSL CA Date must be greater than Approval Date");
+                            isValid = false;
+                        }
+                        // Refund Date
+                        else if(refunddate < apdate) {
+                            $("#queryrefunddate").text("Refund Date must be greater than Approval Date");
+                            isValid = false;
+                        }
+                        // Listing Date
+                        else if(ldate < apdate) {
+                            $("#queryldate").text("Listing Date must be greater than Approval Date");
+                            isValid = false;
+                        } else {
+                            $("#queryldate").text("");
+                        }            
             if (!isValid) return;
                  if(clientname) {
                           if((status === "Y" && activeOfferStatus ==="false") || (status === "" && activeOfferStatus === "false")) {

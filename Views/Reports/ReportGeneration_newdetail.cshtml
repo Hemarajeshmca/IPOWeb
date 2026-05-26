@@ -1842,7 +1842,7 @@
 				var concatName = str.replace(/[^\w\s]|_/gi, '').replace(/\s+/g, '');
 				var dataset1 = {
 					"in_reporttemplate_code": template_code ? template_code : '',
-					"in_report_code": selected_template.report_code,
+					"in_report_code": selected_template.report_code ?? "",
 					"in_recon_code": selected_template.recon_code,
 					"in_report_param": $("#cmb_report_code").find(":selected").text(),
 					"in_report_condition": condition,

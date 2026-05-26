@@ -2221,13 +2221,10 @@
                             });
                             return;
                         }
-
                         var result = JSON.parse(response.data);
-
                         var $ddl = $("#" + dropdownId);
                         $ddl.empty();
                         $ddl.append('<option value="">--- Select ---</option>');
-
                         $.each(result, function (index, item) {
                             $ddl.append(
                                 '<option value="' + item.master_code + '">' +

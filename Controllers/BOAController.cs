@@ -98,7 +98,7 @@ namespace IPOWeb.Controllers
                 string url = urlstring + "?offer_code=" + offer_code;
                 var response = client.GetAsync(url).Result;
 
-                // ✅ FIX 1: Unauthorized handling
+                // Unauthorized handling
                 if (response.StatusCode == HttpStatusCode.Unauthorized)
                 {
                     Response.Cookies.Delete(APIcookieName);
@@ -113,11 +113,10 @@ namespace IPOWeb.Controllers
                 result = JsonConvert.DeserializeObject<DataSet>(d2);
             }
 
-            // ✅ FIX 2: Validate data
+            // Validate data
             if (result.Tables.Count == 0 || result.Tables[0].Rows.Count == 0)
                 throw new Exception("No data returned from API");
 
-            //string templateExcelPath = @"C:\Users\emp10174\Desktop\simple_boa_report_template2.xlsx";
             string templateExcelPath = _configuration["Appsettings:templateExcelPath"];
             System.IO.File.Copy(templateExcelPath, excelPath, true);
 
