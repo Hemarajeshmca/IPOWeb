@@ -252,10 +252,10 @@
                         <input type="number" class="form-control" id="offer_postcapital" readonly />
                     </div>
 
-                    <div class="col-md-2-4">
+                  @*   <div class="col-md-2-4">
                         <label class="form-label">Market Maker Shares</label>
                         <input type="number" class="form-control" id="mm"  readonly />
-                    </div>
+                    </div> *@
 
                     @* <div class="col-md-2-4">
                         <label class="form-label">QIB Shares</label>
@@ -278,8 +278,8 @@
 
                     <div class="row">
                         <div class="col">
-                            <label class="form-label">Spill over from Retail to Non-Retail</label>
-                            <input type="number" class="form-control" value="0" readonly />
+                            <label class="form-label">Market Maker Shares</label>
+                            <input type="number" class="form-control" id="mm" readonly />
                         </div>
 
                         <div class="col">
@@ -317,18 +317,18 @@
                         <div class="sign-label">Name</div>
 
                         <div class="sign-box">
-                            <div class="sign-title">Seren Capital Private Limited</div>
-                            <input type="text" class="form-control" value="MR. AKUN GOYAL" readonly />
+                            <div class="sign-title">SBI Capital Markets Limited</div>
+                            <input type="text" class="form-control" value="Mr. Vishal Gupta" readonly />
                         </div>
 
                         <div class="sign-box">
-                            <div class="sign-title">Msafe Equipments Limited</div>
-                            <input type="text" class="form-control" value="MS. RENUKA UNIYAL" readonly />
+                            <div class="sign-title">Flexicode Technologies Pvt. Ltd</div>
+                            <input type="text" class="form-control" value="Mr. Gopal Sharma" readonly />
                         </div>
 
                         <div class="sign-box">
-                            <div class="sign-title">Maashita Securities Pvt. Limited</div>
-                            <input type="text" class="form-control" value="MR. MUKUL AGRAWAL" readonly />
+                            <div class="sign-title">GNSA Infotech Pvt. Ltd</div>
+                            <input type="text" class="form-control" value="Mr. Krishna Kumar" readonly />
                         </div>
                     </div>
 
@@ -337,20 +337,20 @@
                         <div class="sign-label">Designation</div>
 
                         <div class="sign-box">
-                            <input type="text" class="form-control" value="AUTHORISED SIGNATORY" readonly />
+                            <input type="text" class="form-control" value="Senior Vice President" readonly />
                         </div>
 
                         <div class="sign-box">
-                            <input type="text" class="form-control" value="COMPANY SECRETARY & COMPLIANCE" readonly />
+                            <input type="text" class="form-control" value="Director" readonly />
                         </div>
 
                         <div class="sign-box">
-                            <input type="text" class="form-control" value="DIRECTOR" readonly />
+                            <input type="text" class="form-control" value="Director" readonly />
                         </div>
                     </div>
                     <!-- Buttons -->
                     <div class="button-row">
-                        <button class="btn btn-primary" style="padding: 3px 25px;margin-bottom:20px;" id="generateBtn" onclick="runboa()">Generate</button>
+                        <button class="btn btn-primary" style="padding: 3px 25px;margin-bottom:20px;" id="generateBtn" onclick="runboa()">Run BOA</button>
                         <button class="btn btn-primary" style="border-color: green;background-color: green; border-radius: 5px;color: white;margin-bottom: 30px;margin-bottom: 20px;padding: 3px 25px;" id="generateBtn" onclick="generateReport()">Download</button>                      
                         <button class="btn btn-primary" style="border-color: blue;background-color: blue; border-radius: 5px;color: white;margin-bottom: 30px;margin-bottom: 20px;padding: 3px 25px;" id="exportBtn" onclick="export_allotment()">Export Allotment</button>
                         @* <button class="btn btn-primary" style="border-color: red;background-color: red; border-radius: 5px;color: white;margin-bottom: 30px;margin-bottom: 20px;padding: 3px 25px;" id="exitBtn">
@@ -366,7 +366,7 @@
 
  <script>     
     $( document ).ready(function() {             
-             $('#navhead').text('Basics of Allotment');       
+             $('#navhead').text('Basis of Allotment');       
              var ipocode = localStorage.getItem("selectedIPO");
              var clientid = localStorage.getItem("selectedClientId");
              $("#ipocode").val(ipocode);
