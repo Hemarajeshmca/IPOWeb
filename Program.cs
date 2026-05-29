@@ -43,7 +43,8 @@ builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationSc
         options.Cookie.SecurePolicy = CookieSecurePolicy.None; // localhost
         options.AccessDeniedPath = "/Login/Login";
         //options.AccessDeniedPath = "/Login/Denied";
-        options.ExpireTimeSpan = TimeSpan.FromMinutes(30);
+        // options.ExpireTimeSpan = TimeSpan.FromMinutes(30);
+        options.ExpireTimeSpan = TimeSpan.FromHours(5);
         options.SlidingExpiration = true;
     });
 builder.Services.AddAuthorization();
