@@ -182,7 +182,6 @@
                         offersTab();
                     } 
                 }
-
                 history.replaceState(null, null, window.location.pathname);
             }
     }); 
@@ -211,7 +210,7 @@
 
 
      google.charts.load('current', {'packages':['corechart']});
-      google.charts.setOnLoadCallback(drawCharts);
+      // google.charts.setOnLoadCallback(drawCharts);
 
        function drawBarChart(inprogress, completed) {
 
@@ -239,7 +238,7 @@
     }
 
     var issueGridLoaded = false;
-    
+    var clientGridLoaded = false;
 
     $('button[data-bs-target="#navs-top-issue"]').on('shown.bs.tab', function () {
 
@@ -284,14 +283,18 @@
         }
 
     });
-
-    var clientGridLoaded = false;
+    
     $('button[data-bs-target="#navs-top-client"]').on('shown.bs.tab', function () {
 
         if (!clientGridLoaded) {
             showclientGrid();
             clientGridLoaded = true; 
         }
+
+    });
+
+     $('button[data-bs-target="#navs-top-dashboard"]').on('shown.bs.tab', function () {
+         showdashboarddetails();    
 
     });
 
@@ -437,7 +440,7 @@
     }
 
     function editGrid(e) {
-        var grid = $("#grid").data("kendoGrid");
+        var grid = $("#clientListGrid").data("kendoGrid");
         var row = $(e).closest("tr");
         var dataItem = grid.dataItem(row);
         var client_gid = dataItem.client_gid;
@@ -767,7 +770,7 @@
     // }
 
         function exportClientList() {
-        var grid = $("#grid").data("kendoGrid");
+        var grid = $("#clientListGrid").data("kendoGrid");
 
         var originalPageSize = grid.dataSource.pageSize();
 
