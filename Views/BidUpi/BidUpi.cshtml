@@ -268,24 +268,25 @@
                     field: "status",
                     title: "Status",
                     width: 120,
-                    locked: true
+                    locked: true,
+                    footerTemplate: "<div style='font-weight:bold'>TOTAL</div>"
                 },
                   {
               title: "As per Bid",
               headerAttributes: { style: "text-align:center;font-weight:bold;" },
               columns: [
-                  { field: "bid_appl_count", title: "No.of Appl", width: 120, attributes:{style:"text-align:right;"} },
-                  { field: "bid_quantity", title: "No.of Shares", width: 130, attributes:{style:"text-align:right;"} },
-                  { field: "bid_amount", title: "Amount", width: 120, attributes:{style:"text-align:right;"} }
+                          { field: "bid_appl_count", title: "No.of Appl", width: 120, attributes:{style:"text-align:right;"},footerTemplate: "<div style='text-align:right;font-weight:bold'>" + "#= kendo.toString(sum, 'n0') #" + "</div>"},
+                      { field: "bid_quantity", title: "No.of Shares", width: 130, attributes:{style:"text-align:right;"},footerTemplate: "<div style='text-align:right;font-weight:bold'>" + "#= kendo.toString(sum, 'n0') #" + "</div>" },
+                      { field: "bid_amount", title: "Amount", width: 120, attributes:{style:"text-align:right;"},footerTemplate: "<div style='text-align:right;font-weight:bold'>" + "#= kendo.toString(sum, 'n0') #" +  "</div>" }
               ]
           },
           {
               title: "As per UPI",
               headerAttributes: { style: "text-align:center;font-weight:bold;" },
               columns: [
-                  { field: "upi_appl_count", title: "No.of Appl", width: 120, attributes:{style:"text-align:right;"} },
-                  { field: "upi_quantity", title: "No.of Shares", width: 130, attributes:{style:"text-align:right;"} },
-                  { field: "upi_amount", title: "Amount", width: 120, attributes:{style:"text-align:right;"} }
+                      { field: "upi_appl_count", title: "No.of Appl", width: 120, attributes:{style:"text-align:right;"},footerTemplate: "<div style='text-align:right;font-weight:bold'>" +  "#= kendo.toString(sum, 'n0') #" + "</div>" },
+                      { field: "upi_quantity", title: "No.of Shares", width: 130, attributes:{style:"text-align:right;"}, footerTemplate: "<div style='text-align:right;font-weight:bold'>" + "#= kendo.toString(sum, 'n0') #" + "</div>" },
+                      { field: "upi_amount", title: "Amount", width: 120, attributes:{style:"text-align:right;"},footerTemplate: "<div style='text-align:right;font-weight:bold'>" + "#= kendo.toString(sum, 'n0') #" + "</div>"}
               ]
           },
 
@@ -293,9 +294,9 @@
               title: "Diff.",
               headerAttributes: { style: "text-align:center;font-weight:bold;" },
               columns: [
-                  { field: "diff_appl_count", title: "No.of Appl", width: 120, attributes:{style:"text-align:right;color:red;"} },
-                  { field: "diff_quantity", title: "No.of Shares", width: 130, attributes:{style:"text-align:right;color:red;"} },
-                  { field: "diff_amount", title: "Amount", width: 120, attributes:{style:"text-align:right;color:red;"} }
+                      { field: "diff_appl_count", title: "No.of Appl", width: 120,attributes:{style:"text-align:right;color:red;"}, footerTemplate: "<div style='text-align:right;font-weight:bold'>" + "#= kendo.toString(sum, 'n0') #" + "</div>" },
+                      { field: "diff_quantity", title: "No.of Shares", width: 130, attributes:{style:"text-align:right;color:red;"}, footerTemplate: "<div style='text-align:right;font-weight:bold'>" + "#= kendo.toString(sum, 'n0') #" + "</div>" },
+                      { field: "diff_amount", title: "Amount", width: 120, attributes:{style:"text-align:right;color:red;"}, footerTemplate: "<div style='text-align:right;font-weight:bold'>" + "#= kendo.toString(sum, 'n0') #" + "</div>" }
               ]
           }
                  ];
@@ -306,8 +307,22 @@
                      $("#banktList").kendoGrid({
                      dataSource: {
                          data: data,
-                         pageSize: 20
+                         pageSize: 20,
+                            aggregate: [
+                            { field: "bid_appl_count", aggregate: "sum" },
+                            { field: "bid_quantity", aggregate: "sum" },
+                            { field: "bid_amount", aggregate: "sum" },
+
+                            { field: "upi_appl_count", aggregate: "sum" },
+                            { field: "upi_quantity", aggregate: "sum" },
+                            { field: "upi_amount", aggregate: "sum" },
+
+                            { field: "diff_appl_count", aggregate: "sum" },
+                            { field: "diff_quantity", aggregate: "sum" },
+                            { field: "diff_amount", aggregate: "sum" }
+                        ]
                      },
+                     showFooter: true,
                      height: 410,
                      pageable: {
                          pageSizes: [10, 20, 30],

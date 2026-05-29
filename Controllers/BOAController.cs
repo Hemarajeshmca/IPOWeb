@@ -1122,10 +1122,10 @@ namespace IPOWeb.Controllers
                                 CreateCell(allotSummary.ipo_category.ToUpper(), true, false),
                                 CreateCell(allotSummary.gross_appln.ToString("N0", new CultureInfo("en-IN")), true, true),
                                 CreateCell(allotSummary.gross_shares.ToString("N0", new CultureInfo("en-IN")), true, true),
-                                CreateCell(allotSummary.valid_appln.ToString("N2", new CultureInfo("en-IN")), true, true),
-                                CreateCell(allotSummary.valid_shares.ToString("N2", new CultureInfo("en-IN")), true, true),
-                                CreateCell(allotSummary.rejected_appln.ToString("N2", new CultureInfo("en-IN")), true, true),
+                                 CreateCell(allotSummary.rejected_appln.ToString("N2", new CultureInfo("en-IN")), true, true),
                                 CreateCell(allotSummary.rejected_shares.ToString("N2", new CultureInfo("en-IN")), true, true),
+                                CreateCell(allotSummary.valid_appln.ToString("N2", new CultureInfo("en-IN")), true, true),
+                                CreateCell(allotSummary.valid_shares.ToString("N2", new CultureInfo("en-IN")), true, true),                               
                                 CreateCell(allotSummary.allotment_appln.ToString("N2", new CultureInfo("en-IN")), true, true),
                                 CreateCell(allotSummary.allotment_shares.ToString("N2", new CultureInfo("en-IN")), true, true)
                             );
@@ -1142,10 +1142,10 @@ namespace IPOWeb.Controllers
                             CreateCell("TOTAL", true, false),
                             CreateCell(AllotmentSummary.Sum(x => x.gross_appln).ToString("N0", new CultureInfo("en-IN")), true, true),
                             CreateCell(AllotmentSummary.Sum(x => x.gross_shares).ToString("N0", new CultureInfo("en-IN")), true, true),
-                            CreateCell(AllotmentSummary.Sum(x => x.valid_appln).ToString("N2", new CultureInfo("en-IN")), true, true),
-                            CreateCell(AllotmentSummary.Sum(x => x.valid_shares).ToString("N0", new CultureInfo("en-IN")), true, true),
                             CreateCell(AllotmentSummary.Sum(x => x.rejected_appln).ToString("N0", new CultureInfo("en-IN")), true, true),
                             CreateCell(AllotmentSummary.Sum(x => x.rejected_shares).ToString("N2", new CultureInfo("en-IN")), true, true),
+                            CreateCell(AllotmentSummary.Sum(x => x.valid_appln).ToString("N2", new CultureInfo("en-IN")), true, true),
+                            CreateCell(AllotmentSummary.Sum(x => x.valid_shares).ToString("N0", new CultureInfo("en-IN")), true, true),                            
                             CreateCell(AllotmentSummary.Sum(x => x.allotment_appln).ToString("N2", new CultureInfo("en-IN")), true, true),
                             CreateCell(AllotmentSummary.Sum(x => x.allotment_shares).ToString("N2", new CultureInfo("en-IN")), true, true)
                         );

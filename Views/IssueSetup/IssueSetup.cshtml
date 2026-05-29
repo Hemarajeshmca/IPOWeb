@@ -6,7 +6,7 @@
 <html>
 <head>
     <meta name="viewport" content="width=device-width" />
-    <title>Client Setup</title>
+    <title>Offer Setup</title>
     <style>
 
         .ui-autocomplete {
@@ -93,7 +93,6 @@
             overflow-y: hidden;
         }
 
-       
     </style>
 </head>
 
@@ -295,21 +294,29 @@
                                             <label class="form-label">Bank Name</label>
                                             <select id="bank" class="form-select"></select>
                                         </div>
+                                        <div class="col-sm-2">
+                                            <label class="form-label">IFSC Code</label>
+                                            <input type="text" id="ifsc" class="form-control" />
+                                        </div>
                                         <div class="col-sm-3">
                                             <label class="form-label">Address</label>
                                             <textarea id="address" class="form-control" cols="10" rows="2"></textarea>
                                         </div>
                                         <div class="col-sm-2">
-                                            <label class="form-label">State</label>
-                                            <select name="state" id="state" onchange="stateChange('city', this)" class="form-select"></select>
-                                        </div>
-                                        <div class="col-sm-2">
                                             <label class="form-label">City</label>
-                                            <select name="city" id="city" class="form-select"></select>
+                                            <input type="text" id="city" class="form-control" />
+                                            @* <select name="city" id="city" class="form-select"></select> *@
                                         </div>
 
                                     </div>
                                     <div class="row">
+
+
+                                        <div class="col-sm-2">
+                                            <label class="form-label">State</label>
+                                            <input type="text" id="state" class="form-control" />
+                                            @* <select name="state" id="state" onchange="stateChange('city', this)" class="form-select"></select> *@
+                                        </div>
                                         <div class="col-sm-2">
                                             <label class="form-label">Pincode</label>
                                             <input type="text" id="pin" class="form-control" />
@@ -322,10 +329,8 @@
                                             <label class="form-label">Account Name</label>
                                             <input type="text" id="acname" class="form-control" />
                                         </div>
-                                        <div class="col-sm-2">
-                                            <label class="form-label">IFSC Code</label>
-                                            <input type="text" id="ifsc" class="form-control" />
-                                        </div>
+
+
                                         <div class="col-sm-2">
                                             <center><button type="button" onclick="saveofferBank()" class="btn btn-primary" id="btnBankSave" style="padding: 3px 25px;margin-top:28px;width:60%">Save</button></center>
                                         </div>
@@ -438,9 +443,9 @@
                                             <input type="date" id="nsdldate" class="form-control" />
                                             <span id="querynsdldate" style="color: red; font-size: 12px;position:relative;"></span>
                                         </div>
-                                       
+
                                     </div>
-                                    <div class="row" style="margin-top:15px;">                                        
+                                    <div class="row" style="margin-top:15px;">
                                         <div class="col-md-2-4">
                                             <label class="form-label">CDSL CA Date	</label>&nbsp;<span style="font-size: 12px;color:red;font-weight: bold;">*</span>
                                             <input type="date" id="cdsldate" class="form-control" />
@@ -475,7 +480,7 @@
 </html>
 <script>
       $( document ).ready(function() {
-              $('#navhead').text('Offer Setup');              
+              $('#navhead').text('Offer Setup');
               var mode = new URLSearchParams(window.location.search).get('mode');
                 var defaultStatus = sessionStorage.getItem("default_status");
 
@@ -514,13 +519,14 @@
                   // setTimeout(function () {
                   //       $("#status").val("D");
                   //   }, 300);
-                      
+
                   loadMasterDropdown("QCD_PRICE_TYPE", "pricetype");
               loadMasterDropdown("QCD_BANK_TYPE", "banktype");
               loadMasterDropdown("QCD_MAST_STATE", "state");
               loadMasterDropdown("QCD_MAST_STATE", "sh_state");
               loadMasterDropdown("QCD_STACK_HOLDER_TYPE", "sh_type");
               getclientlist();
+               getifsclist();
               if(offer_code && client_code) {
                   fetchIssuesetup();
               } else {
@@ -532,7 +538,7 @@
                     $("#remarks").prop("readonly", false);
                 } else {
                     $("#remarks").prop("readonly", true);
-                }                
+                }
               });
         });
 
@@ -655,6 +661,55 @@
                             select: function (event, ui) {
                                 $("#clientname").val(ui.item.value);
                                 $("#clientcode").val(ui.item.id);
+                                return false;
+                            }
+                        });
+                        }
+                        else {
+
+                        }
+                    },
+                    error: function (er) {
+                        alert(er)
+                        console.log(er)
+                    }
+                });
+            }
+                catch (e) {
+                    console.log(e)
+                }
+    }
+
+        function getifsclist(){
+            var mymodel = {
+                p_client_gid: 0,
+                p_action: "IFSC"
+            };
+            try {
+                $.ajax({
+                    type: "POST",
+                    url: '@Url.Action("GetClientList", "Dashboard")',
+                    dataType: 'json',
+                    data: JSON.stringify(mymodel),
+                    contentType: 'application/json; charset=utf-8',
+                    success: function (response) {
+                        if (response ) {
+                         var clientList = JSON.parse(response._data);
+                         $("#ifsc").autocomplete({
+                            source: $.map(clientList, function (item) {
+                                return {
+                                    label: item.ifsc_code +" - "+item.address,
+                                    ifsc_code: item.ifsc_code,
+                                    city: item.city,
+                                    state: item.state,
+                                    address:item.address
+                                };
+                            }),
+                            select: function (event, ui) {
+                                $("#ifsc").val(ui.item.ifsc_code);
+                                $("#city").val(ui.item.city);
+                                $("#state").val(ui.item.state);
+                                 $("#address").val(ui.item.address);
                                 return false;
                             }
                         });
@@ -807,7 +862,7 @@
         }
 
         function fetchofferHeader(data){
-            debugger;            
+            debugger;
                 $("#offer_header_gid").val(data.offer_header_gid);
                 $("#createedit").val(data.offer_header_gid == 0 ? "CREATE": "EDIT");
                 $("#offer_code").val(data.offer_code);
@@ -819,7 +874,7 @@
                     $("#issuestatus").val("Active");
                 } else  if(data.offer_status == "D") {
                     $("#issuestatus").val("Draft");
-                }                     
+                }
                 $("#empdiscount").val(data.offer_empdiscount);
                 $("#remarks").val(data.offer_remarks);
                 $("#clientcode").val(data.client_code);
@@ -830,12 +885,12 @@
                     $("#remarks").prop("readonly", true);
                 }
     //             $("#status").change(function () {
-    //               var selectedValue = $(this).val();     
+    //               var selectedValue = $(this).val();
     //               if((selectedValue === "D") || (selectedValue === "Y")) {
     //                  $("#remarks").val("");
     //               } else {
     //                   $("#remarks").val(data.offer_remarks);
-    //               }                  
+    //               }
     // });
             }
 
@@ -1007,11 +1062,6 @@
                                 title: "Bank Type",
                             },
                             {
-                                field: "banker_name",
-                                title: "Banker Name",
-                                hidden:true
-                            },
-                            {
                                 field: "bank_name",
                                 title: "Bank Name"
                             },
@@ -1128,7 +1178,7 @@
                                     title: 'IPO Allotment',
                                     content: data[0].out_msg,
                                     type: 'green',
-                                });                              
+                                });
                             }
                             else {
                                 $.alert({
@@ -1302,12 +1352,12 @@
                                 },
                                 {
                                     field: "stack_type",
-                                    title: "Stake Type",
+                                    title: "Stack Type",
                                     hidden:true
                                 },
                                 {
                                     field: "stack_type_name",
-                                    title: "Stake Type",
+                                    title: "Stake Holder Type",
                                 },
                                 {
                                     field: "stack_name",
@@ -1719,7 +1769,7 @@
             if (!grid) return false;
             var data = grid.dataSource.view();
             var total = 0;
-            data.forEach(function (item) {                 
+            data.forEach(function (item) {
                 total += parseFloat(item.offer_cat_shares) || 0;
             });
             if (issuesize !== total) {
@@ -1810,7 +1860,7 @@
                 container.find("input").css("text-align", "left");
             }
 
-            function saveofferCategory() {               
+            function saveofferCategory() {
                 var status = $("#status").val();
                 var clientname = $("#clientname").val();
                 if (!validateCategoryTotal()) {
@@ -1821,7 +1871,7 @@
                 $("#offerCategoryGrid tbody tr").each(function () {
                     var checkbox = $(this).find(".rowCheckbox");
                     if (checkbox.is(":checked")) {
-                        var dataItem = grid.dataItem(this);                       
+                        var dataItem = grid.dataItem(this);
                         selectedData.push({
                             category_gid: dataItem.category_gid,
                             offer_cat_code: dataItem.category_code,
@@ -1829,7 +1879,7 @@
                             offer_cat_shares: dataItem.offer_cat_shares
                         });
                     }
-                });               
+                });
                 var isValid = true;
                 if (!isValid) return;
                      if(clientname) {
@@ -1959,7 +2009,7 @@
                          isValid = false;
                     } else {
                         $("#querynsdldate").text("");
-                    }                    
+                    }
                      if(cdsldate === "") {
                         $("#querycdsldate").text("Please Select CDSL CA Date");
                         isValid = false;
@@ -2004,7 +2054,7 @@
                             isValid = false;
                         } else {
                             $("#queryldate").text("");
-                        }            
+                        }
             if (!isValid) return;
                  if(clientname) {
                           if((status === "Y" && activeOfferStatus ==="false") || (status === "" && activeOfferStatus === "false")) {
@@ -2067,5 +2117,5 @@
                     type: 'red'
                 });
         }
-        }    
-        </script>
+        }
+</script>
