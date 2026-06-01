@@ -8,6 +8,9 @@
     <meta name="viewport" content="width=device-width" />    
     <style>
 
+        .nav-align-top > .nav, .nav-align-top > div > .nav, .nav-align-right > .nav, .nav-align-right > div > .nav, .nav-align-bottom > .nav, .nav-align-bottom > div > .nav, .nav-align-left > .nav, .nav-align-left > div > .nav {
+            z-index: 1000 !important;
+        }
         .ui-autocomplete {
             font-weight: 400;
             font-size: 13px !important;
@@ -473,7 +476,7 @@
                         </div>
                     </div>
                      <div class="button-row" style="text-align:center;">
-                        <button class="btn btn-primary" style="padding: 3px 25px;margin-bottom:20px;" id="generateBtn" onclick="runboa()">Generate</button>
+                        <button class="btn btn-primary" style="background: #027ed1;border-color:#027ed1;padding: 3px 25px;margin-bottom:20px;" id="generateBtn" onclick="runboa()">Generate</button>
                         <button class="btn btn-primary" style="border-color: green;background-color: green; border-radius: 5px;color: white;margin-bottom: 30px;margin-bottom: 20px;padding: 3px 25px;" id="generateBtn" onclick="generateReport()">Download</button>                      
                         <button class="btn btn-primary" style="border-color: blue;background-color: blue; border-radius: 5px;color: white;margin-bottom: 30px;margin-bottom: 20px;padding: 3px 25px;" id="exportBtn" onclick="export_allotment()">Export Allotment</button>
                     </div>
@@ -491,7 +494,7 @@
 <script>
       $( document ).ready(function() {
             var ipocode = localStorage.getItem("selectedIPO");  
-              $('#navhead').text('Basics of Allotment');
+              $('#navhead').text('Basis of Allotment');
               var mode = new URLSearchParams(window.location.search).get('mode');
                 var defaultStatus = sessionStorage.getItem("default_status");
                 loadMasterDropdown("QCD_STATUS", "status", "D");
