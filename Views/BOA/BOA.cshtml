@@ -2130,6 +2130,10 @@
                          var table21 = data.table21;
                          var table22 = data.table22;
                          var table23 = data.table23;
+                         var table24 = data.table24;
+                         var table25 = data.table25;
+                         var table26 = data.table26;
+                         var table27 = data.table27;
                             cin = row.client_cin;
                             $('#cin').val(row.client_cin);
                                       fetch('/BOA/downloadAllReports', {
@@ -2160,7 +2164,11 @@
                                             categoryEXMMSOA: table20,
                                             categoryMARMAK: table21,
                                             categoryTechRej: table22,
-                                            categoryUPISummary: table23[0]
+                                            categoryUPISummary: table23[0],
+                                            categoryCNIIC: table24[0],
+                                            categoryCQIB: table25[0],
+                                            categoryCMMS: table26[0],
+                                            categoryCRNR: table27[0]
                                         })
                                     })
                                     .then(response => {
