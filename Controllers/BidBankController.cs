@@ -37,7 +37,7 @@ namespace IPOWeb.Controllers
         string APIcookieName = "";
 
         [HttpGet]
-        public JsonResult getBidBank(string offer_code)
+        public JsonResult getBidBank(string offer_code, string category)
         {
             urlstring = Convert.ToString(_configuration.GetSection("Appsettings")["apiurl"]) + "GetbidBank";
             try
@@ -49,7 +49,10 @@ namespace IPOWeb.Controllers
                     string token = Request.Cookies[APIcookieName];
                     client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
                     client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
-                    string url = urlstring + "?offer_code=" + offer_code;
+                    //string url = urlstring + "?offer_code=" + offer_code;
+                    string url = urlstring +
+                         "?offer_code=" + offer_code +
+                         "&category=" + Uri.EscapeDataString(category);
                     var response = client.GetAsync(url).Result;
                     if (response.StatusCode == HttpStatusCode.Unauthorized)
                     {
