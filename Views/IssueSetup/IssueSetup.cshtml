@@ -1,12 +1,13 @@
 ﻿@{
     Layout = "~/Views/Shared/_LayoutNew.cshtml";
     var userName = Context.Session.GetString("user_name");
+    var role_code = Context.Session.GetString("user_role");
 }
 <!DOCTYPE html>
 <html>
 <head>
     <meta name="viewport" content="width=device-width" />
-    <title>Client Setup</title>
+    <title>Offer Setup</title>
     <style>
 
         .ui-autocomplete {
@@ -93,7 +94,6 @@
             overflow-y: hidden;
         }
 
-       
     </style>
 </head>
 
@@ -145,7 +145,7 @@
                         <span id="v_isin" class="validation"></span>
                     </div>
                     <div class="col-sm-3">
-                        <label class="form-label">Status</label>
+                        <label class="form-label">Status</label>&nbsp;<span style="font-size: 12px;color:red;font-weight: bold;">*</span>
                         <select name="status" id="status" class="form-select"></select>
                         <span id="v_status" class="validation"></span>
                     </div>
@@ -160,7 +160,7 @@
                         <span id="v_remarks" class="validation"></span>
                     </div>
                     <div class="col-sm-1">
-                        <center><button type="button" onclick="offerHeaderSave()" class="btn btn-primary" id="btnSave" style="padding: 3px 25px;margin-top:30px;">Save</button></center>
+                        <center><button type="button" onclick="offerHeaderSave()" class="btn btn-primary" id="headerBtnSave" style="padding: 3px 25px;margin-top:30px;">Save</button></center>
                     </div>
                 </div>
                 <div class="row" style="margin-top:20px;">
@@ -295,21 +295,29 @@
                                             <label class="form-label">Bank Name</label>
                                             <select id="bank" class="form-select"></select>
                                         </div>
+                                        <div class="col-sm-2">
+                                            <label class="form-label">IFSC Code</label>
+                                            <input type="text" id="ifsc" class="form-select" />
+                                        </div>
                                         <div class="col-sm-3">
                                             <label class="form-label">Address</label>
                                             <textarea id="address" class="form-control" cols="10" rows="2"></textarea>
                                         </div>
                                         <div class="col-sm-2">
-                                            <label class="form-label">State</label>
-                                            <select name="state" id="state" onchange="stateChange('city', this)" class="form-select"></select>
-                                        </div>
-                                        <div class="col-sm-2">
                                             <label class="form-label">City</label>
-                                            <select name="city" id="city" class="form-select"></select>
+                                            <input type="text" id="city" class="form-control" />
+                                            @* <select name="city" id="city" class="form-select"></select> *@
                                         </div>
 
                                     </div>
                                     <div class="row">
+
+
+                                        <div class="col-sm-2">
+                                            <label class="form-label">State</label>
+                                            <input type="text" id="state" class="form-control" />
+                                            @* <select name="state" id="state" onchange="stateChange('city', this)" class="form-select"></select> *@
+                                        </div>
                                         <div class="col-sm-2">
                                             <label class="form-label">Pincode</label>
                                             <input type="text" id="pin" class="form-control" />
@@ -322,10 +330,8 @@
                                             <label class="form-label">Account Name</label>
                                             <input type="text" id="acname" class="form-control" />
                                         </div>
-                                        <div class="col-sm-2">
-                                            <label class="form-label">IFSC Code</label>
-                                            <input type="text" id="ifsc" class="form-control" />
-                                        </div>
+
+
                                         <div class="col-sm-2">
                                             <center><button type="button" onclick="saveofferBank()" class="btn btn-primary" id="btnBankSave" style="padding: 3px 25px;margin-top:28px;width:60%">Save</button></center>
                                         </div>
@@ -438,9 +444,9 @@
                                             <input type="date" id="nsdldate" class="form-control" />
                                             <span id="querynsdldate" style="color: red; font-size: 12px;position:relative;"></span>
                                         </div>
-                                       
+
                                     </div>
-                                    <div class="row" style="margin-top:15px;">                                        
+                                    <div class="row" style="margin-top:15px;">
                                         <div class="col-md-2-4">
                                             <label class="form-label">CDSL CA Date	</label>&nbsp;<span style="font-size: 12px;color:red;font-weight: bold;">*</span>
                                             <input type="date" id="cdsldate" class="form-control" />
@@ -475,10 +481,11 @@
 </html>
 <script>
       $( document ).ready(function() {
-              $('#navhead').text('Offer Setup');              
+              $('#navhead').text('Offer Setup');
+               var role_code =  '@role_code';
+               enableDisable();
               var mode = new URLSearchParams(window.location.search).get('mode');
                 var defaultStatus = sessionStorage.getItem("default_status");
-
                 loadMasterDropdown("QCD_STATUS", "status", "D");
 
                 setTimeout(function () {
@@ -509,18 +516,40 @@
               $("#offer_code").val(offer_code);
               loadMasterDropdown("QCD_MAST_OFFER_TYPE", "offer_type");
               loadMasterDropdown("QCD_MAST_LISTING", "listing");
-              loadMasterDropdown("QCD_STATUS", "status", "D");
+              // loadMasterDropdown("QCD_STATUS", "status", "D");
+              
+
+              loadMasterDropdown("QCD_STATUS", "status", "D", function (data) {
+                var filtered = role_code == 'IPOMKR'
+                    ? data.filter(x => x.master_code == "Y" || x.master_code == "S")
+                    : data.filter(x => x.master_code != "Y" && x.master_code != "S");
+
+                var $ddl = $("#status");
+                $ddl.empty();
+                $ddl.append('<option value="">--- Select ---</option>');
+
+                $.each(filtered, function (i, item) {
+                    $ddl.append(
+                        '<option value="' + item.master_code + '">' +
+                        item.master_name +
+                        '</option>'
+                    );
+                });
+
+                $ddl.val("D");
+            });
                loadBank();
                   // setTimeout(function () {
                   //       $("#status").val("D");
                   //   }, 300);
-                      
-                  loadMasterDropdown("QCD_PRICE_TYPE", "pricetype");
+
+              loadMasterDropdown("QCD_PRICE_TYPE", "pricetype");
               loadMasterDropdown("QCD_BANK_TYPE", "banktype");
               loadMasterDropdown("QCD_MAST_STATE", "state");
               loadMasterDropdown("QCD_MAST_STATE", "sh_state");
               loadMasterDropdown("QCD_STACK_HOLDER_TYPE", "sh_type");
               getclientlist();
+               getifsclist();
               if(offer_code && client_code) {
                   fetchIssuesetup();
               } else {
@@ -528,16 +557,15 @@
               }
               $("#status").change(function () {
                 var selectedValue = $(this).val();
-                if (selectedValue === "I") {
+                if (selectedValue === "I" || selectedValue === "S" || selectedValue === "Y") {
                     $("#remarks").prop("readonly", false);
                 } else {
                     $("#remarks").prop("readonly", true);
-                }                
+                }
               });
         });
 
         // Global variables
-
         offerHeader = "";
         offerDetails = "";
         offerBank = "";
@@ -545,20 +573,6 @@
         offerCategory = "";
         offerMillstone = "";
         var activeOfferStatus = false;
-
-        // $("#selectAll").on("change", function () {
-        //     $(".rowCheckbox").prop("checked", $(this).prop("checked"));
-        // });
-
-        // // If one checkbox is unchecked → uncheck Select All
-        // $(".rowCheckbox").on("change", function () {
-        //     if (!$(this).prop("checked")) {
-        //         $("#selectAll").prop("checked", false);
-        //     }
-        //     else if ($(".rowCheckbox:checked").length === $(".rowCheckbox").length) {
-        //         $("#selectAll").prop("checked", true);
-        //     }
-        // });
 
         $("#pricetype").change(function () {
             var value = $(this).val();
@@ -568,7 +582,6 @@
                  var premium = parseFloat($("#premium").val().replace(/,/g, '')) || 0;
                 var fprice = facevalue + premium;
                  $("#fprice").val(fprice);
-
                 $("#minprice").prop("disabled", true).val("");
                 $("#maxprice").prop("disabled", true).val("");
                 $("#cutoffprice").prop("disabled", true).val("");
@@ -674,16 +687,81 @@
                 }
     }
 
+        function getifsclist(){
+            var mymodel = {
+                p_client_gid: 0,
+                p_action: "IFSC"
+            };
+            try {
+                $.ajax({
+                    type: "POST",
+                    url: '@Url.Action("GetClientList", "Dashboard")',
+                    dataType: 'json',
+                    data: JSON.stringify(mymodel),
+                    contentType: 'application/json; charset=utf-8',
+                    success: function (response) {
+                        if (response ) {
+                         var clientList = JSON.parse(response._data);
+                         $("#ifsc").autocomplete({
+                            source: $.map(clientList, function (item) {
+                                return {
+                                    label: item.ifsc_code +" - "+item.address,
+                                    ifsc_code: item.ifsc_code,
+                                    city: item.city,
+                                    state: item.state,
+                                    address:item.address
+                                };
+                            }),
+                            select: function (event, ui) {
+                                $("#ifsc").val(ui.item.ifsc_code);
+                                $("#city").val(ui.item.city);
+                                $("#state").val(ui.item.state);
+                                 $("#address").val(ui.item.address);
+                                return false;
+                            }
+                        });
+                        }
+                        else {
+
+                        }
+                    },
+                    error: function (er) {
+                        alert(er)
+                        console.log(er)
+                    }
+                });
+            }
+                catch (e) {
+                    console.log(e)
+                }
+    }
+
      function offerHeaderSave() {
-        console.log("activeOfferStatussave : ", activeOfferStatus);
          var isValid = true;
+         var role_code =  '@role_code';
           if($("#clientname").val() === "") { $("#v_clientname").text("Please Choose Client Name"); isValid = false; } else {$("#v_clientname").text(""); }
             if($("#clientcode").val() === "") { $("#v_clientcode").text("Please Choose Client Code"); isValid = false; } else {$("#v_clientcode").text(""); }
             if($("#offer_type").val() === "") { $("#v_offer_type").text("Please Choose Offer Type");isValid = false;} else {$("#v_offer_type").text(""); }
             if($("#listing").val() === "") { $("#v_listing").text("Please Choose Listing");isValid = false; } else {$("#v_listing").text(""); }
             if($("#isin").val() === "") { $("#v_isin").text("Please Enter ISIN"); isValid = false; } else {$("#v_isin").text(""); }
             if($("#status").val() === "") { $("#v_status").text("Please Choose status");isValid = false; } else {$("#v_status").text(""); }
-            if(($("#remarks").val() === "I" || $("#status").val() === "C") && $("#remarks").val() === "") { $("#v_remarks").text("Please Enter Remark"); isValid = false;} else {$("#v_remarks").text(""); }
+            var status = $("#status").val();
+            var remarks = $("#remarks").val();
+            if (remarks === "") {
+                if (role_code === "IPOMKR") {
+                    if (status === "I" || status === "C" || status === "S") {
+                        $("#v_remarks").text("Please Enter Remark");
+                        isValid = false;
+                    }
+                } else {
+                     if (status === "I" || status === "C") {
+                        $("#v_remarks").text("Please Enter Remark");
+                        isValid = false;
+                    }
+                }
+            } else {
+                 $("#v_remarks").text("");
+            }
             var clientname = $("#clientname").val();
             var status = $("#status").val();
             if(clientname) {
@@ -700,6 +778,7 @@
                 payload.offer_remarks = $("#remarks").val();
                 payload.client_code = $("#clientcode").val();
                 payload.user_code = '@userName';
+                payload.role_code = role_code;
                 payload.active_status = 'Y';
                 payload.action = $("#offer_header_gid").val() == 0 ? "INSERT": "UPDATE";
                 payload.delete_flag = 'N';
@@ -807,7 +886,6 @@
         }
 
         function fetchofferHeader(data){
-            debugger;            
                 $("#offer_header_gid").val(data.offer_header_gid);
                 $("#createedit").val(data.offer_header_gid == 0 ? "CREATE": "EDIT");
                 $("#offer_code").val(data.offer_code);
@@ -819,7 +897,7 @@
                     $("#issuestatus").val("Active");
                 } else  if(data.offer_status == "D") {
                     $("#issuestatus").val("Draft");
-                }                     
+                }
                 $("#empdiscount").val(data.offer_empdiscount);
                 $("#remarks").val(data.offer_remarks);
                 $("#clientcode").val(data.client_code);
@@ -830,12 +908,12 @@
                     $("#remarks").prop("readonly", true);
                 }
     //             $("#status").change(function () {
-    //               var selectedValue = $(this).val();     
+    //               var selectedValue = $(this).val();
     //               if((selectedValue === "D") || (selectedValue === "Y")) {
     //                  $("#remarks").val("");
     //               } else {
     //                   $("#remarks").val(data.offer_remarks);
-    //               }                  
+    //               }
     // });
             }
 
@@ -978,19 +1056,30 @@
      // ----------------- Bank functions ------------------
 
          function fetchofferBank(data){
+              var role_code =  '@role_code';
+              var actionTemplate = "";
+                        if (role_code === "IPOMKR") {
+                            actionTemplate = `
+                                <img src='../Assets/images/viewicons.png'
+                                     onclick="editBankGrid(this)"
+                                     style="height:12px;width:12px;cursor:pointer;margin-left:10px;" />
+                            `;
+                        } else {
+                            actionTemplate = `
+                            <img src='../Assets/images/editicons.png'
+                                 onclick="editBankGrid(this)"
+                                 style="height:12px;width:12px;cursor:pointer;margin-right:10px;" />
+
+                            <img src='../Assets/images/del.png'
+                                 onclick="deleteBankGrid(this)"
+                                 style="height:12px;width:12px;cursor:pointer;" />
+                        `;
+                        }
                         var columns = [
                             {
                                 title: "Action",
                                 width: 70,
-                                template: `
-                                    <img src='../Assets/images/editicons.png'
-                                         onclick="editBankGrid(this)"
-                                         style="height:12px;width:12px;cursor:pointer;margin-right:10px;" />
-
-                                    <img src='../Assets/images/del.png'
-                                         onclick="deleteBankGrid(this)"
-                                         style="height:12px;width:12px;cursor:pointer;" />
-                                `
+                                template: actionTemplate                               
                             },
                             {
                                 field: "banker_gid",
@@ -1005,11 +1094,6 @@
                               {
                                 field: "banker_type_name",
                                 title: "Bank Type",
-                            },
-                            {
-                                field: "banker_name",
-                                title: "Banker Name",
-                                hidden:true
                             },
                             {
                                 field: "bank_name",
@@ -1128,7 +1212,7 @@
                                     title: 'IPO Allotment',
                                     content: data[0].out_msg,
                                     type: 'green',
-                                });                              
+                                });
                             }
                             else {
                                 $.alert({
@@ -1281,11 +1365,16 @@
 
 
             function fetchofferStackHolder(data){
-                                      var columns = [
-                                {
-                                    title: "Action",
-                                    width: 70,
-                                    template: `
+                var role_code =  '@role_code';
+                var actionTemplate = "";
+                if (role_code === "IPOMKR") {
+                    actionTemplate = `
+                   <img src='../Assets/images/viewicons.png'
+                        onclick="editStackHolderGrid(this)"
+                        style="height:12px;width:12px;cursor:pointer;margin-left:10px;" />
+                        `;
+                } else {
+                    actionTemplate = `
                                         <img src='../Assets/images/editicons.png'
                                              onclick="editStackHolderGrid(this)"
                                              style="height:12px;width:12px;cursor:pointer;margin-right:10px;" />
@@ -1293,7 +1382,13 @@
                                         <img src='../Assets/images/del.png'
                                                  onclick="deleteStackHolderGrid(this)"
                                              style="height:12px;width:12px;cursor:pointer;" />
-                                    `
+                                    `;
+                }
+                            var columns = [
+                                {
+                                    title: "Action",
+                                    width: 70,
+                                    template: actionTemplate
                                 },
                                 {
                                     field: "stack_gid",
@@ -1302,12 +1397,12 @@
                                 },
                                 {
                                     field: "stack_type",
-                                    title: "Stake Type",
+                                    title: "Stack Type",
                                     hidden:true
                                 },
                                 {
                                     field: "stack_type_name",
-                                    title: "Stake Type",
+                                    title: "Stake Holder Type",
                                 },
                                 {
                                     field: "stack_name",
@@ -1576,7 +1671,6 @@
 
 
         function loadCatagory() {
-            debugger;
             var mymodel = {
                 in_master_code: "QCD_CATEGORY",
                 in_user_code: ""
@@ -1604,9 +1698,9 @@
             });
         }
 
-            function fetchofferCategory(data) {
-              // var postIssue = parseFloat($("#hidden_postissue").val().replace(/,/g, '')) || 0;
-                data.forEach(function (item) {
+        function fetchofferCategory(data) {
+            var role_code =  '@role_code';
+            data.forEach(function (item) {
                 if (item.offer_cat_shares) {
                     item.offer_cat_shares = parseFloat(
                         item.offer_cat_shares.toString().replace(/,/g, "")
@@ -1688,12 +1782,11 @@
                 sortable: true,
                 filterable: true,
                 resizable: true,
-                editable: "incell",
+                editable: role_code !== "IPOMKR" ? "incell" : false,
+               // editable: "incell",
                 beforeEdit: function (e) {
                 var fieldName = e.container.find("input").attr("name");
-
-                // If no input OR not the correct field → block
-                if (!fieldName || fieldName !== "offer_cat_shares") {
+                if (role_code === "IPOMKR" && (!fieldName || fieldName !== "offer_cat_shares")) {
                     e.preventDefault();
                 }
             },
@@ -1719,7 +1812,7 @@
             if (!grid) return false;
             var data = grid.dataSource.view();
             var total = 0;
-            data.forEach(function (item) {                 
+            data.forEach(function (item) {
                 total += parseFloat(item.offer_cat_shares) || 0;
             });
             if (issuesize !== total) {
@@ -1810,7 +1903,7 @@
                 container.find("input").css("text-align", "left");
             }
 
-            function saveofferCategory() {               
+            function saveofferCategory() {
                 var status = $("#status").val();
                 var clientname = $("#clientname").val();
                 if (!validateCategoryTotal()) {
@@ -1821,7 +1914,7 @@
                 $("#offerCategoryGrid tbody tr").each(function () {
                     var checkbox = $(this).find(".rowCheckbox");
                     if (checkbox.is(":checked")) {
-                        var dataItem = grid.dataItem(this);                       
+                        var dataItem = grid.dataItem(this);
                         selectedData.push({
                             category_gid: dataItem.category_gid,
                             offer_cat_code: dataItem.category_code,
@@ -1829,7 +1922,7 @@
                             offer_cat_shares: dataItem.offer_cat_shares
                         });
                     }
-                });               
+                });
                 var isValid = true;
                 if (!isValid) return;
                      if(clientname) {
@@ -1889,12 +1982,11 @@
         // ==================== Offer Milstone ===========
 
              function fetchofferMillstone(data){
-                 console.log("Milestones :", data);
-                 $("#milestone_gid").val(data.milestone_gid);
+                $("#milestone_gid").val(data.milestone_gid);
                 $("#iod").val(formatDate(data.offer_openingdate));
                 $("#icd").val(formatDate(data.offer_closingdate));
                 $("#alotdate").val(formatDate(data.offer_allotmentdate));
-                    $("#apdate").val(formatDate(data.offer_approvaldate));
+                $("#apdate").val(formatDate(data.offer_approvaldate));
                 $("#ldate").val(formatDate(data.offer_listingdate));
                 $("#nsdldate").val(formatDate(data.offer_nsdldate));
                 $("#cdsldate").val(formatDate(data.offer_cdsldate));
@@ -1959,7 +2051,7 @@
                          isValid = false;
                     } else {
                         $("#querynsdldate").text("");
-                    }                    
+                    }
                      if(cdsldate === "") {
                         $("#querycdsldate").text("Please Select CDSL CA Date");
                         isValid = false;
@@ -2004,7 +2096,7 @@
                             isValid = false;
                         } else {
                             $("#queryldate").text("");
-                        }            
+                        }
             if (!isValid) return;
                  if(clientname) {
                           if((status === "Y" && activeOfferStatus ==="false") || (status === "" && activeOfferStatus === "false")) {
@@ -2067,5 +2159,59 @@
                     type: 'red'
                 });
         }
-        }    
-        </script>
+        }
+
+        function enableDisable(){
+          var role_code =  '@role_code';
+          if(role_code == 'IPOMKR') {
+              $("#clientname").prop("disabled", true);
+              $("#offer_type").prop("disabled", true);
+              $("#listing").prop("disabled", true);
+              $("#isin").prop("disabled", true);
+              $("#empdiscount").prop("disabled", true);
+              $("#preissue").prop("disabled", true);
+              $("#issuesize").prop("disabled", true);
+              $("#lotsize").prop("disabled", true);
+              $("#facevalue").prop("disabled", true);
+              $("#premium").prop("disabled", true);
+              $("#pricetype").prop("disabled", true);
+              $("#fprice").prop("disabled", true);
+              $("#minprice").prop("disabled", true);
+              $("#maxprice").prop("disabled", true);
+              $("#cutoffprice").prop("disabled", true);
+              $("#banktype").prop("disabled", true);
+              $("#bank").prop("disabled", true);
+              $("#ifsc").prop("disabled", true);
+              $("#address").prop("disabled", true);
+              $("#city").prop("disabled", true);
+              $("#state").prop("disabled", true);
+              $("#pin").prop("disabled", true);
+              $("#acno").prop("disabled", true);
+              $("#acname").prop("disabled", true);
+              $("#sh_type").prop("disabled", true);
+              $("#sh_name").prop("disabled", true);
+              $("#sh_address").prop("disabled", true);
+              $("#sh_state").prop("disabled", true);
+              $("#sh_city").prop("disabled", true);
+              $("#sh_pin").prop("disabled", true);
+              $("#sh_cname").prop("disabled", true);
+              $("#sh_designation").prop("disabled", true);
+              $("#sh_email").prop("disabled", true);
+              $("#sh_mob").prop("disabled", true);
+              $("#iod").prop("disabled", true);
+              $("#icd").prop("disabled", true);
+              $("#alotdate").prop("disabled", true);
+              $("#apdate").prop("disabled", true);
+              $("#nsdldate").prop("disabled", true);
+              $("#cdsldate").prop("disabled", true);
+              $("#refunddate").prop("disabled", true);
+              $("#ldate").prop("disabled", true);
+              $("#btnSave").hide();
+              $("#btnCatSave").css("visibility", "hidden");
+              // $("#btnCatSave").hide();
+              $("#btnShSave").hide();
+              $("#btnBankSave").hide();
+              $("#btnIssueSave").hide();
+          }
+        }
+</script>
