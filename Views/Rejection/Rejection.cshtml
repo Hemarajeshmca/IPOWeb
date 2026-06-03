@@ -198,15 +198,17 @@
                 field: "rule_name",
                 title: "Reject Reason",
                 width: 260,
-                locked: true
+                locked: true,
+                footerTemplate: "<div style='font-weight:bold;text-align:center;'>TOTAL</div>"
             },
             {
                 title: "Original Rejections",
                 headerAttributes: { style: "text-align:center;font-weight:bold;" },
                 columns: [
-                    { field: "original_appl_count", title: "No.of Appl", width: 120, attributes:{style:"text-align:right;"} },
-                    { field: "original_qty_count", title: "No.of Shares", width: 130, attributes:{style:"text-align:right;"} },
-                    { field: "original_total_amount", title: "Amount", width: 120, attributes:{style:"text-align:right;"} }
+                        { field: "original_appl_count", title: "No.of Appl", width: 120, attributes:{style:"text-align:right;"}, footerTemplate: "<div style='text-align:right;font-weight:bold'>" + "#= kendo.toString(sum, 'n0') #" + "</div>" }, 
+                        { field: "original_qty_count", title: "No.of Shares", width: 130, attributes:{style:"text-align:right;"}, footerTemplate: "<div style='text-align:right;font-weight:bold'>" + "#= kendo.toString(sum, 'n0') #" + "</div>" }, 
+                        { field: "original_total_amount", title: "Amount", width: 120, attributes:{style:"text-align:right;"}, footerTemplate: "<div style='text-align:right;font-weight:bold'>" + "#= kendo.toString(sum, 'n0') #" + "</div>"
+    },
                 ]
             },
 
@@ -214,9 +216,10 @@
                 title: "Additions",
                 headerAttributes: { style: "text-align:center;font-weight:bold;" },
                 columns: [
-                    { field: "additions_appl_count", title: "No.of Appl", width: 120, attributes:{style:"text-align:right;"} },
-                    { field: "additions_qty_count", title: "No.of Shares", width: 130, attributes:{style:"text-align:right;"} },
-                    { field: "additions_total_amount", title: "Amount", width: 120, attributes:{style:"text-align:right;"} }
+                        { field: "additions_appl_count", title: "No.of Appl", width: 120, attributes:{style:"text-align:right;"}, footerTemplate: "<div style='text-align:right;font-weight:bold'>" + "#= kendo.toString(sum, 'n0') #" + "</div>" }, 
+                        { field: "additions_qty_count", title: "No.of Shares", width: 130, attributes:{style:"text-align:right;"} , footerTemplate: "<div style='text-align:right;font-weight:bold'>" + "#= kendo.toString(sum, 'n0') #" + "</div>" },
+                        { field: "additions_total_amount", title: "Amount", width: 120, attributes:{style:"text-align:right;"}, footerTemplate: "<div style='text-align:right;font-weight:bold'>" + "#= kendo.toString(sum, 'n0') #" + "</div>"
+    },
                 ]
             },
 
@@ -224,9 +227,10 @@
                 title: "Rejections",
                 headerAttributes: { style: "text-align:center;font-weight:bold;" },
                 columns: [
-                    { field: "rejections_appl_count", title: "No.of Appl", width: 120, attributes:{style:"text-align:right;"} },
-                    { field: "rejections_qty_count", title: "No.of Shares", width: 130, attributes:{style:"text-align:right;"} },
-                    { field: "rejections_total_amount", title: "Amount", width: 120, attributes:{style:"text-align:right;"} }
+                        { field: "rejections_appl_count", title: "No.of Appl", width: 120, attributes:{style:"text-align:right;"}, footerTemplate: "<div style='text-align:right;font-weight:bold'>" + "#= kendo.toString(sum, 'n0') #" + "</div>" }, 
+                        { field: "rejections_qty_count", title: "No.of Shares", width: 130, attributes:{style:"text-align:right;"}, footerTemplate: "<div style='text-align:right;font-weight:bold'>" + "#= kendo.toString(sum, 'n0') #" + "</div>" }, 
+                        { field: "rejections_total_amount", title: "Amount", width: 120, attributes:{style:"text-align:right;"}, footerTemplate: "<div style='text-align:right;font-weight:bold'>" + "#= kendo.toString(sum, 'n0') #" + "</div>"
+    },
                 ]
             },
 
@@ -234,9 +238,9 @@
                 title: "Final Rejections",
                 headerAttributes: { style: "text-align:center;font-weight:bold;" },
                 columns: [
-                    { field: "total_app_count", title: "No.of Appl", width: 120, attributes:{style:"text-align:right;color:red;"} },
-                    { field: "total_qty_amount", title: "No.of Shares", width: 130, attributes:{style:"text-align:right;color:red;"} },
-                    { field: "total_amount", title: "Amount", width: 120, attributes:{style:"text-align:right;color:red;"} }
+                    { field: "total_app_count", title: "No.of Appl", width: 120, attributes:{style:"text-align:right;color:red;"},footerTemplate: "<div style='text-align:right;font-weight:bold'>" + "#= kendo.toString(sum, 'n0') #" + "</div>" },
+                    { field: "total_qty_amount", title: "No.of Shares", width: 130, attributes:{style:"text-align:right;color:red;"},footerTemplate: "<div style='text-align:right;font-weight:bold'>" + "#= kendo.toString(sum, 'n0') #" + "</div>" },
+                    { field: "total_amount", title: "Amount", width: 120, attributes:{style:"text-align:right;color:red;"},footerTemplate: "<div style='text-align:right;font-weight:bold'>" + "#= kendo.toString(sum, 'n0') #" + "</div>" }
                 ]
             }
         ];
@@ -247,7 +251,24 @@
                      $("#rejectionList").kendoGrid({
                      dataSource: {
                          data: data,
-                         pageSize: 20
+                         pageSize: 20,
+                         aggregate: [
+                            { field: "original_appl_count", aggregate: "sum" },
+                            { field: "original_qty_count", aggregate: "sum" },
+                            { field: "original_total_amount", aggregate: "sum" },
+
+                            { field: "additions_appl_count", aggregate: "sum" },
+                            { field: "additions_qty_count", aggregate: "sum" },
+                            { field: "additions_total_amount", aggregate: "sum" },
+
+                            { field: "rejections_appl_count", aggregate: "sum" },
+                            { field: "rejections_qty_count", aggregate: "sum" },
+                            { field: "rejections_total_amount", aggregate: "sum" },
+
+                            { field: "total_app_count", aggregate: "sum" },
+                            { field: "total_qty_amount", aggregate: "sum" },
+                            { field: "total_amount", aggregate: "sum" }
+                        ]
                      },
                      height: 410,
                      pageable: {

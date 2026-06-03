@@ -362,6 +362,26 @@ namespace IPOWeb.Controllers
                     .ToObject<Dictionary<string, object>>())
                     .ToList();
 
+                        var table24Data = ((IEnumerable<dynamic>)temp.Table23)
+                   .Select(row => ((Newtonsoft.Json.Linq.JObject)row)
+                   .ToObject<Dictionary<string, object>>())
+                   .ToList();
+
+                        var table25Data = ((IEnumerable<dynamic>)temp.Table24)
+                  .Select(row => ((Newtonsoft.Json.Linq.JObject)row)
+                  .ToObject<Dictionary<string, object>>())
+                  .ToList();
+
+                        var table26Data = ((IEnumerable<dynamic>)temp.Table25)
+                  .Select(row => ((Newtonsoft.Json.Linq.JObject)row)
+                  .ToObject<Dictionary<string, object>>())
+                  .ToList();
+
+                        var table27Data = ((IEnumerable<dynamic>)temp.Table26)
+                  .Select(row => ((Newtonsoft.Json.Linq.JObject)row)
+                  .ToObject<Dictionary<string, object>>())
+                  .ToList();
+
                         return Json(new
                         {
                             success = true,
@@ -390,6 +410,10 @@ namespace IPOWeb.Controllers
                                 table21 = table21Data,
                                 table22 = table22Data,
                                 table23 = table23Data,
+                                table24 = table24Data,
+                                table25 = table25Data,
+                                table26 = table26Data,
+                                table27 = table27Data,
                             }
                         });
                     }
@@ -431,6 +455,10 @@ namespace IPOWeb.Controllers
             var CategoryMARMAK = data.categoryMARMAK;
             var CategoryTechRej = data.categoryTechRej;
             var categoryUPISummary = data.categoryUPISummary;
+            var CategoryCNIIC = data.categoryCNIIC;
+            var CategoryCQIB = data.categoryCQIB;
+            var CategoryCMMS = data.categoryCMMS;
+            var CategoryCRNR = data.categoryCRNR;
 
             string clientName = summary.client_name;
             long offer_issuesize = summary.offer_issuesize;
@@ -441,6 +469,8 @@ namespace IPOWeb.Controllers
             long mm_shares = summary.mm_shares;
             long total_mm = summary.total_mm;
             long public_shares = summary.public_shares;
+            decimal issue_percentage = summary.issue_percentage;
+            decimal net_issue_percentage = summary.net_issue_percentage;
             long net_issue = summary.net_issue;
             string offer_openingdate = summary.offer_openingdate;
             string offer_closingdate = summary.offer_closingdate;
@@ -467,6 +497,26 @@ namespace IPOWeb.Controllers
             long bid_reg_not_bank_bids = categoryUPISummary.bid_reg_not_bank_bids;
             long bid_reg_not_bank_amount = categoryUPISummary.bid_reg_not_bank_amount;
             long unique_appln = categoryUPISummary.unique_appln;
+            long ctotal_applications = CategoryCNIIC.ctotal_applications;
+            string ctotal_shares = CategoryCNIIC.ctotal_shares;
+            string ctotal_application_amount = CategoryCNIIC.ctotal_application_amount;
+            long qibs_applications = CategoryCQIB.qibs_applications;
+            long qibs_shares = CategoryCQIB.qibs_shares;
+            long qibs_application_money = CategoryCQIB.qibs_application_money;
+            long qibs_reserved_shares = CategoryCQIB.qibs_reserved_shares;
+            long mms_total_applications = CategoryCMMS.mms_total_applications;
+            long mms_amount_blocked = CategoryCMMS.mms_amount_blocked;
+            long mms_mm_applications = CategoryCMMS.mms_mm_applications;
+            long mms_mm_shares = CategoryCMMS.mms_mm_shares;
+            long rnr_valid_applications = CategoryCRNR.rnr_valid_applications;
+            long rnr_valid_shares = CategoryCRNR.rnr_valid_shares;
+            long pan_mismatch_applications = CategoryCRNR.pan_mismatch_applications;
+            long pan_mismatch_shares = CategoryCRNR.pan_mismatch_shares;
+            long invalid_dp_applications = CategoryCRNR.invalid_dp_applications;
+            long invalid_dp_shares = CategoryCRNR.invalid_dp_shares;
+            long multi_pan_applications = CategoryCRNR.multi_pan_applications;
+            long multi_pan_shares = CategoryCRNR.multi_pan_shares;
+
 
             string templatePath = _configuration["Appsettings:templatePath"];
 
@@ -477,6 +527,7 @@ namespace IPOWeb.Controllers
                 var body = doc.MainDocumentPart.Document.Body;
 
                 // Replace placeholders
+                ReplaceText(body, "{current_date}", " " + DateTime.Today.ToString("dd-MM-yyyy"));
                 ReplaceText(body, "{client_name}", clientName);
                 ReplaceText(body, "{offer_issuesize}", offer_issuesize.ToString("N0"));
                 ReplaceText(body, "{offer_facevalue}", offer_facevalue.ToString("N0"));
@@ -490,6 +541,8 @@ namespace IPOWeb.Controllers
                 DateTime closingDate = Convert.ToDateTime(summary.offer_closingdate);
                 ReplaceText(body, "{offer_closingdate}", closingDate.ToString("dd MMMM yyyy"));
                 ReplaceText(body, "{public_shares}", public_shares.ToString("N0"));
+                ReplaceText(body, "{issue_percentage}",summary.issue_percentage.ToString("N2"));
+                ReplaceText(body, "{net_issue_percentage}",summary.net_issue_percentage.ToString("N2"));
                 ReplaceText(body, "{net_issue}", net_issue.ToString("N0"));
                 ReplaceText(body, "{asba_total_bids}", asba_total_bids.ToString("N0"));
                 ReplaceText(body, "{asba_total_quantity}", asba_total_quantity.ToString("N0"));
@@ -514,6 +567,24 @@ namespace IPOWeb.Controllers
                 ReplaceText(body, "{bid_reg_not_bank_bids}", bid_reg_not_bank_bids.ToString("N0"));
                 ReplaceText(body, "{bid_reg_not_bank_amount}", bid_reg_not_bank_amount.ToString("N0"));
                 ReplaceText(body, "{unique_appln}", unique_appln.ToString("N0"));
+                ReplaceText(body, "{ctotal_applications}", ctotal_applications.ToString("N0"));
+                ReplaceText(body, "{ctotal_shares}", ctotal_shares);
+                ReplaceText(body, "{ctotal_application_amount}", ctotal_application_amount);
+                ReplaceText(body, "{qibs_applications}", qibs_applications.ToString("N0"));
+                ReplaceText(body, "{qibs_shares}", qibs_shares.ToString("N0"));
+                ReplaceText(body, "{qibs_application_money}", qibs_application_money.ToString("N0"));
+                ReplaceText(body, "{qibs_reserved_shares}", qibs_reserved_shares.ToString("N0"));
+                ReplaceText(body, "{mms_total_applications}", mms_total_applications.ToString("N0"));
+                ReplaceText(body, "{mms_amount_blocked}", mms_amount_blocked.ToString("N0"));
+                ReplaceText(body, "{mms_mm_shares}", mms_mm_shares.ToString("N0"));
+                ReplaceText(body, "{rnr_valid_applications}", rnr_valid_applications.ToString("N0"));
+                ReplaceText(body, "{rnr_valid_shares}", rnr_valid_shares.ToString("N0"));
+                ReplaceText(body, "{pan_mismatch_applications}", pan_mismatch_applications.ToString("N0"));
+                ReplaceText(body, "{pan_mismatch_shares}", pan_mismatch_shares.ToString("N0"));
+                ReplaceText(body, "{invalid_dp_applications}", invalid_dp_applications.ToString("N0"));
+                ReplaceText(body, "{invalid_dp_shares}", invalid_dp_shares.ToString("N0"));
+                ReplaceText(body, "{multi_pan_applications}", multi_pan_applications.ToString("N0"));
+                ReplaceText(body, "{multi_pan_shares}", multi_pan_shares.ToString("N0"));
 
                 var para = body.Descendants<DocumentFormat.OpenXml.Wordprocessing.Paragraph>()
     .FirstOrDefault(p => p.InnerText.Contains("Net Collections of Non-institutional and Individual Investor Categories by ASBA"));
@@ -1124,8 +1195,8 @@ namespace IPOWeb.Controllers
                                 CreateCell(allotSummary.gross_shares.ToString("N0", new CultureInfo("en-IN")), true, true),
                                 CreateCell(allotSummary.valid_appln.ToString("N2", new CultureInfo("en-IN")), true, true),
                                 CreateCell(allotSummary.valid_shares.ToString("N2", new CultureInfo("en-IN")), true, true),
-                                CreateCell(allotSummary.rejected_appln.ToString("N2", new CultureInfo("en-IN")), true, true),
-                                CreateCell(allotSummary.rejected_shares.ToString("N2", new CultureInfo("en-IN")), true, true),
+                                 CreateCell(allotSummary.rejected_appln.ToString("N2", new CultureInfo("en-IN")), true, true),
+                                CreateCell(allotSummary.rejected_shares.ToString("N2", new CultureInfo("en-IN")), true, true),                                                          
                                 CreateCell(allotSummary.allotment_appln.ToString("N2", new CultureInfo("en-IN")), true, true),
                                 CreateCell(allotSummary.allotment_shares.ToString("N2", new CultureInfo("en-IN")), true, true)
                             );
@@ -1145,7 +1216,7 @@ namespace IPOWeb.Controllers
                             CreateCell(AllotmentSummary.Sum(x => x.valid_appln).ToString("N2", new CultureInfo("en-IN")), true, true),
                             CreateCell(AllotmentSummary.Sum(x => x.valid_shares).ToString("N0", new CultureInfo("en-IN")), true, true),
                             CreateCell(AllotmentSummary.Sum(x => x.rejected_appln).ToString("N0", new CultureInfo("en-IN")), true, true),
-                            CreateCell(AllotmentSummary.Sum(x => x.rejected_shares).ToString("N2", new CultureInfo("en-IN")), true, true),
+                            CreateCell(AllotmentSummary.Sum(x => x.rejected_shares).ToString("N2", new CultureInfo("en-IN")), true, true),                                                      
                             CreateCell(AllotmentSummary.Sum(x => x.allotment_appln).ToString("N2", new CultureInfo("en-IN")), true, true),
                             CreateCell(AllotmentSummary.Sum(x => x.allotment_shares).ToString("N2", new CultureInfo("en-IN")), true, true)
                         );
@@ -1158,7 +1229,7 @@ namespace IPOWeb.Controllers
       .FirstOrDefault(p => p.InnerText.Contains("Certified Syndicate Banks (SCSBs) for collection of Applications under ASBA Process."));
 
                 if (para10 != null)
-                {
+                {                    
                     DocumentFormat.OpenXml.Wordprocessing.Table oldTable = null;
 
                     var next = para10.NextSibling();
@@ -1223,6 +1294,22 @@ namespace IPOWeb.Controllers
 
                         // ✅ DATA
                         var bankMasterList = BankMaster ?? new List<BankMaster>();
+                        int totalBankCount = bankMasterList.FirstOrDefault()?.total_bank_count ?? 0;
+
+                        if (para10.InnerText.Contains("{total_bank_count}"))
+                        {
+                            string updatedText = para10.InnerText.Replace(
+                                "{total_bank_count}",
+                                totalBankCount.ToString());
+
+                            para10.RemoveAllChildren<DocumentFormat.OpenXml.Wordprocessing.Run>();
+
+                            para10.Append(
+                                new DocumentFormat.OpenXml.Wordprocessing.Run(
+                                    new DocumentFormat.OpenXml.Wordprocessing.Text(updatedText)
+                                )
+                            );
+                        }
 
                         int total = bankMasterList.Count;
                         int half = (int)Math.Ceiling(total / 2.0);
@@ -1345,6 +1432,15 @@ namespace IPOWeb.Controllers
 
                         // ✅ DATA
                         var bankMasterList = BankMaster ?? new List<BankMaster>();
+                        int totalBankCount = bankMasterList.FirstOrDefault()?.total_bank_count ?? 0;
+
+                        foreach (var text in body.Descendants<DocumentFormat.OpenXml.Wordprocessing.Text>())
+                        {
+                            if (text.Text.Contains("{total_bank_count}"))
+                            {
+                                text.Text = text.Text.Replace("{total_bank_count}", totalBankCount.ToString());
+                            }
+                        }
 
                         int total = bankMasterList.Count;
                         int half = (int)Math.Ceiling(total / 2.0);
@@ -1610,7 +1706,7 @@ namespace IPOWeb.Controllers
                         // ✅ Remove old rows except header
                         var rows = NIICTable.Elements<DocumentFormat.OpenXml.Wordprocessing.TableRow>().ToList();
 
-                        for (int i = rows.Count - 1; i > 2; i--)
+                        for (int i = rows.Count - 1; i >= 2; i--)
                         {
                             NIICTable.RemoveChild(rows[i]);
                         }

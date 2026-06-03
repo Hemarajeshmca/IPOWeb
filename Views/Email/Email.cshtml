@@ -53,12 +53,29 @@
                     reference_no: $("#ipocode").val()
                 },
                 success: function (response) {
+                    EmailList();
                     if (response && response.success) {
                         
                     }
                     else {
                         
                     }
+                },
+                error: function (er) {
+                    console.log(er);
+                }
+            });
+    }
+
+    function EmailList() {
+         customAjax({
+                type: "GET",
+                url: '@Url.Action("getemailList", "Email")',
+                data: {
+                    reference_no: $("#ipocode").val()
+                },
+                success: function (response) {
+                   console.log(response);
                 },
                 error: function (er) {
                     console.log(er);
