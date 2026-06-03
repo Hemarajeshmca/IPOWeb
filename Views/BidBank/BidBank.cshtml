@@ -101,23 +101,15 @@
                         <input type="text" class="form-control" id="iponame" readonly />
                         <input type="text" class="form-control" id="ipocode" hidden />
                     </div>
-                    <div id="categoryrow" class="col-sm-2">
-                        <label class="form-label" for="bank" data-field="bank">Select Category</label>&nbsp;<span style="font-size: 12px;color:red;font-weight: bold;">*</span>
-                        <select id="category" class="form-select">                           
-                            <option value="All">All</option>
-                            <option value="ASBA">ASBA</option>
-                            <option value="Non ASBA">Non ASBA</option>                            
-                        </select>
-                    </div>
-                    <div class="col-sm-7">                        
+                    <div class="col-sm-9">
                         <span>
-                        <button type="button" class="btn btn-primary" id="btnSave" onclick="runrecon()" style="padding: 3px 15px;margin-top:28px;">Run Recon</button>
+                        <button type="button" class="btn btn-primary" id="btnSave" onclick="runrecon()" style="padding: 3px 25px;margin-top:28px;">Run Recon</button>
                         &nbsp;&nbsp;
                             <button type="button" onclick="exportSummary()" class="btn btn-primary" id="btnGen" style="padding: 3px 25px;margin-top:28px;">Export Summary </button>
                         &nbsp;&nbsp;
-                        <button type="button" onclick="exportdetailSummary()" class="btn btn-primary" id="btnGensummary" style="padding: 3px 17px;margin-top:28px; white-space: nowrap;">Export Matched Summary </button>
+                        <button type="button" onclick="exportdetailSummary()" class="btn btn-primary" id="btnGensummary" style="padding: 3px 25px;margin-top:28px; white-space: nowrap;">Export Matched Summary </button>
                             &nbsp;&nbsp;
-                            <button type="button" onclick="exportdifferenceSummary()" class="btn btn-primary" id="btnGenDiffsummary" style="padding: 3px 16px;margin-top:28px; white-space: nowrap;">Export Difference Summary </button>
+                            <button type="button" onclick="exportdifferenceSummary()" class="btn btn-primary" id="btnGenDiffsummary" style="padding: 3px 25px;margin-top:28px; white-space: nowrap;">Export Difference Summary </button>
 
                         </span>
                     </div>
@@ -139,8 +131,7 @@
 <script>
     var selectedCodes = [];
       $(document).ready(function () {
-          var category = "All";
-          getBidBank(category);
+          getBidBank();
         $('#navhead').text('Bid Vs Bank');
         var ipoName = localStorage.getItem("selectedIPOText");
         var ipocode = localStorage.getItem("selectedIPO");
@@ -149,19 +140,10 @@
     });
 
         function runrecon() {
-            // getBidBank(); 
+             getBidBank(); 
             var offer_code = localStorage.getItem("selectedIPO");
-            var category = $("#category").val();
             if (offer_code) {
-                if (category == "") {
-                        $.alert({
-                            title: 'IPO Allotment',
-                            content: 'Please select category',
-                            type: 'red',
-                        });
-                        return;
-                    }
-               getBidBank(category);
+                getBidBank(); 
             } else {
                 $("#btnGensummary").hide();
                 $("#btnGen").hide();
@@ -212,15 +194,14 @@
         console.log("Selected:", selectedCodes);
     });
 
-    function getBidBank(category){
+    function getBidBank(){
         var offer_code =  localStorage.getItem("selectedIPO");
           try {
             customAjax({
                 type: "GET",
                 url: '@Url.Action("getBidBank", "BidBank")',
                 data: {
-                offer_code: offer_code,
-                category: category  
+                offer_code: offer_code
                 },
                 success: function (response) {
                     if (response && response.success) {
@@ -287,25 +268,24 @@
                       field: "status",
                       title: "Status",
                       width: 120,
-                      locked: true,
-                      footerTemplate:"<div style='text-align:center;font-weight:bold;'>TOTAL</div>"
+                      locked: true
                   },
                    {
               title: "As per Bid",
               headerAttributes: { style: "text-align:center;font-weight:bold;" },
               columns: [
-                  { field: "bid_appl_count", title: "No.of Appl", width: 120, attributes:{style:"text-align:right;"} ,footerTemplate: "<div style='text-align:right;font-weight:bold'>#= kendo.toString(sum,'n0') #</div>"},
-                  { field: "bid_quantity", title: "No.of Shares", width: 130, attributes:{style:"text-align:right;"} ,footerTemplate: "<div style='text-align:right;font-weight:bold'>#= kendo.toString(sum,'n0') #</div>"},
-                  { field: "bid_amount", title: "Amount", width: 120, attributes:{style:"text-align:right;"},footerTemplate: "<div style='text-align:right;font-weight:bold'>#= kendo.toString(sum,'n0') #</div>" }
+                  { field: "bid_appl_count", title: "No.of Appl", width: 120, attributes:{style:"text-align:right;"} },
+                  { field: "bid_quantity", title: "No.of Shares", width: 130, attributes:{style:"text-align:right;"} },
+                  { field: "bid_amount", title: "Amount", width: 120, attributes:{style:"text-align:right;"} }
               ]              
           },
                   {
               title: "As per Bank",
              headerAttributes: { style: "text-align:center;font-weight:bold;" },
               columns: [
-                  { field: "bnk_appl_count", title: "No.of Appl", width: 120, attributes:{style:"text-align:right;"},footerTemplate: "<div style='text-align:right;font-weight:bold'>#= kendo.toString(sum,'n0') #</div>"},
-                  { field: "bnk_quantity", title: "No.of Shares", width: 130, attributes:{style:"text-align:right;"},footerTemplate: "<div style='text-align:right;font-weight:bold'>#= kendo.toString(sum,'n0') #</div>" },
-                  { field: "bank_amount", title: "Amount", width: 120, attributes:{style:"text-align:right;"},footerTemplate: "<div style='text-align:right;font-weight:bold'>#= kendo.toString(sum,'n0') #</div>" }
+                  { field: "bnk_appl_count", title: "No.of Appl", width: 120, attributes:{style:"text-align:right;"} },
+                  { field: "bnk_quantity", title: "No.of Shares", width: 130, attributes:{style:"text-align:right;"} },
+                  { field: "bank_amount", title: "Amount", width: 120, attributes:{style:"text-align:right;"} }
               ]
           },        
 
@@ -313,9 +293,9 @@
               title: "Diff.",
               headerAttributes: { style: "text-align:center;font-weight:bold;" },
               columns: [
-                  { field: "diff_appl_count", title: "No.of Appl", width: 120, attributes:{style:"text-align:right;color:red;"} ,footerTemplate: "<div style='text-align:right;font-weight:bold'>#= kendo.toString(sum,'n0') #</div>"},
-                  { field: "diff_quantity", title: "No.of Shares", width: 130, attributes:{style:"text-align:right;color:red;"},footerTemplate: "<div style='text-align:right;font-weight:bold'>#= kendo.toString(sum,'n0') #</div>" },
-                  { field: "diff_amount", title: "Amount", width: 120, attributes:{style:"text-align:right;color:red;"} ,footerTemplate: "<div style='text-align:right;font-weight:bold'>#= kendo.toString(sum,'n0') #</div>"}
+                  { field: "diff_appl_count", title: "No.of Appl", width: 120, attributes:{style:"text-align:right;color:red;"} },
+                  { field: "diff_quantity", title: "No.of Shares", width: 130, attributes:{style:"text-align:right;color:red;"} },
+                  { field: "diff_amount", title: "Amount", width: 120, attributes:{style:"text-align:right;color:red;"} }
               ]
           }
                  ];
@@ -326,20 +306,7 @@
                      $("#banktList").kendoGrid({
                      dataSource: {
                          data: data,
-                         pageSize: 20,
-                         aggregate: [
-                            { field: "bid_appl_count", aggregate: "sum" },
-                            { field: "bid_quantity", aggregate: "sum" },
-                            { field: "bid_amount", aggregate: "sum" },
-
-                            { field: "bnk_appl_count", aggregate: "sum" },
-                            { field: "bnk_quantity", aggregate: "sum" },
-                            { field: "bank_amount", aggregate: "sum" },
-
-                            { field: "diff_appl_count", aggregate: "sum" },
-                            { field: "diff_quantity", aggregate: "sum" },
-                            { field: "diff_amount", aggregate: "sum" }
-                        ]
+                         pageSize: 20
                      },
                      height: 410,
                      pageable: {

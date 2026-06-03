@@ -182,6 +182,7 @@
                         offersTab();
                     } 
                 }
+
                 history.replaceState(null, null, window.location.pathname);
             }
     }); 
@@ -210,7 +211,7 @@
 
 
      google.charts.load('current', {'packages':['corechart']});
-      // google.charts.setOnLoadCallback(drawCharts);
+      google.charts.setOnLoadCallback(drawCharts);
 
        function drawBarChart(inprogress, completed) {
 
@@ -238,7 +239,7 @@
     }
 
     var issueGridLoaded = false;
-    var clientGridLoaded = false;
+    
 
     $('button[data-bs-target="#navs-top-issue"]').on('shown.bs.tab', function () {
 
@@ -283,18 +284,14 @@
         }
 
     });
-    
+
+    var clientGridLoaded = false;
     $('button[data-bs-target="#navs-top-client"]').on('shown.bs.tab', function () {
 
         if (!clientGridLoaded) {
             showclientGrid();
             clientGridLoaded = true; 
         }
-
-    });
-
-     $('button[data-bs-target="#navs-top-dashboard"]').on('shown.bs.tab', function () {
-         showdashboarddetails();    
 
     });
 
@@ -310,34 +307,25 @@
             var result = data[0];
             // Bind clients value
             $("#clientsCount").text(result.clients);
-            const totalShares =  Number(result.mainboard_total_shares_value) +  Number(result.sme_total_shares_value);
-            let formattedTotal = "";
-            if (totalShares >= 10000000) {
-                formattedTotal = (totalShares / 10000000).toFixed(2) + " Cr";
-            } else {
-                formattedTotal = (totalShares / 100000).toFixed(2) + " L";
-            }
-
-            $("#totalipos").text( result.total_ipos + " (Rs. " + formattedTotal + ")");
+            $("#totalipos").text(result.total_ipos);
             $("#mainboardipocount").text(result.main_board_ipo_count + " (Rs. " + result.mainboard_total_shares + ")");
-            $("#smeipocount").text(result.sme_ipo_count + " (Rs. " + result.sme_total_shares + ")");
-             $("#completedipos").text(result.completed_ipos + " (Rs. " + result.inprogress_total_shares + ")");
-             $("#inprogressipos").text(result.inprogress_ipos + " (Rs. " + result.completed_total_shares + ")");
-
-                        drawChart(
-                            result.main_board_ipo_count,
-                            result.sme_ipo_count
-                        );
-                        drawBarChart(
-                            result.inprogress_ipos,
-                            result.completed_ipos
-                        );
-                         },
-                         error: function (er) {
-                             console.log(er);
-                         }
-                     });
-                }
+            $("#smeipocount").text(result.sme_ipo_count +" (Rs. " + result.sme_total_shares + ")");
+            $("#completedipos").text(result.completed_ipos);
+            $("#inprogressipos").text(result.inprogress_ipos);
+            drawChart(
+                result.main_board_ipo_count,
+                result.sme_ipo_count
+            );
+            drawBarChart(
+                result.inprogress_ipos,
+                result.completed_ipos
+            );
+             },
+             error: function (er) {
+                 console.log(er);
+             }
+         });
+    }
 
     function showclientGrid() {
         var mymodel = {
@@ -449,7 +437,7 @@
     }
 
     function editGrid(e) {
-        var grid = $("#clientListGrid").data("kendoGrid");
+        var grid = $("#grid").data("kendoGrid");
         var row = $(e).closest("tr");
         var dataItem = grid.dataItem(row);
         var client_gid = dataItem.client_gid;
@@ -779,7 +767,7 @@
     // }
 
         function exportClientList() {
-        var grid = $("#clientListGrid").data("kendoGrid");
+        var grid = $("#grid").data("kendoGrid");
 
         var originalPageSize = grid.dataSource.pageSize();
 

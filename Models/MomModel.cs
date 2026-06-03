@@ -22,10 +22,6 @@ namespace IPOWeb.Models
         public List<CategoryMM> categoryMM { get; set; }
         public List<CategoryEMP> categoryEMP { get; set; }
         public List<CategoryNIIC> categoryNIIC { get; set; }
-        public CategoryCNIIC categoryCNIIC { get; set; }
-        public CategoryCQIB categoryCQIB { get; set; }
-        public CategoryCMMS categoryCMMS { get; set; }
-        public CategoryCRNR categoryCRNR { get; set; }
         public List<CategorySOA> categorySOA { get; set; }
         public List<CategoryEXMMSOA> categoryEXMMSOA { get; set; }
         public List<CategoryMARMAK> categoryMARMAK { get; set; }
@@ -46,8 +42,6 @@ namespace IPOWeb.Models
         public long total_iposize { get; set; }
         public long mm_shares { get; set; }
         public long total_mm { get; set; }
-        public decimal issue_percentage { get; set; }
-        public decimal net_issue_percentage { get; set; }
         public long public_shares { get; set; }
         public long net_issue { get; set; }
         public string offer_openingdate { get; set; }
@@ -164,9 +158,6 @@ namespace IPOWeb.Models
     public class BankMaster
     {
         public string? bank_name { get; set; }
-
-        public int total_bank_count { get; set; }
-
     }
 
     public class CategoryQIB
@@ -202,39 +193,6 @@ namespace IPOWeb.Models
         public long ind_no_of_shares { get; set; }
         public long total_no_of_applications { get; set; }
         public long total_no_of_shares { get; set; }      
-    }
-
-    public class CategoryCNIIC
-    {
-        public long ctotal_applications { get; set; }
-        public string ctotal_shares { get; set; }
-        public string ctotal_application_amount { get; set; }
-    }
-
-    public class CategoryCRNR
-    {
-        public long rnr_valid_applications { get; set; }
-        public long rnr_valid_shares { get; set; }       
-        public long pan_mismatch_applications { get; set; }       
-        public long pan_mismatch_shares { get; set; }       
-        public long invalid_dp_applications { get; set; }       
-        public long invalid_dp_shares { get; set; }       
-    }
-
-    public class CategoryCQIB
-    {
-        public long qibs_applications { get; set; }
-        public long qibs_shares { get; set; }
-        public long qibs_application_money { get; set; }
-        public long qibs_reserved_shares { get; set; }
-    }
-
-    public class CategoryCMMS
-    {
-        public long mms_total_applications { get; set; }
-        public long mms_amount_blocked { get; set; }
-        public long mms_mm_applications { get; set; }
-        public long mms_mm_shares { get; set; }
     }
 
     public class CategorySOA
