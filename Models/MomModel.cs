@@ -26,6 +26,8 @@ namespace IPOWeb.Models
         public CategoryCQIB categoryCQIB { get; set; }
         public CategoryCMMS categoryCMMS { get; set; }
         public CategoryCRNR categoryCRNR { get; set; }
+        public CategoryCOVERSUBS categoryCOVERSUBS { get; set; }
+        public CategoryCANCH categoryCANCH { get; set; }
         public List<CategorySOA> categorySOA { get; set; }
         public List<CategoryEXMMSOA> categoryEXMMSOA { get; set; }
         public List<CategoryMARMAK> categoryMARMAK { get; set; }
@@ -211,6 +213,36 @@ namespace IPOWeb.Models
         public string ctotal_application_amount { get; set; }
     }
 
+    public class CategoryCOVERSUBS
+    {
+        public long subs_net_appl_shares { get; set; }
+        public decimal over_subs { get; set; }
+        public decimal rej_over_subs { get; set; }
+        public long subs_rejected_appl_shares { get; set; }
+        public long subs_total_appl_shares { get; set; }
+        public long subs_total_offer_shares { get; set; }
+    }
+
+
+    public class CategoryCANCH
+    {
+        public long mma_applications { get; set; }
+        public long mma_applied_shares { get; set; }
+        public long mma_amount { get; set; }
+        public long mma_reserved_shares { get; set; }
+        public decimal mm_offer_facevalue { get; set; }
+        public decimal mm_offer_premiun { get; set; }
+        public decimal mm_offer_fixedprice { get; set; }
+        public long mma_allocated_amount { get; set; }
+        public long mma_shares_available_for_public { get; set; }
+        public string mm_offer_openingdate { get; set; }
+        public string mm_offer_closingdate { get; set; }
+        public string mm_offer_allotmentdate { get; set; }
+        public string mm_offer_listingdate { get; set; }
+        public decimal mma_bid_book_subscription { get; set; }
+        public decimal mm_final_subscription { get; set; }
+    }
+
     public class CategoryCRNR
     {
         public long rnr_valid_applications { get; set; }
@@ -218,9 +250,9 @@ namespace IPOWeb.Models
         public long pan_mismatch_applications { get; set; }       
         public long pan_mismatch_shares { get; set; }       
         public long invalid_dp_applications { get; set; }       
-        public long invalid_dp_shares { get; set; }   
-        public long multi_pan_applications { get; set; }
-        public long multi_pan_shares { get; set; }
+        public long invalid_dp_shares { get; set; }       
+        public long multi_pan_applications { get; set; }       
+        public long multi_pan_shares { get; set; }       
     }
 
     public class CategoryCQIB

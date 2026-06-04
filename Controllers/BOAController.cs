@@ -382,6 +382,16 @@ namespace IPOWeb.Controllers
                   .ToObject<Dictionary<string, object>>())
                   .ToList();
 
+                        var table28Data = ((IEnumerable<dynamic>)temp.Table27)
+                  .Select(row => ((Newtonsoft.Json.Linq.JObject)row)
+                  .ToObject<Dictionary<string, object>>())
+                  .ToList();
+
+                        var table29Data = ((IEnumerable<dynamic>)temp.Table28)
+                .Select(row => ((Newtonsoft.Json.Linq.JObject)row)
+                .ToObject<Dictionary<string, object>>())
+                .ToList();
+
                         return Json(new
                         {
                             success = true,
@@ -414,6 +424,8 @@ namespace IPOWeb.Controllers
                                 table25 = table25Data,
                                 table26 = table26Data,
                                 table27 = table27Data,
+                                table28 = table28Data,
+                                table29 = table29Data,
                             }
                         });
                     }
@@ -459,6 +471,8 @@ namespace IPOWeb.Controllers
             var CategoryCQIB = data.categoryCQIB;
             var CategoryCMMS = data.categoryCMMS;
             var CategoryCRNR = data.categoryCRNR;
+            var CategoryCOVERSUBS = data.categoryCOVERSUBS;
+            var CategoryCANCH = data.categoryCANCH;
 
             string clientName = summary.client_name;
             long offer_issuesize = summary.offer_issuesize;
@@ -516,7 +530,23 @@ namespace IPOWeb.Controllers
             long invalid_dp_shares = CategoryCRNR.invalid_dp_shares;
             long multi_pan_applications = CategoryCRNR.multi_pan_applications;
             long multi_pan_shares = CategoryCRNR.multi_pan_shares;
-
+            decimal over_subs = CategoryCOVERSUBS.over_subs;
+            decimal rej_over_subs = CategoryCOVERSUBS.rej_over_subs;
+            long mma_applications = CategoryCANCH.mma_applications;
+            long mma_applied_shares = CategoryCANCH.mma_applied_shares;
+            long mma_amount = CategoryCANCH.mma_amount;
+            long mma_reserved_shares = CategoryCANCH.mma_reserved_shares;
+            decimal mm_offer_facevalue = CategoryCANCH.mm_offer_facevalue;
+            decimal mm_offer_premiun = CategoryCANCH.mm_offer_premiun;
+            decimal mm_offer_fixedprice = CategoryCANCH.mm_offer_fixedprice;
+            long mma_allocated_amount = CategoryCANCH.mma_allocated_amount;
+            long mma_shares_available_for_public = CategoryCANCH.mma_shares_available_for_public;
+            string mm_offer_openingdate = CategoryCANCH.mm_offer_openingdate;
+            string mm_offer_closingdate = CategoryCANCH.mm_offer_closingdate;
+            string mm_offer_allotmentdate = CategoryCANCH.mm_offer_allotmentdate;
+            string mm_offer_listingdate = CategoryCANCH.mm_offer_listingdate;
+            decimal mma_bid_book_subscription = CategoryCANCH.mma_bid_book_subscription;
+            decimal mm_final_subscription = CategoryCANCH.mm_final_subscription;
 
             string templatePath = _configuration["Appsettings:templatePath"];
 
@@ -585,6 +615,27 @@ namespace IPOWeb.Controllers
                 ReplaceText(body, "{invalid_dp_shares}", invalid_dp_shares.ToString("N0"));
                 ReplaceText(body, "{multi_pan_applications}", multi_pan_applications.ToString("N0"));
                 ReplaceText(body, "{multi_pan_shares}", multi_pan_shares.ToString("N0"));
+                ReplaceText(body, "{over_subs}", CategoryCOVERSUBS.over_subs.ToString("N2"));
+                ReplaceText(body, "{rej_over_subs}", CategoryCOVERSUBS.rej_over_subs.ToString("N2"));
+                ReplaceText(body, "{mma_applications}", mma_applications.ToString("N0"));
+                ReplaceText(body, "{mma_applied_shares}", mma_applied_shares.ToString("N0"));
+                ReplaceText(body, "{mma_amount}", mma_amount.ToString("N0"));
+                ReplaceText(body, "{mma_reserved_shares}", mma_reserved_shares.ToString("N0"));
+                ReplaceText(body, "{mm_offer_facevalue}", CategoryCANCH.mm_offer_facevalue.ToString("N2"));
+                ReplaceText(body, "{mm_offer_premiun}", CategoryCANCH.mm_offer_premiun.ToString("N2"));
+                ReplaceText(body, "{mm_offer_fixedprice}", CategoryCANCH.mm_offer_fixedprice.ToString("N2"));
+                ReplaceText(body, "{mma_allocated_amount}", mma_allocated_amount.ToString("N0"));
+                ReplaceText(body, "{mma_shares_available_for_public}", mma_shares_available_for_public.ToString("N0"));
+                DateTime openingDate1 = Convert.ToDateTime(CategoryCANCH.mm_offer_openingdate);
+                ReplaceText(body, "{mm_offer_openingdate}", openingDate1.ToString("dd MMMM yyyy"));
+                DateTime openingDate2 = Convert.ToDateTime(CategoryCANCH.mm_offer_closingdate);
+                ReplaceText(body, "{mm_offer_closingdate}", openingDate2.ToString("dd MMMM yyyy"));
+                DateTime openingDate3 = Convert.ToDateTime(CategoryCANCH.mm_offer_allotmentdate);
+                ReplaceText(body, "{mm_offer_allotmentdate}", openingDate3.ToString("dd MMMM yyyy"));
+                DateTime openingDate4 = Convert.ToDateTime(CategoryCANCH.mm_offer_listingdate);
+                ReplaceText(body, "{mm_offer_listingdate}", openingDate4.ToString("dd MMMM yyyy"));
+                ReplaceText(body, "{mma_bid_book_subscription}", CategoryCANCH.mma_bid_book_subscription.ToString("N2"));
+                ReplaceText(body, "{mm_final_subscription}", CategoryCANCH.mm_final_subscription.ToString("N2"));
 
                 var para = body.Descendants<DocumentFormat.OpenXml.Wordprocessing.Paragraph>()
     .FirstOrDefault(p => p.InnerText.Contains("Net Collections of Non-institutional and Individual Investor Categories by ASBA"));
@@ -1617,6 +1668,9 @@ namespace IPOWeb.Controllers
 
                         catMMTable.Append(totalRow);
                     }
+                    ReplaceText(body, "{mm_no_of_applications}",CategoryMM.Sum(x => x.no_of_applications).ToString("N0", new CultureInfo("en-IN")));
+                    ReplaceText(body, "{mm_no_of_shares}",CategoryMM.Sum(x => x.no_of_shares).ToString("N0", new CultureInfo("en-IN")));
+                    ReplaceText(body, "{mm_total_amount}",CategoryMM.Sum(x => x.total_amount).ToString("N2", new CultureInfo("en-IN")));                   
                 }
 
                 var para14 = body.Descendants<DocumentFormat.OpenXml.Wordprocessing.Paragraph>()

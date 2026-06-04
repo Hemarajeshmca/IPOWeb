@@ -462,10 +462,52 @@
                         }
                         <center>  <h5 class="card-header" id="navhead" style="margin-left: 38.5vw !important;"></h5></center>
                         <ul class="navbar-nav flex-row align-items-center ms-auto">
-                            <li class="nav-item lh-1 me-1">
+                            <li class="nav-item lh-1 me-1" style="width:40px;">
                                 <i style="cursor:pointer;" class='bx bxs-home' data-bs-toggle="tooltip" data-bs-placement="bottom" title="Home" onclick="window.location.href='../Dashboard/Dashboard'"></i>
                             </li>
-                            <li class="nav-item dropdown-language dropdown lh-1 me-1">
+                            @* Dynamic Menu *@
+                            @{
+                                var headerMenus = menus
+                                .Where(x => string.IsNullOrWhiteSpace(x.parent_menu_code))
+                                .OrderBy(x => Convert.ToInt32(x.menu_order))
+                                .ToList();
+                            }
+                            @foreach (var header in headerMenus)
+                            {
+                                var childMenus = menus
+                                .Where(x => x.parent_menu_code == header.menu_code)
+                                .OrderBy(x => Convert.ToInt32(x.menu_order))
+                                .ToList();
+                                @* <li class="nav-item dropdown me-2">
+                                    <a class="nav-link dropdown-toggle"
+                                       href="javascript:void(0);"
+                                       data-bs-toggle="dropdown">
+                                        <i class="@header.icon_path me-1" data-bs-toggle="tooltip" data-bs-placement="bottom" title=@header.menu_name></i>
+                                    </a> *@
+                                <li class="nav-item dropdown-language dropdown lh-1 me-1" style="width:40px;">
+                                    <a class="nav-link dropdown-toggle hide-arrow" href="javascript:void(0);" data-bs-toggle="dropdown">
+                                        <i class="@header.icon_path" data-bs-toggle="tooltip" data-bs-placement="bottom" title="@header.menu_name"></i>
+                                    </a>
+                                    @if (childMenus.Any())
+                                    {
+                                        <ul class="dropdown-menu  dropdown-menu-end">
+                                            @foreach (var child in childMenus)
+                                            {
+                                                <li>
+                                                    <a class="dropdown-item"
+                                                       href="@Url.Content("~/" + child.menu_url)">
+                                                        <i class="@child.icon_path"></i>
+                                                        <span class="align-middle">@child.menu_name</span>
+                                                    </a>
+                                                </li>
+                                            }
+                                        </ul>
+                                    }
+                                </li>
+                            }
+                            @* Dynamic Menu *@
+
+                            @* <li class="nav-item dropdown-language dropdown lh-1 me-1">
                                 <a class="nav-link dropdown-toggle hide-arrow" href="javascript:void(0);" data-bs-toggle="dropdown">
                                     <i class='bx bxs-cog' data-bs-toggle="tooltip" data-bs-placement="bottom" title="Settings"></i>
                                 </a>
@@ -591,7 +633,7 @@
                                         </a>
                                     </li>
                                 </ul>
-                            </li>
+                            </li> *@
                             <!-- User -->
                             <li class="nav-item navbar-dropdown dropdown-user dropdown">
                                 <a class="nav-link dropdown-toggle hide-arrow" href="javascript:void(0);" data-bs-toggle="dropdown">

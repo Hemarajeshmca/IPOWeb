@@ -5,13 +5,12 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <meta name="viewport" content="width=device-width" />
+    <meta name="viewport" content="width=device-width" />    
     <style>
 
         .nav-align-top > .nav, .nav-align-top > div > .nav, .nav-align-right > .nav, .nav-align-right > div > .nav, .nav-align-bottom > .nav, .nav-align-bottom > div > .nav, .nav-align-left > .nav, .nav-align-left > div > .nav {
             z-index: 1000 !important;
         }
-
         .ui-autocomplete {
             font-weight: 400;
             font-size: 13px !important;
@@ -40,7 +39,7 @@
             border: 1px solid #e3dcdc;
             height: 245px;
             padding-top: 6px;
-            /*  height: auto; */
+           /*  height: auto; */
         }
 
         .nav-tabs .nav-item .nav-link:not(.active) {
@@ -78,15 +77,15 @@
             height: 160px !important;
         }
 
-        .k-grid.k-widget {
+           .k-grid.k-widget {
             height: 231px;
             margin-top: 32px;
             overflow-y: auto;
         }
 
-        #offerCategoryGrid .k-grid-content td:nth-child(5) {
-            text-align: right !important;
-        }
+            #offerCategoryGrid .k-grid-content td:nth-child(5) {
+                text-align: right !important;
+            }
 
         #offerBankGrid .k-grid-content {
             height: 160px !important;
@@ -104,6 +103,7 @@
             overflow-y: hidden;
         }
 
+       
     </style>
 </head>
 
@@ -429,12 +429,12 @@
                                             <span id="queryiod" style="color: red; font-size: 12px;position:relative;"></span>
                                         </div>
                                         <div class="col-md-2-4">
-                                            <label class="form-label">Offer closing Date	</label>&nbsp;<span style="font-size: 12px;color:red;font-weight: bold;">*</span>
+                                            <label  class="form-label">Offer closing Date	</label>&nbsp;<span style="font-size: 12px;color:red;font-weight: bold;">*</span>
                                             <input disabled type="date" id="icd" class="form-control" />
                                             <span id="queryicd" style="color: red; font-size: 12px;position:relative;"></span>
                                         </div>
                                         <div class="col-md-2-4">
-                                            <label class="form-label">Allotment Date	</label>&nbsp;<span style="font-size: 12px;color:red;font-weight: bold;">*</span>
+                                            <label  class="form-label">Allotment Date	</label>&nbsp;<span style="font-size: 12px;color:red;font-weight: bold;">*</span>
                                             <input disabled type="date" id="alotdate" class="form-control" />
                                             <span id="queryalotdate" style="color: red; font-size: 12px;position:relative;"></span>
                                         </div>
@@ -448,9 +448,9 @@
                                             <input disabled type="date" id="nsdldate" class="form-control" />
                                             <span id="querynsdldate" style="color: red; font-size: 12px;position:relative;"></span>
                                         </div>
-
+                                       
                                     </div>
-                                    <div class="row" style="margin-top:15px;">
+                                    <div class="row" style="margin-top:15px;">                                        
                                         <div class="col-md-2-4">
                                             <label class="form-label">CDSL CA Date	</label>&nbsp;<span style="font-size: 12px;color:red;font-weight: bold;">*</span>
                                             <input disabled type="date" id="cdsldate" class="form-control" />
@@ -475,16 +475,16 @@
                             </div>
                         </div>
                     </div>
-                    <div class="button-row" style="text-align:center;">
+                     <div class="button-row" style="text-align:center;">
                         <button class="btn btn-primary" style="background: #027ed1;border-color:#027ed1;padding: 3px 25px;margin-bottom:20px;" id="generateBtn" onclick="runboa()">Generate</button>
-                        <button class="btn btn-primary" style="border-color: green;background-color: green; border-radius: 5px;color: white;margin-bottom: 30px;margin-bottom: 20px;padding: 3px 25px;" id="generateBtn" onclick="generateReport()">Download</button>
+                        <button class="btn btn-primary" style="border-color: green;background-color: green; border-radius: 5px;color: white;margin-bottom: 30px;margin-bottom: 20px;padding: 3px 25px;" id="generateBtn" onclick="generateReport()">Download</button>                      
                         <button class="btn btn-primary" style="border-color: blue;background-color: blue; border-radius: 5px;color: white;margin-bottom: 30px;margin-bottom: 20px;padding: 3px 25px;" id="exportBtn" onclick="export_allotment()">Export Allotment</button>
                     </div>
                 </div>
-
+                 
             </div>
-
-
+            
+           
         </div>
     </div>
 
@@ -493,7 +493,7 @@
 </html>
 <script>
       $( document ).ready(function() {
-            var ipocode = localStorage.getItem("selectedIPO");
+            var ipocode = localStorage.getItem("selectedIPO");  
               $('#navhead').text('Basis of Allotment');
               var mode = new URLSearchParams(window.location.search).get('mode');
                 var defaultStatus = sessionStorage.getItem("default_status");
@@ -503,7 +503,7 @@
                         $("#status").val(defaultStatus).trigger("change");
                         sessionStorage.removeItem("default_status");
                     }
-                }, 500);
+                }, 500); 
                   var activeTab = localStorage.getItem("activeTab");
                     if (activeTab) {
                         var triggerEl = document.querySelector('[data-bs-target="' + activeTab + '"]');
@@ -522,7 +522,7 @@
               $("#createedit").val("VIEW");
               // var offer_code = sessionStorage.getItem("edit_offer_code");
              // var client_code = sessionStorage.getItem("edit_client_code");
-              var offer_code = localStorage.getItem("selectedIPO");
+              var offer_code = localStorage.getItem("selectedIPO");  
               var result = offer_code.split('-');
               var client_code = result[0];
               $("#clientcode").val(client_code);
@@ -548,7 +548,7 @@
                     $("#remarks").prop("readonly", false);
                 } else {
                     $("#remarks").prop("readonly", true);
-                }
+                }                
               });
         });
 
@@ -802,7 +802,7 @@
         }
 
         function fetchofferHeader(data){
-            debugger;
+            debugger;            
                 $("#offer_header_gid").val(data.offer_header_gid);
                 $("#createedit").val("VIEW");
                 $("#offer_code").val(data.offer_code);
@@ -814,7 +814,7 @@
                     $("#issuestatus").val("Active");
                 } else  if(data.offer_status == "D") {
                     $("#issuestatus").val("Draft");
-                }
+                }                     
                 $("#empdiscount").val(data.offer_empdiscount);
                 $("#remarks").val(data.offer_remarks);
                 $("#clientcode").val(data.client_code);
@@ -972,7 +972,7 @@
                                 template: `
                                     <img src='../Assets/images/viewicons.png'
                                          onclick="editBankGrid(this)"
-                                         style="height:12px;width:12px;cursor:pointer;margin-right:10px;" />
+                                         style="height:12px;width:12px;cursor:pointer;margin-right:10px;" />                                   
                                 `
                             },
                             {
@@ -1111,7 +1111,7 @@
                                     title: 'IPO Allotment',
                                     content: data[0].out_msg,
                                     type: 'green',
-                                });
+                                });                              
                             }
                             else {
                                 $.alert({
@@ -1698,7 +1698,7 @@
             if (!grid) return false;
             var data = grid.dataSource.view();
             var total = 0;
-            data.forEach(function (item) {
+            data.forEach(function (item) {                 
                 total += parseFloat(item.offer_cat_shares) || 0;
             });
             if (issuesize !== total) {
@@ -1789,7 +1789,7 @@
                 container.find("input").css("text-align", "left");
             }
 
-            function saveofferCategory() {
+            function saveofferCategory() {               
                 var status = $("#status").val();
                 var clientname = $("#clientname").val();
                 if (!validateCategoryTotal()) {
@@ -1800,7 +1800,7 @@
                 $("#offerCategoryGrid tbody tr").each(function () {
                     var checkbox = $(this).find(".rowCheckbox");
                     if (checkbox.is(":checked")) {
-                        var dataItem = grid.dataItem(this);
+                        var dataItem = grid.dataItem(this);                       
                         selectedData.push({
                             category_gid: dataItem.category_gid,
                             offer_cat_code: dataItem.category_code,
@@ -1808,7 +1808,7 @@
                             offer_cat_shares: dataItem.offer_cat_shares
                         });
                     }
-                });
+                });               
                 var isValid = true;
                 if (!isValid) return;
                      if(clientname) {
@@ -1938,7 +1938,7 @@
                          isValid = false;
                     } else {
                         $("#querynsdldate").text("");
-                    }
+                    }                    
                      if(cdsldate === "") {
                         $("#querycdsldate").text("Please Select CDSL CA Date");
                         isValid = false;
@@ -1983,7 +1983,7 @@
                             isValid = false;
                         } else {
                             $("#queryldate").text("");
-                        }
+                        }            
             if (!isValid) return;
                  if(clientname) {
                           if((status === "Y" && activeOfferStatus ==="false") || (status === "" && activeOfferStatus === "false")) {
@@ -2025,7 +2025,7 @@
                                     });
                                 }
                                 else {
-
+                                   
                                 }
                             }
                         });
@@ -2041,7 +2041,7 @@
                     type: 'red'
                 });
         }
-        }
+        }    
 
 
           function runboa(){
@@ -2054,7 +2054,7 @@
                 offer_code: offer_code
                 },
                 success: function (response) {
-                    if (response && response.success) {
+                    if (response && response.success) {                   
                         $.alert({
                             title: 'IPO Allotment',
                             content: 'Basis of allotment successfully completed .!',
@@ -2134,6 +2134,8 @@
                          var table25 = data.table25;
                          var table26 = data.table26;
                          var table27 = data.table27;
+                         var table28 = data.table28;
+                         var table29 = data.table29;
                             cin = row.client_cin;
                             $('#cin').val(row.client_cin);
                                       fetch('/BOA/downloadAllReports', {
@@ -2168,7 +2170,9 @@
                                             categoryCNIIC: table24[0],
                                             categoryCQIB: table25[0],
                                             categoryCMMS: table26[0],
-                                            categoryCRNR: table27[0]
+                                            categoryCRNR: table27[0],
+                                            categoryCOVERSUBS: table28[0],
+                                            categoryCANCH: table29[0]
                                         })
                                     })
                                     .then(response => {
@@ -2215,7 +2219,7 @@
             hideProgress();
         }
 
-    }
+    }       
 
        function export_allotment() {
         var offer_code = localStorage.getItem("selectedIPO");
@@ -2223,4 +2227,4 @@
             '/BOA/Export_allotment_bo?offer_code=' + encodeURIComponent(offer_code);
     }
 
-</script>
+ </script>
