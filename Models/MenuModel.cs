@@ -5,8 +5,14 @@ namespace IPOWeb.Models
     public class MenuModel
     {
         public string menu_id { get; set; }
+        public string menu_code { get; set; }
         public string menu_name { get; set; }
         public string menu_url { get; set; }
+        public string menu_order { get; set; }
+        public string parent_menu_code { get; set; }
+        public string icon_path { get; set; }
+
+
         public string add_perm { get; set; }
         public string mod_perm { get; set; }
         public string view_perm { get; set; }
@@ -15,7 +21,9 @@ namespace IPOWeb.Models
         public string link_perm { get; set; }
         public string mail_perm { get; set; }
         public string retreq_perm { get; set; }
-       public string deny_perm { get; set; }
-       public string menu_type { get; set; }
+        public string Approve_perm { get; set; }
+        public string Boachecklist_perm { get; set; }
+        public string deny_perm { get; set; }
+        public string menu_type { get; set; }
     }
 }

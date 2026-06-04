@@ -101,377 +101,411 @@
     <div class="content-wrapper">
         <div class="container-xxl flex-grow-1 container-p-y">
             <div class="card-body" style="margin-top:5px;height: 556px;width: 103%;margin-left: -18px;">
-                <div class="row" style="margin-top: -15px;">
-                    <div class="col-sm-2">
-                        <input type="text" id="createedit" class="form-control" readonly value="@ViewBag.Mode" />
-                    </div>
-                    <div class="col-sm-2">
-                        <input type="text" id="offer_code" class="form-control" readonly value="@ViewBag.IssueCode" />
-                    </div>
-                    <div class="col-sm-2">
-                        <input type="text" id="issuestatus" class="form-control" readonly value="@ViewBag.IssueStatus" />
-                        <input type="text" id="offer_header_gid" class="form-control" hidden />
-                    </div>
-                    <div class="col-sm-6">
-                        <img style="width:20px; height:20px; margin-bottom:-9px; cursor:pointer;float:right;" onclick="location.href='@Url.Action("Dashboard", "Dashboard")?tab=offer'" src="/Assets/images/toplist.png">
-                    </div>
-                </div>
-                <div class="row" style="margin-top:5px;">
-                    <div class="col-sm-3">
-                        <label class="form-label">Client Name</label>&nbsp;<span style="font-size: 12px;color:red;font-weight: bold;">*</span>
-                        <input type="text" id="clientname" class="form-control" value="@ViewBag.ClientName" />
-                        <span id="v_clientname" class="validation"></span>
-                    </div>
-                    <div class="col-sm-3">
-                        <label class="form-label">Client Code</label>&nbsp;<span style="font-size: 12px;color:red;font-weight: bold;">*</span>
-                        <input type="text" id="clientcode" class="form-control" readonly value="@ViewBag.IssueCode" />
-                        <span id="v_clientcode" class="validation"></span>
-                    </div>
-                    <div class="col-sm-3">
-                        <label class="form-label">Offer Type</label>&nbsp;<span style="font-size: 12px;color:red;font-weight: bold;">*</span>
-                        <select name="offer_type" id="offer_type" class="form-select"></select>
-                        <span id="v_offer_type" class="validation"></span>
-                    </div>
-                    <div class="col-sm-3">
-                        <label class="form-label" for="listing" data-field="listing">Listing</label>&nbsp;<span style="font-size: 12px;color:red;font-weight: bold;">*</span>
-                        <select name="listing" id="listing" class="form-select"> </select>
-                        <span id="v_listing" class="validation"></span>
-                    </div>
-                </div>
-                <div class="row" style="margin-top:15px;">
-                    <div class="col-sm-3">
-                        <label class="form-label">ISIN No.</label>&nbsp;<span style="font-size: 12px;color:red;font-weight: bold;">*</span>
-                        <input type="text" id="isin" name="isin" class="form-control" />
-                        <span id="v_isin" class="validation"></span>
-                    </div>
-                    <div class="col-sm-3">
-                        <label class="form-label">Status</label>&nbsp;<span style="font-size: 12px;color:red;font-weight: bold;">*</span>
-                        <select name="status" id="status" class="form-select"></select>
-                        <span id="v_status" class="validation"></span>
-                    </div>
-                    <div class="col-sm-2">
-                        <label class="form-label">Emp. Discount (₹)</label>
-                        <input type="text" id="empdiscount" name="empdiscount" class="form-control" />
-                        <span id="v_dis" class="validation"></span>
-                    </div>
-                    <div class="col-sm-3">
-                        <label class="form-label">Remarks</label>
-                        <input type="text" id="remarks" name="remarks" class="form-control" />
-                        <span id="v_remarks" class="validation"></span>
-                    </div>
-                    <div class="col-sm-1">
-                        <center><button type="button" onclick="offerHeaderSave()" class="btn btn-primary" id="headerBtnSave" style="padding: 3px 25px;margin-top:30px;">Save</button></center>
-                    </div>
-                </div>
-                <div class="row" style="margin-top:20px;">
-                    <div class="col-sm-12">
-                        <div class="nav-align-top mb-4">
-                            <ul class="nav nav-tabs" role="tablist">
-                                <li class="nav-item">
-                                    <button type="button"
-                                            class="nav-link active"
-                                            role="tab"
-                                            data-bs-toggle="tab"
-                                            data-bs-target="#navs-top-ids"
-                                            aria-controls="navs-top-ids"
-                                            aria-selected="true">
-                                        Offer Details
-                                    </button>
-                                </li>
-                                <li class="nav-item">
-                                    <button type="button"
-                                            class="nav-link"
-                                            role="tab"
-                                            data-bs-toggle="tab"
-                                            data-bs-target="#navs-top-bank"
-                                            aria-controls="navs-top-bank"
-                                            aria-selected="false">
-                                        Bankers
-                                    </button>
-                                </li>
-                                <li class="nav-item">
-                                    <button type="button"
-                                            class="nav-link"
-                                            role="tab"
-                                            data-bs-toggle="tab"
-                                            data-bs-target="#navs-top-sh"
-                                            aria-controls="navs-top-sh"
-                                            aria-selected="false">
-                                        Stake Holders
-                                    </button>
-                                </li>
-                                <li class="nav-item">
-                                    <button type="button"
-                                            class="nav-link"
-                                            role="tab"
-                                            data-bs-toggle="tab"
-                                            data-bs-target="#navs-top-cat"
-                                            aria-controls="navs-top-cat"
-                                            aria-selected="false">
-                                        Category
-                                    </button>
-                                </li>
-                                <li class="nav-item">
-                                    <button type="button"
-                                            class="nav-link"
-                                            role="tab"
-                                            data-bs-toggle="tab"
-                                            data-bs-target="#navs-top-mile"
-                                            aria-controls="navs-top-mile"
-                                            aria-selected="false">
-                                        Milestones
-                                    </button>
-                                </li>
-                            </ul>
-                            <div class="tab-content">
-                                <div class="tab-pane fade show active" id="navs-top-ids" role="tabpanel">
-                                    <div class="row">
-                                        <div class="col-sm-2">
-                                            <label class="form-label">Pre Offer Capital</label>
-                                            <input type="number" id="preissue" onkeydown="setPostPrice()" class="form-control" />
-                                            <input type="number" id="offer_detail_gid" class="form-control" hidden />
-                                            <input type="text" id="status" class="form-control" hidden />
-                                        </div>
-                                        <div class="col-sm-2">
-                                            <label class="form-label">Offer Size</label>
-                                            <input type="number" id="issuesize" onkeydown="setPostPrice()" class="form-control" />
-                                        </div>
-                                        <div class="col-sm-2">
-                                            <label class="form-label">Post Offer Capital</label>
-                                            <input type="number" id="postissue" class="form-control" readonly />
-                                        </div>
-                                        <div class="col-sm-2">
-                                            <label class="form-label">Lot Size</label>
-                                            <input type="number" id="lotsize" class="form-control" />
-                                        </div>
-                                        <div class="col-sm-2">
-                                            <label class="form-label">Face Value</label>
-                                            <input type="number" id="facevalue" class="form-control" />
-                                        </div>
-                                        <div class="col-sm-2">
-                                            <label class="form-label">Premium</label>
-                                            <input type="number" id="premium" class="form-control" />
-                                        </div>
-                                    </div>
-                                    <div class="row" style="margin-top:20px;">
-                                        <div class="col-sm-2">
-                                            <label class="form-label"> Price Type</label>
-                                            <select name="pricetype" id="pricetype" class="form-select"></select>
-                                        </div>
-                                        <div class="col-sm-2">
-                                            <label class="form-label">Fixed Price</label>
-                                            <input type="number" id="fprice" class="form-control" disabled />
-                                        </div>
-                                        <div class="col-sm-2">
-                                            <label class="form-label">Minimum Price</label>
-                                            <input type="number" id="minprice" class="form-control" disabled />
-                                        </div>
-                                        <div class="col-sm-2">
-                                            <label class="form-label">Maximum Price</label>
-                                            <input type="number" id="maxprice" class="form-control" disabled />
-                                        </div>
-                                        <div class="col-sm-2">
-                                            <label class="form-label">Cut Off Price</label>
-                                            <input type="number" id="cutoffprice" class="form-control" disabled />
-                                        </div>
-                                        <div class="col-sm-2">
-                                            <center>
-                                                <button type="button" class="btn btn-primary" id="btnIssueSave"
-                                                        onclick="saveofferDetails()" style="padding: 3px 25px;margin-top:28px;width:60%">
-                                                    Save
+                <div class="nav-align-top mb-4" style="margin-top: -17px;">
+                    <ul class="nav nav-tabs" role="tablist">
+                        <li class="nav-item">
+                            <button type="button"
+                                    class="nav-link active"
+                                    role="tab"
+                                    data-bs-toggle="tab"
+                                    data-bs-target="#navs-top-home"
+                                    aria-controls="navs-top-home"
+                                    aria-selected="true">
+                                Details
+                            </button>
+                        </li>
+                        <li class="nav-item">
+                            <button type="button"
+                                    class="nav-link"
+                                    role="tab"
+                                    data-bs-toggle="tab"
+                                    data-bs-target="#navs-top-profile"
+                                    aria-controls="navs-top-profile"
+                                    aria-selected="false">
+                                Audit Trail
+                            </button>
+                        </li>                        
+                    </ul>
+                    <div class="tab-content">
+                        <div class="tab-pane fade show active" id="navs-top-home" role="tabpanel">
+                            <div class="row" style="margin-top: -15px;">
+                                <div class="col-sm-2">
+                                    <input type="text" id="createedit" class="form-control" readonly value="@ViewBag.Mode" />
+                                </div>
+                                <div class="col-sm-2">
+                                    <input type="text" id="offer_code" class="form-control" readonly value="@ViewBag.IssueCode" />
+                                </div>
+                                <div class="col-sm-2">
+                                    <input type="text" id="issuestatus" class="form-control" readonly value="@ViewBag.IssueStatus" />
+                                    <input type="text" id="offer_header_gid" class="form-control" hidden />
+                                </div>
+                                <div class="col-sm-6">
+                                    <img style="width:20px; height:20px; margin-bottom:-9px; cursor:pointer;float:right;" onclick="location.href='@Url.Action("Dashboard", "Dashboard")?tab=offer'" src="/Assets/images/toplist.png">
+                                </div>
+                            </div>
+                            <div class="row" style="margin-top:5px;">
+                                <div class="col-sm-3">
+                                    <label class="form-label">Client Name</label>&nbsp;<span style="font-size: 12px;color:red;font-weight: bold;">*</span>
+                                    <input type="text" id="clientname" class="form-control" value="@ViewBag.ClientName" />
+                                    <span id="v_clientname" class="validation"></span>
+                                </div>
+                                <div class="col-sm-3">
+                                    <label class="form-label">Client Code</label>&nbsp;<span style="font-size: 12px;color:red;font-weight: bold;">*</span>
+                                    <input type="text" id="clientcode" class="form-control" readonly value="@ViewBag.IssueCode" />
+                                    <span id="v_clientcode" class="validation"></span>
+                                </div>
+                                <div class="col-sm-3">
+                                    <label class="form-label">Offer Type</label>&nbsp;<span style="font-size: 12px;color:red;font-weight: bold;">*</span>
+                                    <select name="offer_type" id="offer_type" class="form-select"></select>
+                                    <span id="v_offer_type" class="validation"></span>
+                                </div>
+                                <div class="col-sm-3">
+                                    <label class="form-label" for="listing" data-field="listing">Listing</label>&nbsp;<span style="font-size: 12px;color:red;font-weight: bold;">*</span>
+                                    <select name="listing" id="listing" class="form-select"> </select>
+                                    <span id="v_listing" class="validation"></span>
+                                </div>
+                            </div>
+                            <div class="row" style="margin-top:15px;">
+                                <div class="col-sm-3">
+                                    <label class="form-label">ISIN No.</label>&nbsp;<span style="font-size: 12px;color:red;font-weight: bold;">*</span>
+                                    <input type="text" id="isin" name="isin" class="form-control" />
+                                    <span id="v_isin" class="validation"></span>
+                                </div>
+                                <div class="col-sm-3">
+                                    <label class="form-label">Status</label>&nbsp;<span style="font-size: 12px;color:red;font-weight: bold;">*</span>
+                                    <select name="status" id="status" class="form-select"></select>
+                                    <span id="v_status" class="validation"></span>
+                                </div>
+                                <div class="col-sm-2">
+                                    <label class="form-label">Emp. Discount (₹)</label>
+                                    <input type="text" id="empdiscount" name="empdiscount" class="form-control" />
+                                    <span id="v_dis" class="validation"></span>
+                                </div>
+                                <div class="col-sm-3">
+                                    <label class="form-label">Remarks</label>
+                                    <input type="text" id="remarks" name="remarks" class="form-control" />
+                                    <span id="v_remarks" class="validation"></span>
+                                </div>
+                                <div class="col-sm-1">
+                                    <center><button type="button" onclick="offerHeaderSave()" class="btn btn-primary" id="headerBtnSave" style="padding: 3px 25px;margin-top:30px;">Save</button></center>
+                                </div>
+                            </div>
+                            <div class="row" style="margin-top:20px;">
+                                <div class="col-sm-12">
+                                    <div class="nav-align-top mb-4">
+                                        <ul class="nav nav-tabs" role="tablist">
+                                            <li class="nav-item">
+                                                <button type="button"
+                                                        class="nav-link active"
+                                                        role="tab"
+                                                        data-bs-toggle="tab"
+                                                        data-bs-target="#navs-top-ids"
+                                                        aria-controls="navs-top-ids"
+                                                        aria-selected="true">
+                                                    Offer Details
                                                 </button>
-                                            </center>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="tab-pane fade" id="navs-top-bank" role="tabpanel" style="overflow-y: scroll;height: 235px;overflow-x: hidden;">
-                                    <div class="row">
-                                        <div class="col-sm-2">
-                                            <label class="form-label" for="banktype" data-field="banktype">Bank Type</label>
-                                            <select name="banktype" id="banktype" class="form-select"></select>
-                                            <input id="banker_gid" class="form-control" hidden />
-                                        </div>
-                                        <div class="col-sm-3">
-                                            <label class="form-label">Bank Name</label>
-                                            <select id="bank" class="form-select"></select>
-                                        </div>
-                                        <div class="col-sm-2">
-                                            <label class="form-label">IFSC Code</label>
-                                            <input type="text" id="ifsc" class="form-select" />
-                                        </div>
-                                        <div class="col-sm-3">
-                                            <label class="form-label">Address</label>
-                                            <textarea id="address" class="form-control" cols="10" rows="2"></textarea>
-                                        </div>
-                                        <div class="col-sm-2">
-                                            <label class="form-label">City</label>
-                                            <input type="text" id="city" class="form-control" />
-                                            @* <select name="city" id="city" class="form-select"></select> *@
-                                        </div>
+                                            </li>
+                                            <li class="nav-item">
+                                                <button type="button"
+                                                        class="nav-link"
+                                                        role="tab"
+                                                        data-bs-toggle="tab"
+                                                        data-bs-target="#navs-top-bank"
+                                                        aria-controls="navs-top-bank"
+                                                        aria-selected="false">
+                                                    Bankers
+                                                </button>
+                                            </li>
+                                            <li class="nav-item">
+                                                <button type="button"
+                                                        class="nav-link"
+                                                        role="tab"
+                                                        data-bs-toggle="tab"
+                                                        data-bs-target="#navs-top-sh"
+                                                        aria-controls="navs-top-sh"
+                                                        aria-selected="false">
+                                                    Stake Holders
+                                                </button>
+                                            </li>
+                                            <li class="nav-item">
+                                                <button type="button"
+                                                        class="nav-link"
+                                                        role="tab"
+                                                        data-bs-toggle="tab"
+                                                        data-bs-target="#navs-top-cat"
+                                                        aria-controls="navs-top-cat"
+                                                        aria-selected="false">
+                                                    Category
+                                                </button>
+                                            </li>
+                                            <li class="nav-item">
+                                                <button type="button"
+                                                        class="nav-link"
+                                                        role="tab"
+                                                        data-bs-toggle="tab"
+                                                        data-bs-target="#navs-top-mile"
+                                                        aria-controls="navs-top-mile"
+                                                        aria-selected="false">
+                                                    Milestones
+                                                </button>
+                                            </li>
+                                        </ul>
+                                        <div class="tab-content">
+                                            <div class="tab-pane fade show active" id="navs-top-ids" role="tabpanel">
+                                                <div class="row">
+                                                    <div class="col-sm-2">
+                                                        <label class="form-label">Pre Offer Capital</label>
+                                                        <input type="number" id="preissue" onkeydown="setPostPrice()" class="form-control" />
+                                                        <input type="number" id="offer_detail_gid" class="form-control" hidden />
+                                                        <input type="text" id="status" class="form-control" hidden />
+                                                    </div>
+                                                    <div class="col-sm-2">
+                                                        <label class="form-label">Offer Size</label>
+                                                        <input type="number" id="issuesize" onkeydown="setPostPrice()" class="form-control" />
+                                                    </div>
+                                                    <div class="col-sm-2">
+                                                        <label class="form-label">Post Offer Capital</label>
+                                                        <input type="number" id="postissue" class="form-control" readonly />
+                                                    </div>
+                                                    <div class="col-sm-2">
+                                                        <label class="form-label">Lot Size</label>
+                                                        <input type="number" id="lotsize" class="form-control" />
+                                                    </div>
+                                                    <div class="col-sm-2">
+                                                        <label class="form-label">Face Value</label>
+                                                        <input type="number" id="facevalue" class="form-control" />
+                                                    </div>
+                                                    <div class="col-sm-2">
+                                                        <label class="form-label">Premium</label>
+                                                        <input type="number" id="premium" class="form-control" />
+                                                    </div>
+                                                </div>
+                                                <div class="row" style="margin-top:20px;">
+                                                    <div class="col-sm-2">
+                                                        <label class="form-label"> Price Type</label>
+                                                        <select name="pricetype" id="pricetype" class="form-select"></select>
+                                                    </div>
+                                                    <div class="col-sm-2">
+                                                        <label class="form-label">Fixed Price</label>
+                                                        <input type="number" id="fprice" class="form-control" disabled />
+                                                    </div>
+                                                    <div class="col-sm-2">
+                                                        <label class="form-label">Minimum Price</label>
+                                                        <input type="number" id="minprice" class="form-control" disabled />
+                                                    </div>
+                                                    <div class="col-sm-2">
+                                                        <label class="form-label">Maximum Price</label>
+                                                        <input type="number" id="maxprice" class="form-control" disabled />
+                                                    </div>
+                                                    <div class="col-sm-2">
+                                                        <label class="form-label">Cut Off Price</label>
+                                                        <input type="number" id="cutoffprice" class="form-control" disabled />
+                                                    </div>
+                                                    <div class="col-sm-2">
+                                                        <center>
+                                                            <button type="button" class="btn btn-primary" id="btnIssueSave"
+                                                                    onclick="saveofferDetails()" style="padding: 3px 25px;margin-top:28px;width:60%">
+                                                                Save
+                                                            </button>
+                                                        </center>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="tab-pane fade" id="navs-top-bank" role="tabpanel" style="overflow-y: scroll;height: 235px;overflow-x: hidden;">
+                                                <div class="row">
+                                                    <div class="col-sm-2">
+                                                        <label class="form-label" for="banktype" data-field="banktype">Bank Type</label>
+                                                        <select name="banktype" id="banktype" class="form-select"></select>
+                                                        <input id="banker_gid" class="form-control" hidden />
+                                                    </div>
+                                                    <div class="col-sm-3">
+                                                        <label class="form-label">Bank Name</label>
+                                                        <select id="bank" class="form-select"></select>
+                                                    </div>
+                                                    <div class="col-sm-2">
+                                                        <label class="form-label">IFSC Code</label>
+                                                        <input type="text" id="ifsc" class="form-select" />
+                                                    </div>
+                                                    <div class="col-sm-3">
+                                                        <label class="form-label">Address</label>
+                                                        <textarea id="address" class="form-control" cols="10" rows="2"></textarea>
+                                                    </div>
+                                                    <div class="col-sm-2">
+                                                        <label class="form-label">City</label>
+                                                        <input type="text" id="city" class="form-control" />
+                                                        @* <select name="city" id="city" class="form-select"></select> *@
+                                                    </div>
 
-                                    </div>
-                                    <div class="row">
+                                                </div>
+                                                <div class="row">
 
 
-                                        <div class="col-sm-2">
-                                            <label class="form-label">State</label>
-                                            <input type="text" id="state" class="form-control" />
-                                            @* <select name="state" id="state" onchange="stateChange('city', this)" class="form-select"></select> *@
-                                        </div>
-                                        <div class="col-sm-2">
-                                            <label class="form-label">Pincode</label>
-                                            <input type="text" id="pin" class="form-control" />
-                                        </div>
-                                        <div class="col-sm-3">
-                                            <label class="form-label">Account No.</label>
-                                            <input type="text" id="acno" class="form-control" />
-                                        </div>
-                                        <div class="col-sm-3">
-                                            <label class="form-label">Account Name</label>
-                                            <input type="text" id="acname" class="form-control" />
-                                        </div>
+                                                    <div class="col-sm-2">
+                                                        <label class="form-label">State</label>
+                                                        <input type="text" id="state" class="form-control" />
+                                                        @* <select name="state" id="state" onchange="stateChange('city', this)" class="form-select"></select> *@
+                                                    </div>
+                                                    <div class="col-sm-2">
+                                                        <label class="form-label">Pincode</label>
+                                                        <input type="text" id="pin" class="form-control" />
+                                                    </div>
+                                                    <div class="col-sm-3">
+                                                        <label class="form-label">Account No.</label>
+                                                        <input type="text" id="acno" class="form-control" />
+                                                    </div>
+                                                    <div class="col-sm-3">
+                                                        <label class="form-label">Account Name</label>
+                                                        <input type="text" id="acname" class="form-control" />
+                                                    </div>
 
 
-                                        <div class="col-sm-2">
-                                            <center><button type="button" onclick="saveofferBank()" class="btn btn-primary" id="btnBankSave" style="padding: 3px 25px;margin-top:28px;width:60%">Save</button></center>
-                                        </div>
-                                    </div>
-                                    <div class="row" style="margin-top:10px;">
-                                        <div class="col-sm-12">
-                                            <div id="offerBankGrid"></div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="tab-pane fade" id="navs-top-sh" role="tabpanel" style="overflow-y: scroll;height: 235px;overflow-x: hidden;">
-                                    <div class="row">
-                                        <div class="col-sm-2">
-                                            <label class="form-label">Stake Holder Type</label>
-                                            <select name="sh" id="sh_type" class="form-select"></select>
-                                            <input id="stack_gid" class="form-control" hidden />
-                                            <input id="stack_code" class="form-control" hidden />
-                                        </div>
-                                        <div class="col-sm-2">
-                                            <label class="form-label">Stake Holder Name</label>
-                                            <input type="text" id="sh_name" class="form-control" />
-                                        </div>
-                                        <div class="col-sm-3">
-                                            <label class="form-label">Address</label>
-                                            <textarea id="sh_address" class="form-control" cols="10" rows="2"></textarea>
-                                        </div>
-                                        <div class="col-sm-3">
-                                            <label class="form-label">State</label>
-                                            <select name="sh_state" id="sh_state" onchange="stateChange('sh_city', this)" class="form-select"> </select>
-                                        </div>
-                                        <div class="col-sm-2">
-                                            <label class="form-label">City</label>
-                                            <select name="sh_city" id="sh_city" class="form-select"></select>
-                                        </div>
+                                                    <div class="col-sm-2">
+                                                        <center><button type="button" onclick="saveofferBank()" class="btn btn-primary" id="btnBankSave" style="padding: 3px 25px;margin-top:28px;width:60%">Save</button></center>
+                                                    </div>
+                                                </div>
+                                                <div class="row" style="margin-top:10px;">
+                                                    <div class="col-sm-12">
+                                                        <div id="offerBankGrid"></div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="tab-pane fade" id="navs-top-sh" role="tabpanel" style="overflow-y: scroll;height: 235px;overflow-x: hidden;">
+                                                <div class="row">
+                                                    <div class="col-sm-2">
+                                                        <label class="form-label">Stake Holder Type</label>
+                                                        <select name="sh" id="sh_type" class="form-select"></select>
+                                                        <input id="stack_gid" class="form-control" hidden />
+                                                        <input id="stack_code" class="form-control" hidden />
+                                                    </div>
+                                                    <div class="col-sm-2">
+                                                        <label class="form-label">Stake Holder Name</label>
+                                                        <input type="text" id="sh_name" class="form-control" />
+                                                    </div>
+                                                    <div class="col-sm-3">
+                                                        <label class="form-label">Address</label>
+                                                        <textarea id="sh_address" class="form-control" cols="10" rows="2"></textarea>
+                                                    </div>
+                                                    <div class="col-sm-3">
+                                                        <label class="form-label">State</label>
+                                                        <select name="sh_state" id="sh_state" onchange="stateChange('sh_city', this)" class="form-select"> </select>
+                                                    </div>
+                                                    <div class="col-sm-2">
+                                                        <label class="form-label">City</label>
+                                                        <select name="sh_city" id="sh_city" class="form-select"></select>
+                                                    </div>
 
-                                    </div>
-                                    <div class="row">
-                                        <div class="col-sm-2">
-                                            <label class="form-label">Pincode</label>
-                                            <input type="text" id="sh_pin" class="form-control" />
-                                        </div>
-                                        <div class="col-sm-2">
-                                            <label class="form-label">Contact Name</label>
-                                            <input type="text" id="sh_cname" class="form-control" />
-                                        </div>
-                                        <div class="col-sm-3">
-                                            <label class="form-label">Designation</label>
-                                            <input type="text" id="sh_designation" class="form-control" />
-                                        </div>
-                                        <div class="col-sm-2">
-                                            <label class="form-label">Email</label>
-                                            <input type="text" id="sh_email" class="form-control" />
-                                        </div>
-                                        <div class="col-sm-2">
-                                            <label class="form-label">Mobile</label>
-                                            <input type="text" id="sh_mob" class="form-control" style="width:80%" />
-                                        </div>
-                                        <div class="col-sm-1">
-                                            <center><button type="button" onclick="saveofferStackHolder()" class="btn btn-primary" id="btnShSave" style="padding: 3px 25px;margin-top:28px;margin-left:-40px;">Save</button></center>
-                                        </div>
-                                    </div>
-                                    <div class="row" style="margin-top:10px;">
-                                        <div class="col-sm-12">
-                                            <div id="offerStackGrid"></div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="tab-pane fade" id="navs-top-cat" role="tabpanel">
-                                    <div class="row" style="margin-top: -40px;margin-bottom: 10px;">
-                                        <div class="col-sm-4">
-                                        </div>
-                                        <div class="col-sm-4">
-                                        </div>
-                                        <div class="col-sm-4">
-                                            <center><button type="button" onclick="saveofferCategory()" class="btn btn-primary" id="btnCatSave" style="padding: 3px 25px;margin-top:28px;width:35%">Save</button></center>
-                                        </div>
-                                    </div>
-                                    <div class="row">
-                                        <div class="col-sm-12">
-                                            <div id="offerCategoryGrid"></div>
-                                        </div>
-                                    </div>
+                                                </div>
+                                                <div class="row">
+                                                    <div class="col-sm-2">
+                                                        <label class="form-label">Pincode</label>
+                                                        <input type="text" id="sh_pin" class="form-control" />
+                                                    </div>
+                                                    <div class="col-sm-2">
+                                                        <label class="form-label">Contact Name</label>
+                                                        <input type="text" id="sh_cname" class="form-control" />
+                                                    </div>
+                                                    <div class="col-sm-3">
+                                                        <label class="form-label">Designation</label>
+                                                        <input type="text" id="sh_designation" class="form-control" />
+                                                    </div>
+                                                    <div class="col-sm-2">
+                                                        <label class="form-label">Email</label>
+                                                        <input type="text" id="sh_email" class="form-control" />
+                                                    </div>
+                                                    <div class="col-sm-2">
+                                                        <label class="form-label">Mobile</label>
+                                                        <input type="text" id="sh_mob" class="form-control" style="width:80%" />
+                                                    </div>
+                                                    <div class="col-sm-1">
+                                                        <center><button type="button" onclick="saveofferStackHolder()" class="btn btn-primary" id="btnShSave" style="padding: 3px 25px;margin-top:28px;margin-left:-40px;">Save</button></center>
+                                                    </div>
+                                                </div>
+                                                <div class="row" style="margin-top:10px;">
+                                                    <div class="col-sm-12">
+                                                        <div id="offerStackGrid"></div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="tab-pane fade" id="navs-top-cat" role="tabpanel">
+                                                <div class="row" style="margin-top: -40px;margin-bottom: 10px;">
+                                                    <div class="col-sm-4">
+                                                    </div>
+                                                    <div class="col-sm-4">
+                                                    </div>
+                                                    <div class="col-sm-4">
+                                                        <center><button type="button" onclick="saveofferCategory()" class="btn btn-primary" id="btnCatSave" style="padding: 3px 25px;margin-top:28px;width:35%">Save</button></center>
+                                                    </div>
+                                                </div>
+                                                <div class="row">
+                                                    <div class="col-sm-12">
+                                                        <div id="offerCategoryGrid"></div>
+                                                    </div>
+                                                </div>
 
-                                </div>
-                                <div class="tab-pane fade" id="navs-top-mile" role="tabpanel">
-                                    <div class="row">
-                                        <div class="col-md-2-4">
-                                            <label class="form-label">Offer Opening Date	</label>&nbsp;<span style="font-size: 12px;color:red;font-weight: bold;">*</span>
-                                            <input type="date" id="iod" class="form-control" />
-                                            <input id="milestone_gid" class="form-control" hidden />
-                                            <span id="queryiod" style="color: red; font-size: 12px;position:relative;"></span>
-                                        </div>
-                                        <div class="col-md-2-4">
-                                            <label class="form-label">Offer closing Date	</label>&nbsp;<span style="font-size: 12px;color:red;font-weight: bold;">*</span>
-                                            <input type="date" id="icd" class="form-control" />
-                                            <span id="queryicd" style="color: red; font-size: 12px;position:relative;"></span>
-                                        </div>
-                                        <div class="col-md-2-4">
-                                            <label class="form-label">Allotment Date	</label>&nbsp;<span style="font-size: 12px;color:red;font-weight: bold;">*</span>
-                                            <input type="date" id="alotdate" class="form-control" />
-                                            <span id="queryalotdate" style="color: red; font-size: 12px;position:relative;"></span>
-                                        </div>
-                                        <div class="col-md-2-4">
-                                            <label class="form-label">Approval Date	</label>&nbsp;<span style="font-size: 12px;color:red;font-weight: bold;">*</span>
-                                            <input type="date" id="apdate" class="form-control" />
-                                            <span id="queryapdate" style="color: red; font-size: 12px;position:relative;"></span>
-                                        </div>
-                                        <div class="col-md-2-4">
-                                            <label class="form-label">NSDL CA Date	</label>&nbsp;<span style="font-size: 12px;color:red;font-weight: bold;">*</span>
-                                            <input type="date" id="nsdldate" class="form-control" />
-                                            <span id="querynsdldate" style="color: red; font-size: 12px;position:relative;"></span>
-                                        </div>
+                                            </div>
+                                            <div class="tab-pane fade" id="navs-top-mile" role="tabpanel">
+                                                <div class="row">
+                                                    <div class="col-md-2-4">
+                                                        <label class="form-label">Offer Opening Date	</label>&nbsp;<span style="font-size: 12px;color:red;font-weight: bold;">*</span>
+                                                        <input type="date" id="iod" class="form-control" />
+                                                        <input id="milestone_gid" class="form-control" hidden />
+                                                        <span id="queryiod" style="color: red; font-size: 12px;position:relative;"></span>
+                                                    </div>
+                                                    <div class="col-md-2-4">
+                                                        <label class="form-label">Offer closing Date	</label>&nbsp;<span style="font-size: 12px;color:red;font-weight: bold;">*</span>
+                                                        <input type="date" id="icd" class="form-control" />
+                                                        <span id="queryicd" style="color: red; font-size: 12px;position:relative;"></span>
+                                                    </div>
+                                                    <div class="col-md-2-4">
+                                                        <label class="form-label">Allotment Date	</label>&nbsp;<span style="font-size: 12px;color:red;font-weight: bold;">*</span>
+                                                        <input type="date" id="alotdate" class="form-control" />
+                                                        <span id="queryalotdate" style="color: red; font-size: 12px;position:relative;"></span>
+                                                    </div>
+                                                    <div class="col-md-2-4">
+                                                        <label class="form-label">Approval Date	</label>&nbsp;<span style="font-size: 12px;color:red;font-weight: bold;">*</span>
+                                                        <input type="date" id="apdate" class="form-control" />
+                                                        <span id="queryapdate" style="color: red; font-size: 12px;position:relative;"></span>
+                                                    </div>
+                                                    <div class="col-md-2-4">
+                                                        <label class="form-label">NSDL CA Date	</label>&nbsp;<span style="font-size: 12px;color:red;font-weight: bold;">*</span>
+                                                        <input type="date" id="nsdldate" class="form-control" />
+                                                        <span id="querynsdldate" style="color: red; font-size: 12px;position:relative;"></span>
+                                                    </div>
 
-                                    </div>
-                                    <div class="row" style="margin-top:15px;">
-                                        <div class="col-md-2-4">
-                                            <label class="form-label">CDSL CA Date	</label>&nbsp;<span style="font-size: 12px;color:red;font-weight: bold;">*</span>
-                                            <input type="date" id="cdsldate" class="form-control" />
-                                            <span id="querycdsldate" style="color: red; font-size: 12px;position:relative;"></span>
-                                        </div>
-                                        <div class="col-md-2-4">
-                                            <label class="form-label">Refund Date	</label>&nbsp;<span style="font-size: 12px;color:red;font-weight: bold;">*</span>
-                                            <input type="date" id="refunddate" class="form-control" />
-                                            <span id="queryrefunddate" style="color: red; font-size: 12px;position:relative;"></span>
-                                        </div>
-                                        <div class="col-md-2-4">
-                                            <label class="form-label">Listing Date	</label>&nbsp;<span style="font-size: 12px;color:red;font-weight: bold;">*</span>
-                                            <input type="date" id="ldate" class="form-control" />
-                                            <span id="queryldate" style="color: red; font-size: 12px;position:relative;"></span>
-                                        </div>
-                                        <div class="col-md-2-4">
-                                            <center><button type="button" onclick="saveOfferMilstone()" class="btn btn-primary" id="btnSave" style="padding: 3px 25px;margin-top:30px;width:50%">Save</button></center>
-                                        </div>
-                                    </div>
+                                                </div>
+                                                <div class="row" style="margin-top:15px;">
+                                                    <div class="col-md-2-4">
+                                                        <label class="form-label">CDSL CA Date	</label>&nbsp;<span style="font-size: 12px;color:red;font-weight: bold;">*</span>
+                                                        <input type="date" id="cdsldate" class="form-control" />
+                                                        <span id="querycdsldate" style="color: red; font-size: 12px;position:relative;"></span>
+                                                    </div>
+                                                    <div class="col-md-2-4">
+                                                        <label class="form-label">Refund Date	</label>&nbsp;<span style="font-size: 12px;color:red;font-weight: bold;">*</span>
+                                                        <input type="date" id="refunddate" class="form-control" />
+                                                        <span id="queryrefunddate" style="color: red; font-size: 12px;position:relative;"></span>
+                                                    </div>
+                                                    <div class="col-md-2-4">
+                                                        <label class="form-label">Listing Date	</label>&nbsp;<span style="font-size: 12px;color:red;font-weight: bold;">*</span>
+                                                        <input type="date" id="ldate" class="form-control" />
+                                                        <span id="queryldate" style="color: red; font-size: 12px;position:relative;"></span>
+                                                    </div>
+                                                    <div class="col-md-2-4">
+                                                        <center><button type="button" onclick="saveOfferMilstone()" class="btn btn-primary" id="btnSave" style="padding: 3px 25px;margin-top:30px;width:50%">Save</button></center>
+                                                    </div>
+                                                </div>
 
+                                            </div>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
+                        <div class="tab-pane fade" id="navs-top-profile" role="tabpanel">
+                            <input type="hidden" id="ipocode" />
+                            <div id="auditGrid"></div>
+                        </div>                     
                     </div>
-                </div>
+                </div>               
             </div>
         </div>
     </div>
@@ -482,6 +516,8 @@
 <script>
       $( document ).ready(function() {
               $('#navhead').text('Offer Setup');
+               var ipocode = localStorage.getItem("selectedIPO");
+               $("#ipocode").val(ipocode);
                var role_code =  '@role_code';
                enableDisable();
               var mode = new URLSearchParams(window.location.search).get('mode');
@@ -504,6 +540,7 @@
                         localStorage.removeItem("activeTab");
                     }
 
+                    auditGrid();
               $('#offer_header_gid').val(0);
               $("#offer_detail_gid").val(0);
               $("#banker_gid").val(0);
@@ -520,7 +557,7 @@
               
 
               loadMasterDropdown("QCD_STATUS", "status", "D", function (data) {
-                var filtered = role_code == 'IPOMKR'
+                var filtered = role_code == 'IPOCHK'
                     ? data.filter(x => x.master_code == "Y" || x.master_code == "S")
                     : data.filter(x => x.master_code != "Y" && x.master_code != "S");
 
@@ -642,6 +679,28 @@
         });
     }
 
+
+    function auditGrid() {
+        var ipo_code = $("#ipocode").val();
+        try {
+            $.ajax({
+                type: "GET",
+                url: '@Url.Action("GetAuditTrail", "IssueSetup")',
+                dataType: 'json',
+                contentType: 'application/json; charset=utf-8',
+                data: {
+                    ipo_code: ipo_code
+                },
+                success: function (response) {
+                    console.log(response);
+                }
+            });
+
+        }  catch (e) {
+            console.log(e);
+        }
+    }
+
     function getclientlist(){
             var mymodel = {
                 p_client_gid: 0,
@@ -748,7 +807,7 @@
             var status = $("#status").val();
             var remarks = $("#remarks").val();
             if (remarks === "") {
-                if (role_code === "IPOMKR") {
+                if (role_code === "IPOCHK") {
                     if (status === "I" || status === "C" || status === "S") {
                         $("#v_remarks").text("Please Enter Remark");
                         isValid = false;
@@ -1058,7 +1117,7 @@
          function fetchofferBank(data){
               var role_code =  '@role_code';
               var actionTemplate = "";
-                        if (role_code === "IPOMKR") {
+                        if (role_code === "IPOCHK") {
                             actionTemplate = `
                                 <img src='../Assets/images/viewicons.png'
                                      onclick="editBankGrid(this)"
@@ -1367,7 +1426,7 @@
             function fetchofferStackHolder(data){
                 var role_code =  '@role_code';
                 var actionTemplate = "";
-                if (role_code === "IPOMKR") {
+                if (role_code === "IPOCHK") {
                     actionTemplate = `
                    <img src='../Assets/images/viewicons.png'
                         onclick="editStackHolderGrid(this)"
@@ -1782,11 +1841,11 @@
                 sortable: true,
                 filterable: true,
                 resizable: true,
-                editable: role_code !== "IPOMKR" ? "incell" : false,
+                editable: role_code !== "IPOCHK" ? "incell" : false,
                // editable: "incell",
                 beforeEdit: function (e) {
                 var fieldName = e.container.find("input").attr("name");
-                if (role_code === "IPOMKR" && (!fieldName || fieldName !== "offer_cat_shares")) {
+                if (role_code === "IPOCHK" && (!fieldName || fieldName !== "offer_cat_shares")) {
                     e.preventDefault();
                 }
             },
@@ -2163,7 +2222,7 @@
 
         function enableDisable(){
           var role_code =  '@role_code';
-          if(role_code == 'IPOMKR') {
+          if(role_code == 'IPOCHK') {
               $("#clientname").prop("disabled", true);
               $("#offer_type").prop("disabled", true);
               $("#listing").prop("disabled", true);
