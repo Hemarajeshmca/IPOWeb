@@ -144,11 +144,30 @@
             color: #5490ff;
             font-size: 22px;
             margin-right: 10px;
+            position: relative;
+            left: -5px;
+        }
+
+        i.bx.bxs-cog {
+            color: #5490ff;
+            font-size: 20px;
+            margin-right: 15px;
+            margin-left: 15px;
+            position: relative;
+            left: -22px;
         }
 
         i.fa.fa-ticket {
             color: #5490ff;
             font-size: 18px;
+        }
+
+        i.bx.bx-news {
+            color: #5490ff;
+            font-size: 20px;
+            margin-right: 15px;
+            position: relative;
+            left: -6px;
         }
 
         #overlayy {
@@ -2344,10 +2363,13 @@
                    success: function (response) {
                        if (response) {
                          var data = JSON.parse(response._data);
+                          var filteredData = data.filter(function(item) {
+                                return item.ipo_status === 'A';
+                            });
                          var $ddl = $("#" + 'iponames');
                            $ddl.empty();
                            $ddl.append('<option value="">--- Select ---</option>');
-                           $.each(data, function (index, item) {
+                           $.each(filteredData, function (index, item) {
                                $ddl.append(
                                   '<option value="' + item.offer_code + '">' +
                                      item.offer_code + ' - '+ item.client_name +

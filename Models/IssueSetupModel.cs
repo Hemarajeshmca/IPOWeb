@@ -32,7 +32,8 @@ namespace IPOWeb.Models
         public string? client_code { get; set; }
         public string? user_code { get; set; }
         public string? role_code { get; set; }
-        public char active_status { get; set; }
+        public string? active_status { get; set; }
+        public string? ipo_status { get; set; }
         public char delete_flag { get; set; }
 
     }
