@@ -108,6 +108,7 @@
                             <button type="button"
                             class="nav-link active"
                             role="tab"
+                             id="detailsTab"
                             data-bs-toggle="tab"
                             data-bs-target="#navs-top-home"
                             aria-controls="navs-top-home"
@@ -533,8 +534,19 @@
                             </div>
                         </div>
                         <div class="tab-pane fade" id="navs-top-profile" role="tabpanel">
-                            <input type="hidden" id="offer_code" />
-                            <div id="auditGrid"></div>
+                            <div class="row">
+                                <div class="col-sm-12">
+                                    <img style="width:20px; height:20px; margin-bottom:-9px; cursor:pointer;float:right;position: relative;top: -17px;"
+                                         onclick="showDetailsTab()"
+                                         src="/Assets/images/toplist.png">
+                                </div>
+                            </div>
+                            <div class="col-sm-12">
+                                <input type="hidden" id="offer_code" />
+                                <div id="auditGrid"></div>
+                            </div>
+                        </div>
+                            
                         </div>                     
                     </div>
                 </div>               
@@ -735,6 +747,16 @@
                         sortable: true,
                         filterable: true,
                         columns: [
+                             {
+                                field: "AuditDate",
+                                 title: "Date",
+                                 width: 80
+                            },
+                             {
+                                 field: "AuditTime",
+                                 title: "Time" ,
+                                 width: 80
+                             },
                             {
                                 field: "Auditby",
                                 title: "Audit By",
@@ -765,17 +787,8 @@
                                 field: "AuditRemarks",
                                 title: "Audit Remarks",
                                 width: 250
-                            },
-                            {
-                                field: "AuditDate",
-                                 title: "Date",
-                                 width: 80
-                            },
-                             {
-                                 field: "AuditTime",
-                                 title: "Time" ,
-                                 width: 80
-                             }
+                            }
+                           
                         ]
                     });
         }
@@ -2444,4 +2457,9 @@
             $("#acnoError").hide();
         }
     });
+
+        function showDetailsTab() {
+        var tab = new bootstrap.Tab(document.getElementById('detailsTab'));
+        tab.show();
+    }
 </script>
