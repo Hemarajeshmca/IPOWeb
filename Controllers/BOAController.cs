@@ -392,6 +392,16 @@ namespace IPOWeb.Controllers
                 .ToObject<Dictionary<string, object>>())
                 .ToList();
 
+                        var table30Data = ((IEnumerable<dynamic>)temp.Table29)
+               .Select(row => ((Newtonsoft.Json.Linq.JObject)row)
+               .ToObject<Dictionary<string, object>>())
+               .ToList();
+
+                        var table31Data = ((IEnumerable<dynamic>)temp.Table30)
+               .Select(row => ((Newtonsoft.Json.Linq.JObject)row)
+               .ToObject<Dictionary<string, object>>())
+               .ToList();
+
                         return Json(new
                         {
                             success = true,
@@ -426,6 +436,8 @@ namespace IPOWeb.Controllers
                                 table27 = table27Data,
                                 table28 = table28Data,
                                 table29 = table29Data,
+                                table30 = table30Data,
+                                table31 = table31Data,
                             }
                         });
                     }
@@ -473,6 +485,8 @@ namespace IPOWeb.Controllers
             var CategoryCRNR = data.categoryCRNR;
             var CategoryCOVERSUBS = data.categoryCOVERSUBS;
             var CategoryCANCH = data.categoryCANCH;
+            var stakeholders = data.categoryCSTK;
+            var BankNAMaster = data.bankNAMaster;
 
             string clientName = summary.client_name;
             long offer_issuesize = summary.offer_issuesize;
@@ -530,6 +544,8 @@ namespace IPOWeb.Controllers
             long invalid_dp_shares = CategoryCRNR.invalid_dp_shares;
             long multi_pan_applications = CategoryCRNR.multi_pan_applications;
             long multi_pan_shares = CategoryCRNR.multi_pan_shares;
+            long lsp_applications = CategoryCRNR.lsp_applications;
+            long lsp_shares = CategoryCRNR.lsp_shares;
             decimal over_subs = CategoryCOVERSUBS.over_subs;
             decimal rej_over_subs = CategoryCOVERSUBS.rej_over_subs;
             long mma_applications = CategoryCANCH.mma_applications;
@@ -547,6 +563,21 @@ namespace IPOWeb.Controllers
             string mm_offer_listingdate = CategoryCANCH.mm_offer_listingdate;
             decimal mma_bid_book_subscription = CategoryCANCH.mma_bid_book_subscription;
             decimal mm_final_subscription = CategoryCANCH.mm_final_subscription;
+
+            var companyOfficials = stakeholders.Where(x => x.stack_type == "QCD_COMP_OFFICIAL").ToList();
+            string issuerNames = string.Join(" & ", companyOfficials.Select(x => "Mr. " + x.stack_contact));
+            string issuerDesignation = string.Join(" & ",companyOfficials.Select(x => x.stack_designation).Distinct());
+            string issuerCompany = companyOfficials.FirstOrDefault()?.stack_name ?? "";
+
+            var leadManager = stakeholders.FirstOrDefault(x => x.stack_type == "QCD_LEAD_MANAGER");
+            string lmCompany = leadManager?.stack_name ?? "";
+            string lmName = leadManager != null? "Mr. " + leadManager.stack_contact: "";
+            string lmDesignation = leadManager?.stack_designation ?? "";
+
+            var registrar = stakeholders.FirstOrDefault(x => x.stack_type == "QCD_RTA");
+            string rtaCompany = registrar?.stack_name ?? "";
+            string rtaName = registrar != null? "Mr. " + registrar.stack_contact : "";
+            string rtaDesignation = registrar?.stack_designation ?? "";
 
             string templatePath = _configuration["Appsettings:templatePath"];
 
@@ -615,6 +646,8 @@ namespace IPOWeb.Controllers
                 ReplaceText(body, "{invalid_dp_shares}", invalid_dp_shares.ToString("N0"));
                 ReplaceText(body, "{multi_pan_applications}", multi_pan_applications.ToString("N0"));
                 ReplaceText(body, "{multi_pan_shares}", multi_pan_shares.ToString("N0"));
+                ReplaceText(body, "{lsp_applications}", lsp_applications.ToString("N0"));
+                ReplaceText(body, "{lsp_shares}", lsp_shares.ToString("N0"));
                 ReplaceText(body, "{over_subs}", CategoryCOVERSUBS.over_subs.ToString("N2"));
                 ReplaceText(body, "{rej_over_subs}", CategoryCOVERSUBS.rej_over_subs.ToString("N2"));
                 ReplaceText(body, "{mma_applications}", mma_applications.ToString("N0"));
@@ -636,6 +669,16 @@ namespace IPOWeb.Controllers
                 ReplaceText(body, "{mm_offer_listingdate}", openingDate4.ToString("dd MMMM yyyy"));
                 ReplaceText(body, "{mma_bid_book_subscription}", CategoryCANCH.mma_bid_book_subscription.ToString("N2"));
                 ReplaceText(body, "{mm_final_subscription}", CategoryCANCH.mm_final_subscription.ToString("N2"));
+                ReplaceText(body, "{issuer_company}", issuerCompany);
+                ReplaceText(body, "{issuer_names}", issuerNames);
+                ReplaceText(body, "{issuer_designation}", issuerDesignation);
+                ReplaceText(body, "{lm_company}", lmCompany);
+                ReplaceText(body, "{lm_name}", lmName);
+                ReplaceText(body, "{lm_designation}", lmDesignation);
+                ReplaceText(body, "{rta_company}", rtaCompany);
+                ReplaceText(body, "{rta_name}", rtaName);
+                ReplaceText(body, "{rta_designation}", rtaDesignation);
+
 
                 var para = body.Descendants<DocumentFormat.OpenXml.Wordprocessing.Paragraph>()
     .FirstOrDefault(p => p.InnerText.Contains("Net Collections of Non-institutional and Individual Investor Categories by ASBA"));
@@ -817,7 +860,7 @@ namespace IPOWeb.Controllers
 
                         rejectionTable.Append(totalRow);
                     }
-                }
+                }              
 
                 var para2 = body.Descendants<DocumentFormat.OpenXml.Wordprocessing.Paragraph>()
 .FirstOrDefault(p => p.InnerText.Contains("the applications processed by Registrar after rejecting invalid bids and bids not banked are as under:"));
@@ -1482,18 +1525,18 @@ namespace IPOWeb.Controllers
                         table.Append(header);
 
                         // ✅ DATA
-                        var bankMasterList = BankMaster ?? new List<BankMaster>();
-                        int totalBankCount = bankMasterList.FirstOrDefault()?.total_bank_count ?? 0;
+                        var nonbankNAMasterList = BankNAMaster ?? new List<BankNAMaster>();
+                        int nontotalBankCount = nonbankNAMasterList.FirstOrDefault()?.nonasba_total_bank_count ?? 0;
 
                         foreach (var text in body.Descendants<DocumentFormat.OpenXml.Wordprocessing.Text>())
                         {
-                            if (text.Text.Contains("{total_bank_count}"))
+                            if (text.Text.Contains("{nonasba_total_bank_count}"))
                             {
-                                text.Text = text.Text.Replace("{total_bank_count}", totalBankCount.ToString());
+                                text.Text = text.Text.Replace("{nonasba_total_bank_count}", nontotalBankCount.ToString());
                             }
                         }
 
-                        int total = bankMasterList.Count;
+                        int total = nonbankNAMasterList.Count;
                         int half = (int)Math.Ceiling(total / 2.0);
 
                         int leftSerial = 1;
@@ -1511,14 +1554,14 @@ namespace IPOWeb.Controllers
                             if (i < total)
                             {
                                 leftSr = leftSerial.ToString();
-                                leftName = bankMasterList[i].bank_name?.ToUpper() ?? "";
+                                leftName = nonbankNAMasterList[i].nonasba_bank_name?.ToUpper() ?? "";
                                 leftSerial++;
                             }
 
                             if (i + half < total)
                             {
                                 rightSr = rightSerial.ToString();
-                                rightName = bankMasterList[i + half].bank_name?.ToUpper() ?? "";
+                                rightName = nonbankNAMasterList[i + half].nonasba_bank_name?.ToUpper() ?? "";
                                 rightSerial++;
                             }
 

@@ -2136,6 +2136,8 @@
                          var table27 = data.table27;
                          var table28 = data.table28;
                          var table29 = data.table29;
+                         var table30 = data.table30;
+                         var table31 = data.table31;
                             cin = row.client_cin;
                             $('#cin').val(row.client_cin);
                                       fetch('/BOA/downloadAllReports', {
@@ -2172,7 +2174,9 @@
                                             categoryCMMS: table26[0],
                                             categoryCRNR: table27[0],
                                             categoryCOVERSUBS: table28[0],
-                                            categoryCANCH: table29[0]
+                                            categoryCANCH: table29[0],
+                                            categoryCSTK: table30,
+                                            bankNAMaster: table31
                                         })
                                     })
                                     .then(response => {
@@ -2193,7 +2197,9 @@
                                         a.remove();
 
                                         window.URL.revokeObjectURL(url);
-                                        hideProgress();
+                                        setTimeout(() => {
+                                                hideProgress();
+                                            }, 10000);
                                     })
                                     .catch(error => {
                                         console.error("Download failed:", error);

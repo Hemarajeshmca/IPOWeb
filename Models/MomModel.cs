@@ -18,6 +18,7 @@ namespace IPOWeb.Models
         public List<ValidAppln> validAppln { get; set; }
         public List<AllotmentSummary> allotmentSummary { get; set; }
         public List<BankMaster> bankMaster { get; set; }
+        public List<BankNAMaster> bankNAMaster { get; set; }
         public List<CategoryQIB> categoryQIB { get; set; }
         public List<CategoryMM> categoryMM { get; set; }
         public List<CategoryEMP> categoryEMP { get; set; }
@@ -28,6 +29,7 @@ namespace IPOWeb.Models
         public CategoryCRNR categoryCRNR { get; set; }
         public CategoryCOVERSUBS categoryCOVERSUBS { get; set; }
         public CategoryCANCH categoryCANCH { get; set; }
+        public List<CategoryCSTK> categoryCSTK { get; set; }
         public List<CategorySOA> categorySOA { get; set; }
         public List<CategoryEXMMSOA> categoryEXMMSOA { get; set; }
         public List<CategoryMARMAK> categoryMARMAK { get; set; }
@@ -171,6 +173,14 @@ namespace IPOWeb.Models
 
     }
 
+    public class BankNAMaster
+    {
+        public string? nonasba_bank_name { get; set; }
+
+        public int nonasba_total_bank_count { get; set; }
+
+    }
+
     public class CategoryQIB
     {
         public string bank_name { get; set; }
@@ -243,6 +253,14 @@ namespace IPOWeb.Models
         public decimal mm_final_subscription { get; set; }
     }
 
+    public class CategoryCSTK
+    {
+        public string stack_name { get; set; }
+        public string stack_contact { get; set; }
+        public string stack_designation { get; set; }
+        public string stack_type { get; set; }
+    }
+
     public class CategoryCRNR
     {
         public long rnr_valid_applications { get; set; }
@@ -253,6 +271,8 @@ namespace IPOWeb.Models
         public long invalid_dp_shares { get; set; }       
         public long multi_pan_applications { get; set; }       
         public long multi_pan_shares { get; set; }       
+        public long lsp_applications { get; set; }       
+        public long lsp_shares { get; set; }       
     }
 
     public class CategoryCQIB
