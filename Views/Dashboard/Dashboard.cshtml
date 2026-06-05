@@ -1,8 +1,8 @@
 ﻿@{
     Layout = "~/Views/Shared/_LayoutNew.cshtml";
     var userName = Context.Session.GetString("user_name");
-    var userRole = Context.Session.GetString("user_role");
-    var roleName = Context.Session.GetString("role_name");
+    var role_code = Context.Session.GetString("user_role");
+    var userCode = Context.Session.GetString("user_code");
 }
 <!DOCTYPE html>
 <html>  
@@ -12,32 +12,32 @@
     <style>       
 
         .nav-tabs .nav-link.active, .nav-tabs .nav-item.show .nav-link {
-            background-color: #027ed1 !important;
-            color: #fff !important;
+        background-color: #027ed1 !important;
+        color: #fff !important;
         }
 
         .nav-tabs .nav-item .nav-link:not(.active) {
-            background-color: #716969;
-            color: #fff;
+        background-color: #716969;
+        color: #fff;
         }
-       #legends {            
-            border-radius: 10px;
-            width: 15%;
-            margin: 10px;
-            padding: 7px 2px 2px 4px;
+        #legends {            
+        border-radius: 10px;
+        width: 15%;
+        margin: 10px;
+        padding: 7px 2px 2px 4px;
         }
         #border {
-            border: 1px solid #efdada;          
-            border-radius: 10px;
+        border: 1px solid #efdada;          
+        border-radius: 10px;
         }
         p {
-            text-align: center;
-            color: #fff;
+        text-align: center;
+        color: #fff;
         }    
 
-            
+
         .nav-align-top.mb-4 {
-            margin-top: -17px;
+        margin-top: -17px;
         }
     </style>
 </head>
@@ -50,36 +50,36 @@
                     <ul class="nav nav-tabs" role="tablist">
                         <li class="nav-item">
                             <button type="button"
-                                    class="nav-link active"
-                                    role="tab"
-                                    data-bs-toggle="tab"
-                                    data-bs-target="#navs-top-dashboard"
-                                    aria-controls="navs-top-dashboard"
-                                    aria-selected="true">
+                            class="nav-link active"
+                            role="tab"
+                            data-bs-toggle="tab"
+                            data-bs-target="#navs-top-dashboard"
+                            aria-controls="navs-top-dashboard"
+                            aria-selected="true">
                                 Dashboard
                             </button>
                         </li>
                         <li class="nav-item" onclick="offersTab()" style="cursor:pointer;">
                             <button type="button"
-                                    onclick="offersTab()"
-                                    class="nav-link"
-                                    role="tab"
-                                    data-bs-toggle="tab"
-                                    data-bs-target="#navs-top-offer"
-                                    aria-controls="navs-top-offer"
-                                    aria-selected="false">
+                            onclick="offersTab()"
+                            class="nav-link"
+                            role="tab"
+                            data-bs-toggle="tab"
+                            data-bs-target="#navs-top-offer"
+                            aria-controls="navs-top-offer"
+                            aria-selected="false">
                                 Offer
                             </button>
                         </li>
                         <li class="nav-item">
                             <button type="button"
-                                    class="nav-link"
-                                    onclick="showclientGrid()"
-                                    role="tab"
-                                    data-bs-toggle="tab"
-                                    data-bs-target="#navs-top-client"
-                                    aria-controls="navs-top-client"
-                                    aria-selected="false">
+                            class="nav-link"
+                            onclick="showclientGrid()"
+                            role="tab"
+                            data-bs-toggle="tab"
+                            data-bs-target="#navs-top-client"
+                            aria-controls="navs-top-client"
+                            aria-selected="false">
                                 Client
                             </button>
                         </li>
@@ -116,26 +116,29 @@
                                 <div class="col-sm-5 text-center" id="border" style="margin-right: 149px;">
                                     <h5 style="color:#000">Mainboard IPOs vs SME IPOs</h5>
                                     <div id="piechart_3d"
-                                         style="width: 100%; height: 300px; margin: auto;">
+                                    style="width: 100%; height: 300px; margin: auto;">
                                     </div>
                                 </div>
                                 <div class="col-sm-5 text-center ms-4" id="border">
                                     <h5 style="color:#000">IPO Status</h5>
                                     <div id="curve_chart"
-                                         style="width: 100%; height: 300px; margin: auto;position: relative;top: -13px;">
+                                    style="width: 100%; height: 300px; margin: auto;position: relative;top: -13px;">
                                     </div>
                                 </div>
                             </div>
                         </div>
                         <div class="tab-pane fade" id="navs-top-offer" role="tabpanel">
-                            <div class="row" style="margin-top:-13px;">
-                                <div class="col-sm-6">
-                                    <img id="plusIcon" onclick="navOfferPage()" style="width:11px; height:11px;margin-bottom:12px;cursor:pointer" src="~/Assets/images/plus.png" />
+                            @if (role_code == "IPOMKR")
+                            {
+                                <div class="row" style="margin-top:-13px;">
+                                    <div class="col-sm-6">
+                                        <img id="plusIcon" onclick="navOfferPage()" style="width:11px; height:11px;margin-bottom:12px;cursor:pointer" src="~/Assets/images/plus.png" />
+                                    </div>
+                                    <div class="col-sm-6">
+                                        <i class='fas fa-file-excel' onclick="exportOfferList()"  style='font-size:20px;cursor:pointer;color:green;float:right'></i>
+                                    </div>
                                 </div>
-                                <div class="col-sm-6">
-                                    <i class='fas fa-file-excel' onclick="exportOfferList()"  style='font-size:20px;cursor:pointer;color:green;float:right'></i>
-                                </div>
-                            </div>
+                            }
                             <div class="row">
                                 <div class="col-sm-12">
                                     <div id="offerListGrid"></div>
@@ -548,10 +551,15 @@
     }
 
      function showofferGrid() {
+         var role_code = '@role_code';
         $.ajax({
             type: "GET",
             url: '@Url.Action("GetOffersList", "Dashboard")',
             dataType: "json",
+            data: {
+                in_user_code: '@userCode',
+                in_role_code: '@role_code'                    
+            },
             contentType: 'application/json; charset=utf-8',
             success: function (data) {
                 if (data.authExpired) {
@@ -570,21 +578,37 @@
                     });
                     return;
                 }
-                var gridData = JSON.parse(data._data);
-                console.log("Offerdats : ", gridData);
+                var gridData = JSON.parse(data._data);              
                 var columns = [
                     {
                         title: "Action",
                         width: 70,
-                        template: `
-                            <img src='../Assets/images/editicons.png'
-                                 onclick="editOfferGrid(this)"
-                                 style="height:12px;width:12px;cursor:pointer;margin-right:10px;" />
+                        template: function(dataItem) {
+                            if (role_code == 'IPOMKR' && (dataItem.ipo_status == 'A' || dataItem.ipo_status == 'Y')) {
+                                return `
+                                    <img src='../Assets/images/viewicons.png'
+                                         onclick="editOfferGrid(this)"
+                                         style="height:12px;width:12px;cursor:pointer;" />
+                                `;
+                            } else if(role_code == 'IPOCHK') {
+                                 return `
+                                    <img src='../Assets/images/viewicons.png'
+                                         onclick="editOfferGrid(this)"
+                                         style="height:12px;width:12px;cursor:pointer;" />
+                                `;
+                            } else {
+                                 return `
+                                <img src='../Assets/images/editicons.png'
+                                     onclick="editOfferGrid(this)"
+                                     style="height:12px;width:12px;cursor:pointer;margin-right:10px;" />
 
-                            <img src='../Assets/images/del.png'
-                                 onclick="deleteOfferGrid(this)"
-                                 style="height:12px;width:12px;cursor:pointer;" />
-                        `
+                                <img src='../Assets/images/del.png'
+                                     onclick="deleteOfferGrid(this)"
+                                     style="height:12px;width:12px;cursor:pointer;" />
+                            `;
+                            }
+
+                        }
                     },
                     {
                         field: "offer_header_gid",
@@ -613,12 +637,21 @@
                         title: "Listing No"
                     },
                     {
-                        field: "master_name",
+                        field: "offer_status_desc",
                         title: "Offer Status"
+                    },
+                    {
+                        field: "ipo_status_desc",
+                        title: "IPO Status"
                     },
                      {
                         field: "offer_status",
                         title: "Offer Status",
+                        hidden:true
+                    },
+                    {
+                        field: "ipo_status",
+                        title: "IPO Status",
                         hidden:true
                     }
                 ];

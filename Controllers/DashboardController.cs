@@ -83,7 +83,7 @@ namespace IPOWeb.Controllers
         }
 
         [HttpGet]
-        public async Task<JsonResult> GetOffersList()
+        public async Task<JsonResult> GetOffersList(string in_user_code, string in_role_code)
         {
             var urlstring = _configuration.GetSection("Appsettings")["apiurl"] + "GetOfferlist";
             DataSet result = new DataSet();
@@ -99,7 +99,8 @@ namespace IPOWeb.Controllers
                     client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
                     // client.DefaultRequestHeaders.Add("user_code", in_user_code);
                     client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
-                    var response = client.GetAsync(urlstring).Result;
+                    string url = urlstring + "?in_user_code=" + in_user_code + "&in_role_code=" + in_role_code;
+                    var response = client.GetAsync(url).Result;
                     if (response.StatusCode == HttpStatusCode.Unauthorized)
                     {
                         Response.Cookies.Delete(APIcookieName);
