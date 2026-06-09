@@ -2290,6 +2290,7 @@
                         }
                         var result = JSON.parse(response.data);
                         var $ddl = $("#" + dropdownId);
+                        
                         $ddl.empty();
                         $ddl.append('<option value="">--- Select ---</option>');
                         $.each(result, function (index, item) {
@@ -2303,6 +2304,7 @@
                         if (selectedValue) {
                             $ddl.val(selectedValue).trigger("change");
                         }
+                        console.log("After Set:", $ddl.val());
                             if (callback) callback(result);
                     },
                 error: function (xhr) {
@@ -2364,7 +2366,7 @@
                        if (response) {
                          var data = JSON.parse(response._data);
                           var filteredData = data.filter(function(item) {
-                                return item.ipo_status === 'A';
+                                return item.ipo_status === 'CA';
                             });
                          var $ddl = $("#" + 'iponames');
                            $ddl.empty();

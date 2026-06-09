@@ -1,6 +1,8 @@
 ﻿@{
     Layout = "~/Views/Shared/_LayoutNew.cshtml";
     var userName = Context.Session.GetString("user_name");
+    var role_code = Context.Session.GetString("user_role");
+    var userCode = Context.Session.GetString("user_code");
 }
 <!DOCTYPE html>
 <html>
@@ -103,7 +105,19 @@
             overflow-y: hidden;
         }
 
-       
+        #checklistGrid .k-grid-content,
+        #checklistGrid .k-grid-content tr,
+        #checklistGrid .k-grid-content td {
+            background: transparent !important;
+        }
+
+        .boaHeader{
+            font-size: 15px !important;
+            text-align: center !important;
+            justify-content:center !important;
+            font-weight: 700 !important;
+            color: #5490ff !important;
+        }
     </style>
 </head>
 
@@ -121,6 +135,7 @@
                     <div class="col-sm-2">
                         <input type="text" id="issuestatus" class="form-control" readonly value="@ViewBag.IssueStatus" />
                         <input type="text" id="offer_header_gid" class="form-control" hidden />
+                        <input type="text" id="ipostatus" class="form-control" hidden />
                     </div>
                     <div class="col-sm-6">
                         <img style="width:20px; height:20px; margin-bottom:-9px; cursor:pointer;float:right;" onclick="location.href='@Url.Action("Dashboard", "Dashboard")?tab=offer'" src="/Assets/images/toplist.png">
@@ -476,9 +491,10 @@
                         </div>
                     </div>
                      <div class="button-row" style="text-align:center;">
-                        <button class="btn btn-primary" style="background: #027ed1;border-color:#027ed1;padding: 3px 25px;margin-bottom:20px;" id="generateBtn" onclick="runboa()">Generate</button>
-                        <button class="btn btn-primary" style="border-color: green;background-color: green; border-radius: 5px;color: white;margin-bottom: 30px;margin-bottom: 20px;padding: 3px 25px;" id="generateBtn" onclick="generateReport()">Download</button>                      
-                        <button class="btn btn-primary" style="border-color: blue;background-color: blue; border-radius: 5px;color: white;margin-bottom: 30px;margin-bottom: 20px;padding: 3px 25px;" id="exportBtn" onclick="export_allotment()">Export Allotment</button>
+                        <button class="btn btn-primary" style="border-color: green;background-color: green; border-radius: 5px;color: white;margin-bottom: 30px;margin-bottom: 20px;padding: 3px 25px;" id="approveBtn" onclick="boachecklist()">Approve Checklist</button>                      
+                        <button class="btn btn-primary" style="background: #027ed1;border-color:#027ed1;padding: 3px 25px;margin-bottom:20px;" id="generateBtn" onclick="runboa()" disabled>Generate</button>
+                        <button class="btn btn-primary" style="border-color: green;background-color: green; border-radius: 5px;color: white;margin-bottom: 30px;margin-bottom: 20px;padding: 3px 25px;" id="generateRptBtn" onclick="generateReport()" disabled>Download</button>                      
+                        <button class="btn btn-primary" style="border-color: blue;background-color: blue; border-radius: 5px;color: white;margin-bottom: 30px;margin-bottom: 20px;padding: 3px 25px;" id="exportBtn" onclick="export_allotment()" disabled>Export Allotment</button>
                     </div>
                 </div>
                  
@@ -488,6 +504,51 @@
         </div>
     </div>
 
+    <div class="modal fade" id="checklistModal" tabindex="-1" role="dialog">
+        <div class="modal-dialog modal-lg" role="document" style="max-width:900px;">
+            <div class="modal-content">
+
+                <div class="modal-header">
+                    <h5 class="modal-title boaheader">BOA Checklist</h5>
+                    @* <button type="button" class="close" data-dismiss="modal">
+                        <span>&times;</span>
+                    </button> *@
+                </div>
+
+                <div class="modal-body">
+
+                    <!-- Kendo Grid -->
+                    <div id="checklistGrid"></div>
+
+                    <!-- Remarks -->
+                    <div class="mt-3" style="margin-top:15px;">
+                        <label><b>Remarks</b></label>
+                        <textarea id="txtRemarks"
+                                  class="form-control"
+                                  rows="3"
+                                  placeholder="Enter Remarks"></textarea>
+                    </div>
+
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button"
+                            id="btnApprove"
+                            class="btn btn-success"
+                            onclick="approveVerification()" disabled>
+                        Approve
+                    </button>
+
+                    <button type="button"
+                            oncick="closeModel()"
+                            class="btn btn-secondary"
+                            data-dismiss="modal">
+                        Cancel
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
 </body>
 
 </html>
@@ -520,8 +581,6 @@
               $("#stack_gid").val(0);
               $("#milestone_gid").val(0);
               $("#createedit").val("VIEW");
-              // var offer_code = sessionStorage.getItem("edit_offer_code");
-             // var client_code = sessionStorage.getItem("edit_client_code");
               var offer_code = localStorage.getItem("selectedIPO");  
               var result = offer_code.split('-');
               var client_code = result[0];
@@ -669,9 +728,9 @@
                 }
     }
 
-     function offerHeaderSave() {
-        console.log("activeOfferStatussave : ", activeOfferStatus);
+     function offerHeaderSave(checklist, remarks) {
          var isValid = true;
+         var role_code =  '@role_code';
           if($("#clientname").val() === "") { $("#v_clientname").text("Please Choose Client Name"); isValid = false; } else {$("#v_clientname").text(""); }
             if($("#clientcode").val() === "") { $("#v_clientcode").text("Please Choose Client Code"); isValid = false; } else {$("#v_clientcode").text(""); }
             if($("#offer_type").val() === "") { $("#v_offer_type").text("Please Choose Offer Type");isValid = false;} else {$("#v_offer_type").text(""); }
@@ -692,12 +751,15 @@
                 payload.offer_isin = $("#isin").val();
                 payload.offer_status = $("#status").val();
                 payload.offer_empdiscount = $("#empdiscount").val();
-                payload.offer_remarks = $("#remarks").val();
+                payload.offer_remarks = remarks;
                 payload.client_code = $("#clientcode").val();
-                payload.user_code = '@userName';
+                payload.user_code = '@userCode';
+                payload.role_code = role_code;
                 payload.active_status = 'Y';
                 payload.action = $("#offer_header_gid").val() == 0 ? "INSERT": "UPDATE";
                 payload.delete_flag = 'N';
+                payload.ipo_status = $("#ipostatus").val();
+                payload.boa_checked_status = checklist
                 try {
                 $.ajax({
                     type: "POST",
@@ -785,7 +847,6 @@
                         } else {
                             activeOfferStatus = false;
                         }
-                                console.log("finalactiveOfferStatus", activeOfferStatus);
                     }
                     else {
                     }
@@ -801,8 +862,7 @@
             }
         }
 
-        function fetchofferHeader(data){
-            debugger;            
+        function fetchofferHeader(data){    
                 $("#offer_header_gid").val(data.offer_header_gid);
                 $("#createedit").val("VIEW");
                 $("#offer_code").val(data.offer_code);
@@ -819,10 +879,17 @@
                 $("#remarks").val(data.offer_remarks);
                 $("#clientcode").val(data.client_code);
                 $("#clientname").val(data.client_name);
-                if(data.offer_status == 'I'){
+                $("#ipostatus").val(data.ipo_status);
+                if(data.offer_status == 'Y'){
                     $("#remarks").prop("readonly", false);
                 } else {
                     $("#remarks").prop("readonly", true);
+                }
+                if(data.boa_checked_status == "Y") {
+                        $("#generateBtn").prop("disabled", false);
+                        $("#generateRptBtn").prop("disabled", false);
+                        $("#exportBtn").prop("disabled", false);
+                        $("#approveBtn").hide();
                 }
             }
 
@@ -929,7 +996,6 @@
            function setPostPrice(){
             var preCaptital = parseFloat($("#preissue").val().replace(/,/g, '')) || 0;
             var offer_issuesize = parseFloat($("#issuesize").val().replace(/,/g, '')) || 0;
-            console.log("Pre:", preCaptital, "Issue:", offer_issuesize);
             var postprice = preCaptital + offer_issuesize;
             $("#postissue").val(postprice.toFixed(2));
         }
@@ -1071,7 +1137,6 @@
              var clientname = $("#clientname").val();
             var isValid = true;
             if (!isValid) return;
-
                  if(clientname) {
                        if((status === "Y" && activeOfferStatus ==="false") || (status === "" && activeOfferStatus === "false")) {
                         $.alert({
@@ -1136,7 +1201,7 @@
                     content: 'Client Code must not be empty!',
                     type: 'red'
                 });
-        }
+            }
 
 
         }
@@ -1158,7 +1223,6 @@
             var grid = $("#offerBankGrid").data("kendoGrid");
             var row = $(e).closest("tr");
             var dataItem = grid.dataItem(row);
-                console.log("records :",dataItem );
             $("#state").val(dataItem.banker_state);
             loadMasterDropdown(
                 dataItem.banker_state,
@@ -1168,7 +1232,6 @@
                     console.log("City loaded and selected");
                 }
             );
-
             $("#banker_gid").val(dataItem.banker_gid);
             $("#banktype").val(dataItem.banker_type);
             $("#bank").val(dataItem.banker_name);
@@ -1186,7 +1249,6 @@
 
          function deleteBankGrid(e) {
              var status = $("#status").val();
-             console.log("delstatus:", status);
             var grid = $("#offerBankGrid").data("kendoGrid");
             var row = $(e).closest("tr");
             var dataItem = grid.dataItem(row);
@@ -1451,7 +1513,6 @@
                 var grid = $("#offerStackGrid").data("kendoGrid");
                 var row = $(e).closest("tr");
                 var dataItem = grid.dataItem(row);
-                console.log("Stack records :", dataItem);
                 $("#sh_state").val(dataItem.stack_state);
                 loadMasterDropdown(
                     dataItem.stack_state,
@@ -1556,7 +1617,6 @@
 
 
         function loadCatagory() {
-            debugger;
             var mymodel = {
                 in_master_code: "QCD_CATEGORY",
                 in_user_code: ""
@@ -1567,7 +1627,6 @@
                 data: JSON.stringify(mymodel),
                 success: function (response) {
                     var result = JSON.parse(response.data);
-                    console.log("resultcategory :", result);
                     var formattedData = result.map(function (item) {
                     return {
                         category_gid: item.master_gid,
@@ -1868,12 +1927,11 @@
         // ==================== Offer Milstone ===========
 
              function fetchofferMillstone(data){
-                 console.log("Milestones :", data);
                  $("#milestone_gid").val(data.milestone_gid);
                 $("#iod").val(formatDate(data.offer_openingdate));
                 $("#icd").val(formatDate(data.offer_closingdate));
                 $("#alotdate").val(formatDate(data.offer_allotmentdate));
-                    $("#apdate").val(formatDate(data.offer_approvaldate));
+                $("#apdate").val(formatDate(data.offer_approvaldate));
                 $("#ldate").val(formatDate(data.offer_listingdate));
                 $("#nsdldate").val(formatDate(data.offer_nsdldate));
                 $("#cdsldate").val(formatDate(data.offer_cdsldate));
@@ -2099,7 +2157,6 @@
                     success: function (response) {
                         if (response && response.success) {
                             var data = response.data;
-                            console.log("Datasets :", data);
                             var details = data.table1;
                             var row = details[0];
                             var bank = data.table2;
@@ -2233,4 +2290,98 @@
             '/BOA/Export_allotment_bo?offer_code=' + encodeURIComponent(offer_code);
     }
 
+    function boachecklist(){
+           var verificationData = [
+        { id: 1, process_name: "Offer Setup", status: "NotVerified" },
+        { id: 2, process_name: "All Imports / IPO Summary", status: "NotVerified" },
+        { id: 3, process_name: "Bid Vs Bank", status: "NotVerified" },
+        { id: 4, process_name: "Bank Vs Bid", status: "NotVerified" },
+        { id: 5, process_name: "Bid Vs UPI", status: "NotVerified" },
+        { id: 6, process_name: "UPI Vs Bid", status: "NotVerified" },
+        { id: 7, process_name: "Run Rejection", status: "NotVerified" }
+    ];
+
+    if ($("#checklistGrid").data("kendoGrid")) {
+        $("#checklistGrid").data("kendoGrid").destroy();
+        $("#checklistGrid").empty();
+    }
+
+    $("#checklistGrid").kendoGrid({
+        dataSource: verificationData,
+        scrollable: false,
+        sortable: false,
+        pageable: false,
+        columns: [
+            {
+                field: "process_name",
+                title: "Verification Type",
+                width: 300
+            },
+            {
+                title: "Verified",
+                width: 120,
+                template:
+                    "<input type='radio' class='status-radio' name='status_#=id#' value='Verified' #= status == 'Verified' ? 'checked' : '' # />"
+            },
+            {
+                title: "Not Verified",
+                width: 120,
+                template:
+                    "<input type='radio' class='status-radio' name='status_#=id#' value='NotVerified' #= status == 'NotVerified' ? 'checked' : '' # />"
+            }
+        ]
+    });
+        validateApproveButton();
+        $("#checklistModal").modal("show");
+    }
+
+    function approveVerification() {
+
+            var results = [];
+
+        $("#checklistGrid tbody tr").each(function () {
+
+            var grid = $("#checklistGrid").data("kendoGrid");
+            var dataItem = grid.dataItem(this);
+
+            var status = $(this)
+                .find("input[type='radio']:checked")
+                .val();
+
+            results.push({
+                process_name: dataItem.process_name,
+                status: status
+            });
+        });
+        var remarks = $("#txtRemarks").val();
+
+        offerHeaderSave('Y', remarks);
+
+        $("#checklistModal").modal("hide");
+    }
+
+
+    $(document).on("change", ".status-radio", function () {
+        validateApproveButton();
+    });
+
+        function validateApproveButton() {
+
+        var totalRows = $("#checklistGrid tbody tr").length;
+        var verifiedRows = 0;
+
+        $("#checklistGrid tbody tr").each(function () {
+            var selectedValue = $(this)
+                .find("input[type='radio']:checked")
+                .val();
+            if (selectedValue === "Verified") {
+                verifiedRows++;
+            }
+        });
+        $("#btnApprove").prop("disabled", verifiedRows !== totalRows);
+    }
+
+    function closeModel() {
+         $("#checklistModal").modal("hide");
+    }
  </script>
