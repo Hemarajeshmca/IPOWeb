@@ -584,7 +584,7 @@
                         title: "Action",
                         width: 70,
                         template: function(dataItem) {
-                            if (role_code == 'IPOMKR' && (dataItem.ipo_status == 'A' || dataItem.ipo_status == 'Y')) {
+                            if (role_code == 'IPOMKR' && (dataItem.ipo_status == 'MS' || dataItem.ipo_status == 'CA')) {
                                 return `
                                     <img src='../Assets/images/viewicons.png'
                                          onclick="editOfferGrid(this)"

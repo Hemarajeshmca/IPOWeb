@@ -35,6 +35,7 @@ namespace IPOWeb.Models
         public string? active_status { get; set; }
         public string? ipo_status { get; set; }
         public char delete_flag { get; set; }
+        public string? boa_checked_status { get; set; }
 
     }
 
