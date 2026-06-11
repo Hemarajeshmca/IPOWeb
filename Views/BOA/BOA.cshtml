@@ -3,6 +3,29 @@
     var userName = Context.Session.GetString("user_name");
     var role_code = Context.Session.GetString("user_role");
     var userCode = Context.Session.GetString("user_code");
+    var menuJson = Context.Session.GetString("UserMenus");
+    var menus = new List<MenuModel>();
+
+    if (!string.IsNullOrEmpty(menuJson))
+    {
+        menus = System.Text.Json.JsonSerializer.Deserialize<List<MenuModel>>(menuJson);
+    }
+
+    var currentPath = Context.Request.Path.Value.ToLower();
+    var normalizedPath = currentPath.Trim('/').ToLower();
+
+    var currentMenu = menus?.FirstOrDefault(x =>
+        (x.menu_url ?? "")
+            .Replace("../", "")
+            .Trim('/')
+            .ToLower() == normalizedPath
+    );
+    var menuId = currentMenu?.menu_id;
+    var addPerm = currentMenu?.add_perm;
+    var modPerm = currentMenu?.mod_perm;
+    var viewPerm = currentMenu?.view_perm;
+    var delPerm = currentMenu?.delete_perm;
+    var Boachecklist = currentMenu?.Boachecklist_perm;
 }
 <!DOCTYPE html>
 <html>
@@ -111,13 +134,34 @@
             background: transparent !important;
         }
 
-        .boaHeader{
+        .modal-title {
             font-size: 15px !important;
             text-align: center !important;
-            justify-content:center !important;
             font-weight: 700 !important;
             color: #5490ff !important;
         }
+        .modal-header {
+            justify-content: center !important;
+        }
+
+        #checklistGrid.k-grid.k-widget {
+            margin-top:0px !important;
+        }
+
+        #checklistGrid .k-grid-content {
+            height: 174px !important; 
+            overflow-y: auto;
+        }
+
+        #checklistGrid .k-grid-header th {
+            text-align: center !important;
+        }
+
+        .btn:disabled, .btn.disabled, fieldset:disabled .btn {
+            opacity: 0.40 !important;
+            cursor: no-drop !important;
+        }
+
     </style>
 </head>
 
@@ -491,7 +535,10 @@
                         </div>
                     </div>
                      <div class="button-row" style="text-align:center;">
+                         @if (Boachecklist == "Y")
+					{
                         <button class="btn btn-primary" style="border-color: green;background-color: green; border-radius: 5px;color: white;margin-bottom: 30px;margin-bottom: 20px;padding: 3px 25px;" id="approveBtn" onclick="boachecklist()">Approve Checklist</button>                      
+                    }
                         <button class="btn btn-primary" style="background: #027ed1;border-color:#027ed1;padding: 3px 25px;margin-bottom:20px;" id="generateBtn" onclick="runboa()" disabled>Generate</button>
                         <button class="btn btn-primary" style="border-color: green;background-color: green; border-radius: 5px;color: white;margin-bottom: 30px;margin-bottom: 20px;padding: 3px 25px;" id="generateRptBtn" onclick="generateReport()" disabled>Download</button>                      
                         <button class="btn btn-primary" style="border-color: blue;background-color: blue; border-radius: 5px;color: white;margin-bottom: 30px;margin-bottom: 20px;padding: 3px 25px;" id="exportBtn" onclick="export_allotment()" disabled>Export Allotment</button>
@@ -515,12 +562,8 @@
                     </button> *@
                 </div>
 
-                <div class="modal-body">
-
-                    <!-- Kendo Grid -->
+                <div class="modal-body" style="padding-top:0px !important;">
                     <div id="checklistGrid"></div>
-
-                    <!-- Remarks -->
                     <div class="mt-3" style="margin-top:15px;">
                         <label><b>Remarks</b></label>
                         <textarea id="txtRemarks"
@@ -528,9 +571,7 @@
                                   rows="3"
                                   placeholder="Enter Remarks"></textarea>
                     </div>
-
                 </div>
-
                 <div class="modal-footer">
                     <button type="button"
                             id="btnApprove"
@@ -538,9 +579,8 @@
                             onclick="approveVerification()" disabled>
                         Approve
                     </button>
-
                     <button type="button"
-                            oncick="closeModel()"
+                            onclick="closeModel()"
                             class="btn btn-secondary"
                             data-dismiss="modal">
                         Cancel
@@ -574,18 +614,12 @@
                         }
                         localStorage.removeItem("activeTab");
                     }
-
               $('#offer_header_gid').val(0);
               $("#offer_detail_gid").val(0);
               $("#banker_gid").val(0);
               $("#stack_gid").val(0);
               $("#milestone_gid").val(0);
-              $("#createedit").val("VIEW");
-              var offer_code = localStorage.getItem("selectedIPO");  
-              var result = offer_code.split('-');
-              var client_code = result[0];
-              $("#clientcode").val(client_code);
-              $("#offer_code").val(offer_code);
+              $("#createedit").val("VIEW");                 
               loadMasterDropdown("QCD_MAST_OFFER_TYPE", "offer_type");
               loadMasterDropdown("QCD_MAST_LISTING", "listing");
               loadMasterDropdown("QCD_STATUS", "status", "D");
@@ -595,11 +629,30 @@
               loadMasterDropdown("QCD_MAST_STATE", "state");
               loadMasterDropdown("QCD_MAST_STATE", "sh_state");
               loadMasterDropdown("QCD_STACK_HOLDER_TYPE", "sh_type");
-              getclientlist();
-              if(offer_code && client_code) {
-                  fetchIssuesetup();
+              getclientlist();     
+              var offer_code = localStorage.getItem("selectedIPO");
+              if(offer_code) {
+                  var result = offer_code.split('-');
+                  var client_code = result[0];
+                   $("#clientcode").val(client_code);
+                   $("#offer_code").val(offer_code);
+                   fetchIssuesetup();
               } else {
-                  loadCatagory();
+                    $.alert({
+                        title: 'Validation',
+                        content: 'Please Select Offer Code .!',
+                        type: 'red',
+                        buttons: {
+                                ok: {
+                                    text: 'OK',
+                                    btnClass: 'btn-green',
+                                    action: function () {    
+                                        window.location.href = "../Dashboard/Dashboard?tab=offer";
+                                       // location.reload();
+                                    }
+                                }
+                            }
+                        });
               }
               $("#status").change(function () {
                 var selectedValue = $(this).val();
@@ -2308,24 +2361,31 @@
 
     $("#checklistGrid").kendoGrid({
         dataSource: verificationData,
-        scrollable: false,
+        scrollable: true,
+        height: 210,
         sortable: false,
         pageable: false,
         columns: [
             {
                 field: "process_name",
-                title: "Verification Type",
-                width: 300
+                title: "Verification Page",
+                width: 300,                
             },
             {
                 title: "Verified",
                 width: 120,
+                attributes: {
+                style: "text-align:center;"
+            },
                 template:
                     "<input type='radio' class='status-radio' name='status_#=id#' value='Verified' #= status == 'Verified' ? 'checked' : '' # />"
             },
             {
                 title: "Not Verified",
                 width: 120,
+                attributes: {
+                style: "text-align:center;"
+            },
                 template:
                     "<input type='radio' class='status-radio' name='status_#=id#' value='NotVerified' #= status == 'NotVerified' ? 'checked' : '' # />"
             }

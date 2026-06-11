@@ -3,6 +3,10 @@
     var userName = Context.Session.GetString("user_name");
     var role_code = Context.Session.GetString("user_role");
     var userCode = Context.Session.GetString("user_code");
+    var menuJson = Context.Session.GetString("UserMenus");
+    var menus = string.IsNullOrEmpty(menuJson)
+        ? new List<MenuModel>()
+        : System.Text.Json.JsonSerializer.Deserialize<List<MenuModel>>(menuJson);
 }
 <!DOCTYPE html>
 <html>  
@@ -46,6 +50,7 @@
     <div class="content-wrapper">
         <div class="container-xxl flex-grow-1 container-p-y">
             <div class="card-body" style="margin-top:5px;height: 556px;width: 103%;margin-left: -18px;">
+                <input type="hidden" id="activeTab" value="dashboard" />
                 <div class="nav-align-top mb-4">
                     <ul class="nav nav-tabs" role="tablist">
                         <li class="nav-item">
@@ -169,6 +174,18 @@
 
 </html>
 <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+<script>
+    var menuPermissions = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(
+        menus.Select(x => new
+        {
+            url = x.menu_url,
+            addPerm = x.add_perm,
+            modPerm = x.mod_perm,
+            viewPerm = x.view_perm,
+            delPerm = x.delete_perm
+        })
+    ));
+</script>
 <script>    
      $( document ).ready(function() {
           $('#navhead').text('Dashboard');
@@ -343,6 +360,8 @@
                 }
 
     function showclientGrid() {
+         $("#activeTab").val("client");
+        applyPermissions("client");
         var mymodel = {
             p_client_gid: 0,
             p_action: "A"
@@ -547,6 +566,8 @@
     }
 
     function offersTab() {
+         $("#activeTab").val("offer");
+        applyPermissions("offer");
         showofferGrid();
     }
 
@@ -582,32 +603,84 @@
                 var columns = [
                     {
                         title: "Action",
-                        width: 70,
-                        template: function(dataItem) {
-                            if (role_code == 'IPOMKR' && (dataItem.ipo_status == 'MS' || dataItem.ipo_status == 'CA')) {
-                                return `
-                                    <img src='../Assets/images/viewicons.png'
-                                         onclick="editOfferGrid(this)"
-                                         style="height:12px;width:12px;cursor:pointer;" />
-                                `;
-                            } else if(role_code == 'IPOCHK') {
-                                 return `
-                                    <img src='../Assets/images/viewicons.png'
-                                         onclick="editOfferGrid(this)"
-                                         style="height:12px;width:12px;cursor:pointer;" />
-                                `;
-                            } else {
-                                 return `
-                                <img src='../Assets/images/editicons.png'
-                                     onclick="editOfferGrid(this)"
-                                     style="height:12px;width:12px;cursor:pointer;margin-right:10px;" />
+                        width: 90,
+                        // template: function(dataItem) {
+                        //     if (role_code == 'IPOMKR' && (dataItem.ipo_status == 'MS' || dataItem.ipo_status == 'CA' || dataItem.ipo_status == 'MRS')) {
+                        //         return `
+                        //             <img src='../Assets/images/viewicons.png'
+                        //                  onclick="editOfferGrid(this)"
+                        //                  style="height:12px;width:12px;cursor:pointer;" />
+                        //         `;
+                        //     } else if(role_code == 'IPOCHK') {
+                        //          return `
+                        //             <img src='../Assets/images/viewicons.png'
+                        //                  onclick="editOfferGrid(this)"
+                        //                  style="height:12px;width:12px;cursor:pointer;" />
+                        //         `;
+                        //     } else {
+                        //          return `
+                        //         <img src='../Assets/images/editicons.png'
+                        //              onclick="editOfferGrid(this)"
+                        //              style="height:12px;width:12px;cursor:pointer;margin-right:10px;" />
 
-                                <img src='../Assets/images/del.png'
-                                     onclick="deleteOfferGrid(this)"
-                                     style="height:12px;width:12px;cursor:pointer;" />
-                            `;
+                        //         <img src='../Assets/images/del.png'
+                        //              onclick="deleteOfferGrid(this)"
+                        //              style="height:12px;width:12px;cursor:pointer;" />
+                        //     `;
+                        //     }
+
+                        // }
+                            template: function(dataItem) {
+
+                            var canView = (viewPerm === 'Y');
+                            var canEdit = (modPerm === 'Y');
+                            var canDelete = (delPerm === 'Y');
+
+                            // Existing business rule
+                            if (role_code == 'IPOMKR' &&
+                                (dataItem.ipo_status == 'MS' ||
+                                 dataItem.ipo_status == 'CA' ||
+                                 dataItem.ipo_status == 'MRS')) {
+
+                                canEdit = false;
+                                canDelete = false;
                             }
 
+                            if (role_code == 'IPOCHK') {
+                                canEdit = false;
+                                canDelete = false;
+                            }
+
+                            return `
+                                <img src='../Assets/images/viewicons.png'
+                                     onclick="${canView ? "editOfferGrid(this, 'View')" : ''}"
+                                     title="View"
+                                     style="height:12px;
+                                            width:12px;
+                                            margin-right:10px;
+                                            cursor:${canView ? 'pointer' : 'not-allowed'};
+                                            opacity:${canView ? '1' : '0.2'};
+                                            pointer-events:${canView ? 'auto' : 'none'};" />
+
+                                <img src='../Assets/images/editicons.png'
+                                     onclick="${canEdit ? "editOfferGrid(this, 'edit')" : ''}"
+                                     title="Edit"
+                                     style="height:12px;
+                                            width:12px;
+                                            margin-right:10px;
+                                            cursor:${canEdit ? 'pointer' : 'not-allowed'};
+                                            opacity:${canEdit ? '1' : '0.2'};
+                                            pointer-events:${canEdit ? 'auto' : 'none'};" />
+
+                                <img src='../Assets/images/del.png'
+                                     onclick="${canDelete ? 'deleteOfferGrid(this)' : ''}"
+                                     title="Delete"
+                                     style="height:12px;
+                                            width:12px;
+                                            cursor:${canDelete ? 'pointer' : 'not-allowed'};
+                                            opacity:${canDelete ? '1' : '0.2'};
+                                            pointer-events:${canDelete ? 'auto' : 'none'};" />
+                            `;
                         }
                     },
                     {
@@ -699,13 +772,13 @@
         window.location.href = "../IssueSetup/IssueSetup?mode=Create";     
     }
      
-     function editOfferGrid(e) {
+     function editOfferGrid(e, mode) {
         var grid = $("#offerListGrid").data("kendoGrid");
         var row = $(e).closest("tr");
         var dataItem = grid.dataItem(row);
         sessionStorage.setItem("edit_offer_code", dataItem.offer_code);
         sessionStorage.setItem("edit_client_code", dataItem.client_code);
-        window.location.href = "../IssueSetup/IssueSetup";
+        window.location.href = "../IssueSetup/IssueSetup?mode="+mode;
     }
 
      function deleteOfferGrid(e) {
@@ -826,5 +899,35 @@
             // Restore original page size after export
             grid.dataSource.pageSize(originalPageSize);
         });
+    }
+
+        function applyPermissions(tabName) {
+
+        let menuUrl = "";
+
+        switch(tabName) {
+            case "offer":
+                menuUrl = "../IssueSetup/IssueSetup";
+                break;
+
+            case "client":
+                menuUrl = "../ClientSetup/ClientSetup";
+                break;
+
+            default:
+                menuUrl = "../Dashboard/Dashboard";
+                break;
+        }
+
+        let menu = menuPermissions.find(x =>
+            x.url &&
+            x.url.toLowerCase() === menuUrl.toLowerCase()
+        );
+
+        if (!menu) return;
+
+        window.modPerm = menu.modPerm;
+        window.viewPerm = menu.viewPerm;
+        window.delPerm = menu.delPerm;
     }
 </script>
