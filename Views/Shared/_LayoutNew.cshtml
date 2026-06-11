@@ -16,6 +16,27 @@
         asideMenus = menus.Where(x => x.menu_type == "aside").ToList();
         navMenus = menus.Where(x => x.menu_type == "nav").ToList();
     }
+
+
+    var menuJson1 = Context.Session.GetString("UserMenus");
+    var menus1 = string.IsNullOrEmpty(menuJson)
+        ? new List<MenuModel>()
+        : System.Text.Json.JsonSerializer.Deserialize<List<MenuModel>>(menuJson);
+
+    var currentPath = Context.Request.Path.Value?.ToLower() ?? "";
+    var normalizedPath = currentPath.Trim('/');
+
+    var currentMenu = menus1.FirstOrDefault(x =>
+        (x.menu_url ?? "")
+            .Replace("../", "")
+            .Trim('/')
+            .ToLower() == normalizedPath
+    );
+
+    var addPerm = currentMenu?.add_perm ?? "N";
+    var modPerm = currentMenu?.mod_perm ?? "N";
+    var viewPerm = currentMenu?.view_perm ?? "N";
+    var delPerm = currentMenu?.delete_perm ?? "N";
 }
 <!DOCTYPE html>
 <html lang="en"
@@ -920,59 +941,59 @@
             //localStorage.setItem("entityId", 0);
             //localStorage.setItem("isinNumber", 0);
            // console.log("ISIN", isinid);
-            $("#userGroupid").val(JSON.parse(localStorage.getItem("SetContextData"))[0].usergroup_gid);
-            populateDropdown(JSON.parse(localStorage.getItem("SetContextData")), 'Entity');
+           // $("#userGroupid").val(JSON.parse(localStorage.getItem("SetContextData"))[0].usergroup_gid);
+          //  populateDropdown(JSON.parse(localStorage.getItem("SetContextData")), 'Entity');
             //  populateDropdown(JSON.parse(localStorage.getItem("SetContextData")), 'Isin');
 
-            $("#empname").text(JSON.parse(localStorage.getItem("SetContextData"))[0].Emp_Name);
-            $("#empcode").text(JSON.parse(localStorage.getItem("SetContextData"))[0].Emp_Code);
-            $("#empemail").text(JSON.parse(localStorage.getItem("SetContextData"))[0].Emp_EmailId);
-            $("#empmobile").text(JSON.parse(localStorage.getItem("SetContextData"))[0].Emp_MobileNo);
-            $("#empstatus").text(JSON.parse(localStorage.getItem("SetContextData"))[0].Active);
-            $("#emprole").text(JSON.parse(localStorage.getItem("SetContextData"))[0].usergroup_name);
+            // $("#empname").text(JSON.parse(localStorage.getItem("SetContextData"))[0].Emp_Name);
+            // $("#empcode").text(JSON.parse(localStorage.getItem("SetContextData"))[0].Emp_Code);
+            // $("#empemail").text(JSON.parse(localStorage.getItem("SetContextData"))[0].Emp_EmailId);
+            // $("#empmobile").text(JSON.parse(localStorage.getItem("SetContextData"))[0].Emp_MobileNo);
+            // $("#empstatus").text(JSON.parse(localStorage.getItem("SetContextData"))[0].Active);
+            // $("#emprole").text(JSON.parse(localStorage.getItem("SetContextData"))[0].usergroup_name);
 
 
 
             //   $('select[multiple]').multiselect();
-            $("#dropdown").kendoDropDownList("select", 0);
+          //  $("#dropdown").kendoDropDownList("select", 0);
             //Editcustdetails();
             //loaddynamiccolumns1();
             //loaddynamiccolumns('');
             //$.when(loaddynamiccolumns('')).then(restore_existingheader());
-            $("#showcoursetable").click(function () {
+            // $("#showcoursetable").click(function () {
                 
-                $("#showcoursetables").show();
-            })
-            $("#showcoursetable2").click(function () {
-                $("#showcoursetables2s").show();
-            })
-            $("#showcoursetableDG").click(function () {
-                $("#showcoursetablesDG").show();
-            })
-            $("#showcoursetableDG1").click(function () {
-                $("#showcoursetablesDG").show();
-            })
-            $("#refresh4").click(function () {
-                $("#tableshow4").show();
-            });
-            $("#refresh41").click(function () {
-                $("#tableshow41").show();
-            });
-            $("#collapse_div").click(function () {
+            //     $("#showcoursetables").show();
+            // })
+            // $("#showcoursetable2").click(function () {
+            //     $("#showcoursetables2s").show();
+            // })
+            // $("#showcoursetableDG").click(function () {
+            //     $("#showcoursetablesDG").show();
+            // })
+            // $("#showcoursetableDG1").click(function () {
+            //     $("#showcoursetablesDG").show();
+            // })
+            // $("#refresh4").click(function () {
+            //     $("#tableshow4").show();
+            // });
+            // $("#refresh41").click(function () {
+            //     $("#tableshow41").show();
+            // });
+            // $("#collapse_div").click(function () {
                 
-                if ($('#collapse_org').css('display') == 'none') {
-                    $('#collapse_org').show();
-                    $('#collapse_img2').css('display', 'block');
-                    $('#collapse_img').css('display', 'none');
-                } else {
-                    $('#collapse_org').css('display', 'none');
-                    $('#collapse_img2').css('display', 'none');
-                    $('#collapse_img').css('display', 'block');
-                }
-            });
+            //     if ($('#collapse_org').css('display') == 'none') {
+            //         $('#collapse_org').show();
+            //         $('#collapse_img2').css('display', 'block');
+            //         $('#collapse_img').css('display', 'none');
+            //     } else {
+            //         $('#collapse_org').css('display', 'none');
+            //         $('#collapse_img2').css('display', 'none');
+            //         $('#collapse_img').css('display', 'block');
+            //     }
+            // });
 
-            var myLabel = document.getElementById("orglvlNavigate");
-            myLabel.innerHTML = $("#Entity").find('option:selected').text() + "&nbsp;&nbsp;/&nbsp;&nbsp;" + $("#Isin").find('option:selected').text();
+            // var myLabel = document.getElementById("orglvlNavigate");
+            // myLabel.innerHTML = $("#Entity").find('option:selected').text() + "&nbsp;&nbsp;/&nbsp;&nbsp;" + $("#Isin").find('option:selected').text();
 
 
         });
@@ -2265,7 +2286,7 @@
                 in_master_code: masterCode,
                 in_user_code: ""
             };
-            $.ajax({
+           return $.ajax({
                 type: "POST",
                 url: '@Url.Action("OfferType", "IssueSetup")',
                 data: JSON.stringify(mymodel),
