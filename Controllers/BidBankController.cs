@@ -37,7 +37,7 @@ namespace IPOWeb.Controllers
         string APIcookieName = "";
 
         [HttpGet]
-        public JsonResult getBidBank(string offer_code, string category)
+        public JsonResult getBidBank(string offer_code, string category, string recontype)
         {
             urlstring = Convert.ToString(_configuration.GetSection("Appsettings")["apiurl"]) + "GetbidBank";
             try
@@ -52,7 +52,8 @@ namespace IPOWeb.Controllers
                     //string url = urlstring + "?offer_code=" + offer_code;
                     string url = urlstring +
                          "?offer_code=" + offer_code +
-                         "&category=" + Uri.EscapeDataString(category);
+                         "&category=" + Uri.EscapeDataString(category) +
+                         "&recontype=" + recontype;
                     var response = client.GetAsync(url).Result;
                     if (response.StatusCode == HttpStatusCode.Unauthorized)
                     {
