@@ -2445,7 +2445,11 @@
             } else if($("#status").val() == 'Y' && $("#ipostatus").val() == 'CR') {
                 $("#ipostatus").val('MRS');
                 offerHeaderSave();              
-            } else if($("#status").val() != 'Y'){
+            }else if ($("#status").val() == 'Y' && $("#ipostatus").val() == '') {
+                $("#ipostatus").val('MS');
+                offerHeaderSave();
+            }           
+            else if($("#status").val() != 'Y'){
                   $.alert({
                     title: 'Validation',
                     content: 'Please Active the offer status .!',
