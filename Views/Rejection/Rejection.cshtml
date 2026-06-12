@@ -83,6 +83,32 @@
             padding: 2px 2px;
             font-size:13px;
         }
+
+        .ui-autocomplete {
+            max-height: 250px;
+            overflow-y: auto;
+            overflow-x: hidden;
+            font-size:13px;
+        }
+
+        #spinner {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(255,255,255,0.3);
+            z-index: 99999 !important;
+        }
+
+            #spinner img,
+            #spinner .spinner-border {
+                position: absolute;
+                top: 50%;
+                left: 50%;
+                transform: translate(-50%, -50%);
+            }
     </style>
 </head>
 
@@ -106,11 +132,15 @@
                     </div> *@
                     <div class="col-sm-9">
                         <span>
-                            <button type="button" class="btn btn-primary" id="btnSave" onclick="runrecon()" style="padding: 3px 25px;margin-top:28px;">Run Recon</button>
+                            <button type="button" class="btn btn-primary" id="btnSave" onclick="runrecon(true)" style="padding: 3px 25px;margin-top:28px;">Run Rejection</button>
                             &nbsp;&nbsp;
                             <button type="button" onclick="exportSummary()" class="btn btn-primary" id="btnGen" style="padding: 3px 25px;margin-top:28px;">Export Summary </button>
                             &nbsp;&nbsp;
                             <button type="button" onclick="exportdetailSummary()" class="btn btn-primary" id="btnGensummary" style="padding: 3px 25px;margin-top:28px; white-space: nowrap;">Export Detail Summary </button>
+                            &nbsp;&nbsp;
+                            <button type="button" onclick="additions()" class="btn btn-primary" id="btnAdditions" style="padding: 3px 25px;margin-top:28px; white-space: nowrap;">Additions </button>
+                            &nbsp;&nbsp;
+                            <button type="button" onclick="rejections()" class="btn btn-primary" id="btnRejections" style="padding: 3px 25px;margin-top:28px; white-space: nowrap;">Rejections </button>
                         </span>
                     </div>
                 </div>
@@ -121,7 +151,165 @@
                    </div>
                </div>
             </div>
-        </div>  
+        </div>
+
+    <div class="modal fade" id="additionsModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+
+                <div class="modal-header position-relative">
+                    <h4 class="modal-title w-100 text-center mb-0" style="font-size: 15px;">
+                        Additions
+                    </h4>
+                    <span class="position-absolute end-0 me-3"
+                          style="cursor:pointer;font-size:25px;"
+                          data-bs-dismiss="modal">
+                        ×
+                    </span>
+                </div>
+
+                <div class="modal-body">
+                   <div class="row">
+                        <div class="col-sm-3">
+                            <label class="form-label">IPO Code</label>
+                            <input type="text" id="ipo" class="form-control" readonly>
+                        </div>
+                        
+                   @* </div>
+                    <div class="row" style="margin-top:10px;"> *@
+                        <div class="col-sm-3">
+                            <label class="form-label">Appln. No</label>&nbsp;<span style="color:red;font-weight: bold;">*</span>
+                            <input type="text" id="appno" class="form-control">
+                            <span id="queryappno" style="color: red; font-size: 12px;position:relative;"></span>
+                        </div>
+                        <div class="col-sm-3">
+                            <label class="form-label">Order No</label>&nbsp;<span style="color:red;font-weight: bold;">*</span>
+                            <input type="text" id="orderno" class="form-control">
+                            <span id="queryorderno" style="color: red; font-size: 12px;position:relative;"></span>
+                        </div>
+                        <div class="col-sm-3">
+                            <label class="form-label">PAN No</label>&nbsp;<span style="color:red;font-weight: bold;">*</span>
+                            <input type="text" id="panno" class="form-control">
+                            <span id="querypanno" style="color: red; font-size: 12px;position:relative;"></span>
+                        </div>
+                    </div>
+                    <div class="row" style="margin-top:10px;">
+                        <div class="col-sm-3">
+                            <label class="form-label">Quantity</label>
+                            <input type="text" id="shares" class="form-control" readonly>
+                        </div>
+                        <div class="col-sm-3">
+                            <label class="form-label">Shares Applied</label>
+                            <input type="text" id="shared_applied_price" class="form-control" readonly>
+                        </div>
+                        <div class="col-sm-3">
+                            <label class="form-label">Amount</label>
+                            <input type="text" id="amt" class="form-control" readonly>
+                        </div>
+                        <div class="col-sm-3">
+                            <label class="form-label">Remarks</label>&nbsp;
+                            <input type="text" id="reject_remarks" class="form-control" readonly>
+                        </div>
+                        <div class="row" style="margin-top:10px;">
+                            <div class="col-sm-6">
+                                <label class="form-label">Rule code</label>&nbsp;
+                                <input type="text" id="rule_code" class="form-control" readonly>
+                            </div>
+                            <div class="col-sm-6">
+                                <label class="form-label">Addition Remarks</label>&nbsp;<span style="color:red;font-weight: bold;">*</span>
+                                <input type="text" id="remarks" class="form-control">
+                                <span id="queryremarks" style="color: red; font-size: 12px;position:relative;"></span>
+
+                            </div>
+                        </div>
+                        <div class="col-sm-3">
+                        </div> 
+                        <div class="col-sm-3">
+                        </div>
+                        <div class="col-sm-3">
+                        </div>
+                        <div class="col-sm-3">
+                            <center><button type="button" onclick = "addSave()" class="btn btn-primary" id="btnAddSave" style="padding: 3px 25px;margin-top:28px;">Save</button></center>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="rejectionsModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+
+                <div class="modal-header position-relative">
+                    <h4 class="modal-title w-100 text-center mb-0" style="font-size: 15px;">
+                        Rejections
+                    </h4>
+                    <span class="position-absolute end-0 me-3"
+                          style="cursor:pointer;font-size:25px;"
+                          data-bs-dismiss="modal">
+                        ×
+                    </span>
+                </div>
+
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-sm-3">
+                            <label class="form-label">IPO Code</label>
+                            <input type="text" id="ripo" class="form-control" readonly>
+                        </div>
+                        <div class="col-sm-3">
+                            <label class="form-label">Appln. No</label>
+                            <input type="text" id="rappno" class="form-control">
+                        </div>
+                        <div class="col-sm-3">
+                            <label class="form-label">Order No</label>
+                            <input type="text" id="rorderno" class="form-control">
+                        </div>
+                        <div class="col-sm-3">
+                            <label class="form-label">PAN No</label>
+                            <input type="text" id="rpanno" class="form-control">
+                        </div>
+                    </div>
+                    <div class="row" style="margin-top:10px;">
+                        <div class="col-sm-3">
+                            <label class="form-label">Quantity</label>
+                            <input type="text" id="rshares" class="form-control" readonly>
+                        </div>
+                        <div class="col-sm-3">
+                            <label class="form-label">Shares Applied</label>
+                            <input type="text" id="rshared_applied_price" class="form-control" readonly>
+                            <input type="hidden" id="shared_applied_price" />
+                            <input type="hidden" id="rule_code" />
+                        </div>
+                        <div class="col-sm-3">
+                            <label class="form-label">Amount</label>
+                            <input type="text" id="ramt" class="form-control" readonly>
+                        </div>
+                        <div class="col-sm-6">
+                            <label class="form-label">Rule code</label>&nbsp; 
+                            <select id="rrule_code" class="form-select"></select>
+                            
+                        </div>
+                        <div class="col-sm-6">
+                            <label class="form-label">Remarks</label>
+                            <input type="text" id="additionremarks" class="form-control">
+                        </div> 
+                        <div class="col-sm-3">
+                        </div>
+                        <div class="col-sm-3">
+                        </div>
+                        <div class="col-sm-3">
+                        </div> 
+                        <div class="col-sm-3">
+                            <center><button type="button" onclick="rejSave()" class="btn btn-primary" id="btnRejSave" style="padding: 3px 25px;margin-top:28px;">Save</button></center>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
    
 </body>
 
@@ -136,7 +324,7 @@
             var offer_code =  localStorage.getItem("selectedIPO");
             if(offer_code){
                 runrecon(false);
-            }
+            }           
         });
 
        function runrecon(runRule) {       
@@ -198,15 +386,17 @@
                 field: "rule_name",
                 title: "Reject Reason",
                 width: 260,
-                locked: true
+                locked: true,
+                footerTemplate: "<div style='font-weight:bold;text-align:center;'>TOTAL</div>"
             },
             {
                 title: "Original Rejections",
                 headerAttributes: { style: "text-align:center;font-weight:bold;" },
                 columns: [
-                    { field: "original_appl_count", title: "No.of Appl", width: 120, attributes:{style:"text-align:right;"} },
-                    { field: "original_qty_count", title: "No.of Shares", width: 130, attributes:{style:"text-align:right;"} },
-                    { field: "original_total_amount", title: "Amount", width: 120, attributes:{style:"text-align:right;"} }
+                        { field: "original_appl_count", title: "No.of Appl", width: 120, attributes:{style:"text-align:right;"}, footerTemplate: "<div style='text-align:right;font-weight:bold'>" + "#= kendo.toString(sum, 'n0') #" + "</div>" }, 
+                        { field: "original_qty_count", title: "No.of Shares", width: 130, attributes:{style:"text-align:right;"}, footerTemplate: "<div style='text-align:right;font-weight:bold'>" + "#= kendo.toString(sum, 'n0') #" + "</div>" }, 
+                        { field: "original_total_amount", title: "Amount", width: 120, attributes:{style:"text-align:right;"}, footerTemplate: "<div style='text-align:right;font-weight:bold'>" + "#= kendo.toString(sum, 'n0') #" + "</div>"
+    },
                 ]
             },
 
@@ -214,9 +404,10 @@
                 title: "Additions",
                 headerAttributes: { style: "text-align:center;font-weight:bold;" },
                 columns: [
-                    { field: "additions_appl_count", title: "No.of Appl", width: 120, attributes:{style:"text-align:right;"} },
-                    { field: "additions_qty_count", title: "No.of Shares", width: 130, attributes:{style:"text-align:right;"} },
-                    { field: "additions_total_amount", title: "Amount", width: 120, attributes:{style:"text-align:right;"} }
+                        { field: "additions_appl_count", title: "No.of Appl", width: 120, attributes:{style:"text-align:right;"}, footerTemplate: "<div style='text-align:right;font-weight:bold'>" + "#= kendo.toString(sum, 'n0') #" + "</div>" }, 
+                        { field: "additions_qty_count", title: "No.of Shares", width: 130, attributes:{style:"text-align:right;"} , footerTemplate: "<div style='text-align:right;font-weight:bold'>" + "#= kendo.toString(sum, 'n0') #" + "</div>" },
+                        { field: "additions_total_amount", title: "Amount", width: 120, attributes:{style:"text-align:right;"}, footerTemplate: "<div style='text-align:right;font-weight:bold'>" + "#= kendo.toString(sum, 'n0') #" + "</div>"
+    },
                 ]
             },
 
@@ -224,9 +415,10 @@
                 title: "Rejections",
                 headerAttributes: { style: "text-align:center;font-weight:bold;" },
                 columns: [
-                    { field: "rejections_appl_count", title: "No.of Appl", width: 120, attributes:{style:"text-align:right;"} },
-                    { field: "rejections_qty_count", title: "No.of Shares", width: 130, attributes:{style:"text-align:right;"} },
-                    { field: "rejections_total_amount", title: "Amount", width: 120, attributes:{style:"text-align:right;"} }
+                        { field: "rejections_appl_count", title: "No.of Appl", width: 120, attributes:{style:"text-align:right;"}, footerTemplate: "<div style='text-align:right;font-weight:bold'>" + "#= kendo.toString(sum, 'n0') #" + "</div>" }, 
+                        { field: "rejections_qty_count", title: "No.of Shares", width: 130, attributes:{style:"text-align:right;"}, footerTemplate: "<div style='text-align:right;font-weight:bold'>" + "#= kendo.toString(sum, 'n0') #" + "</div>" }, 
+                        { field: "rejections_total_amount", title: "Amount", width: 120, attributes:{style:"text-align:right;"}, footerTemplate: "<div style='text-align:right;font-weight:bold'>" + "#= kendo.toString(sum, 'n0') #" + "</div>"
+    },
                 ]
             },
 
@@ -234,9 +426,9 @@
                 title: "Final Rejections",
                 headerAttributes: { style: "text-align:center;font-weight:bold;" },
                 columns: [
-                    { field: "total_app_count", title: "No.of Appl", width: 120, attributes:{style:"text-align:right;color:red;"} },
-                    { field: "total_qty_amount", title: "No.of Shares", width: 130, attributes:{style:"text-align:right;color:red;"} },
-                    { field: "total_amount", title: "Amount", width: 120, attributes:{style:"text-align:right;color:red;"} }
+                    { field: "total_app_count", title: "No.of Appl", width: 120, attributes:{style:"text-align:right;color:red;"},footerTemplate: "<div style='text-align:right;font-weight:bold'>" + "#= kendo.toString(sum, 'n0') #" + "</div>" },
+                    { field: "total_qty_amount", title: "No.of Shares", width: 130, attributes:{style:"text-align:right;color:red;"},footerTemplate: "<div style='text-align:right;font-weight:bold'>" + "#= kendo.toString(sum, 'n0') #" + "</div>" },
+                    { field: "total_amount", title: "Amount", width: 120, attributes:{style:"text-align:right;color:red;"},footerTemplate: "<div style='text-align:right;font-weight:bold'>" + "#= kendo.toString(sum, 'n0') #" + "</div>" }
                 ]
             }
         ];
@@ -247,7 +439,24 @@
                      $("#rejectionList").kendoGrid({
                      dataSource: {
                          data: data,
-                         pageSize: 20
+                         pageSize: 20,
+                         aggregate: [
+                            { field: "original_appl_count", aggregate: "sum" },
+                            { field: "original_qty_count", aggregate: "sum" },
+                            { field: "original_total_amount", aggregate: "sum" },
+
+                            { field: "additions_appl_count", aggregate: "sum" },
+                            { field: "additions_qty_count", aggregate: "sum" },
+                            { field: "additions_total_amount", aggregate: "sum" },
+
+                            { field: "rejections_appl_count", aggregate: "sum" },
+                            { field: "rejections_qty_count", aggregate: "sum" },
+                            { field: "rejections_total_amount", aggregate: "sum" },
+
+                            { field: "total_app_count", aggregate: "sum" },
+                            { field: "total_qty_amount", aggregate: "sum" },
+                            { field: "total_amount", aggregate: "sum" }
+                        ]
                      },
                      height: 410,
                      pageable: {
@@ -355,5 +564,461 @@
             + '&rule_code=' + encodeURIComponent(rule_code);
 
         window.location.href = url;
+    }
+
+    $(document).ready(function () {
+        get_rule_code();
+    });
+     function additions() {
+        $("#appno").val('');
+        $("#orderno").val('');
+        $("#panno").val('');
+        $("#qty").val('');
+        $("#shares").val('');
+        $("#amt").val('');
+        $("#remarks").val('');
+        $("#shared_applied_price").val('');
+        $("#reject_remarks").val('');
+        $("#rule_code").val('');
+        
+        var modal = new bootstrap.Modal(
+            document.getElementById('additionsModal')
+        );
+        modal.show();
+        var offer_code =  localStorage.getItem("selectedIPO");
+        loadaddrejlist(offer_code)
+          // addSave(offer_code);
+    }
+
+      function rejections() {
+        $("#rappno").val('');
+        $("#rorderno").val('');
+        $("#rpanno").val('');
+        $("#rshares").val('');
+        $("#rshared_applied_price").val('');
+        $("#ramt").val(''); 
+        $("#additionremarks").val('');
+        var modal = new bootstrap.Modal(
+            document.getElementById('rejectionsModal')
+        );
+        modal.show();
+          var offer_code =  localStorage.getItem("selectedIPO");
+          loadaddrejlist(offer_code)
+    }
+
+    function loadaddrejlist(offer_code) {       
+        try {
+           $.ajax({
+                type: "GET",
+                url: '@Url.Action("GetAddRejList", "Rejection")',
+                dataType: 'json',
+                contentType: 'application/json; charset=utf-8',
+                data: {
+                    ipo_code: offer_code
+                },
+                    success: function (response) {
+                    console.log(response);
+                    var result = JSON.parse(response.data);
+                    var applList = result.Table;
+                    var rejectionList = result.Table1;
+                    console.log(result.Table);
+                     console.log(result.Table1);
+                     if (result.Table.length > 0) {
+                            $("#ipo").val(offer_code);
+                                  $("#appno").autocomplete({
+                                        appendTo: "#additionsModal",
+                                        minLength: 3,
+                                        source: function (request, response) {
+                                            var matches = $.grep(applList, function (item) {
+                                                return item.appl_no.toLowerCase()
+                                                    .indexOf(request.term.toLowerCase()) >= 0;
+                                            });
+                                            response($.map(matches.slice(0, 20), function (item) {
+                                                return {
+                                                    label: item.appl_no,
+                                                    value: item.appl_no,
+                                                    appl_no: item.appl_no,
+                                                    order_no: item.order_no,
+                                                    pan_no: item.pan_no,
+                                                    quantity:item.quantity,
+                                                    shared_applied_price:item.shared_applied_price,
+                                                    total_amount:item.total_amount,
+                                                    rule_code:item.rule_code,
+                                                    rejected_reason:item.rejected_reason
+                                                };
+                                            }));
+                                        },
+                                        select: function (event, ui) {
+                                            populateDetails(ui.item);
+                                            return false;
+                                        }
+                                    });
+                                   $("#orderno").autocomplete({
+                                            appendTo: "#additionsModal",
+                                            minLength: 3,
+                                            source: function (request, response) {
+
+                                                var matches = $.grep(applList, function (item) {
+                                                    return item.order_no.toLowerCase()
+                                                        .indexOf(request.term.toLowerCase()) >= 0;
+                                                });
+
+                                                response($.map(matches.slice(0, 20), function (item) {
+                                                    return {
+                                                        label: item.appl_no,
+                                                    value: item.appl_no,
+                                                    appl_no: item.appl_no,
+                                                    order_no: item.order_no,
+                                                    pan_no: item.pan_no,
+                                                    quantity:item.quantity,
+                                                    shared_applied_price:item.shared_applied_price,
+                                                    total_amount:item.total_amount,
+                                                    rule_code:item.rule_code,
+                                                    rejected_reason:item.rejected_reason
+                                                    };
+                                                }));
+                                            },
+                                            select: function (event, ui) {
+                                                populateDetails(ui.item);
+                                                return false;
+                                            }
+                                        });
+                                    $("#panno").autocomplete({
+                                        appendTo: "#additionsModal",
+                                        minLength: 3,
+                                        source: function (request, response) {
+
+                                            var matches = $.grep(applList, function (item) {
+                                                return item.pan_no.toLowerCase()
+                                                    .indexOf(request.term.toLowerCase()) >= 0;
+                                            });
+
+                                            response($.map(matches.slice(0, 20), function (item) {
+                                                return {
+                                                     label: item.appl_no,
+                                                    value: item.appl_no,
+                                                    appl_no: item.appl_no,
+                                                    order_no: item.order_no,
+                                                    pan_no: item.pan_no,
+                                                    quantity:item.quantity,
+                                                    shared_applied_price:item.shared_applied_price,
+                                                    total_amount:item.total_amount,
+                                                    rule_code:item.rule_code,
+                                                    rejected_reason:item.rejected_reason
+                                                };
+                                            }));
+                                        },
+                                        select: function (event, ui) {
+                                             populateDetails(ui.item);
+                                            return false;
+                                        }
+                                    });
+                            }
+
+                              if (result.Table1.length > 0) {
+                              $("#ripo").val(offer_code);
+                                    $("#rappno").autocomplete({
+                                            appendTo: "#rejectionsModal",
+                                          minLength: 3,
+                                          source: function (request, response) {
+                                                var matches = $.grep(rejectionList, function (item) {
+                                                  return item.appl_no.toLowerCase()
+                                                      .indexOf(request.term.toLowerCase()) >= 0;
+                                              });
+                                              response($.map(matches.slice(0, 20), function (item) {
+                                                  return {
+                                                       label: item.appl_no,
+                                                    value: item.appl_no,
+                                                    appl_no: item.appl_no,
+                                                    order_no: item.order_no,
+                                                    pan_no: item.pan_no,
+                                                    quantity:item.quantity,
+                                                    shared_applied_price:item.shared_applied_price,
+                                                    total_amount:item.total_amount,
+                                                    rule_code:item.rule_code,
+                                                    rejected_reason:item.rejected_reason
+                                                  };
+                                              }));
+                                          },
+                                          select: function (event, ui) {
+                                              populateRDetails(ui.item);
+                                              return false;
+                                          }
+                                      });
+                                     $("#rorderno").autocomplete({
+                                                appendTo: "#rejectionsModal",
+                                              minLength: 3,
+                                              source: function (request, response) {
+
+                                                    var matches = $.grep(rejectionList, function (item) {
+                                                      return item.order_no.toLowerCase()
+                                                          .indexOf(request.term.toLowerCase()) >= 0;
+                                                  });
+
+                                                  response($.map(matches.slice(0, 20), function (item) {
+                                                      return {
+                                                          label: item.appl_no,
+                                                    value: item.appl_no,
+                                                    appl_no: item.appl_no,
+                                                    order_no: item.order_no,
+                                                    pan_no: item.pan_no,
+                                                    quantity:item.quantity,
+                                                    shared_applied_price:item.shared_applied_price,
+                                                    total_amount:item.total_amount,
+                                                    rule_code:item.rule_code,
+                                                    rejected_reason:item.rejected_reason
+                                                      };
+                                                  }));
+                                              },
+                                              select: function (event, ui) {
+                                                  populateRDetails(ui.item);
+                                                  return false;
+                                              }
+                                          });
+                                      $("#rpanno").autocomplete({
+                                            appendTo: "#rejectionsModal",
+                                          minLength: 3,
+                                          source: function (request, response) {
+
+                                                var matches = $.grep(rejectionList, function (item) {
+                                                  return item.pan_no.toLowerCase()
+                                                      .indexOf(request.term.toLowerCase()) >= 0;
+                                              });
+
+                                              response($.map(matches.slice(0, 20), function (item) {
+                                                  return {
+                                                      label: item.appl_no,
+                                                    value: item.appl_no,
+                                                    appl_no: item.appl_no,
+                                                    order_no: item.order_no,
+                                                    pan_no: item.pan_no,
+                                                    quantity:item.quantity,
+                                                    shared_applied_price:item.shared_applied_price,
+                                                    total_amount:item.total_amount,
+                                                    rule_code:item.rule_code,
+                                                    rejected_reason:item.rejected_reason
+                                                  };
+                                              }));
+                                          },
+                                          select: function (event, ui) {
+                                               populateRDetails(ui.item);
+                                              return false;
+                                          }
+                                      });
+                              }
+                    }
+           });
+        } catch (e) {
+                console.log(e)
+            }
+    }
+
+          function addSave() {
+           var isValid = true;
+           var offer_code =  localStorage.getItem("selectedIPO");
+            var ipo = offer_code;
+            var appno = $('#appno').val();
+            var orderno = $('#orderno').val();
+            var panno = $('#panno').val();        
+            var qty = $('#shares').val();
+            var shares = $('#shared_applied_price').val();
+            var amt = $('#amt').val();
+            var rule_code =$('#rule_code').val().split('/').pop().trim();
+             var remarks = $('#remarks').val();
+              if(appno === "") {
+                    $("#queryappno").text("Please Enter Appl. No");
+                isValid = false;
+                } else {
+                    $("#queryappno").text("");
+                }
+               if(orderno === "") {
+                    $("#queryorderno").text("Please Enter Order No.");
+                isValid = false;
+                } else {
+                    $("#queryorderno").text("");
+                }
+               if(panno === "") {
+                    $("#querypanno").text("Please Enter PAN No.");
+                isValid = false;
+                } else {
+                    $("#querypanno").text("");
+                }
+                if(remarks === "") {
+                    $("#queryremarks").text("Please Enter Remarks");
+                isValid = false;
+                } else {
+                    $("#queryremarks").text("");
+                }
+            if (isValid) {
+                var mymodel = {
+                    ipo_code: ipo,
+                    applno: appno,
+                    orderno: orderno,
+                    panno: panno,
+                    qty: qty,
+                    shares: shares,
+                    amt: amt,
+                    rule_code:rule_code,
+                    addremarks: remarks,
+                    rejremarks: ''
+                  };
+            try {
+                  $.ajax({
+                          type: "POST",
+                          url: '@Url.Action("saveAddRejDetails", "Rejection")',
+                          dataType: 'json',
+                          data: JSON.stringify(mymodel),
+                          contentType: 'application/json; charset=utf-8',
+                          success: function (response) {
+                              console.log(response);
+                              var result = JSON.parse(response._data);
+                                if (result.length > 0) {
+                                      if (result[0].result == 1) {
+                                               $.alert({
+                                                  title: 'IPO Allotment',
+                                                  content: result[0].message,
+                                                  type: 'green',
+                                                  buttons: {
+                                                      ok: function () {
+                                                          $('#additionsModal').modal('hide');
+                                                      }
+                                                  }
+                                              });
+                                      }
+                                      else {
+                                             $.alert({
+                                                title: 'IPO Allotment',
+                                                content:result[0].message,
+                                                type: 'red',
+                                            });
+                                      }
+                                  }
+                          }
+                  });
+              } catch (e) {
+                   console.log(e)
+               }
+            }
+             
+        }
+
+           function rejSave() {
+                var offer_code =  localStorage.getItem("selectedIPO");
+                var ipo = offer_code;
+                var appno = $('#rappno').val();
+                var orderno = $('#rorderno').val();
+                var panno = $('#rpanno').val();
+                var qty = $('#rshares').val();
+                var shares = $('#rshared_applied_price').val();
+                var amt = $('#ramt').val();
+                var rule_code =$('#rrule_code').val();
+                var remarks = $('#additionremarks').val();
+                var mymodel = { 
+                    ipo_code: ipo,
+                    applno: appno,
+                    orderno: orderno,
+                    panno: panno,
+                    qty: qty,
+                    shares: shares,
+                    amt: amt,
+                    rule_code:rule_code, 
+                    addremarks: '',
+                    rejremarks: remarks
+                    };
+              try {
+                    $.ajax({
+                            type: "POST",
+                            url: '@Url.Action("saveAddRejDetails", "Rejection")',
+                            dataType: 'json',
+                            data: JSON.stringify(mymodel),
+                            contentType: 'application/json; charset=utf-8',
+                            success: function (response) {
+                                console.log(response);
+                                var result = JSON.parse(response._data);
+                                  if (result.length > 0) {
+                                        if (result[0].result == 1) {
+                                                 $.alert({
+                                                    title: 'IPO Allotment',
+                                                    content: result[0].message,
+                                                    type: 'green',
+                                                    buttons: {
+                                                        ok: function () {
+                                                            $('#rejectionsModal').modal('hide');
+                                                        }
+                                                    }
+                                                });
+                                        }
+                                        else {
+                                               $.alert({
+                                                  title: 'IPO Allotment',
+                                                  content:result[0].message,
+                                                  type: 'red',
+                                              });
+                                        }
+                                    }
+                            }
+                    });
+                } catch (e) {
+                     console.log(e)
+                 }
+          }
+
+    function populateDetails(item) {
+        $("#appno").val(item.appl_no);
+        $("#orderno").val(item.order_no);
+        $("#panno").val(item.pan_no);
+        $("#shares").val(item.quantity);
+        $("#amt").val(item.total_amount);
+        $("#shared_applied_price").val(item.shared_applied_price);
+        $("#rule_code").val(item.rule_code);
+        $("#reject_remarks").val(item.rejected_reason);
+        $("#remarks").val("");
+    }
+
+       function populateRDetails(item) {
+          $("#rappno").val(item.appl_no);
+          $("#rorderno").val(item.order_no);
+          $("#rpanno").val(item.pan_no);
+          $("#rshares").val(item.quantity);
+          $("#ramt").val(item.total_amount);
+          $("#rshared_applied_price").val(item.shared_applied_price);
+          $("#rremarks").val(item.rejected_reason);
+      }
+ 
+    function get_rule_code() {
+        $.ajax({
+            type: "POST",
+            url: '@Url.Action("Getrulecode", "Rejection")',
+            dataType: "json",
+            success: function (response) {
+                if (!response.success) {
+                    console.log(response.message);
+                    return;
+                }
+                //var data = response.data;
+                var data = JSON.parse(response.data);
+                $("#rrule_code").empty();
+                // ✅ Default option
+                $("#rrule_code").append(
+                    $('<option>', {
+                        value: '',
+                        text: '-- Select --'
+                    })
+                );
+                 
+               $.each(data.Table, function (i, item) {
+                $("#rrule_code").append(
+                    $('<option>', {
+                        value: item.rule_code,
+                        text:  item.rule_name
+                    })
+                );
+            });
+                 
+            },
+            error: function (xhr) {
+                console.log("Error:", xhr.responseText);
+            }
+        });
     }
 </script>

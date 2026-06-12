@@ -1,97 +1,125 @@
 ﻿@{
     Layout = "~/Views/Shared/_LayoutNew.cshtml";
     var userName = Context.Session.GetString("user_name");
+    var userCode = Context.Session.GetString("user_code");
+    var role_code = Context.Session.GetString("user_role");
+    var menuJson = Context.Session.GetString("UserMenus");
+    var menus = string.IsNullOrEmpty(menuJson)
+        ? new List<MenuModel>()
+        : System.Text.Json.JsonSerializer.Deserialize<List<MenuModel>>(menuJson);
+
+    var currentPath = Context.Request.Path.Value?.ToLower() ?? "";
+    var normalizedPath = currentPath.Trim('/');
+
+    var currentMenu = menus.FirstOrDefault(x =>
+        (x.menu_url ?? "")
+            .Replace("../", "")
+            .Trim('/')
+            .ToLower() == normalizedPath
+    );
+
+    var addPerm = currentMenu?.add_perm ?? "N";
+    var modPerm = currentMenu?.mod_perm ?? "N";
+    var viewPerm = currentMenu?.view_perm ?? "N";
+    var delPerm = currentMenu?.delete_perm ?? "N";
 }
 <!DOCTYPE html>
 <html>
 <head>
     <meta name="viewport" content="width=device-width" />
-    <title>Client Setup</title>
+    <title>Offer Setup</title>
     <style>
 
         .ui-autocomplete {
-            font-weight: 400;
-            font-size: 13px !important;
-            line-height: 17px !important;
-            color: #697a8d;
+        font-weight: 400;
+        font-size: 13px !important;
+        line-height: 17px !important;
+        color: #697a8d;
         }
 
         .content-wrapper {
-            display: flex;
-            justify-content: center;
-            align-items: center;
+        display: flex;
+        justify-content: center;
+        align-items: center;
         }
 
         h5#navhead {
-            position: relative;
-            right: 129px;
-            width: 23%;
+        position: relative;
+        right: 129px;
+        width: 23%;
         }
 
         .col-md-2-4 {
-            flex: 0 0 auto;
-            width: 20%;
+        flex: 0 0 auto;
+        width: 20%;
         }
 
         .nav-align-top .nav-tabs ~ .tab-content {
-            border: 1px solid #e3dcdc;
-            height: auto;
+        border: 1px solid #e3dcdc;
+        height: auto;
         }
 
         .nav-tabs .nav-item .nav-link:not(.active) {
-            background-color: #716969;
-            color: #fff;
+        background-color: #716969;
+        color: #fff;
         }
 
         .nav-tabs .nav-link.active, .nav-tabs .nav-item.show .nav-link {
-            background-color: #027ed1 !important;
-            color: #fff !important;
+        background-color: #027ed1 !important;
+        color: #fff !important;
         }
 
         table tbody tr:nth-child(odd) {
-            /* background-color: #5997bb !important; */
-            color: #566a7f;
+        /* background-color: #5997bb !important; */
+        color: #566a7f;
         }
 
         table tbody tr:nth-child(even) {
-            background-color: #ffffff;
-            color: #566a7f;
+        background-color: #ffffff;
+        color: #566a7f;
         }
 
         .table tbody tr td {
-            padding: 2px 8px; /* reduce padding */
-            font-size: 12px; /* smaller text */
+        padding: 2px 8px; /* reduce padding */
+        font-size: 12px; /* smaller text */
         }
 
         .validation {
-            color: red;
-            font-size: 12px;
-            position: relative
+        color: red;
+        font-size: 12px;
+        position: relative
         }
 
         #offerCategoryGrid .k-grid-content {
-            height: 160px !important;
+        height: 113px !important;
         }
 
-            #offerCategoryGrid .k-grid-content td:nth-child(5) {
-                text-align: right !important;
-            }
+        #offerCategoryGrid .k-grid-content td:nth-child(5) {
+        text-align: right !important;
+        }
 
         #offerBankGrid .k-grid-content {
-            height: 160px !important;
+        height: 160px !important;
         }
 
         #offerStackGrid .k-grid-content {
-            height: 160px !important;
+        height: 160px !important;
         }
 
         #offerBankGrid {
-            overflow-y: hidden;
+        overflow-y: hidden;
         }
 
         #offerStackGrid {
-            overflow-y: hidden;
+        overflow-y: hidden;
         }
+
+        .btn:disabled, .btn.disabled, fieldset:disabled .btn {
+            
+            opacity: 0.40 !important;
+            cursor: no-drop !important;
+        }
+
     </style>
 </head>
 
@@ -99,393 +127,503 @@
     <div class="content-wrapper">
         <div class="container-xxl flex-grow-1 container-p-y">
             <div class="card-body" style="margin-top:5px;height: 556px;width: 103%;margin-left: -18px;">
-                <div class="row" style="margin-top: -15px;">
-                    <div class="col-sm-2">
-                        <input type="text" id="createedit" class="form-control" readonly value="@ViewBag.Mode" />
-                    </div>
-                    <div class="col-sm-2">
-                        <input type="text" id="offer_code" class="form-control" readonly value="@ViewBag.IssueCode" />
-                    </div>
-                    <div class="col-sm-2">
-                        <input type="text" id="issuestatus" class="form-control" readonly value="@ViewBag.IssueStatus" />
-                        <input type="text" id="offer_header_gid" class="form-control" hidden />
-                    </div>
-                    <div class="col-sm-6">
-                        <img style="width:20px; height:20px; margin-bottom:-9px; cursor:pointer;float:right;" onclick="location.href='@Url.Action("Dashboard", "Dashboard")?tab=offer'" src="/Assets/images/toplist.png">
-                    </div>
-                </div>
-                <div class="row" style="margin-top:5px;">
-                    <div class="col-sm-3">
-                        <label class="form-label">Client Name</label>&nbsp;<span style="font-size: 12px;color:red;font-weight: bold;">*</span>
-                        <input type="text" id="clientname" class="form-control" value="@ViewBag.ClientName" />
-                        <span id="v_clientname" class="validation"></span>
-                    </div>
-                    <div class="col-sm-3">
-                        <label class="form-label">Client Code</label>&nbsp;<span style="font-size: 12px;color:red;font-weight: bold;">*</span>
-                        <input type="text" id="clientcode" class="form-control" readonly value="@ViewBag.IssueCode" />
-                        <span id="v_clientcode" class="validation"></span>
-                    </div>
-                    <div class="col-sm-3">
-                        <label class="form-label">Offer Type</label>&nbsp;<span style="font-size: 12px;color:red;font-weight: bold;">*</span>
-                        <select name="offer_type" id="offer_type" class="form-control"></select>
-                        <span id="v_offer_type" class="validation"></span>
-                    </div>
-                    <div class="col-sm-3">
-                        <label class="form-label" for="listing" data-field="listing">Listing</label>&nbsp;<span style="font-size: 12px;color:red;font-weight: bold;">*</span>
-                        <select name="listing" id="listing" class="form-control"> </select>
-                        <span id="v_listing" class="validation"></span>
-                    </div>
-                </div>
-                <div class="row" style="margin-top:15px;">
-                    <div class="col-sm-3">
-                        <label class="form-label">ISIN No.</label>&nbsp;<span style="font-size: 12px;color:red;font-weight: bold;">*</span>
-                        <input type="text" id="isin" name="isin" class="form-control" />
-                        <span id="v_isin" class="validation"></span>
-                    </div>
-                    <div class="col-sm-3">
-                        <label class="form-label">Status</label>
-                        <select name="status" id="status" class="form-control"></select>
-                        <span id="v_status" class="validation"></span>
-                    </div>
-                    <div class="col-sm-2">
-                        <label class="form-label">Emp. Discount (₹)</label>
-                        <input type="text" id="empdiscount" name="empdiscount" class="form-control" />
-                        <span id="v_dis" class="validation"></span>
-                    </div>
-                    <div class="col-sm-3">
-                        <label class="form-label">Remarks</label>
-                        <input type="text" id="remarks" name="remarks" class="form-control" />
-                        <span id="v_remarks" class="validation"></span>
-                    </div>
-                    <div class="col-sm-1">
-                        <center><button type="button" onclick="offerHeaderSave()" class="btn btn-primary" id="btnSave" style="padding: 3px 25px;margin-top:30px;">Save</button></center>
-                    </div>
-                </div>
-                <div class="row" style="margin-top:20px;">
-                    <div class="col-sm-12">
-                        <div class="nav-align-top mb-4">
-                            <ul class="nav nav-tabs" role="tablist">
-                                <li class="nav-item">
-                                    <button type="button"
-                                            class="nav-link active"
-                                            role="tab"
-                                            data-bs-toggle="tab"
-                                            data-bs-target="#navs-top-ids"
-                                            aria-controls="navs-top-ids"
-                                            aria-selected="true">
-                                        Offer Details
-                                    </button>
-                                </li>
-                                <li class="nav-item">
-                                    <button type="button"
-                                            class="nav-link"
-                                            role="tab"
-                                            data-bs-toggle="tab"
-                                            data-bs-target="#navs-top-bank"
-                                            aria-controls="navs-top-bank"
-                                            aria-selected="false">
-                                        Bankers
-                                    </button>
-                                </li>
-                                <li class="nav-item">
-                                    <button type="button"
-                                            class="nav-link"
-                                            role="tab"
-                                            data-bs-toggle="tab"
-                                            data-bs-target="#navs-top-sh"
-                                            aria-controls="navs-top-sh"
-                                            aria-selected="false">
-                                        Stake Holders
-                                    </button>
-                                </li>
-                                <li class="nav-item">
-                                    <button type="button"
-                                            class="nav-link"
-                                            role="tab"
-                                            data-bs-toggle="tab"
-                                            data-bs-target="#navs-top-cat"
-                                            aria-controls="navs-top-cat"
-                                            aria-selected="false">
-                                        Category
-                                    </button>
-                                </li>
-                                <li class="nav-item">
-                                    <button type="button"
-                                            class="nav-link"
-                                            role="tab"
-                                            data-bs-toggle="tab"
-                                            data-bs-target="#navs-top-mile"
-                                            aria-controls="navs-top-mile"
-                                            aria-selected="false">
-                                        Milestones
-                                    </button>
-                                </li>
-                            </ul>
-                            <div class="tab-content">
-                                <div class="tab-pane fade show active" id="navs-top-ids" role="tabpanel">
-                                    <div class="row">
-                                        <div class="col-sm-2">
-                                            <label class="form-label">Pre Offer Capital</label>
-                                            <input type="number" id="preissue" onkeydown="setPostPrice()" class="form-control" />
-                                            <input type="number" id="offer_detail_gid" class="form-control" hidden />
-                                            <input type="text" id="status" class="form-control" hidden />
-                                        </div>
-                                        <div class="col-sm-2">
-                                            <label class="form-label">Offer Size</label>
-                                            <input type="number" id="issuesize" onkeydown="setPostPrice()" class="form-control" />
-                                        </div>
-                                        <div class="col-sm-2">
-                                            <label class="form-label">Post Offer Capital</label>
-                                            <input type="number" id="postissue" class="form-control" readonly />
-                                        </div>
-                                        <div class="col-sm-2">
-                                            <label class="form-label">Lot Size</label>
-                                            <input type="number" id="lotsize" class="form-control" />
-                                        </div>
-                                        <div class="col-sm-2">
-                                            <label class="form-label">Face Value</label>
-                                            <input type="number" id="facevalue" class="form-control" />
-                                        </div>
-                                        <div class="col-sm-2">
-                                            <label class="form-label">Premium</label>
-                                            <input type="number" id="premium" class="form-control" />
-                                        </div>
+                <div class="nav-align-top mb-4" style="margin-top: -17px;">
+                    <ul class="nav nav-tabs" role="tablist">
+                        <li class="nav-item">
+                            <button type="button"
+                            class="nav-link active"
+                            role="tab"
+                             id="detailsTab"
+                            data-bs-toggle="tab"
+                            data-bs-target="#navs-top-home"
+                            aria-controls="navs-top-home"
+                            aria-selected="true">
+                                Details
+                            </button>
+                        </li>
+                        <li class="nav-item">
+                            <button type="button"
+                            class="nav-link"
+                            onclick="auditGrid()"
+                            role="tab"
+                            data-bs-toggle="tab"
+                            data-bs-target="#navs-top-profile"
+                            aria-controls="navs-top-profile"
+                            aria-selected="false">
+                                Audit Trail
+                            </button>
+                        </li>                        
+                    </ul>
+                    <div class="tab-content">
+                        <div class="tab-pane fade show active" id="navs-top-home" role="tabpanel">
+                            <div class="row" style="margin-top: -15px;">
+                                <div class="col-sm-2">
+                                    <input type="text" id="createedit" class="form-control" readonly value="@ViewBag.Mode" />
+                                </div>
+                                <div class="col-sm-2">
+                                    <input type="text" id="offer_code" class="form-control" readonly value="@ViewBag.IssueCode" />
+                                </div>
+                                <div class="col-sm-2">
+                                    <input type="text" id="issuestatus" class="form-control" readonly value="@ViewBag.IssueStatus" />
+                                    <input type="text" id="ipostatus" class="form-control" hidden />
+                                    @* <select name="ipostatus" id="ipostatus" class="form-select" hidden></select>   *@                                 
+                                    <input type="text" id="offer_header_gid" class="form-control" hidden />
+                                </div>
+                                <div class="col-sm-6">
+                                    <img style="width:20px; height:20px; margin-bottom:-9px; cursor:pointer;float:right;" onclick="location.href='@Url.Action("Dashboard", "Dashboard")?tab=offer'" src="/Assets/images/toplist.png">
+                                </div>
+                            </div>
+                            <div class="row" style="margin-top:5px;">
+                                <div class="col-sm-3">
+                                    <label class="form-label">Client Name</label>&nbsp;<span style="font-size: 12px;color:red;font-weight: bold;">*</span>
+                                    <input type="text" id="clientname" class="form-control" value="@ViewBag.ClientName" />
+                                    <span id="v_clientname" class="validation"></span>
+                                </div>
+                                <div class="col-sm-2">
+                                    <label class="form-label">Client Code</label>&nbsp;<span style="font-size: 12px;color:red;font-weight: bold;">*</span>
+                                    <input type="text" id="clientcode" class="form-control" readonly value="@ViewBag.IssueCode" />
+                                    <span id="v_clientcode" class="validation"></span>
+                                </div>
+                                <div class="col-sm-2">
+                                    <label class="form-label">Offer Type</label>&nbsp;<span style="font-size: 12px;color:red;font-weight: bold;">*</span>
+                                    <select name="offer_type" id="offer_type" class="form-select"></select>
+                                    <span id="v_offer_type" class="validation"></span>
+                                </div>
+                                <div class="col-sm-2">
+                                    <label class="form-label" for="listing" data-field="listing">Listing</label>&nbsp;<span style="font-size: 12px;color:red;font-weight: bold;">*</span>
+                                    <select name="listing" id="listing" class="form-select"> </select>
+                                    <span id="v_listing" class="validation"></span>
+                                </div>
+                                <div class="col-sm-2">
+                                    <label class="form-label">Emp. Discount (₹)</label>
+                                    <input type="text" id="empdiscount" name="empdiscount" class="form-control" />
+                                    <span id="v_dis" class="validation"></span>
+                                </div>
+                            </div>
+                            <div class="row" style="margin-top:15px;">
+                                <div class="col-sm-3">
+                                    <label class="form-label">ISIN No.</label>&nbsp;<span style="font-size: 12px;color:red;font-weight: bold;">*</span>
+                                    <input type="text" id="isin" name="isin" class="form-control" />
+                                    <span id="v_isin" class="validation"></span>
+                                </div>
+                                <div class="col-sm-2">
+                                    <label class="form-label">Status</label>&nbsp;<span style="font-size: 12px;color:red;font-weight: bold;">*</span>
+                                    <select name="status" id="status" class="form-select"></select>
+                                    <span id="v_status" class="validation"></span>
+                                </div>
+
+                                <div class="col-sm-3">
+                                    <label class="form-label">Remarks</label>
+                                    <input type="text" id="remarks" name="remarks" class="form-control" />
+                                    <span id="v_remarks" class="validation"></span>
+                                </div>
+                                @if (role_code == "IPOMKR")
+                                {
+                                    <div class="col-sm-1">
+                                        <center><button type="button" onclick="offerHeaderSave()" class="btn btn-primary" id="headerBtnSave" style="padding: 3px 25px;margin-top:30px;">Save</button></center>
                                     </div>
-                                    <div class="row" style="margin-top:20px;">
-                                        <div class="col-sm-2">
-                                            <label class="form-label"> Price Type</label>
-                                            <select name="pricetype" id="pricetype" class="form-control"></select>
-                                        </div>
-                                        <div class="col-sm-2">
-                                            <label class="form-label">Fixed Price</label>
-                                            <input type="number" id="fprice" class="form-control" disabled />
-                                        </div>
-                                        <div class="col-sm-2">
-                                            <label class="form-label">Minimum Price</label>
-                                            <input type="number" id="minprice" class="form-control" disabled />
-                                        </div>
-                                        <div class="col-sm-2">
-                                            <label class="form-label">Maximum Price</label>
-                                            <input type="number" id="maxprice" class="form-control" disabled />
-                                        </div>
-                                        <div class="col-sm-2">
-                                            <label class="form-label">Cut Off Price</label>
-                                            <input type="number" id="cutoffprice" class="form-control" disabled />
-                                        </div>
-                                        <div class="col-sm-2">
-                                            <center>
-                                                <button type="button" class="btn btn-primary" id="btnIssueSave"
-                                                        onclick="saveofferDetails()" style="padding: 3px 25px;margin-top:28px;width:60%">
-                                                    Save
+                                    <div class="col-sm-1">
+                                        <center>
+                                            <button type="button" onclick="submitofferHeader()" class="btn btn-primary" id="headerBtnsubmit" style="padding: 3px 25px;margin-top:30px;background-color: green !important;color: #fff !important;">
+                                                Submit
+                                            </button>
+                                        </center>
+                                    </div>
+                                } else {
+                                    <div class="col-sm-1" style="width: 10%;">
+                                        <center><button type="button" onclick="chkofferHeaderSave('CA')" class="btn btn-primary" id="chkheaderBtnSave" style="padding: 3px 25px;margin-top:30px;background-color: green !important;color: #fff !important;">Approve</button></center>
+                                    </div>
+                                    <div class="col-sm-1">
+                                        <center>
+                                            <button type="button" onclick="chkofferHeaderSave('CR')" class="btn btn-danger" id="chkheaderBtnsubmit" style="padding: 3px 25px;margin-top:30px;">
+                                                Reject
+                                            </button>
+                                        </center>
+                                    </div>
+                                }
+                            </div>
+                            <div class="row" style="margin-top:20px;">
+                                <div class="col-sm-12">
+                                    <div class="nav-align-top mb-4">
+                                        <ul class="nav nav-tabs" role="tablist">
+                                            <li class="nav-item">
+                                                <button type="button"
+                                                        class="nav-link active"
+                                                        role="tab"
+                                                        data-bs-toggle="tab"
+                                                        data-bs-target="#navs-top-ids"
+                                                        aria-controls="navs-top-ids"
+                                                        aria-selected="true">
+                                                    Offer Details
                                                 </button>
-                                            </center>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="tab-pane fade" id="navs-top-bank" role="tabpanel" style="overflow-y: scroll;height: 235px;overflow-x: hidden;">
-                                    <div class="row">
-                                        <div class="col-sm-2">
-                                            <label class="form-label" for="banktype" data-field="banktype">Bank Type</label>
-                                            <select name="banktype" id="banktype" class="form-control"></select>
-                                            <input id="banker_gid" class="form-control" hidden />
-                                        </div>
-                                        <div class="col-sm-3">
-                                            <label class="form-label">Bank Name</label>
-                                            <select id="bank" class="form-control"></select>
-                                        </div>
-                                        <div class="col-sm-3">
-                                            <label class="form-label">Address</label>
-                                            <textarea id="address" class="form-control" cols="10" rows="2"></textarea>
-                                        </div>
-                                        <div class="col-sm-2">
-                                            <label class="form-label">State</label>
-                                            <select name="state" id="state" onchange="stateChange('city', this)" class="form-control"></select>
-                                        </div>
-                                        <div class="col-sm-2">
-                                            <label class="form-label">City</label>
-                                            <select name="city" id="city" class="form-control"></select>
-                                        </div>
+                                            </li>
+                                            <li class="nav-item">
+                                                <button type="button"
+                                                        class="nav-link"
+                                                        role="tab"
+                                                        data-bs-toggle="tab"
+                                                        data-bs-target="#navs-top-bank"
+                                                        aria-controls="navs-top-bank"
+                                                        aria-selected="false">
+                                                    Bankers
+                                                </button>
+                                            </li>
+                                            <li class="nav-item">
+                                                <button type="button"
+                                                        class="nav-link"
+                                                        role="tab"
+                                                        data-bs-toggle="tab"
+                                                        data-bs-target="#navs-top-sh"
+                                                        aria-controls="navs-top-sh"
+                                                        aria-selected="false">
+                                                    Stake Holders
+                                                </button>
+                                            </li>
+                                            <li class="nav-item">
+                                                <button type="button"
+                                                        class="nav-link"
+                                                        role="tab"
+                                                        data-bs-toggle="tab"
+                                                        data-bs-target="#navs-top-cat"
+                                                        aria-controls="navs-top-cat"
+                                                        aria-selected="false">
+                                                    Category
+                                                </button>
+                                            </li>
+                                            <li class="nav-item">
+                                                <button type="button"
+                                                        class="nav-link"
+                                                        role="tab"
+                                                        data-bs-toggle="tab"
+                                                        data-bs-target="#navs-top-mile"
+                                                        aria-controls="navs-top-mile"
+                                                        aria-selected="false">
+                                                    Milestones
+                                                </button>
+                                            </li>
+                                        </ul>
+                                        <div class="tab-content">
+                                            <div class="tab-pane fade show active" id="navs-top-ids" role="tabpanel">
+                                                <div class="row">
+                                                    <div class="col-sm-2">
+                                                        <label class="form-label">Pre Offer Capital</label>
+                                                        <input type="number" id="preissue" onkeydown="setPostPrice()" class="form-control" />
+                                                        <input type="number" id="offer_detail_gid" class="form-control" hidden />
+                                                        <input type="text" id="status" class="form-control" hidden />
+                                                    </div>
+                                                    <div class="col-sm-2">
+                                                        <label class="form-label">Offer Size</label>
+                                                        <input type="number" id="issuesize" onkeydown="setPostPrice()" class="form-control" />
+                                                    </div>
+                                                    <div class="col-sm-2">
+                                                        <label class="form-label">Post Offer Capital</label>
+                                                        <input type="number" id="postissue" class="form-control" readonly />
+                                                    </div>
+                                                    <div class="col-sm-2">
+                                                        <label class="form-label">Lot Size</label>
+                                                        <input type="number" id="lotsize" class="form-control" />
+                                                    </div>
+                                                    <div class="col-sm-2">
+                                                        <label class="form-label">Face Value</label>
+                                                        <input type="number" id="facevalue" class="form-control" />
+                                                    </div>
+                                                    <div class="col-sm-2">
+                                                        <label class="form-label">Premium</label>
+                                                        <input type="number" id="premium" class="form-control" />
+                                                    </div>
+                                                </div>
+                                                <div class="row" style="margin-top:20px;">
+                                                    <div class="col-sm-2">
+                                                        <label class="form-label"> Price Type</label>
+                                                        <select name="pricetype" id="pricetype" class="form-select"></select>
+                                                    </div>
+                                                    <div class="col-sm-2">
+                                                        <label class="form-label">Fixed Price</label>
+                                                        <input type="number" id="fprice" class="form-control" disabled />
+                                                    </div>
+                                                    <div class="col-sm-2">
+                                                        <label class="form-label">Minimum Price</label>
+                                                        <input type="number" id="minprice" class="form-control" disabled />
+                                                    </div>
+                                                    <div class="col-sm-2">
+                                                        <label class="form-label">Maximum Price</label>
+                                                        <input type="number" id="maxprice" class="form-control" disabled />
+                                                    </div>
+                                                    <div class="col-sm-2">
+                                                        <label class="form-label">Cut Off Price</label>
+                                                        <input type="number" id="cutoffprice" class="form-control" disabled />
+                                                    </div>
+                                                    <div class="col-sm-2">
+                                                        <center>
+                                                            <button type="button" class="btn btn-primary" id="btnIssueSave"
+                                                                    onclick="saveofferDetails()" style="padding: 3px 25px;margin-top:28px;width:60%">
+                                                                Save
+                                                            </button>
+                                                        </center>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="tab-pane fade" id="navs-top-bank" role="tabpanel" style="overflow-y: scroll;height: 235px;overflow-x: hidden;">
+                                                <div class="row">
+                                                    <div class="col-sm-2">
+                                                        <label class="form-label" for="banktype" data-field="banktype">Bank Type</label>
+                                                        <select name="banktype" id="banktype" class="form-select"></select>
+                                                        <input id="banker_gid" class="form-control" hidden />
+                                                    </div>
+                                                    <div class="col-sm-2">
+                                                        <label class="form-label">IFSC Code</label>
+                                                        <input type="text" id="ifsc" class="form-select" />
+                                                    </div>
+                                                    <div class="col-sm-3">
+                                                        <label class="form-label">Bank Name</label>
+                                                        <select id="bank" class="form-select"></select>
+                                                    </div>                                                    
+                                                    <div class="col-sm-3">
+                                                        <label class="form-label">Address</label>
+                                                        <textarea id="address" class="form-control" cols="10" rows="2"></textarea>
+                                                    </div>
+                                                    <div class="col-sm-2">
+                                                        <label class="form-label">City</label>
+                                                        <input type="text" id="city" class="form-control" />
+                                                        @* <select name="city" id="city" class="form-select"></select> *@
+                                                    </div>
 
-                                    </div>
-                                    <div class="row">
-                                        <div class="col-sm-2">
-                                            <label class="form-label">Pincode</label>
-                                            <input type="text" id="pin" class="form-control" />
-                                        </div>
-                                        <div class="col-sm-3">
-                                            <label class="form-label">Account No.</label>
-                                            <input type="text" id="acno" class="form-control" />
-                                        </div>
-                                        <div class="col-sm-3">
-                                            <label class="form-label">Account Name</label>
-                                            <input type="text" id="acname" class="form-control" />
-                                        </div>
-                                        <div class="col-sm-2">
-                                            <label class="form-label">IFSC Code</label>
-                                            <input type="text" id="ifsc" class="form-control" />
-                                        </div>
-                                        <div class="col-sm-2">
-                                            <center><button type="button" onclick="saveofferBank()" class="btn btn-primary" id="btnBankSave" style="padding: 3px 25px;margin-top:28px;width:60%">Save</button></center>
-                                        </div>
-                                    </div>
-                                    <div class="row" style="margin-top:10px;">
-                                        <div class="col-sm-12">
-                                            <div id="offerBankGrid"></div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="tab-pane fade" id="navs-top-sh" role="tabpanel" style="overflow-y: scroll;height: 235px;overflow-x: hidden;">
-                                    <div class="row">
-                                        <div class="col-sm-2">
-                                            <label class="form-label">Stake Holder Type</label>
-                                            <select name="sh" id="sh_type" class="form-control"></select>
-                                            <input id="stack_gid" class="form-control" hidden />
-                                            <input id="stack_code" class="form-control" hidden />
-                                        </div>
-                                        <div class="col-sm-2">
-                                            <label class="form-label">Stake Holder Name</label>
-                                            <input type="text" id="sh_name" class="form-control" />
-                                        </div>
-                                        <div class="col-sm-3">
-                                            <label class="form-label">Address</label>
-                                            <textarea id="sh_address" class="form-control" cols="10" rows="2"></textarea>
-                                        </div>
-                                        <div class="col-sm-3">
-                                            <label class="form-label">State</label>
-                                            <select name="sh_state" id="sh_state" onchange="stateChange('sh_city', this)" class="form-control"> </select>
-                                        </div>
-                                        <div class="col-sm-2">
-                                            <label class="form-label">City</label>
-                                            <select name="sh_city" id="sh_city" class="form-control"></select>
-                                        </div>
+                                                </div>
+                                                <div class="row">
 
-                                    </div>
-                                    <div class="row">
-                                        <div class="col-sm-2">
-                                            <label class="form-label">Pincode</label>
-                                            <input type="text" id="sh_pin" class="form-control" />
-                                        </div>
-                                        <div class="col-sm-2">
-                                            <label class="form-label">Contact Name</label>
-                                            <input type="text" id="sh_cname" class="form-control" />
-                                        </div>
-                                        <div class="col-sm-3">
-                                            <label class="form-label">Designation</label>
-                                            <input type="text" id="sh_designation" class="form-control" />
-                                        </div>
-                                        <div class="col-sm-2">
-                                            <label class="form-label">Email</label>
-                                            <input type="text" id="sh_email" class="form-control" />
-                                        </div>
-                                        <div class="col-sm-2">
-                                            <label class="form-label">Mobile</label>
-                                            <input type="text" id="sh_mob" class="form-control" style="width:80%" />
-                                        </div>
-                                        <div class="col-sm-1">
-                                            <center><button type="button" onclick="saveofferStackHolder()" class="btn btn-primary" id="btnShSave" style="padding: 3px 25px;margin-top:28px;margin-left:-40px;">Save</button></center>
-                                        </div>
-                                    </div>
-                                    <div class="row" style="margin-top:10px;">
-                                        <div class="col-sm-12">
-                                            <div id="offerStackGrid"></div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="tab-pane fade" id="navs-top-cat" role="tabpanel">
-                                    <div class="row" style="margin-top: -40px;margin-bottom: 10px;">
-                                        <div class="col-sm-4">
-                                        </div>
-                                        <div class="col-sm-4">
-                                        </div>
-                                        <div class="col-sm-4">
-                                            <center><button type="button" onclick="saveofferCategory()" class="btn btn-primary" id="btnCatSave" style="padding: 3px 25px;margin-top:28px;width:35%">Save</button></center>
-                                        </div>
-                                    </div>
-                                    <div class="row">
-                                        <div class="col-sm-12">
-                                            <div id="offerCategoryGrid"></div>
-                                        </div>
-                                    </div>
 
-                                </div>
-                                <div class="tab-pane fade" id="navs-top-mile" role="tabpanel">
-                                    <div class="row">
-                                        <div class="col-md-2-4">
-                                            <label class="form-label">Offer Opening Date	</label>&nbsp;<span style="font-size: 12px;color:red;font-weight: bold;">*</span>
-                                            <input type="date" id="iod" class="form-control" />
-                                            <input id="milestone_gid" class="form-control" hidden />
-                                            <span id="queryiod" style="color: red; font-size: 12px;position:relative;"></span>
-                                        </div>
-                                        <div class="col-md-2-4">
-                                            <label class="form-label">Offer closing Date	</label>&nbsp;<span style="font-size: 12px;color:red;font-weight: bold;">*</span>
-                                            <input type="date" id="icd" class="form-control" />
-                                            <span id="queryicd" style="color: red; font-size: 12px;position:relative;"></span>
-                                        </div>
-                                        <div class="col-md-2-4">
-                                            <label class="form-label">Allotment Date	</label>&nbsp;<span style="font-size: 12px;color:red;font-weight: bold;">*</span>
-                                            <input type="date" id="alotdate" class="form-control" />
-                                            <span id="queryalotdate" style="color: red; font-size: 12px;position:relative;"></span>
-                                        </div>
-                                        <div class="col-md-2-4">
-                                            <label class="form-label">Approval Date	</label>&nbsp;<span style="font-size: 12px;color:red;font-weight: bold;">*</span>
-                                            <input type="date" id="apdate" class="form-control" />
-                                            <span id="queryapdate" style="color: red; font-size: 12px;position:relative;"></span>
-                                        </div>
-                                        <div class="col-md-2-4">
-                                            <label class="form-label">NSDL CA Date	</label>&nbsp;<span style="font-size: 12px;color:red;font-weight: bold;">*</span>
-                                            <input type="date" id="nsdldate" class="form-control" />
-                                            <span id="querynsdldate" style="color: red; font-size: 12px;position:relative;"></span>
-                                        </div>
-                                       
-                                    </div>
-                                    <div class="row" style="margin-top:15px;">                                        
-                                        <div class="col-md-2-4">
-                                            <label class="form-label">CDSL CA Date	</label>&nbsp;<span style="font-size: 12px;color:red;font-weight: bold;">*</span>
-                                            <input type="date" id="cdsldate" class="form-control" />
-                                            <span id="querycdsldate" style="color: red; font-size: 12px;position:relative;"></span>
-                                        </div>
-                                        <div class="col-md-2-4">
-                                            <label class="form-label">Refund Date	</label>&nbsp;<span style="font-size: 12px;color:red;font-weight: bold;">*</span>
-                                            <input type="date" id="refunddate" class="form-control" />
-                                            <span id="queryrefunddate" style="color: red; font-size: 12px;position:relative;"></span>
-                                        </div>
-                                        <div class="col-md-2-4">
-                                            <label class="form-label">Listing Date	</label>&nbsp;<span style="font-size: 12px;color:red;font-weight: bold;">*</span>
-                                            <input type="date" id="ldate" class="form-control" />
-                                            <span id="queryldate" style="color: red; font-size: 12px;position:relative;"></span>
-                                        </div>
-                                        <div class="col-md-2-4">
-                                            <center><button type="button" onclick="saveOfferMilstone()" class="btn btn-primary" id="btnSave" style="padding: 3px 25px;margin-top:30px;width:50%">Save</button></center>
-                                        </div>
-                                    </div>
+                                                    <div class="col-sm-2">
+                                                        <label class="form-label">State</label>
+                                                        <input type="text" id="state" class="form-control" />
+                                                        @* <select name="state" id="state" onchange="stateChange('city', this)" class="form-select"></select> *@
+                                                    </div>
+                                                    <div class="col-sm-2">
+                                                        <label class="form-label">Pincode</label>
+                                                        <input type="text" id="pin" class="form-control" />
+                                                    </div>
+                                                    <div class="col-sm-2">
+                                                        <label class="form-label">Account No.</label>
+                                                        <input type="text" id="acno" class="form-control" />
+                                                    </div>
+                                                    <div class="col-sm-2">
+                                                        <label class="form-label">Confirm Account No.</label>
+                                                        <input type="text" id="confirmAcno" class="form-control">
+                                                        <span id="acnoError" style="color: red; font-size: 12px;position:relative;"></span>
+                                                        </div>
+                                                    <div class="col-sm-2">
+                                                        <label class="form-label">Account Name</label>
+                                                        <input type="text" id="acname" class="form-control" />
+                                                    </div>
 
+
+                                                    <div class="col-sm-2">
+                                                        <center><button type="button" onclick="saveofferBank()" class="btn btn-primary" id="btnBankSave" style="padding: 3px 25px;margin-top:28px;width:60%">Save</button></center>
+                                                    </div>
+                                                </div>
+                                                <div class="row" style="margin-top:10px;">
+                                                    <div class="col-sm-12">
+                                                        <div id="offerBankGrid"></div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="tab-pane fade" id="navs-top-sh" role="tabpanel" style="overflow-y: scroll;height: 235px;overflow-x: hidden;">
+                                                <div class="row">
+                                                    <div class="col-sm-2">
+                                                        <label class="form-label">Stake Holder Type</label>
+                                                        <select name="sh" id="sh_type" class="form-select"></select>
+                                                        <input id="stack_gid" class="form-control" hidden />
+                                                        <input id="stack_code" class="form-control" hidden />
+                                                    </div>
+                                                    <div class="col-sm-2">
+                                                        <label class="form-label">Stake Holder Name</label>
+                                                        <input type="text" id="sh_name" class="form-control" />
+                                                    </div>
+                                                    <div class="col-sm-3">
+                                                        <label class="form-label">Address</label>
+                                                        <textarea id="sh_address" class="form-control" cols="10" rows="2"></textarea>
+                                                    </div>
+                                                    <div class="col-sm-3">
+                                                        <label class="form-label">State</label>
+                                                        <select name="sh_state" id="sh_state" onchange="stateChange('sh_city', this)" class="form-select"> </select>
+                                                    </div>
+                                                    <div class="col-sm-2">
+                                                        <label class="form-label">City</label>
+                                                        <select name="sh_city" id="sh_city" class="form-select"></select>
+                                                    </div>
+
+                                                </div>
+                                                <div class="row">
+                                                    <div class="col-sm-2">
+                                                        <label class="form-label">Pincode</label>
+                                                        <input type="text" id="sh_pin" class="form-control" />
+                                                    </div>
+                                                    <div class="col-sm-2">
+                                                        <label class="form-label">Contact Name</label>
+                                                        <input type="text" id="sh_cname" class="form-control" />
+                                                    </div>
+                                                    <div class="col-sm-3">
+                                                        <label class="form-label">Designation</label>
+                                                        <input type="text" id="sh_designation" class="form-control" />
+                                                    </div>
+                                                    <div class="col-sm-2">
+                                                        <label class="form-label">Email</label>
+                                                        <input type="text" id="sh_email" class="form-control" />
+                                                    </div>
+                                                    <div class="col-sm-2">
+                                                        <label class="form-label">Mobile</label>
+                                                        <input type="text" id="sh_mob" class="form-control" style="width:80%" />
+                                                    </div>
+                                                    <div class="col-sm-1">
+                                                        <center><button type="button" onclick="saveofferStackHolder()" class="btn btn-primary" id="btnShSave" style="padding: 3px 25px;margin-top:28px;margin-left:-40px;">Save</button></center>
+                                                    </div>
+                                                </div>
+                                                <div class="row" style="margin-top:10px;">
+                                                    <div class="col-sm-12">
+                                                        <div id="offerStackGrid"></div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="tab-pane fade" id="navs-top-cat" role="tabpanel">
+                                                <div class="row" style="margin-top: -40px;margin-bottom: 10px;">
+                                                    <div class="col-sm-4">
+                                                    </div>
+                                                    <div class="col-sm-4">
+                                                    </div>
+                                                    <div class="col-sm-4">
+                                                        <center><button type="button" onclick="saveofferCategory()" class="btn btn-primary" id="btnCatSave" style="padding: 3px 25px;margin-top:28px;width:35%">Save</button></center>
+                                                    </div>
+                                                </div>
+                                                <div class="row">
+                                                    <div class="col-sm-12">
+                                                        <div id="offerCategoryGrid"></div>
+                                                    </div>
+                                                </div>
+
+                                            </div>
+                                            <div class="tab-pane fade" id="navs-top-mile" role="tabpanel">
+                                                <div class="row">
+                                                    <div class="col-md-2-4">
+                                                        <label class="form-label">Offer Opening Date	</label>&nbsp;<span style="font-size: 12px;color:red;font-weight: bold;">*</span>
+                                                        <input type="date" id="iod" class="form-control" />
+                                                        <input id="milestone_gid" class="form-control" hidden />
+                                                        <span id="queryiod" style="color: red; font-size: 12px;position:relative;"></span>
+                                                    </div>
+                                                    <div class="col-md-2-4">
+                                                        <label class="form-label">Offer closing Date	</label>&nbsp;<span style="font-size: 12px;color:red;font-weight: bold;">*</span>
+                                                        <input type="date" id="icd" class="form-control" />
+                                                        <span id="queryicd" style="color: red; font-size: 12px;position:relative;"></span>
+                                                    </div>
+                                                    <div class="col-md-2-4">
+                                                        <label class="form-label">Allotment Date	</label>&nbsp;<span style="font-size: 12px;color:red;font-weight: bold;">*</span>
+                                                        <input type="date" id="alotdate" class="form-control" />
+                                                        <span id="queryalotdate" style="color: red; font-size: 12px;position:relative;"></span>
+                                                    </div>
+                                                    <div class="col-md-2-4">
+                                                        <label class="form-label">Approval Date	</label>&nbsp;<span style="font-size: 12px;color:red;font-weight: bold;">*</span>
+                                                        <input type="date" id="apdate" class="form-control" />
+                                                        <span id="queryapdate" style="color: red; font-size: 12px;position:relative;"></span>
+                                                    </div>
+                                                    <div class="col-md-2-4">
+                                                        <label class="form-label">NSDL CA Date	</label>&nbsp;<span style="font-size: 12px;color:red;font-weight: bold;">*</span>
+                                                        <input type="date" id="nsdldate" class="form-control" />
+                                                        <span id="querynsdldate" style="color: red; font-size: 12px;position:relative;"></span>
+                                                    </div>
+
+                                                </div>
+                                                <div class="row" style="margin-top:15px;">
+                                                    <div class="col-md-2-4">
+                                                        <label class="form-label">CDSL CA Date	</label>&nbsp;<span style="font-size: 12px;color:red;font-weight: bold;">*</span>
+                                                        <input type="date" id="cdsldate" class="form-control" />
+                                                        <span id="querycdsldate" style="color: red; font-size: 12px;position:relative;"></span>
+                                                    </div>
+                                                    <div class="col-md-2-4">
+                                                        <label class="form-label">Refund Date	</label>&nbsp;<span style="font-size: 12px;color:red;font-weight: bold;">*</span>
+                                                        <input type="date" id="refunddate" class="form-control" />
+                                                        <span id="queryrefunddate" style="color: red; font-size: 12px;position:relative;"></span>
+                                                    </div>
+                                                    <div class="col-md-2-4">
+                                                        <label class="form-label">Listing Date	</label>&nbsp;<span style="font-size: 12px;color:red;font-weight: bold;">*</span>
+                                                        <input type="date" id="ldate" class="form-control" />
+                                                        <span id="queryldate" style="color: red; font-size: 12px;position:relative;"></span>
+                                                    </div>
+                                                    <div class="col-md-2-4">
+                                                        <center><button type="button" onclick="saveOfferMilstone()" class="btn btn-primary" id="btnSave" style="padding: 3px 25px;margin-top:30px;width:50%">Save</button></center>
+                                                    </div>
+                                                </div>
+
+                                            </div>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
-                    </div>
-                </div>
+                        <div class="tab-pane fade" id="navs-top-profile" role="tabpanel">
+                            <div class="row">
+                                <div class="col-sm-12">
+                                    <img style="width:20px; height:20px; margin-bottom:-9px; cursor:pointer;float:right;position: relative;top: -17px;"
+                                         onclick="showDetailsTab()"
+                                         src="/Assets/images/toplist.png">
+                                </div>
+                            </div>
+                            <div class="col-sm-12">
+                                <input type="hidden" id="offer_code" />
+                                <div id="auditGrid"></div>
+                            </div>
+                        </div>
+                            
+                        </div>                     
+                  
+                </div>               
             </div>
         </div>
     </div>
-
 </body>
 
 </html>
 <script>
-      $( document ).ready(function() {
-              $('#navhead').text('Offer Setup');              
-              var mode = new URLSearchParams(window.location.search).get('mode');
-                var defaultStatus = sessionStorage.getItem("default_status");
-
-                loadMasterDropdown("QCD_STATUS", "status");
-
-                setTimeout(function () {
-                    if (mode === "Create" && defaultStatus) {
+    window.addPerm = '@addPerm';
+    window.modPerm = '@modPerm';
+    window.viewPerm = '@viewPerm';
+    window.delPerm = '@delPerm';
+</script>
+<script>
+        $(document).ready(function () {
+             $('#navhead').text('Offer Setup');
+               var ipocode = localStorage.getItem("selectedIPO");
+               $("#ipocode").val(ipocode);
+               var mode = new URLSearchParams(window.location.search).get('mode');
+               var defaultStatus = sessionStorage.getItem("default_status")
+             $.when(
+                  loadMasterDropdown("QCD_STATUS", "status", "D"),
+                  loadMasterDropdown("QCD_MAST_OFFER_TYPE", "offer_type"),
+                  loadMasterDropdown("QCD_MAST_LISTING", "listing"),
+                  loadBank(),
+                  loadMasterDropdown("QCD_PRICE_TYPE", "pricetype"),
+                  loadMasterDropdown("QCD_BANK_TYPE", "banktype"),
+                  loadMasterDropdown("QCD_MAST_STATE", "state"),
+                  loadMasterDropdown("QCD_MAST_STATE", "sh_state"),
+                  loadMasterDropdown("QCD_STACK_HOLDER_TYPE", "sh_type"),
+                  getclientlist(),
+                  getifsclist(),
+            ).done(function () {
+            $('#offer_header_gid').val(0);
+            $("#offer_detail_gid").val(0);
+            $("#banker_gid").val(0);
+            $("#stack_gid").val(0);
+            $("#milestone_gid").val(0);
+            $("#createedit").val($('#offer_header_gid').val() == 0 ? "CREATE" : "EDIT");
+            var offer_code = sessionStorage.getItem("edit_offer_code");
+            var client_code = sessionStorage.getItem("edit_client_code");
+            $("#clientcode").val(client_code);
+            $("#offer_code").val(offer_code);
+            if (offer_code && client_code) {
+                if (mode === "Create" && defaultStatus) {
                         $("#status").val(defaultStatus).trigger("change");
                         sessionStorage.removeItem("default_status");
+                    } else if(mode === "View") {
+                        $("#createedit").val("VIEW");
                     }
-                }, 500); // increase if still not working
-                  var activeTab = localStorage.getItem("activeTab");
+                 var activeTab = localStorage.getItem("activeTab");
                     if (activeTab) {
                         var triggerEl = document.querySelector('[data-bs-target="' + activeTab + '"]');
                         if (triggerEl) {
@@ -494,48 +632,31 @@
                         }
                         localStorage.removeItem("activeTab");
                     }
-
-              $('#offer_header_gid').val(0);
-              $("#offer_detail_gid").val(0);
-              $("#banker_gid").val(0);
-              $("#stack_gid").val(0);
-              $("#milestone_gid").val(0);
-              $("#createedit").val($('#offer_header_gid').val() == 0 ? "CREATE": "EDIT");
-              var offer_code = sessionStorage.getItem("edit_offer_code");
-              var client_code = sessionStorage.getItem("edit_client_code");
-              $("#clientcode").val(client_code);
-              $("#offer_code").val(offer_code);
-              loadMasterDropdown("QCD_MAST_OFFER_TYPE", "offer_type");
-              loadMasterDropdown("QCD_MAST_LISTING", "listing");
-              loadMasterDropdown("QCD_STATUS", "status");
-               loadBank();
-                  // setTimeout(function () {
-                  //       $("#status").val("D");
-                  //   }, 300);
-                      
-                  loadMasterDropdown("QCD_PRICE_TYPE", "pricetype");
-              loadMasterDropdown("QCD_BANK_TYPE", "banktype");
-              loadMasterDropdown("QCD_MAST_STATE", "state");
-              loadMasterDropdown("QCD_MAST_STATE", "sh_state");
-              loadMasterDropdown("QCD_STACK_HOLDER_TYPE", "sh_type");
-              getclientlist();
-              if(offer_code && client_code) {
-                  fetchIssuesetup();
-              } else {
-                  loadCatagory();
-              }
-              $("#status").change(function () {
-                var selectedValue = $(this).val();
-                if (selectedValue === "I") {
-                    $("#remarks").prop("readonly", false);
-                } else {
-                    $("#remarks").prop("readonly", true);
-                }                
-              });
-        });
+                     //  $('#offer_header_gid').val(0);
+                     //  $("#offer_detail_gid").val(0);
+                     //  $("#banker_gid").val(0);
+                     //  $("#stack_gid").val(0);
+                     //  $("#milestone_gid").val(0);
+                     // // $("#createedit").val($('#offer_header_gid').val() == 0 ? "CREATE": "EDIT");
+                     //  var offer_code = sessionStorage.getItem("edit_offer_code");
+                     //  var client_code = sessionStorage.getItem("edit_client_code");
+                     //  $("#clientcode").val(client_code);
+                     //  $("#offer_code").val(offer_code);
+                 if(offer_code && client_code) {
+                     fetchIssuesetup();
+                      // auditGrid();
+                 } else {
+                     loadCatagory();
+                 }
+               } else {
+                loadCatagory();
+            }
+        }).fail(function () {
+            console.log("One or more dropdowns failed to load");
+        });       
+    });    
 
         // Global variables
-
         offerHeader = "";
         offerDetails = "";
         offerBank = "";
@@ -543,20 +664,6 @@
         offerCategory = "";
         offerMillstone = "";
         var activeOfferStatus = false;
-
-        // $("#selectAll").on("change", function () {
-        //     $(".rowCheckbox").prop("checked", $(this).prop("checked"));
-        // });
-
-        // // If one checkbox is unchecked → uncheck Select All
-        // $(".rowCheckbox").on("change", function () {
-        //     if (!$(this).prop("checked")) {
-        //         $("#selectAll").prop("checked", false);
-        //     }
-        //     else if ($(".rowCheckbox:checked").length === $(".rowCheckbox").length) {
-        //         $("#selectAll").prop("checked", true);
-        //     }
-        // });
 
         $("#pricetype").change(function () {
             var value = $(this).val();
@@ -566,7 +673,6 @@
                  var premium = parseFloat($("#premium").val().replace(/,/g, '')) || 0;
                 var fprice = facevalue + premium;
                  $("#fprice").val(fprice);
-
                 $("#minprice").prop("disabled", true).val("");
                 $("#maxprice").prop("disabled", true).val("");
                 $("#cutoffprice").prop("disabled", true).val("");
@@ -627,6 +733,87 @@
         });
     }
 
+
+        function auditGrid() {
+        var ipo_code = $("#offer_code").val();
+        try {
+            $.ajax({
+                type: "GET",
+                url: '@Url.Action("GetAuditTrail", "IssueSetup")',
+                dataType: 'json',
+                contentType: 'application/json; charset=utf-8',
+                data: {
+                    ipo_code: ipo_code
+                },
+                    success: function (response) {
+                    if (response.success) {
+                        // Convert string to JSON object
+                        var auditData = JSON.parse(response.data);
+                        // Get Table array
+                        var auditRows = auditData.Table;
+                    $("#auditGrid").kendoGrid({
+                        dataSource: {
+                            data: auditRows,
+                            pageSize: 10
+                        },
+                        pageable: true,
+                        height: 400,
+                        sortable: true,
+                        filterable: true,
+                        columns: [
+                             {
+                                field: "AuditDate",
+                                 title: "Date",
+                                 width: 80
+                            },
+                             {
+                                 field: "AuditTime",
+                                 title: "Time" ,
+                                 width: 80
+                             },
+                            {
+                                field: "Auditby",
+                                title: "Audit By",
+                                width: 150,
+                                hidden:true
+                            },
+                             {
+                                field: "Username",
+                                title: "User Name",
+                                width: 150
+                            },
+                             {
+                                field: "Usercode",
+                                title: "User Code",
+                                width: 150
+                            },
+                            {
+                                field: "Status",
+                                title: "Status",
+                                width: 80
+                            },
+                            // {
+                            //     field: "Action",
+                            //     title: "Action",
+                            //     width: 80
+                            // },
+                            {
+                                field: "AuditRemarks",
+                                title: "Audit Remarks",
+                                width: 250
+                            }
+                           
+                        ]
+                    });
+        }
+    }
+            });
+
+        }  catch (e) {
+            console.log(e);
+        }
+    }
+
     function getclientlist(){
             var mymodel = {
                 p_client_gid: 0,
@@ -672,20 +859,71 @@
                 }
     }
 
+        function getifsclist(){
+            var mymodel = {
+                p_client_gid: 0,
+                p_action: "IFSC"
+            };
+            try {
+                $.ajax({
+                    type: "POST",
+                    url: '@Url.Action("GetClientList", "Dashboard")',
+                    dataType: 'json',
+                    data: JSON.stringify(mymodel),
+                    contentType: 'application/json; charset=utf-8',
+                    success: function (response) {
+                        if (response ) {
+                         var clientList = JSON.parse(response._data);
+                         $("#ifsc").autocomplete({
+                            source: $.map(clientList, function (item) {
+                                return {
+                                    label: item.ifsc_code +" - "+item.address,
+                                    ifsc_code: item.ifsc_code,
+                                    city: item.city,
+                                    state: item.state,
+                                    address:item.address
+                                };
+                            }),
+                            select: function (event, ui) {
+                                $("#ifsc").val(ui.item.ifsc_code);
+                                $("#city").val(ui.item.city);
+                                $("#state").val(ui.item.state);
+                                $("#address").val(ui.item.address);
+                                var bankCode = ui.item.ifsc_code.substring(0, 4);
+                                 $("#bank").val(bankCode).trigger("change");
+                                return false;
+                            }
+                        });
+                        }
+                        else {
+
+                        }
+                    },
+                    error: function (er) {
+                        alert(er)
+                        console.log(er)
+                    }
+                });
+            }
+                catch (e) {
+                    console.log(e)
+                }
+    }
+
      function offerHeaderSave() {
-        console.log("activeOfferStatussave : ", activeOfferStatus);
          var isValid = true;
+         var role_code =  '@role_code';
           if($("#clientname").val() === "") { $("#v_clientname").text("Please Choose Client Name"); isValid = false; } else {$("#v_clientname").text(""); }
             if($("#clientcode").val() === "") { $("#v_clientcode").text("Please Choose Client Code"); isValid = false; } else {$("#v_clientcode").text(""); }
             if($("#offer_type").val() === "") { $("#v_offer_type").text("Please Choose Offer Type");isValid = false;} else {$("#v_offer_type").text(""); }
             if($("#listing").val() === "") { $("#v_listing").text("Please Choose Listing");isValid = false; } else {$("#v_listing").text(""); }
             if($("#isin").val() === "") { $("#v_isin").text("Please Enter ISIN"); isValid = false; } else {$("#v_isin").text(""); }
             if($("#status").val() === "") { $("#v_status").text("Please Choose status");isValid = false; } else {$("#v_status").text(""); }
-            if(($("#remarks").val() === "I" || $("#status").val() === "C") && $("#remarks").val() === "") { $("#v_remarks").text("Please Enter Remark"); isValid = false;} else {$("#v_remarks").text(""); }
+            if(($("#status").val() === "I" || $("#status").val() === "C") && $("#remarks").val() === "") { $("#v_remarks").text("Please Enter Remark"); isValid = false;} else {$("#v_remarks").text(""); }
             var clientname = $("#clientname").val();
             var status = $("#status").val();
             if(clientname) {
-                 if ((status === "Y" && activeOfferStatus) || (status === "D" && !activeOfferStatus) || (status === "I") || (status === "C") ) {
+                 if ((status === "Y" && activeOfferStatus) || (status === "D") || (status === "I") || (status === "C") ) {
               if (isValid) {
                 var payload = {};
                 payload.offer_header_gid = $("#offer_header_gid").val();
@@ -697,10 +935,13 @@
                 payload.offer_empdiscount = $("#empdiscount").val();
                 payload.offer_remarks = $("#remarks").val();
                 payload.client_code = $("#clientcode").val();
-                payload.user_code = '@userName';
+                payload.user_code = '@userCode';
+                payload.role_code = role_code;
                 payload.active_status = 'Y';
+                payload.ipo_status = $("#status").val() == 'D' ? "IP" : $("#ipostatus").val();
                 payload.action = $("#offer_header_gid").val() == 0 ? "INSERT": "UPDATE";
                 payload.delete_flag = 'N';
+                payload.boa_checked_status = 'N'
                 try {
                 $.ajax({
                     type: "POST",
@@ -709,17 +950,44 @@
                     data: JSON.stringify(payload),
                     contentType: 'application/json; charset=utf-8',
                     success: function (response) {
+                        var msg = "";
                         if (response && response.success) {
-                            var data = JSON.parse(response.data);
-                            $("#offer_header_gid").val(data[0].in_offer_header_gid);
-                            $("#offer_code").val(data[0].in_offer_code);
-                            $("#issuestatus").val(data[0].issue_status);
-                            fetchIssuesetup();
-                            $.alert({
-                            title: 'IPO Allotment',
-                            content:data[0].out_msg,
-                            type: 'green',
-                            });
+                            if($("#ipostatus").val() == 'MS' || $("#ipostatus").val() == 'CA' || $("#ipostatus").val() == 'CR' || $("#ipostatus").val() == 'MRS') {
+                               if($("#ipostatus").val() == 'MS') {
+                                   msg = "Submitted Sucessfully .!"
+                               } else if($("#ipostatus").val() == 'CA') {
+                                   msg = "Approved Sucessfully .!"
+                               } else if($("#ipostatus").val() == 'CR') {
+                                   msg = "Rejected Sucessfully .!"
+                               } else if($("#ipostatus").val() == 'MRS') {
+                                   msg = "Resubmitted Sucessfully .!"
+                               }
+                                $.alert({
+                                title: 'IPO Allotment',
+                                content:msg,
+                                type: 'green',
+                                buttons: {
+                                    ok: {
+                                        text: 'OK',
+                                        action: function () {
+                                           window.location.href = "../Dashboard/Dashboard?tab=offer";
+                                        }
+                                    }
+                                }  
+                              });
+                            } else {
+                                 var data = JSON.parse(response.data);
+                                $("#offer_header_gid").val(data[0].in_offer_header_gid);
+                                $("#offer_code").val(data[0].in_offer_code);
+                                $("#issuestatus").val(data[0].issue_status);
+                                fetchIssuesetup();
+                                $.alert({
+                                    title: 'IPO Allotment',
+                                    content:data[0].out_msg,
+                                    type: 'green',
+                                });
+                            }
+                           
                         }
                     },
                     error: function (er) {
@@ -788,9 +1056,8 @@
                         } else {
                             activeOfferStatus = false;
                         }
-                                console.log("finalactiveOfferStatus", activeOfferStatus);
-                    }
-                    else {
+                        enableDisable();
+                    } else {
                     }
                 },
                 error: function (er) {
@@ -802,12 +1069,28 @@
             catch (e) {
                 console.log(e)
             }
+            
         }
 
         function fetchofferHeader(data){
-            debugger;            
+                  var role_code =  '@role_code';
                 $("#offer_header_gid").val(data.offer_header_gid);
-                $("#createedit").val(data.offer_header_gid == 0 ? "CREATE": "EDIT");
+               if(role_code == 'IPOCHK' && $("#createedit").val() == "VIEW") {
+                  $("#createedit").val("VIEW");
+              } else if(role_code == 'IPOMKR' && $("#createedit").val() == "VIEW") {
+                  $("#createedit").val("VIEW");
+              } else if(role_code == 'IPOMKR' && $("#createedit").val() == "VIEW" && (data.ipo_status == 'MS' || data.ipo_status == 'CA' || data.ipo_status == 'MRS')){
+                   $("#createedit").val("VIEW");
+              } else if(data.offer_header_gid == 0){
+                  $("#createedit").val("CREATE");
+              } else {
+                  $("#createedit").val("EDIT");
+                   if(data.offer_status == 'Y') {
+                    $("#headerBtnsubmit").prop('disabled', false);
+                } else {
+                    $("#headerBtnsubmit").prop('disabled', true);
+                }
+              }
                 $("#offer_code").val(data.offer_code);
                 $("#offer_type").val(data.offer_type);
                 $("#listing").val(data.offer_listing_no);
@@ -817,24 +1100,12 @@
                     $("#issuestatus").val("Active");
                 } else  if(data.offer_status == "D") {
                     $("#issuestatus").val("Draft");
-                }                     
+                }
                 $("#empdiscount").val(data.offer_empdiscount);
                 $("#remarks").val(data.offer_remarks);
                 $("#clientcode").val(data.client_code);
                 $("#clientname").val(data.client_name);
-                if(data.offer_status == 'I'){
-                    $("#remarks").prop("readonly", false);
-                } else {
-                    $("#remarks").prop("readonly", true);
-                }
-    //             $("#status").change(function () {
-    //               var selectedValue = $(this).val();     
-    //               if((selectedValue === "D") || (selectedValue === "Y")) {
-    //                  $("#remarks").val("");
-    //               } else {
-    //                   $("#remarks").val(data.offer_remarks);
-    //               }                  
-    // });
+                $("#ipostatus").val(data.ipo_status);               
             }
 
 
@@ -890,7 +1161,7 @@
                             payload.offer_cutoffprice= $("#cutoffprice").val() ? parseFloat($("#cutoffprice").val()) : 0;
                             payload.offer_code= $("#offer_code").val();
                             payload.client_code= $("#clientcode").val();
-                            payload.user_code= '@userName';
+                            payload.user_code= '@userCode';
                             payload.action=$("#offer_detail_gid").val() == 0 ? "INSERT": "UPDATE";
                         try {
                         $.ajax({
@@ -940,7 +1211,6 @@
            function setPostPrice(){
             var preCaptital = parseFloat($("#preissue").val().replace(/,/g, '')) || 0;
             var offer_issuesize = parseFloat($("#issuesize").val().replace(/,/g, '')) || 0;
-            console.log("Pre:", preCaptital, "Issue:", offer_issuesize);
             var postprice = preCaptital + offer_issuesize;
             $("#postissue").val(postprice.toFixed(2));
         }
@@ -976,19 +1246,30 @@
      // ----------------- Bank functions ------------------
 
          function fetchofferBank(data){
+              var role_code =  '@role_code';
+              var actionTemplate = "";
+                        if (role_code === "IPOCHK" || ($("#createedit").val() == "VIEW")) {
+                            actionTemplate = `
+                                <img src='../Assets/images/viewicons.png'
+                                     onclick="editBankGrid(this)"
+                                     style="height:12px;width:12px;cursor:pointer;margin-left:10px;" />
+                            `;
+                        } else {
+                            actionTemplate = `
+                            <img src='../Assets/images/editicons.png'
+                                 onclick="editBankGrid(this)"
+                                 style="height:12px;width:12px;cursor:pointer;margin-right:10px;" />
+
+                            <img src='../Assets/images/del.png'
+                                 onclick="deleteBankGrid(this)"
+                                 style="height:12px;width:12px;cursor:pointer;" />
+                        `;
+                        }
                         var columns = [
                             {
                                 title: "Action",
                                 width: 70,
-                                template: `
-                                    <img src='../Assets/images/editicons.png'
-                                         onclick="editBankGrid(this)"
-                                         style="height:12px;width:12px;cursor:pointer;margin-right:10px;" />
-
-                                    <img src='../Assets/images/del.png'
-                                         onclick="deleteBankGrid(this)"
-                                         style="height:12px;width:12px;cursor:pointer;" />
-                                `
+                                template: actionTemplate                               
                             },
                             {
                                 field: "banker_gid",
@@ -1005,7 +1286,7 @@
                                 title: "Bank Type",
                             },
                             {
-                                field: "banker_name",
+                                field: "bank_name",
                                 title: "Bank Name"
                             },
                             {
@@ -1080,75 +1361,87 @@
              var status = $("#status").val();
              var clientname = $("#clientname").val();
             var isValid = true;
+            if ($("#acno").val().trim() === "") {
+                $("#acnoError").text("Please enter account number");
+                isValid = false;
+            }
+            else if ($("#confirmAcno").val().trim() === "") {
+                $("#acnoError").text("Please confirm account number");
+                isValid = false;
+            }
+            else if ($("#acno").val().trim() !== $("#confirmAcno").val().trim()) {
+                $("#acnoError").text("Account numbers and confirm account number not Matched");
+                isValid = false;
+            }
+            else {
+                $("#acnoError").text("");
+            }
             if (!isValid) return;
-
-                 if(clientname) {
+               if(clientname) {
                        if((status === "Y" && activeOfferStatus ==="false") || (status === "" && activeOfferStatus === "false")) {
                         $.alert({
-                     title: 'Validation',
-                     content: 'Change the status to Draft and proceed...',
-                     type: 'red'
-                 });
-           } else {
-                   var payload = {
-                    banker_gid: $("#banker_gid").val() ? parseInt($("#banker_gid").val()) : 0,
-                    banker_type: $("#banktype").val(),
-                    banker_name: $("#bank").val(),
-                    banker_address: $("#address").val(),
-                    banker_city: $("#city").val(),
-                    banker_state: $("#state").val(),
-                    banker_pincode: $("#pin").val(),
-                    banker_holdname: $("#acname").val(),
-                    banker_accountno: $("#acno").val(),
-                    banker_ifsc: $("#ifsc").val(),
-                    offer_code: $("#offer_code").val(),
-                    client_code: $("#clientcode").val(),
-                    user_code: '@userName',
-                    action: $("#banker_gid").val() == 0 ? "INSERT" : "UPDATE"
-                };
-                try {
-                    customAjax({
-                        type: "POST",
-                        url: '@Url.Action("OfferBankersSave", "IssueSetup")',
-                        data: JSON.stringify(payload),
-                        success: function (response) {
-                            if (response && response.success) {
-                                clearbankerform();
-                                $("#banker_gid").val(0);
-                                var data = JSON.parse(response.data);
-                                fetchIssuesetup();
-                                $.alert({
-                                    title: 'IPO Allotment',
-                                    content: data[0].out_msg,
-                                    type: 'green',
-                                });                              
-                            }
-                            else {
-                                $.alert({
-                                    title: 'IPO Allotment',
-                                    content: 'Save failed!',
-                                    type: 'red',
+                             title: 'Validation',
+                             content: 'Change the status to Draft and proceed...',
+                             type: 'red'
+                         });
+                       } else {
+                               var payload = {
+                                banker_gid: $("#banker_gid").val() ? parseInt($("#banker_gid").val()) : 0,
+                                banker_type: $("#banktype").val(),
+                                banker_name: $("#bank").val(),
+                                banker_address: $("#address").val(),
+                                banker_city: $("#city").val(),
+                                banker_state: $("#state").val(),
+                                banker_pincode: $("#pin").val(),
+                                banker_holdname: $("#acname").val(),
+                                banker_accountno: $("#acno").val(),
+                                banker_ifsc: $("#ifsc").val(),
+                                offer_code: $("#offer_code").val(),
+                                client_code: $("#clientcode").val(),
+                                user_code: '@userCode',
+                                action: $("#banker_gid").val() == 0 ? "INSERT" : "UPDATE"
+                            };
+                            try {
+                                customAjax({
+                                    type: "POST",
+                                    url: '@Url.Action("OfferBankersSave", "IssueSetup")',
+                                    data: JSON.stringify(payload),
+                                    success: function (response) {
+                                        if (response && response.success) {
+                                            clearbankerform();
+                                            $("#banker_gid").val(0);
+                                            var data = JSON.parse(response.data);
+                                            fetchIssuesetup();
+                                            $.alert({
+                                                title: 'IPO Allotment',
+                                                content: data[0].out_msg,
+                                                type: 'green',
+                                            });
+                                        }
+                                        else {
+                                            $.alert({
+                                                title: 'IPO Allotment',
+                                                content: 'Save failed!',
+                                                type: 'red',
+                                            });
+                                        }
+                                    },
+                                    error: function (er) {
+                                        console.log(er);
+                                    }
                                 });
+                            } catch (e) {
+                                console.log(e);
                             }
-                        },
-                        error: function (er) {
-                            console.log(er);
-                        }
-                    });
-                } catch (e) {
-                    console.log(e);
-                }
-           }
-         }
-         else {
-                  $.alert({
-                    title: 'Validation',
-                    content: 'Client Code must not be empty!',
-                    type: 'red'
+                    }
+             }
+             else {
+                      $.alert({
+                        title: 'Validation',
+                        content: 'Client Code must not be empty!',
+                        type: 'red'
                 });
-        }
-
-
+            }
         }
 
          function clearbankerform(){
@@ -1168,7 +1461,6 @@
             var grid = $("#offerBankGrid").data("kendoGrid");
             var row = $(e).closest("tr");
             var dataItem = grid.dataItem(row);
-                console.log("records :",dataItem );
             $("#state").val(dataItem.banker_state);
             loadMasterDropdown(
                 dataItem.banker_state,
@@ -1185,6 +1477,7 @@
             $("#address").val(dataItem.banker_address);
             $("#pin").val(dataItem.banker_pincode);
             $("#acno").val(dataItem.banker_accountno);
+            $("#confirmAcno").val(dataItem.banker_accountno);
             $("#ifsc").val(dataItem.banker_ifsc);
             $("#acname").val(dataItem.banker_holdname);
         }
@@ -1196,7 +1489,6 @@
 
          function deleteBankGrid(e) {
              var status = $("#status").val();
-             console.log("delstatus:", status);
             var grid = $("#offerBankGrid").data("kendoGrid");
             var row = $(e).closest("tr");
             var dataItem = grid.dataItem(row);
@@ -1222,7 +1514,7 @@
                             banker_ifsc: "",
                             offer_code: $("#offer_code").val(),
                             client_code: $("#clientcode").val(),
-                            user_code: '@userName',
+                            user_code: '@userCode',
                             action: "DELETE"
                         };
                         customAjax({
@@ -1274,11 +1566,16 @@
 
 
             function fetchofferStackHolder(data){
-                                      var columns = [
-                                {
-                                    title: "Action",
-                                    width: 70,
-                                    template: `
+                var role_code =  '@role_code';
+                var actionTemplate = "";
+                if (role_code === "IPOCHK" || ($("#createedit").val() == "VIEW")) {
+                    actionTemplate = `
+                   <img src='../Assets/images/viewicons.png'
+                        onclick="editStackHolderGrid(this)"
+                        style="height:12px;width:12px;cursor:pointer;margin-left:10px;" />
+                        `;
+                } else {
+                    actionTemplate = `
                                         <img src='../Assets/images/editicons.png'
                                              onclick="editStackHolderGrid(this)"
                                              style="height:12px;width:12px;cursor:pointer;margin-right:10px;" />
@@ -1286,7 +1583,13 @@
                                         <img src='../Assets/images/del.png'
                                                  onclick="deleteStackHolderGrid(this)"
                                              style="height:12px;width:12px;cursor:pointer;" />
-                                    `
+                                    `;
+                }
+                            var columns = [
+                                {
+                                    title: "Action",
+                                    width: 70,
+                                    template: actionTemplate
                                 },
                                 {
                                     field: "stack_gid",
@@ -1300,11 +1603,11 @@
                                 },
                                 {
                                     field: "stack_type_name",
-                                    title: "Stack Type",
+                                    title: "Stake Holder Type",
                                 },
                                 {
                                     field: "stack_name",
-                                    title: "Stack Name"
+                                    title: "Stake Holder Name"
                                 },
                                 {
                                     field: "stack_address",
@@ -1396,7 +1699,7 @@
                             stack_mobile : $("#sh_mob").val(),
                             offer_code: $("#offer_code").val(),
                             client_code: $("#clientcode").val(),
-                            user_code: '@userName',
+                            user_code: '@userCode',
                             action : parseInt($("#stack_gid").val()) == 0 ? "INSERT" : "UPDATE",
                             active_status: "Y"
                         };
@@ -1464,7 +1767,6 @@
                 var grid = $("#offerStackGrid").data("kendoGrid");
                 var row = $(e).closest("tr");
                 var dataItem = grid.dataItem(row);
-                console.log("Stack records :", dataItem);
                 $("#sh_state").val(dataItem.stack_state);
                 loadMasterDropdown(
                     dataItem.stack_state,
@@ -1516,7 +1818,7 @@
                             stack_mobile: "",
                             offer_code: $("#offer_code").val(),
                             client_code: $("#clientcode").val(),
-                            user_code: '@userName',
+                            user_code: '@userCode',
                             action: "DELETE",
                             active_status: "N"
                         };
@@ -1569,7 +1871,6 @@
 
 
         function loadCatagory() {
-            debugger;
             var mymodel = {
                 in_master_code: "QCD_CATEGORY",
                 in_user_code: ""
@@ -1580,7 +1881,6 @@
                 data: JSON.stringify(mymodel),
                 success: function (response) {
                     var result = JSON.parse(response.data);
-                    console.log("resultcategory :", result);
                     var formattedData = result.map(function (item) {
                     return {
                         category_gid: item.master_gid,
@@ -1597,9 +1897,9 @@
             });
         }
 
-            function fetchofferCategory(data) {
-              // var postIssue = parseFloat($("#hidden_postissue").val().replace(/,/g, '')) || 0;
-                data.forEach(function (item) {
+        function fetchofferCategory(data) {
+            var role_code =  '@role_code';
+            data.forEach(function (item) {
                 if (item.offer_cat_shares) {
                     item.offer_cat_shares = parseFloat(
                         item.offer_cat_shares.toString().replace(/,/g, "")
@@ -1681,12 +1981,11 @@
                 sortable: true,
                 filterable: true,
                 resizable: true,
-                editable: "incell",
+                editable: role_code !== "IPOCHK" ? "incell" : false,
+               // editable: "incell",
                 beforeEdit: function (e) {
                 var fieldName = e.container.find("input").attr("name");
-
-                // If no input OR not the correct field → block
-                if (!fieldName || fieldName !== "offer_cat_shares") {
+                if (role_code === "IPOCHK" && (!fieldName || fieldName !== "offer_cat_shares")) {
                     e.preventDefault();
                 }
             },
@@ -1706,7 +2005,7 @@
             });
         }
 
-       function validateCategoryTotal() {
+       function validateCategoryTotal_old() {
             var issuesize = parseFloat($("#issuesize").val().replace(/,/g, '')) || 0;
             var grid = $("#offerCategoryGrid").data("kendoGrid");
             if (!grid) return false;
@@ -1715,8 +2014,6 @@
             data.forEach(function (item) {
                 total += parseFloat(item.offer_cat_shares) || 0;
             });
-            console.log("Issue Size:", issuesize);
-            console.log("Category Total:", total);
             if (issuesize !== total) {
                 $.alert({
                     title: 'IPO Web',
@@ -1728,6 +2025,53 @@
             return true;
         }
 
+
+            function validateCategoryTotal() {
+
+        var issuesize = parseFloat($("#issuesize").val().replace(/,/g, '')) || 0;
+
+        var grid = $("#offerCategoryGrid").data("kendoGrid");
+        if (!grid) return false;
+
+        var data = grid.dataSource.view();
+
+        var total = 0;
+        var isINDValid = false;
+
+        data.forEach(function (item) {
+
+            var shares = parseFloat(item.offer_cat_shares) || 0;
+
+            total += shares;
+
+            // IND category validation
+            if (item.category_code === "IND" && shares > 0) {
+                isINDValid = true;
+            }
+        });
+
+        // Validate issue size total
+        if (issuesize !== total) {
+            $.alert({
+                title: 'IPO Web',
+                content: "Category Total ₹ (" + total + ") must match with Issue Size Total ₹ (" + issuesize + ")",
+                type: 'red',
+            });
+            return false;
+        }
+
+        // Validate IND category mandatory
+        if (!isINDValid) {
+            $.alert({
+                title: 'IPO Web',
+                content: "IND category is mandatory and shares should be greater than 0.",
+                type: 'red',
+            });
+            return false;
+        }
+
+        return true;
+    }
 
      function formatIndianNumber(x) {
                 if (x == null) return "";
@@ -1759,11 +2103,10 @@
             }
 
             function saveofferCategory() {
-                    var status = $("#status").val();
-                   var clientname = $("#clientname").val();
-
+                var status = $("#status").val();
+                var clientname = $("#clientname").val();
                 if (!validateCategoryTotal()) {
-                return;   // ❌ STOP SAVE
+                return;   // STOP SAVE
                   }
                 var grid = $("#offerCategoryGrid").data("kendoGrid");
                 var selectedData = [];
@@ -1838,12 +2181,11 @@
         // ==================== Offer Milstone ===========
 
              function fetchofferMillstone(data){
-                 console.log("Milestones :", data);
-                 $("#milestone_gid").val(data.milestone_gid);
+                $("#milestone_gid").val(data.milestone_gid);
                 $("#iod").val(formatDate(data.offer_openingdate));
                 $("#icd").val(formatDate(data.offer_closingdate));
                 $("#alotdate").val(formatDate(data.offer_allotmentdate));
-                    $("#apdate").val(formatDate(data.offer_approvaldate));
+                $("#apdate").val(formatDate(data.offer_approvaldate));
                 $("#ldate").val(formatDate(data.offer_listingdate));
                 $("#nsdldate").val(formatDate(data.offer_nsdldate));
                 $("#cdsldate").val(formatDate(data.offer_cdsldate));
@@ -1869,13 +2211,13 @@
                   var milestoneId = parseInt($("#milestone_gid").val()) || 0;
                       if(iod === "") {
                         $("#queryiod").text("Please Select Offer Opening Date");
-                    isValid = false;
+                        isValid = false;
                     } else {
                         $("#queryiod").text("");
                     }
                      if(icd === "") {
                         $("#queryicd").text("Please Select Offer Closing Date");
-                    isValid = false;
+                        isValid = false;
                     }  else if(icd < iod) {
                         $("#queryicd").text("Offer Closing Date must be greater than Offer Opening Date");
                          isValid = false;
@@ -1884,7 +2226,7 @@
                     }
                      if(alotdate === "") {
                         $("#queryalotdate").text("Please Select Allotment Date");
-                    isValid = false;
+                        isValid = false;
                     }  else if(alotdate < icd) {
                         $("#queryalotdate").text("Allotment Date must be greater than Offer Closing Date");
                          isValid = false;
@@ -1893,7 +2235,7 @@
                     }
                     if(apdate === "") {
                         $("#queryapdate").text("Please Select Approval Date");
-                    isValid = false;
+                        isValid = false;
                     }  else if(apdate < alotdate) {
                         $("#queryapdate").text("Approval Date must be greater than Allotment Date");
                          isValid = false;
@@ -1902,16 +2244,16 @@
                     }
                     if(nsdldate === "") {
                         $("#querynsdldate").text("Please Select NSDL CA Date");
-                    isValid = false;
+                        isValid = false;
                     } else if(nsdldate < apdate) {
                         $("#querynsdldate").text("NSDL CA Date must be greater than Offer Approval Date");
                          isValid = false;
                     } else {
                         $("#querynsdldate").text("");
-                    }                    
+                    }
                      if(cdsldate === "") {
                         $("#querycdsldate").text("Please Select CDSL CA Date");
-                    isValid = false;
+                        isValid = false;
                     } else if(cdsldate < nsdldate) {
                         $("#querycdsldate").text("CDSL CA Date must be greater than NSDL CA Date");
                          isValid = false;
@@ -1920,7 +2262,7 @@
                     }
                      if(refunddate === "") {
                         $("#queryrefunddate").text("Please Select Refund Date");
-                    isValid = false;
+                        isValid = false;
                     }  else if(refunddate < cdsldate) {
                         $("#queryrefunddate").text("Refund Date must be greater than CDSL CA Date");
                          isValid = false;
@@ -1929,13 +2271,31 @@
                     }
                      if(ldate === "") {
                         $("#queryldate").text("Please Select Listing Date");
-                    isValid = false;
+                        isValid = false;
                     }  else if(ldate < refunddate) {
                         $("#queryldate").text("Listing Date must be greater than Refund  Date");
-                         isValid = false;
-                    } else {
-                        $("#queryldate").text("");
-                    }            
+                        isValid = false;
+                        } else if(nsdldate < apdate) {
+                            $("#querynsdldate").text("NSDL CA Date must be greater than Approval Date");
+                            isValid = false;
+                        }
+                        // CDSL Date
+                        else if(cdsldate < apdate) {
+                            $("#querycdsldate").text("CDSL CA Date must be greater than Approval Date");
+                            isValid = false;
+                        }
+                        // Refund Date
+                        else if(refunddate < apdate) {
+                            $("#queryrefunddate").text("Refund Date must be greater than Approval Date");
+                            isValid = false;
+                        }
+                        // Listing Date
+                        else if(ldate < apdate) {
+                            $("#queryldate").text("Listing Date must be greater than Approval Date");
+                            isValid = false;
+                        } else {
+                            $("#queryldate").text("");
+                        }
             if (!isValid) return;
                  if(clientname) {
                           if((status === "Y" && activeOfferStatus ==="false") || (status === "" && activeOfferStatus === "false")) {
@@ -1998,5 +2358,109 @@
                     type: 'red'
                 });
         }
-        }    
-        </script>
+        }
+
+        function enableDisable(){
+          var role_code =  '@role_code';
+          if(role_code == 'IPOCHK' || $("#createedit").val() == 'VIEW') {
+              $("#clientname").prop("disabled", true);
+              $("#offer_type").prop("disabled", true);
+              $("#listing").prop("disabled", true);
+              $("#isin").prop("disabled", true);
+              $("#empdiscount").prop("disabled", true);
+              $("#status").prop("disabled", true);
+              $("#preissue").prop("disabled", true);
+              $("#issuesize").prop("disabled", true);
+              $("#lotsize").prop("disabled", true);
+              $("#facevalue").prop("disabled", true);
+              $("#premium").prop("disabled", true);
+              $("#pricetype").prop("disabled", true);
+              $("#fprice").prop("disabled", true);
+              $("#minprice").prop("disabled", true);
+              $("#maxprice").prop("disabled", true);
+              $("#cutoffprice").prop("disabled", true);
+              $("#banktype").prop("disabled", true);
+              $("#bank").prop("disabled", true);
+              $("#ifsc").prop("disabled", true);
+              $("#address").prop("disabled", true);
+              $("#city").prop("disabled", true);
+              $("#state").prop("disabled", true);
+              $("#pin").prop("disabled", true);
+              $("#acno").prop("disabled", true);
+              $("#acname").prop("disabled", true);
+              $("#sh_type").prop("disabled", true);
+              $("#sh_name").prop("disabled", true);
+              $("#sh_address").prop("disabled", true);
+              $("#sh_state").prop("disabled", true);
+              $("#sh_city").prop("disabled", true);
+              $("#sh_pin").prop("disabled", true);
+              $("#sh_cname").prop("disabled", true);
+              $("#sh_designation").prop("disabled", true);
+              $("#sh_email").prop("disabled", true);
+              $("#sh_mob").prop("disabled", true);
+              $("#iod").prop("disabled", true);
+              $("#icd").prop("disabled", true);
+              $("#alotdate").prop("disabled", true);
+              $("#apdate").prop("disabled", true);
+              $("#nsdldate").prop("disabled", true);
+              $("#cdsldate").prop("disabled", true);
+              $("#refunddate").prop("disabled", true);
+              $("#ldate").prop("disabled", true);
+              $("#confirmAcno").prop("disabled", true);
+              $("#btnSave").hide();
+              $("#btnCatSave").css("visibility", "hidden");
+              // $("#btnCatSave").hide();
+              $("#btnShSave").hide();
+              $("#btnBankSave").hide();
+              $("#btnIssueSave").hide();
+              $("#headerBtnSave").hide();
+              $("#headerBtnsubmit").hide();
+              if($("#ipostatus").val() == 'CA' || $("#ipostatus").val() == 'CR') {
+                   $("#chkheaderBtnSave").hide();
+                   $("#chkheaderBtnsubmit").hide();
+              }
+          } else if($("#ipostatus").val() == 'CA' || $("#ipostatus").val() == 'CR'){
+              $("#chkheaderBtnSave").hide();
+              $("#chkheaderBtnsubmit").hide();
+          } 
+        }
+        
+        function chkofferHeaderSave(ipostatus){
+            if(ipostatus == 'R' && $("#remarks").val() == "") {
+                 $.alert({
+                    title: 'Validation',
+                    content: 'Please Enter Remark for Rejection',
+                    type: 'red'
+                });
+            } else {
+                 $("#ipostatus").val(ipostatus);
+                 offerHeaderSave();
+            }           
+        }
+
+        function submitofferHeader() {
+            if($("#status").val() == 'Y' && $("#ipostatus").val() == 'IP') {
+                 $("#ipostatus").val('MS');
+                 offerHeaderSave();
+            } else if($("#status").val() == 'Y' && $("#ipostatus").val() == 'CR') {
+                $("#ipostatus").val('MRS');
+                offerHeaderSave();              
+            }else if ($("#status").val() == 'Y' && $("#ipostatus").val() == '') {
+                $("#ipostatus").val('MS');
+                offerHeaderSave();
+            }           
+            else if($("#status").val() != 'Y'){
+                  $.alert({
+                    title: 'Validation',
+                    content: 'Please Active the offer status .!',
+                    type: 'red'
+                });
+            }
+
+        }
+
+        function showDetailsTab() {
+        var tab = new bootstrap.Tab(document.getElementById('detailsTab'));
+        tab.show();
+    }
+</script>

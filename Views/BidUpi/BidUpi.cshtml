@@ -1,5 +1,6 @@
 ﻿@{
     Layout = "~/Views/Shared/_LayoutNew.cshtml";
+    var userName = Context.Session.GetString("user_name");
 }
 <!DOCTYPE html>
 <html>  
@@ -107,6 +108,9 @@
                         <button type="button" onclick="exportSummary()" class="btn btn-primary" id="btnGen" style="padding: 3px 25px;margin-top:28px;">Export Summary </button>
                         &nbsp;&nbsp;
                             <button type="button" onclick="exportdetailSummary()" class="btn btn-primary" id="btnGensummary" style="padding: 3px 25px;margin-top:28px; white-space: nowrap;">Export Detail Summary </button>
+                            &nbsp;&nbsp;
+                            <button type="button" onclick="exportdifferenceSummary()" class="btn btn-primary" id="btnGenDiffsummary" style="padding: 3px 25px;margin-top:28px; white-space: nowrap;">Export Difference Summary </button>
+
                         </span>
                     </div>
                     
@@ -264,24 +268,25 @@
                     field: "status",
                     title: "Status",
                     width: 120,
-                    locked: true
+                    locked: true,
+                    footerTemplate: "<div style='font-weight:bold'>TOTAL</div>"
                 },
                   {
               title: "As per Bid",
               headerAttributes: { style: "text-align:center;font-weight:bold;" },
               columns: [
-                  { field: "bid_appl_count", title: "No.of Appl", width: 120, attributes:{style:"text-align:right;"} },
-                  { field: "bid_quantity", title: "No.of Shares", width: 130, attributes:{style:"text-align:right;"} },
-                  { field: "bid_amount", title: "Amount", width: 120, attributes:{style:"text-align:right;"} }
+                          { field: "bid_appl_count", title: "No.of Appl", width: 120, attributes:{style:"text-align:right;"},footerTemplate: "<div style='text-align:right;font-weight:bold'>" + "#= kendo.toString(sum, 'n0') #" + "</div>"},
+                      { field: "bid_quantity", title: "No.of Shares", width: 130, attributes:{style:"text-align:right;"},footerTemplate: "<div style='text-align:right;font-weight:bold'>" + "#= kendo.toString(sum, 'n0') #" + "</div>" },
+                      { field: "bid_amount", title: "Amount", width: 120, attributes:{style:"text-align:right;"},footerTemplate: "<div style='text-align:right;font-weight:bold'>" + "#= kendo.toString(sum, 'n0') #" +  "</div>" }
               ]
           },
           {
               title: "As per UPI",
               headerAttributes: { style: "text-align:center;font-weight:bold;" },
               columns: [
-                  { field: "upi_appl_count", title: "No.of Appl", width: 120, attributes:{style:"text-align:right;"} },
-                  { field: "upi_quantity", title: "No.of Shares", width: 130, attributes:{style:"text-align:right;"} },
-                  { field: "upi_amount", title: "Amount", width: 120, attributes:{style:"text-align:right;"} }
+                      { field: "upi_appl_count", title: "No.of Appl", width: 120, attributes:{style:"text-align:right;"},footerTemplate: "<div style='text-align:right;font-weight:bold'>" +  "#= kendo.toString(sum, 'n0') #" + "</div>" },
+                      { field: "upi_quantity", title: "No.of Shares", width: 130, attributes:{style:"text-align:right;"}, footerTemplate: "<div style='text-align:right;font-weight:bold'>" + "#= kendo.toString(sum, 'n0') #" + "</div>" },
+                      { field: "upi_amount", title: "Amount", width: 120, attributes:{style:"text-align:right;"},footerTemplate: "<div style='text-align:right;font-weight:bold'>" + "#= kendo.toString(sum, 'n0') #" + "</div>"}
               ]
           },
 
@@ -289,9 +294,9 @@
               title: "Diff.",
               headerAttributes: { style: "text-align:center;font-weight:bold;" },
               columns: [
-                  { field: "diff_appl_count", title: "No.of Appl", width: 120, attributes:{style:"text-align:right;color:red;"} },
-                  { field: "diff_quantity", title: "No.of Shares", width: 130, attributes:{style:"text-align:right;color:red;"} },
-                  { field: "diff_amount", title: "Amount", width: 120, attributes:{style:"text-align:right;color:red;"} }
+                      { field: "diff_appl_count", title: "No.of Appl", width: 120,attributes:{style:"text-align:right;color:red;"}, footerTemplate: "<div style='text-align:right;font-weight:bold'>" + "#= kendo.toString(sum, 'n0') #" + "</div>" },
+                      { field: "diff_quantity", title: "No.of Shares", width: 130, attributes:{style:"text-align:right;color:red;"}, footerTemplate: "<div style='text-align:right;font-weight:bold'>" + "#= kendo.toString(sum, 'n0') #" + "</div>" },
+                      { field: "diff_amount", title: "Amount", width: 120, attributes:{style:"text-align:right;color:red;"}, footerTemplate: "<div style='text-align:right;font-weight:bold'>" + "#= kendo.toString(sum, 'n0') #" + "</div>" }
               ]
           }
                  ];
@@ -302,8 +307,22 @@
                      $("#banktList").kendoGrid({
                      dataSource: {
                          data: data,
-                         pageSize: 20
+                         pageSize: 20,
+                            aggregate: [
+                            { field: "bid_appl_count", aggregate: "sum" },
+                            { field: "bid_quantity", aggregate: "sum" },
+                            { field: "bid_amount", aggregate: "sum" },
+
+                            { field: "upi_appl_count", aggregate: "sum" },
+                            { field: "upi_quantity", aggregate: "sum" },
+                            { field: "upi_amount", aggregate: "sum" },
+
+                            { field: "diff_appl_count", aggregate: "sum" },
+                            { field: "diff_quantity", aggregate: "sum" },
+                            { field: "diff_amount", aggregate: "sum" }
+                        ]
                      },
+                     showFooter: true,
                      height: 410,
                      pageable: {
                          pageSizes: [10, 20, 30],
@@ -357,5 +376,12 @@
             $("#btnGensummary").prop("disabled", false);
     }
 
+      function exportdifferenceSummary(){
+        var offer_code = localStorage.getItem("selectedIPO");
+        var url = '/BidUpi/getUPIdifferenceSummary'
+            + '?offer_code=' + encodeURIComponent(offer_code)
+            + '&user_code=' + encodeURIComponent('@userName');
+        window.location.href = url;
+    }
     
 </script>

@@ -16,6 +16,27 @@
         asideMenus = menus.Where(x => x.menu_type == "aside").ToList();
         navMenus = menus.Where(x => x.menu_type == "nav").ToList();
     }
+
+
+    var menuJson1 = Context.Session.GetString("UserMenus");
+    var menus1 = string.IsNullOrEmpty(menuJson)
+        ? new List<MenuModel>()
+        : System.Text.Json.JsonSerializer.Deserialize<List<MenuModel>>(menuJson);
+
+    var currentPath = Context.Request.Path.Value?.ToLower() ?? "";
+    var normalizedPath = currentPath.Trim('/');
+
+    var currentMenu = menus1.FirstOrDefault(x =>
+        (x.menu_url ?? "")
+            .Replace("../", "")
+            .Trim('/')
+            .ToLower() == normalizedPath
+    );
+
+    var addPerm = currentMenu?.add_perm ?? "N";
+    var modPerm = currentMenu?.mod_perm ?? "N";
+    var viewPerm = currentMenu?.view_perm ?? "N";
+    var delPerm = currentMenu?.delete_perm ?? "N";
 }
 <!DOCTYPE html>
 <html lang="en"
@@ -123,6 +144,11 @@
             color: #5490ff;
         }
 
+        i.fa.fa-envelope {
+            color: #5490ff;
+            font-size:18px;
+        }
+
         i.bx.bx-search-alt.fs-4.me-1 {
             color: #5490ff;
         }
@@ -139,11 +165,30 @@
             color: #5490ff;
             font-size: 22px;
             margin-right: 10px;
+            position: relative;
+            left: -5px;
+        }
+
+        i.bx.bxs-cog {
+            color: #5490ff;
+            font-size: 20px;
+            margin-right: 15px;
+            margin-left: 15px;
+            position: relative;
+            left: -22px;
         }
 
         i.fa.fa-ticket {
             color: #5490ff;
             font-size: 18px;
+        }
+
+        i.bx.bx-news {
+            color: #5490ff;
+            font-size: 20px;
+            margin-right: 15px;
+            position: relative;
+            left: -6px;
         }
 
         #overlayy {
@@ -310,6 +355,7 @@
             font-size: 13px;
         }
 
+      
         /*   .k-grid-content {
                     height: 288px !important;
                 } */
@@ -456,10 +502,52 @@
                         }
                         <center>  <h5 class="card-header" id="navhead" style="margin-left: 38.5vw !important;"></h5></center>
                         <ul class="navbar-nav flex-row align-items-center ms-auto">
-                            <li class="nav-item lh-1 me-1">
+                            <li class="nav-item lh-1 me-1" style="width:40px;">
                                 <i style="cursor:pointer;" class='bx bxs-home' data-bs-toggle="tooltip" data-bs-placement="bottom" title="Home" onclick="window.location.href='../Dashboard/Dashboard'"></i>
                             </li>
-                            <li class="nav-item dropdown-language dropdown lh-1 me-1">
+                            @* Dynamic Menu *@
+                            @{
+                                var headerMenus = menus
+                                .Where(x => string.IsNullOrWhiteSpace(x.parent_menu_code))
+                                .OrderBy(x => Convert.ToInt32(x.menu_order))
+                                .ToList();
+                            }
+                            @foreach (var header in headerMenus)
+                            {
+                                var childMenus = menus
+                                .Where(x => x.parent_menu_code == header.menu_code)
+                                .OrderBy(x => Convert.ToInt32(x.menu_order))
+                                .ToList();
+                                @* <li class="nav-item dropdown me-2">
+                                    <a class="nav-link dropdown-toggle"
+                                       href="javascript:void(0);"
+                                       data-bs-toggle="dropdown">
+                                        <i class="@header.icon_path me-1" data-bs-toggle="tooltip" data-bs-placement="bottom" title=@header.menu_name></i>
+                                    </a> *@
+                                <li class="nav-item dropdown-language dropdown lh-1 me-1" style="width:40px;">
+                                    <a class="nav-link dropdown-toggle hide-arrow" href="javascript:void(0);" data-bs-toggle="dropdown">
+                                        <i class="@header.icon_path" data-bs-toggle="tooltip" data-bs-placement="bottom" title="@header.menu_name"></i>
+                                    </a>
+                                    @if (childMenus.Any())
+                                    {
+                                        <ul class="dropdown-menu  dropdown-menu-end">
+                                            @foreach (var child in childMenus)
+                                            {
+                                                <li>
+                                                    <a class="dropdown-item"
+                                                       href="@Url.Content("~/" + child.menu_url)">
+                                                        <i class="@child.icon_path"></i>
+                                                        <span class="align-middle">@child.menu_name</span>
+                                                    </a>
+                                                </li>
+                                            }
+                                        </ul>
+                                    }
+                                </li>
+                            }
+                            @* Dynamic Menu *@
+
+                            @* <li class="nav-item dropdown-language dropdown lh-1 me-1">
                                 <a class="nav-link dropdown-toggle hide-arrow" href="javascript:void(0);" data-bs-toggle="dropdown">
                                     <i class='bx bxs-cog' data-bs-toggle="tooltip" data-bs-placement="bottom" title="Settings"></i>
                                 </a>
@@ -528,12 +616,12 @@
                                             <span class="align-middle">Run Recon - Bid vs UPI</span>
                                         </a>
                                     </li>                                   
-                                    @* <li>
-                                        <a class="dropdown-item" href="~/PanValidate/PanValidate" data-language="fr">
+                                    <li>
+                                        <a class="dropdown-item" href="~/BidSummary/BidSummary" data-language="fr">
                                             <i class="bx bx-card fs-4 me-1"></i>
-                                            <span class="align-middle">PAN Validate</span>
+                                            <span class="align-middle">IPO Summary Report</span>
                                         </a>
-                                    </li> *@
+                                    </li>
                                     <li>
                                         <a class="dropdown-item" href="~/Rejection/Rejection" data-language="fr">
                                             <i class="bx bx-left-arrow-circle fs-4 me-1"></i>
@@ -550,6 +638,18 @@
                                         <a class="dropdown-item" href="~/JobsStatus/JobsStatus" data-language="fr">
                                             <i class="fa fa-ticket" aria-hidden="true"></i>&nbsp;
                                             <span class="align-middle" style="position: relative;top: -2px;">Jobs Status</span>
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a class="dropdown-item" href="~/FundTransferLetter/FundTransferLetter" data-language="fr">
+                                            <i class="fa fa-envelope" aria-hidden="true"></i>&nbsp;
+                                            <span class="align-middle" style="position: relative;top: -2px;">Fund Transfer Letter</span>
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a class="dropdown-item" href="~/email/email" data-language="fr">
+                                            <i class="fa fa-envelope" aria-hidden="true"></i>&nbsp;
+                                            <span class="align-middle" style="position: relative;top: -2px;">Email Process</span>
                                         </a>
                                     </li>
                                 </ul>
@@ -573,7 +673,7 @@
                                         </a>
                                     </li>
                                 </ul>
-                            </li>
+                            </li> *@
                             <!-- User -->
                             <li class="nav-item navbar-dropdown dropdown-user dropdown">
                                 <a class="nav-link dropdown-toggle hide-arrow" href="javascript:void(0);" data-bs-toggle="dropdown">
@@ -733,7 +833,7 @@
         }
         // Function to populate child dropdown filtered
         function populateDropdownchild(data, id, value = 'default', text = 'default') {
-            debugger;
+            
             var dropdown = $('#' + id);
 
             // Clear existing options
@@ -756,10 +856,10 @@
                         localStorage.setItem("isinNumber", item.isin_id);
                     }
                 }
-                //debugger;
+                //
 
             });
-            debugger;
+            
             var itemCount = $("#Isin option").length;
             if (itemCount >= 2) {
                 $("#Isin option:nth-child(2)").prop("selected", true);
@@ -778,7 +878,7 @@
 
         // Function to populate dropdown
         function populateDropdown(data, id, value = 'default', text = 'default') {
-            debugger;
+            
             var dropdown = $('#' + id);
 
             // Clear existing options
@@ -814,7 +914,7 @@
                     }
 
                 }
-                //debugger;
+                //
 
             });
             $("#Entity option").each(function () {
@@ -837,63 +937,63 @@
         }
 
         $(document).ready(function () {
-            debugger;
+            
             //localStorage.setItem("entityId", 0);
             //localStorage.setItem("isinNumber", 0);
            // console.log("ISIN", isinid);
-            $("#userGroupid").val(JSON.parse(localStorage.getItem("SetContextData"))[0].usergroup_gid);
-            populateDropdown(JSON.parse(localStorage.getItem("SetContextData")), 'Entity');
+           // $("#userGroupid").val(JSON.parse(localStorage.getItem("SetContextData"))[0].usergroup_gid);
+          //  populateDropdown(JSON.parse(localStorage.getItem("SetContextData")), 'Entity');
             //  populateDropdown(JSON.parse(localStorage.getItem("SetContextData")), 'Isin');
 
-            $("#empname").text(JSON.parse(localStorage.getItem("SetContextData"))[0].Emp_Name);
-            $("#empcode").text(JSON.parse(localStorage.getItem("SetContextData"))[0].Emp_Code);
-            $("#empemail").text(JSON.parse(localStorage.getItem("SetContextData"))[0].Emp_EmailId);
-            $("#empmobile").text(JSON.parse(localStorage.getItem("SetContextData"))[0].Emp_MobileNo);
-            $("#empstatus").text(JSON.parse(localStorage.getItem("SetContextData"))[0].Active);
-            $("#emprole").text(JSON.parse(localStorage.getItem("SetContextData"))[0].usergroup_name);
+            // $("#empname").text(JSON.parse(localStorage.getItem("SetContextData"))[0].Emp_Name);
+            // $("#empcode").text(JSON.parse(localStorage.getItem("SetContextData"))[0].Emp_Code);
+            // $("#empemail").text(JSON.parse(localStorage.getItem("SetContextData"))[0].Emp_EmailId);
+            // $("#empmobile").text(JSON.parse(localStorage.getItem("SetContextData"))[0].Emp_MobileNo);
+            // $("#empstatus").text(JSON.parse(localStorage.getItem("SetContextData"))[0].Active);
+            // $("#emprole").text(JSON.parse(localStorage.getItem("SetContextData"))[0].usergroup_name);
 
 
 
             //   $('select[multiple]').multiselect();
-            $("#dropdown").kendoDropDownList("select", 0);
+          //  $("#dropdown").kendoDropDownList("select", 0);
             //Editcustdetails();
             //loaddynamiccolumns1();
             //loaddynamiccolumns('');
             //$.when(loaddynamiccolumns('')).then(restore_existingheader());
-            $("#showcoursetable").click(function () {
-                debugger;
-                $("#showcoursetables").show();
-            })
-            $("#showcoursetable2").click(function () {
-                $("#showcoursetables2s").show();
-            })
-            $("#showcoursetableDG").click(function () {
-                $("#showcoursetablesDG").show();
-            })
-            $("#showcoursetableDG1").click(function () {
-                $("#showcoursetablesDG").show();
-            })
-            $("#refresh4").click(function () {
-                $("#tableshow4").show();
-            });
-            $("#refresh41").click(function () {
-                $("#tableshow41").show();
-            });
-            $("#collapse_div").click(function () {
-                debugger;
-                if ($('#collapse_org').css('display') == 'none') {
-                    $('#collapse_org').show();
-                    $('#collapse_img2').css('display', 'block');
-                    $('#collapse_img').css('display', 'none');
-                } else {
-                    $('#collapse_org').css('display', 'none');
-                    $('#collapse_img2').css('display', 'none');
-                    $('#collapse_img').css('display', 'block');
-                }
-            });
+            // $("#showcoursetable").click(function () {
+                
+            //     $("#showcoursetables").show();
+            // })
+            // $("#showcoursetable2").click(function () {
+            //     $("#showcoursetables2s").show();
+            // })
+            // $("#showcoursetableDG").click(function () {
+            //     $("#showcoursetablesDG").show();
+            // })
+            // $("#showcoursetableDG1").click(function () {
+            //     $("#showcoursetablesDG").show();
+            // })
+            // $("#refresh4").click(function () {
+            //     $("#tableshow4").show();
+            // });
+            // $("#refresh41").click(function () {
+            //     $("#tableshow41").show();
+            // });
+            // $("#collapse_div").click(function () {
+                
+            //     if ($('#collapse_org').css('display') == 'none') {
+            //         $('#collapse_org').show();
+            //         $('#collapse_img2').css('display', 'block');
+            //         $('#collapse_img').css('display', 'none');
+            //     } else {
+            //         $('#collapse_org').css('display', 'none');
+            //         $('#collapse_img2').css('display', 'none');
+            //         $('#collapse_img').css('display', 'block');
+            //     }
+            // });
 
-            var myLabel = document.getElementById("orglvlNavigate");
-            myLabel.innerHTML = $("#Entity").find('option:selected').text() + "&nbsp;&nbsp;/&nbsp;&nbsp;" + $("#Isin").find('option:selected').text();
+            // var myLabel = document.getElementById("orglvlNavigate");
+            // myLabel.innerHTML = $("#Entity").find('option:selected').text() + "&nbsp;&nbsp;/&nbsp;&nbsp;" + $("#Isin").find('option:selected').text();
 
 
         });
@@ -918,7 +1018,7 @@
 
         var spinnerVisible = false;
         function getconcatval(mastercode) {
-            debugger;
+            
             var master = "";
             if (mastercode != null) {
                 master = "'" + mastercode + "'";
@@ -941,7 +1041,7 @@
         }
 
         function showProgress() {
-            debugger;
+            
             if (!spinnerVisible) {
                // alert("showP");
                 $("div#spinner").fadeIn("fast");
@@ -950,7 +1050,7 @@
             }
         }
         function hideProgress() {
-            debugger;
+            
             if (spinnerVisible) {
                 //alert("hidep");
                 var spinner = $("div#spinner");
@@ -961,7 +1061,7 @@
         }
 
         function Editcustdetails() {
-            debugger;
+            
             $.ajax({
                 type: "POST",
                 contentType: "application/json; charset=utf-8",
@@ -969,7 +1069,7 @@
                 dataType: "html",
                 url: '@Url.Action("EmpProfilePartialView", "_Layout")',
                 success: function (data) {
-                    debugger;
+                    
                     //  $("#Newcust1").html(data);
                     var obj = $.parseJSON(data);
                     $("#empname").text(obj['EmpName']);
@@ -996,7 +1096,7 @@
             localStorage.setItem("isinNumber", $("#Isin").val());
             var myLabel = document.getElementById("orglvlNavigate");
             myLabel.innerHTML = $("#Entity").find('option:selected').text() + "&nbsp;&nbsp;/&nbsp;&nbsp;" + $("#Isin").find('option:selected').text();
-            debugger;
+            
             if ($('#collapse_org').css('display') == 'none') {
                 $('#collapse_org').show();
                 $('#collapse_img2').css('display', 'block');
@@ -1015,7 +1115,7 @@
                 datatype: 'json',
                 async: false,
                 success: function (result) {
-                    debugger;
+                    
 
                     location.reload();
 
@@ -1032,12 +1132,12 @@
         }
 
         function storeheader() {
-            debugger;
+            
             location.reload();
         }
 
         function get_orgarray(_idval) {
-            debugger;
+            
             var arr = [];
             var obj = {};
             $('#' + _idval + ' option').each(function () {
@@ -1056,7 +1156,7 @@
         }
 
         /*function Signout() {
-            debugger;
+            
             var url = '@Url.Action("Login", "Login")';
             window.location.href = url;
             /* sessionStorage.removeItem('arr1');
@@ -1090,14 +1190,14 @@
         }*/
 
         function showchangepasswordscreen() {
-            debugger;
+            
             var url = '@Url.Action("ChangePassword", "Login")'
             window.location.href = url;
         }
 
         function onChangeunit(sel, idval) {
             //    alert(this.value());
-            debugger;
+            
             var id = idval;
             // alert(idval);
 
@@ -1122,10 +1222,10 @@
                     return false;
                 }
                 else {
-                    debugger;
+                    
                     $.getJSON("DocGroupNamesNew/DocGroupMaster?parentcode=" + master1 + "&dependcode=" + master + "&maxorg=" + maxorglvl + "&currentorg=" + curentorg_,
                         function (result) {
-                            debugger;
+                            
                             var _dt1 = JSON.parse(result.Data1);
                             var _dt2 = JSON.parse(result.Data2);
                             var _dt3 = JSON.parse(result.Data3);
@@ -1157,7 +1257,7 @@
             }
         }
         function assigndropdownvalue(dt_, idval_) {
-            debugger;
+            
             if (dt_.length > 0) {
                 //$("#" + idval_).removeAttr('multiple');
                 $("#" + idval_).empty();
@@ -1183,7 +1283,7 @@
                     url: '@Url.Action("getlabellist", "DocGroupMaster")',
                     data: "{}",
                     success: function (data) {
-                        debugger;
+                        
                         // var orglevelcode1 = data[0].orghierarchy_code;
                         maxorglvl = data.length;
                         // alert(maxorglvl);
@@ -1217,7 +1317,7 @@
                                     type: "GET",
                                     data: { 'parentcode': orglevelcode1, "dependcode": "" },
                                     success: function (data) {
-                                        debugger;
+                                        
                                         $("#orglvl1valO option").remove();
                                         $("#orglvl1valN option").remove();
                                         for (var i = 0; i < data.length; i++) {
@@ -1270,7 +1370,7 @@
                                     type: "GET",
                                     data: { 'parentcode': orglevelcode2, "dependcode": "" },
                                     success: function (data) {
-                                        debugger;
+                                        
                                         $("#orglvl2valO option").remove();
                                         $("#orglvl2valN option").remove();
                                         for (var i = 0; i < data.length; i++) {
@@ -1325,7 +1425,7 @@
                                     type: "GET",
                                     data: { 'parentcode': orglevelcode3, "dependcode": "" },
                                     success: function (data) {
-                                        debugger;
+                                        
                                         $("#orglvl3valO option").remove();
                                         $("#orglvl3valN option").remove();
                                         for (var i = 0; i < data.length; i++) {
@@ -1377,7 +1477,7 @@
                                     type: "GET",
                                     data: { 'parentcode': orglevelcode4, "dependcode": "" },
                                     success: function (data) {
-                                        debugger;
+                                        
                                         $("#orglvl4valO option").remove();
                                         $("#orglvl4valN option").remove();
                                         for (var i = 0; i < data.length; i++) {
@@ -1424,7 +1524,7 @@
 
 
         //function restore_existingheader() {
-        //    debugger;
+        //    
         //    var arr1_ = JSON.parse(sessionStorage.getItem('arr1'));
         //    var arr2_ = JSON.parse(sessionStorage.getItem('arr2'));
         //    var arr3_ = JSON.parse(sessionStorage.getItem('arr3'));
@@ -1444,7 +1544,7 @@
         //}
 
         function bindmultiselectvalues(arr, _id) {
-            debugger;
+            
             if (arr != null) {
                 $("#" + _id).empty();
                 for (var t = 0; t < arr.length; t++) {
@@ -1459,7 +1559,7 @@
                 }
                 // $('#' + _id).multiselect('reload');
             }
-            debugger;
+            
             //var orglvl2val = $("#orglvl2valO").val();//"
             //$("#QCD_ORG_tUnit").val(orglvl2val);
             //$("#QCD_ORG_tUnit").data("kendoDropDownList").trigger("change");
@@ -1467,7 +1567,7 @@
             //var orglvl1val = $("#orglvl1valO").val();//
             //$("#QCD_ORG_tDepartment").val(orglvl1val);
             //$("#QCD_ORG_tDepartment").data("kendoDropDownList").trigger("change");
-            debugger;
+            
             // Set the inner HTML of the label
 
             //  $("#orglvlNavigate").innerHTML($("#orglvl1valO").find('option:selected').text() + "&nbsp;&nbsp;/&nbsp;&nbsp;" + $("#orglvl2valO").find('option:selected').text());
@@ -1483,7 +1583,7 @@
                     data: "{}",
                     success: function (data) {
                         maxorglvl = data.length;
-                        debugger;
+                        
                         // var orglevelcode1 = data[0].orghierarchy_code;
                         if (data.length >= 1) {
                             orglevelcode1 = data[0].orghierarchy_code;
@@ -1518,7 +1618,7 @@
             }
         }
         function testt() {
-            debugger;
+            
             alert($('#orglvl1valO').val());
         }
 
@@ -1526,7 +1626,7 @@
             //if (isMapAttribute == 'N') {
             //    $('#applyfilter').modal('hide');
             //}
-            debugger;
+            
             $('#applyfilter').modal('hide');
             $('#docloaddd').height(245);
             $('#docloadddlocal').height(245);
@@ -1548,13 +1648,13 @@
 
 
         function gridshow() {
-            debugger;
+            
         }
         //$(function () {
         //    $('#add').click(function () {
         //        clicks += 1;
         //        // document.getElementById("add").innerHTML = clicks;
-        //        debugger;
+        //        
 
         //        $("#submissionTable").show();
         //    });
@@ -1575,7 +1675,7 @@
                 }
                 clicks += 1;
                 // document.getElementById("add").innerHTML = clicks;
-                debugger;
+                
 
                 $("#submissionTable").show();
 
@@ -1611,7 +1711,7 @@
                     '</tr>').appendTo('#submissionTable');
 
 
-                debugger;
+                
 
                 var indexval = counter;
                 $('#contselect' + indexval).append('<option value="' + "Is equal to" + '">' + "Is equal to" + '</option>');
@@ -1638,7 +1738,7 @@
             });
         });
         function removeTr(index) {
-            debugger;
+            
             if (counter > 1) {
                 $('#tablerow' + index).remove();
                 counter -= 1;
@@ -1653,7 +1753,7 @@
         }
 
         function dropaddition() {
-            debugger;
+            
             //  $("#add").hide();
             // dro();
             var dgroupid = '@ViewBag.dgroupid';
@@ -1672,7 +1772,7 @@
 
 
         function getdata() {
-            debugger;
+            
             reportcondition = "";
             parcheck = 0;
             parchecksec = 0;
@@ -2186,7 +2286,7 @@
                 in_master_code: masterCode,
                 in_user_code: ""
             };
-            $.ajax({
+           return $.ajax({
                 type: "POST",
                 url: '@Url.Action("OfferType", "IssueSetup")',
                 data: JSON.stringify(mymodel),
@@ -2209,13 +2309,11 @@
                             });
                             return;
                         }
-
                         var result = JSON.parse(response.data);
-
                         var $ddl = $("#" + dropdownId);
+                        
                         $ddl.empty();
                         $ddl.append('<option value="">--- Select ---</option>');
-
                         $.each(result, function (index, item) {
                             $ddl.append(
                                 '<option value="' + item.master_code + '">' +
@@ -2227,7 +2325,8 @@
                         if (selectedValue) {
                             $ddl.val(selectedValue).trigger("change");
                         }
-                            if (callback) callback();
+                        console.log("After Set:", $ddl.val());
+                            if (callback) callback(result);
                     },
                 error: function (xhr) {
                     console.log("Dropdown load error:", xhr.responseText);
@@ -2287,10 +2386,13 @@
                    success: function (response) {
                        if (response) {
                          var data = JSON.parse(response._data);
+                          var filteredData = data.filter(function(item) {
+                                return item.ipo_status === 'CA';
+                            });
                          var $ddl = $("#" + 'iponames');
                            $ddl.empty();
                            $ddl.append('<option value="">--- Select ---</option>');
-                           $.each(data, function (index, item) {
+                           $.each(filteredData, function (index, item) {
                                $ddl.append(
                                   '<option value="' + item.offer_code + '">' +
                                      item.offer_code + ' - '+ item.client_name +

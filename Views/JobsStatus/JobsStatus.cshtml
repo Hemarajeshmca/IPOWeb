@@ -519,6 +519,7 @@
                         url: '../JobsStatus/getjobinprogresslist',
                         dataType: 'json',
                         data: JSON.stringify({ in_start_date: start_date, in_end_date: end_date, in_jobtype_code: '0', in_jobstatus: 'P', in_user_code: action_by }),
+                        //data: JSON.stringify({ in_start_date: start_date, in_end_date: end_date, in_jobtype_code: '0', in_jobstatus: '', in_user_code: action_by }),
                         contentType: 'application/json; charset=utf-8',
                         success: function (response) {
                             if (response != null || (response.length) > 0) {                               
@@ -696,7 +697,7 @@
         var extenstion = result.extension;
         var file_name = result.fileName;
         var user_code = '@userName';
-        if(extenstion != 'xlsx') {
+        if(dataItem.file_type != 'xlsx') {
            window.location.href = '@Url.Action("Downloads", "JobsStatus")?jobid=' + jobId + '&filetype=' + 'csv' + '&file_name=' + file_name + '' + '&username=' + user_code + '';
         } else {
             window.location.href = '@Url.Action("Downloads", "JobsStatus")?jobid=' + jobId + '&filetype=' + 'xlsx' + '&file_name=' + file_name + '' + '&username=' + user_code + '';

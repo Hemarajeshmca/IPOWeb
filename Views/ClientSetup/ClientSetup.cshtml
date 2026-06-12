@@ -52,7 +52,7 @@
                     </div>
                     <div class="col-sm-3">
                         <label class="form-label" for="ctype" data-field="ctype">Client Type</label>&nbsp;<span style="font-size: 12px;color:red;font-weight: bold;">*</span>
-                        <select name="ctype" id="ctype" class="form-control" >                            
+                        <select disabled name="ctype" id="ctype" class="form-select" >                            
                         </select>
                         <span id="queryClienttype" style="color: red; font-size: 12px;position:relative;"></span>
                     </div>
@@ -85,7 +85,7 @@
                     </div>
                     <div class="col-sm-3">
                         <label class="form-label" for="country" data-field="country">Country</label>&nbsp;<span style="font-size: 12px;color:red;font-weight: bold;">*</span>
-                        <select name="country" id="country" class="form-control" >                           
+                        <select name="country" id="country" class="form-select" >                           
                         </select>
                         <span id="querycountry" style="color: red; font-size: 12px;position:relative;"></span>
                     </div>
@@ -93,13 +93,13 @@
                 <div class="row" style="margin-top:20px;">
                     <div class="col-sm-3">
                         <label class="form-label" for="state" data-field="state">State</label>&nbsp;<span style="font-size: 12px;color:red;font-weight: bold;">*</span>
-                        <select name="state" id="state" onchange="stateChange('city', this)" class="form-control">
+                        <select name="state" id="state" onchange="stateChange('city', this)" class="form-select">
                         </select>
                         <span id="querystate" style="color: red; font-size: 12px;position:relative;"></span>
                     </div>
                     <div class="col-sm-3">
                         <label class="form-label" for="city" data-field="city">City</label>&nbsp;<span style="font-size: 12px;color:red;font-weight: bold;">*</span>
-                        <select name="city" id="city" class="form-control" >                           
+                        <select name="city" id="city" class="form-select">
                         </select>
                         <span id="querycity" style="color: red; font-size: 12px;position:relative;"></span>
                     </div>
@@ -121,7 +121,7 @@
 </html>
 <script>
   $(document).ready(function () {
-        $('#navhead').text('Client Master');
+        $('#navhead').text('Client Setup');
         $("#iponame").val("");
         $("#createedit").val("Create");
         $("#clientcode").val("<< Client Code >>");
@@ -136,7 +136,7 @@
         $("#pin").on("input", function () {
         this.value = this.value.replace(/[^0-9]/g, '').slice(0,6);
           });
-        loadMasterDropdown("QCD_MAST_CLIENT_TYPE", "ctype");
+            loadMasterDropdown("QCD_MAST_CLIENT_TYPE", "ctype", "QCD_PUBLIC_UNLISTED");
         loadMasterDropdown("QCD_MAST_COUNTRY", "country");
        loadMasterDropdown("QCD_MAST_STATE", "state");
         setTimeout(function () {

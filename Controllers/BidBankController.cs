@@ -1,10 +1,21 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using ClosedXML.Excel;
+using IPOWeb.Models;
+using iTextSharp.text;
+using iTextSharp.text.pdf;
+using Microsoft.AspNetCore.Http.HttpResults;
+using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
-using System.Net.Http.Headers;
-using System.Net;
-using System.Security.Claims;
-using ClosedXML.Excel;
 using System.Data;
+using System.Globalization;
+using System.IO.Compression;
+using System.Net;
+using System.Net.Http.Headers;
+using System.Security.Claims;
+using PdfDocument = iTextSharp.text.Document;
+using PdfFont = iTextSharp.text.Font;
+using PdfFontFactory = iTextSharp.text.FontFactory;
+using PdfWriter = iTextSharp.text.pdf.PdfWriter;
+using Microsoft.AspNetCore.Hosting;
 
 namespace IPOWeb.Controllers
 {
@@ -16,15 +27,17 @@ namespace IPOWeb.Controllers
         }
 
         private IConfiguration _configuration;
-        public BidBankController(IConfiguration configuration)
+        private readonly IWebHostEnvironment _env;
+        public BidBankController(IConfiguration configuration, IWebHostEnvironment env)
         {
             _configuration = configuration;
+            _env = env;
         }
         string urlstring = "";
         string APIcookieName = "";
 
         [HttpGet]
-        public JsonResult getBidBank(string offer_code)
+        public JsonResult getBidBank(string offer_code, string category, string recontype)
         {
             urlstring = Convert.ToString(_configuration.GetSection("Appsettings")["apiurl"]) + "GetbidBank";
             try
@@ -36,7 +49,11 @@ namespace IPOWeb.Controllers
                     string token = Request.Cookies[APIcookieName];
                     client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
                     client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
-                    string url = urlstring + "?offer_code=" + offer_code;
+                    //string url = urlstring + "?offer_code=" + offer_code;
+                    string url = urlstring +
+                         "?offer_code=" + offer_code +
+                         "&category=" + Uri.EscapeDataString(category) +
+                         "&recontype=" + recontype;
                     var response = client.GetAsync(url).Result;
                     if (response.StatusCode == HttpStatusCode.Unauthorized)
                     {
@@ -125,7 +142,71 @@ namespace IPOWeb.Controllers
         }
 
 
+        // getdetaildifferenceSummary
+
+        [HttpGet]
+        public IActionResult getdetaildifferenceSummary(string offer_code, string user_code)
+        {
+            urlstring = Convert.ToString(_configuration.GetSection("Appsettings")["apiurl"]) + "getdetaildifferenceSummary";
+            DataSet result = new DataSet();
+            try
+            {
+                using (var client = new HttpClient())
+                {
+                    client.Timeout = Timeout.InfiniteTimeSpan;
+                    APIcookieName = "APItoken-" + User.FindFirst(ClaimTypes.Name)?.Value.ToString() + "_" + User.FindFirst(ClaimTypes.Role)?.Value.ToString();
+                    string token = Request.Cookies[APIcookieName];
+                    client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+                    client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+                    string url = urlstring + "?offer_code=" + offer_code + "&user_code=" + user_code;
+                    var response = client.GetAsync(url).Result;
+                    if (response.StatusCode == HttpStatusCode.Unauthorized)
+                    {
+                        Response.Cookies.Delete(APIcookieName);
+                        return Json(new
+                        {
+                            success = false,
+                            authExpired = true
+                        });
+                    }
+                    if (response.IsSuccessStatusCode)
+                    {
+                        string resultMessage = response.Content.ReadAsStringAsync().Result;
+
+                        string d2 = JsonConvert.DeserializeObject<string>(resultMessage);
+                        result = JsonConvert.DeserializeObject<DataSet>(d2);                    
+
+                        using (var workbook = new XLWorkbook())
+                        {
+                            workbook.Worksheets.Add(result.Tables[0], "Sheet1");
+                            using (var stream = new MemoryStream())
+                            {
+                                workbook.SaveAs(stream);
+                                var content = stream.ToArray();
+                                return File(
+                                    content,
+                                    "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+                                    "Bid_bank_difference.xlsx"
+                                );
+
+                            }
+                        }
+                    }
+                    else
+                    {
+                        return Json(new { success = false, message = "API call failed: " + response.StatusCode });
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                return Json(new { success = false, message = ex.Message });
+            }
+        }
+
     }
+
+
 
     public class BankReconModel
     {
@@ -146,5 +227,7 @@ namespace IPOWeb.Controllers
         public int DiffNoOfAppl { get; set; }
         public int DiffNoOfShares { get; set; }
         public decimal DiffAmount { get; set; }
-    }
+    } 
+
+    
 }

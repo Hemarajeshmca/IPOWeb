@@ -157,14 +157,58 @@
         <div class="container-xxl flex-grow-1 container-p-y">
             <div class="card-body" style="margin-top:5px;height: 556px;width: 103%;margin-left: -18px;">
                 <div class="row" style="margin-top: -17px;">
-                    <div class="col-sm-3">
+                    <div class="col-sm-5">
                         <label class="form-label" for="ctype" data-field="ctype">IPO Name</label>&nbsp;<span style="font-size: 12px;color:red;font-weight: bold;">*</span>
                         <input type="text" class="form-control" id="iponame" readonly />
                         <input type="hidden" class="form-control" id="iponames" readonly />
                         <input type="text" class="form-control" id="ipocode" hidden />
                     </div>
                 </div>
-                <div class="row" style="margin-top:20px;">
+                <div class="row">
+                    <div class="col-sm-5">
+                        <label class="form-label" for="pipeline" data-field="pipeline">Pipeline</label>&nbsp;<span style="font-size: 12px;color:red;font-weight: bold;">*</span>
+                        <select id="pipeline" onchange="getPipeline_code()" class="form-select"></select>
+                    </div>
+                    <div class="col-sm-1">
+                        <img style="margin-top: 35px; margin-left: 23px;height: 25px; width: 25px; cursor:pointer;" onclick="downloadTemplate()" src="~/Assets/images/download.png" />
+                    </div>
+                    <div class="col-sm-5">
+                        <label class="form-label" for="dataset" data-field="dataset">Dataset</label>
+                        <select id="dataset" class="form-select"></select>
+                    </div>
+                    <div class="col-sm-1">
+                        <img src="/Assets/images/topnotes.png"
+                             style="cursor:pointer;width:18px;margin-top:35px;"
+                             onclick="openSelectedInfoModel()"
+                             data-bs-toggle="modal"
+                             data-bs-target="#myModal" />
+                    </div>
+                </div>
+
+                <div class="row" style="margin-top:15px;">
+                    <div id="categoryrow" class="col-sm-3">
+                        <label class="form-label" for="bank" data-field="bank">Select Category</label>&nbsp;<span style="font-size: 12px;color:red;font-weight: bold;">*</span>
+                        <select id="category" class="form-select">
+                            <option value="">-- Select Category -- </option>
+                            <option value="ASBA">ASBA</option>
+                            <option value="Non ASBA">Non ASBA</option>
+                        </select>
+                    </div>
+                    <div id="bankrow" class="col-sm-3" style="display: none;">
+                        <label class="form-label" for="bank" data-field="bank">Select Bank</label>&nbsp;<span style="font-size: 12px;color:red;font-weight: bold;">*</span>
+                        <select id="bank" class="form-select">
+                        </select>
+                    </div>
+                    <div class="col-sm-3">
+                        <label class="form-label" for="pipeline" data-field="pipeline">Choose Excel</label>&nbsp;<span style="font-size: 12px;color:red;font-weight: bold;">*</span>
+                        <input class="form-control" type="file" id="MultipleFile" multiple>
+                    </div>
+                    <div class="col-sm-3">
+                        <button type="button" class="btn btn-primary" id="btnStart" onclick="startprocess()" style="padding: 3px 25px;margin-top:28px;width:40%;margin-right:10px;">Start</button>
+                    </div>
+                </div>
+
+               @*  <div class="row" style="margin-top:20px;">
                     <div class="col-sm-12">
                         <div class="nav-align-top mb-4">
                             <ul class="nav nav-tabs" role="tablist">
@@ -181,7 +225,7 @@
                                 </li>
                                 <li class="nav-item">
                                     <button type="button"
-                                            class="nav-link"
+                                            class="nav-link active"
                                             role="tab"
                                             data-bs-toggle="tab"
                                             data-bs-target="#navs-top-progress"
@@ -192,7 +236,7 @@
                                 </li>
                             </ul>
                             <div class="tab-content">
-                                <div class="tab-pane fade show active" id="navs-top-list" role="tabpanel">
+                                 <div class="tab-pane fade show active" id="navs-top-list" role="tabpanel">
                                     <div class="row">
                                         <div class="col-sm-12">
                                             <div id="datasetList"></div>
@@ -205,48 +249,63 @@
                                             <button type="button" class="btn btn-primary" id="btnNext" onclick="nextprocess()" style="float:right;padding: 3px 25px;margin-top:28px;width:25%">Next</button>
                                         </div>
                                     </div>
-                                </div>
-                                <div class="tab-pane fade" id="navs-top-progress" role="tabpanel">
-                                    <div class="row">
+                                </div> 
+                                <div class="tab-pane fade  show active" id="navs-top-progress" role="tabpanel">
+                                     <div class="row">
                                         <div class="col-sm-3">
                                             <label class="form-label" for="ds" data-field="ds">Selected Dataset : <span id="datasetname"></span></label>
                                         </div>
-                                    </div>
+                                    </div> 
+
                                     <div class="row">
-                                        <div class="col-sm-3">
-                                            <label class="form-label" for="pipeline" data-field="pipeline">Pipeline</label>&nbsp;<span style="font-size: 12px;color:red;font-weight: bold;">*</span>
-                                            @* <input type="text" id="pipeline" class="form-control" readonly /> *@
-                                            <select id="pipeline" onchange="getPipeline_code()" class="form-control"></select>
+                                        <div class="col-sm-5">
+                                            <label class="form-label" for="pipeline" data-field="pipeline">Pipeline</label>&nbsp;<span style="font-size: 12px;color:red;font-weight: bold;">*</span>                                           
+                                            <select id="pipeline" onchange="getPipeline_code()" class="form-select"></select>
+                                        </div>
+                                         <div class="col-sm-1">
+                                            <img style="margin-top: 35px; margin-left: 23px;height: 25px; width: 25px; cursor:pointer;" onclick="downloadTemplate()" src="~/Assets/images/download.png" />
+                                        </div>
+                                        <div class="col-sm-5">
+                                            <label class="form-label" for="dataset" data-field="dataset">Dataset</label>
+                                            <select id="dataset" class="form-select"></select>
                                         </div>
                                         <div class="col-sm-1">
-                                            <img style="margin-top: 35px; height: 25px; width: 25px; cursor:pointer;" onclick="downloadTemplate()" src="~/Assets/images/download.png" />
-                                        </div>   
-                                        <div id="categoryrow" class="col-sm-2" style="margin-left:-50px;margin-right:50px;">
+                                            <img src="/Assets/images/topnotes.png"
+                                                 style="cursor:pointer;width:18px;margin-top:35px;"
+                                                 onclick="openSelectedInfoModel()"
+                                                 data-bs-toggle="modal"
+                                                 data-bs-target="#myModal" />
+                                        </div>
+                                    </div>
+
+                                    <div class="row" style="margin-top:15px;">
+                                        <div id="categoryrow" class="col-sm-3">
                                             <label class="form-label" for="bank" data-field="bank">Select Category</label>&nbsp;<span style="font-size: 12px;color:red;font-weight: bold;">*</span>
-                                            <select id="category" class="form-control">
+                                            <select id="category" class="form-select">
                                                 <option value="">-- Select Category -- </option>
                                                 <option value="ASBA">ASBA</option>
                                                 <option value="Non ASBA">Non ASBA</option>
                                             </select>
                                         </div>
-                                        <div id="bankrow" class="col-sm-2" style="margin-left:-50px;display:none;">
+                                        <div id="bankrow" class="col-sm-3" style="display: none;">
                                             <label class="form-label" for="bank" data-field="bank">Select Bank</label>&nbsp;<span style="font-size: 12px;color:red;font-weight: bold;">*</span>
-                                           <select id="bank" class="form-control">                                                
-                                           </select>
+                                            <select id="bank" class="form-select">
+                                            </select>
                                         </div>
                                         <div class="col-sm-3">
                                             <label class="form-label" for="pipeline" data-field="pipeline">Choose Excel</label>&nbsp;<span style="font-size: 12px;color:red;font-weight: bold;">*</span>
                                             <input class="form-control" type="file" id="MultipleFile" multiple>
                                         </div>
                                         <div class="col-sm-3">
-                                            <button type="button" class="btn btn-primary" id="btnPre" style="float:right;padding: 3px 25px;margin-top:28px;width:40%;margin-right: 25px;">Previous</button>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<button type="button" class="btn btn-primary" id="btnStart" onclick="startprocess()" style="float:right;padding: 3px 25px;margin-top:28px;width:40%;margin-right:10px;">Start</button>
+                                            <button type="button" class="btn btn-primary" id="btnStart" onclick="startprocess()" style="padding: 3px 25px;margin-top:28px;width:40%;margin-right:10px;">Start</button>
                                         </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
                     </div>
-                </div>
+                </div> *@
+                    
             </div>
         </div>
     </div>
@@ -302,9 +361,9 @@
            
             $("#ipocode").val(ipocode);   // or .text()
               showgrid();
-              grid_jobhistory([]);
+               grid_jobhistory([]);                   
+               showpipelinelist();
 
-       
 
         $("#btnPre").click(function () {
 
@@ -405,6 +464,7 @@
 
         }
 
+<<<<<<< HEAD
       function nextprocess() 
       {                 
         var selected = $("input[name='clientSelect']:checked");
@@ -440,6 +500,95 @@
     {
         $("#categoryrow").hide();
             }
+=======
+
+     function openSelectedInfoModel() {
+
+        var dataset_code = $("#dataset").val();
+
+        console.log(dataset_code);
+
+        if (dataset_code) {
+            openInfoModel(dataset_code);
+        }
+        else {
+            alert("Please select dataset");
+        }
+    }
+
+    function showpipelinelist() {
+        $.ajax({
+            type: "POST",
+            url: '@Url.Action("GetPipelinetList", "FileImport")',
+            dataType: "json",
+            success: function (response) {
+                if (!response.success) {
+                    console.log(response.message);
+                    return;
+                }
+                var data = response.data;
+                $("#pipeline").empty();
+                // ✅ Default option
+                $("#pipeline").append(
+                    $('<option>', {
+                        value: '',
+                        text: '-- Select --'
+                    })
+                );
+                // ✅ Filter only Active pipelines
+                var activePipelines = data.filter(function (item) {
+                    return item.pipeline_status === "Active";
+                });
+                $.each(activePipelines, function (i, item) {
+                    $("#pipeline").append(
+                        $('<option>', {
+                            value: item.pipeline_code,
+                            text: item.pipeline_name
+                        })
+                    );
+                });
+                console.log(activePipelines);
+            },
+            error: function (xhr) {
+                console.log("Error:", xhr.responseText);
+            }
+        });
+    }   
+
+      function nextprocess() {                 
+            var selected = $("input[name='clientSelect']:checked");
+            if (selected.length === 0) {
+                // alert("Please select a dataset");
+                 $.alert({
+                    title: 'IPO Allotment' ,
+                    content: "Please select a dataset",
+                    type: 'red',
+                });
+                return;
+            }
+            document.getElementById("MultipleFile").value = "";
+            var dataset_gid = selected.val();
+            var dataset_code = selected.data("code");
+            var dataset_name = selected.data("name");           
+            selectedDataset = selected.data("code");
+            console.log("Dataset GID:", dataset_gid);
+            console.log("Dataset Code:", dataset_code);           
+            $("#datasetname").text(dataset_name );
+            if (typeof dataset_name === "string" && dataset_name.toLowerCase().includes("bank")) {
+                    $("#bankrow").show();
+                    $("#categoryrow").show();
+                    loadBank();
+                } else {
+                    $("#bankrow").hide(); 
+                }
+                if ((typeof dataset_name === "string" && dataset_name.toLowerCase().includes("bendem")) || 
+                (typeof dataset_name === "string" && dataset_name.toLowerCase().includes("exchange upi")) ||
+                 (typeof dataset_name === "string" && dataset_name.toLowerCase().includes("exchange pan")) ||
+                 (typeof dataset_name === "string" && dataset_name.toLowerCase().includes("market"))
+                )
+                {                   
+                    $("#categoryrow").hide();
+                }
             var tabTrigger = document.querySelector('button[data-bs-target="#navs-top-progress"]');
             var tab = new bootstrap.Tab(tabTrigger);
             tab.show();
@@ -529,8 +678,67 @@
         } 
         function getPipeline_code() {
             selectedPipeline = $("#pipeline").val();
+            console.log(selectedPipeline);
+              $.ajax({
+                type: "GET",
+                url: '@Url.Action("GetDatasettList", "FileImport")',
+                data: { Pipeline_code: selectedPipeline },
+                dataType: "json",
+                   success: function (response) {
+                    if (!response.success) {
+                        console.log(response.message);
+                        return;
+                    }
+
+                    var data = response.data;
+                    $("#dataset").empty();
+                    var hasBankFile = data.some(function (item) {
+                        return item.dataset_name === "Bank File";
+                    });
+                    if (hasBankFile) {
+                        $("#bankrow").show();
+                        $("#categoryrow").show();
+                        loadBank();
+                    }
+                    else {
+                        $("#bankrow").hide();
+                    }
+
+                   var hasCategory = data.some(function (item) {
+                        return item.dataset_name &&
+                               (
+                                   item.dataset_name.includes("ASBA") ||
+                                   item.dataset_name.includes("non ASBA")
+                               );
+                    });
+                  if (hasBankFile || hasCategory) {
+                        $("#categoryrow").show();
+                    }
+                    else {
+                        $("#categoryrow").hide();
+                    }
+                    $.each(data, function (i, item) {
+                        $("#dataset").append(
+                            $('<option>', {
+                                value: item.dataset_code,
+                                text: item.dataset_name
+                            })
+                        );
+                    });
+                    // Optional - select first item
+                    if (data.length > 0) {
+                        $("#dataset").val(data[0].dataset_code);
+                        selectedDataset = data[0].dataset_code;
+                    }
+                    console.log(data);
+                },
+                error: function (xhr) {
+                    console.log("Error:", xhr.responseText);
+                }
+            });
         }
 
+<<<<<<< HEAD
          function infopopupGrid_old(e) {
             var grid = $("#infoGrid").data("kendoGrid");
             var row = $(e).closest("tr");
@@ -591,6 +799,69 @@
 
 <script>
      
+=======
+             function infopopupGrid_old(e) {
+        var grid = $("#infoGrid").data("kendoGrid");
+        var row = $(e).closest("tr");
+        var dataItem = grid.dataItem(row);
+        var dscode=dataItem.dataset_code; alert(dscode); consile.log(dscode);
+        window.location.href = "../IssueSetup/IssueSetup";
+    }
+
+    function openInfoModel(dataset_code) {
+        try {
+    customAjax({
+        type: "POST",
+        url: '@Url.Action("datasethistory", "FileImport")',
+        dataType: 'json',
+        contentType: "application/json",
+        data: JSON.stringify({
+            ipo_code: $("#ipocode").val().trim(),
+            dataset_code: dataset_code
+        }),
+        success: function (response) {
+            if (response.authExpired) {
+                $.alert({
+                    title: 'Unauthorized',
+                    content: response.message || 'Unauthorized User',
+                    type: 'red',
+                    buttons: {
+                        ok: function () {
+                            window.location.href = '/login/logout';
+                        }
+                    }
+                });
+                return;
+            }
+            console.log("Response:", response.data);
+            var grid = $("#grid_jobhistory").data("kendoGrid");
+            grid.dataSource.data([]);
+            if (grid && response.success) {
+                    let data = response.data;
+                    if (data && data.Table) {
+                        data = data.Table;
+                    }
+                    grid.dataSource.data(data || []);
+                    $("#myModal").modal("show");
+                } else {
+                    grid.dataSource.data([]);
+                }
+
+        },
+        error: function (xhr) {
+            console.log("Error:", xhr.responseText);
+            alert("Something went wrong while fetching info.");
+        }
+    });
+     } catch (e) {
+        console.log(e);
+    }
+        }
+
+           
+</script>
+
+<script>
 
     function grid_jobhistory(data) {
         $("#grid_jobhistory").kendoGrid({
@@ -615,8 +886,8 @@
             selectable: "row",
             dataBound: function (e) {
                 var grid = this;
-                var gridContent = grid.element.find(".k-grid-content"); 
-                gridContent.height(177);  
+                var gridContent = grid.element.find(".k-grid-content");
+                gridContent.height(177);
             },
             pageable: {
                 refresh: false,
