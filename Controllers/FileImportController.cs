@@ -5,11 +5,9 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json;
 using System.Data;
-using System.Data;
 using System.Net;
 using System.Net.Http.Headers;
 using System.Security.Claims;
-using System.Security.Cryptography;
 using System.Text;
 
 namespace IPOWeb.Controllers
@@ -75,11 +73,12 @@ namespace IPOWeb.Controllers
 
             try
             {
-                using (var client = new HttpClient())                {
+                using (var client = new HttpClient())
+                {
                     client.Timeout = Timeout.InfiniteTimeSpan;
                     APIcookieName = "APItoken-" + User.FindFirst(ClaimTypes.Name)?.Value + "_" + User.FindFirst(ClaimTypes.Role)?.Value;
                     string token = Request.Cookies[APIcookieName];
-                    client.DefaultRequestHeaders.Authorization =   new AuthenticationHeaderValue("Bearer", token);
+                    client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
                     var response = await client.GetAsync(urlstring);
                     var responseString = await response.Content.ReadAsStringAsync();
                     var result = JsonConvert.DeserializeObject<List<PipelineModel>>(responseString);
@@ -101,7 +100,7 @@ namespace IPOWeb.Controllers
         }
 
         [HttpPost]
-        public async Task<JsonResult> ImportData( IFormFile file, string pipeline_code, string initiated_by, string dataset_code, string ref_bank_data)
+        public async Task<JsonResult> ImportData(IFormFile file, string pipeline_code, string initiated_by, string dataset_code, string ref_bank_data)
         {
             try
             {
@@ -132,7 +131,7 @@ namespace IPOWeb.Controllers
                                   + "_" + User.FindFirst(System.Security.Claims.ClaimTypes.Role)?.Value;
 
                     string token = Request.Cookies[APIcookieName];
-                    client.DefaultRequestHeaders.Authorization =  new AuthenticationHeaderValue("Bearer", token);
+                    client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
                     using (var content = new MultipartFormDataContent())
                     {
                         using (var stream = file.OpenReadStream())
@@ -183,7 +182,7 @@ namespace IPOWeb.Controllers
                         return Json(new { success = false, authExpired = true });
                     }
 
-                    client.DefaultRequestHeaders.Authorization =  new AuthenticationHeaderValue("Bearer", token);
+                    client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
                     client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
                     var content = new StringContent("", Encoding.UTF8, "application/json");
                     var response = await client.PostAsync(urlstring, content);
@@ -289,9 +288,6 @@ namespace IPOWeb.Controllers
             }
             catch (Exception ex)
             {
-<<<<<<< HEAD
-                return Json(new { success = false, data ="" });
-=======
                 return Json(new { success = false, data = "" });
             }
         }
@@ -376,12 +372,6 @@ namespace IPOWeb.Controllers
             public int job_remark { get; set; }
             public string job_initiated_by { get; set; }
             public DateTime start_date { get; set; }
-<<<<<<< HEAD
-           // public string reference_no { get; set; }
-        }
-
-
-=======
             // public string reference_no { get; set; }
         }
 

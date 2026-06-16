@@ -35,6 +35,7 @@ namespace IPOWeb.Controllers
                     client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
                     string url = urlstring + "?offer_code=" + offer_code;
                     var response = client.GetAsync(url).Result;
+                    ApiTokenRefreshMiddleware.TokenUpdate(HttpContext, response, APIcookieName);
                     if (response.StatusCode == HttpStatusCode.Unauthorized)
                     {
                         Response.Cookies.Delete(APIcookieName);

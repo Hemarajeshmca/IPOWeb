@@ -59,6 +59,7 @@ namespace IPOWeb.Controllers
                     string url = urlstring + "?offer_code=" + offer_code;
 
                     var response = client.GetAsync(url).Result;
+                    ApiTokenRefreshMiddleware.TokenUpdate(HttpContext, response, APIcookieName);
 
                     if (response.StatusCode == HttpStatusCode.Unauthorized)
                     {
@@ -135,6 +136,7 @@ namespace IPOWeb.Controllers
 
                     var response = client.GetAsync(urlstring + "?offer_code=" + offer_code).Result;
 
+                    ApiTokenRefreshMiddleware.TokenUpdate(HttpContext, response, APIcookieName);
                     if (!response.IsSuccessStatusCode)
                         return BadRequest("API failed");
 

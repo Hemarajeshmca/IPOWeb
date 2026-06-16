@@ -25,12 +25,18 @@ namespace IPOWeb
 
                     //string APIcookieName = "APItoken-" + uid + "_" + urole;
                     //context.Response.Cookies.Append("API_TOKEN", newToken, new CookieOptions
-                    context.Response.Cookies.Append("APItoken-"+APIcookieName, newToken, new CookieOptions
+
+                    if (!APIcookieName.StartsWith("APItoken_") &&
+                    !APIcookieName.StartsWith("APItoken-"))
+                    {
+                        APIcookieName = "APItoken-" + APIcookieName;
+                    }
+                    context.Response.Cookies.Append(APIcookieName, newToken, new CookieOptions
                     {
                         HttpOnly = true,
                         Secure = false, // set true in production
                         SameSite = SameSiteMode.Strict
-                        //Expires = DateTime.UtcNow.AddMinutes(15)
+                        //Expires = DateTime.UtcNow.AddMinutes(1)
                     });
                     
                     // optional: store in HttpContext.Items if you want to use in controller

@@ -46,6 +46,7 @@ namespace IPOWeb.Controllers
                     var content = new StringContent(json, Encoding.UTF8, "application/json");
 
                     var response = client.PostAsync(urlstring, content).Result;
+                    ApiTokenRefreshMiddleware.TokenUpdate(HttpContext, response, APIcookieName);
                     if (response.StatusCode == HttpStatusCode.Unauthorized)
                     {
                         Response.Cookies.Delete(APIcookieName);
@@ -96,6 +97,7 @@ namespace IPOWeb.Controllers
                     var json = JsonConvert.SerializeObject(objOfferHeader);
                     var content = new StringContent(json, Encoding.UTF8, "application/json");
                     var response = client.PostAsync(urlstring, content).Result;
+                    ApiTokenRefreshMiddleware.TokenUpdate(HttpContext, response, APIcookieName);
                     if (response.StatusCode == HttpStatusCode.Unauthorized)
                     {
                         Response.Cookies.Delete(APIcookieName);
@@ -138,6 +140,7 @@ namespace IPOWeb.Controllers
                     client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
                     string url = urlstring + "?client_code=" + client_code + "&offer_code=" + offer_code;
                     var response = client.GetAsync(url).Result;
+                    ApiTokenRefreshMiddleware.TokenUpdate(HttpContext, response, APIcookieName);
                     if (response.StatusCode == HttpStatusCode.Unauthorized)
                     {
                         Response.Cookies.Delete(APIcookieName);
@@ -181,6 +184,7 @@ namespace IPOWeb.Controllers
                     var json = JsonConvert.SerializeObject(objOfferDetails);
                     var content = new StringContent(json, Encoding.UTF8, "application/json");
                     var response = client.PostAsync(urlstring, content).Result;
+                    ApiTokenRefreshMiddleware.TokenUpdate(HttpContext, response, APIcookieName);
                     if (response.StatusCode == HttpStatusCode.Unauthorized)
                     {
                         Response.Cookies.Delete(APIcookieName);
@@ -224,6 +228,7 @@ namespace IPOWeb.Controllers
                     var json = JsonConvert.SerializeObject(objOfferBanker);
                     var content = new StringContent(json, Encoding.UTF8, "application/json");
                     var response = client.PostAsync(urlstring, content).Result;
+                    ApiTokenRefreshMiddleware.TokenUpdate(HttpContext, response, APIcookieName);
                     if (response.StatusCode == HttpStatusCode.Unauthorized)
                     {
                         Response.Cookies.Delete(APIcookieName);
@@ -264,6 +269,7 @@ namespace IPOWeb.Controllers
                     var json = JsonConvert.SerializeObject(objOfferStackModel);
                     var content = new StringContent(json, Encoding.UTF8, "application/json");
                     var response = client.PostAsync(urlstring, content).Result;
+                    ApiTokenRefreshMiddleware.TokenUpdate(HttpContext, response, APIcookieName);
                     if (response.StatusCode == HttpStatusCode.Unauthorized)
                     {
                         Response.Cookies.Delete(APIcookieName);
@@ -307,6 +313,7 @@ namespace IPOWeb.Controllers
                     var json = JsonConvert.SerializeObject(objMilestoneModel);
                     var content = new StringContent(json, Encoding.UTF8, "application/json");
                     var response = client.PostAsync(urlstring, content).Result;
+                    ApiTokenRefreshMiddleware.TokenUpdate(HttpContext, response, APIcookieName);
                     if (response.StatusCode == HttpStatusCode.Unauthorized)
                     {
                         Response.Cookies.Delete(APIcookieName);
@@ -350,6 +357,7 @@ namespace IPOWeb.Controllers
                     var json = JsonConvert.SerializeObject(objCategoryModel);
                     var content = new StringContent(json, Encoding.UTF8, "application/json");
                     var response = client.PostAsync(urlstring, content).Result;
+                    ApiTokenRefreshMiddleware.TokenUpdate(HttpContext, response, APIcookieName);
                     if (response.StatusCode == HttpStatusCode.Unauthorized)
                     {
                         Response.Cookies.Delete(APIcookieName);
@@ -392,6 +400,7 @@ namespace IPOWeb.Controllers
                     client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
                     string url = urlstring + "?&ipo_code=" + ipo_code;
                     var response = client.GetAsync(url).Result;
+                    ApiTokenRefreshMiddleware.TokenUpdate(HttpContext, response, APIcookieName);
                     if (response.StatusCode == HttpStatusCode.Unauthorized)
                     {
                         Response.Cookies.Delete(APIcookieName);
