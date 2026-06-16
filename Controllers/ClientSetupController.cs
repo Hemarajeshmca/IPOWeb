@@ -50,7 +50,9 @@ namespace IPOWeb.Controllers
                     var json = JsonConvert.SerializeObject(objgridread);
                     var content = new StringContent(json, Encoding.UTF8, "application/json");
 
-                    var response = client.PostAsync(urlstring, content).Result;
+                    var response = client.PostAsync(urlstring, content).Result; 
+                    ApiTokenRefreshMiddleware.TokenUpdate(HttpContext, response, APIcookieName);
+
                     if (response.StatusCode == HttpStatusCode.Unauthorized)
                     {
                         Response.Cookies.Delete(APIcookieName);
@@ -105,8 +107,10 @@ namespace IPOWeb.Controllers
                 var json = JsonConvert.SerializeObject(mymodel);
                 var content = new StringContent(json, Encoding.UTF8, "application/json");
 
-                var response = await client.PostAsync(urlstring, content);
-                if (response.StatusCode == HttpStatusCode.Unauthorized)
+                var response = await client.PostAsync(urlstring, content); 
+                ApiTokenRefreshMiddleware.TokenUpdate(HttpContext, response, APIcookieName);
+
+                    if (response.StatusCode == HttpStatusCode.Unauthorized)
                 {
                     Response.Cookies.Delete(APIcookieName);
                     return Json(new
