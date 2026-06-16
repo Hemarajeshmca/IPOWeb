@@ -341,5 +341,64 @@ namespace IPOWeb.Models
         public long unique_appln { get; set; }
     }
 
+    public class insertJobModel
+    {
+        public string? recon_code { get; set; }
+        public string? jobtype_code { get; set; }
+        public int job_ref_gid { get; set; }
+        public string? job_name { get; set; }
+        public string? job_input_param { get; set; }
+        public string? job_initiated_by { get; set; }
+        public string? ip_addr { get; set; }
+        public string? job_status { get; set; }
+        public string? job_remark { get; set; }
 
+    }
+
+    public class updateJobModel
+    {
+        public string? in_job_gid { get; set; }
+        public string? in_job_status { get; set; }
+        public string? in_job_remark { get; set; }
+    }
+
+    public class ReportRequest
+    {
+        public string offer_code { get; set; }
+    }
+
+    public class MomReportData
+    {
+        public List<Dictionary<string, object>> table1 { get; set; }
+        public List<Dictionary<string, object>> table2 { get; set; }
+        public List<Dictionary<string, object>> table3 { get; set; }
+        public List<Dictionary<string, object>> table4 { get; set; }
+        public List<Dictionary<string, object>> table5 { get; set; }
+        public List<Dictionary<string, object>> table6 { get; set; }
+        public List<Dictionary<string, object>> table7 { get; set; }
+        public List<Dictionary<string, object>> table8 { get; set; }
+        public List<Dictionary<string, object>> table9 { get; set; }
+        public List<Dictionary<string, object>> table10 { get; set; }
+        public List<Dictionary<string, object>> table11 { get; set; }
+        public List<Dictionary<string, object>> table12 { get; set; }
+        public List<Dictionary<string, object>> table13 { get; set; }
+        public List<Dictionary<string, object>> table14 { get; set; }
+        public List<Dictionary<string, object>> table15 { get; set; }
+        public List<Dictionary<string, object>> table16 { get; set; }
+        public List<Dictionary<string, object>> table17 { get; set; }
+        public List<Dictionary<string, object>> table18 { get; set; }
+        public List<Dictionary<string, object>> table19 { get; set; }
+        public List<Dictionary<string, object>> table20 { get; set; }
+        public List<Dictionary<string, object>> table21 { get; set; }
+        public List<Dictionary<string, object>> table22 { get; set; }
+        public List<Dictionary<string, object>> table23 { get; set; }
+        public List<Dictionary<string, object>> table24 { get; set; }
+        public List<Dictionary<string, object>> table25 { get; set; }
+        public List<Dictionary<string, object>> table26 { get; set; }
+        public List<Dictionary<string, object>> table27 { get; set; }
+        public List<Dictionary<string, object>> table28 { get; set; }
+        public List<Dictionary<string, object>> table29 { get; set; }
+        public List<Dictionary<string, object>> table30 { get; set; }
+        public List<Dictionary<string, object>> table31 { get; set; }
+    }
 }

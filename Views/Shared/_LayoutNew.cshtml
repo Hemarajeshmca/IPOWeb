@@ -1060,6 +1060,23 @@
             }
         }
 
+        var customSpinnerVisible = false;
+
+        function showLoader() {
+            if (!customSpinnerVisible) {
+                $("div#spinner").fadeIn("fast");
+                $("#spinner").show();
+                customSpinnerVisible = true;
+            }
+        }
+
+        function hideLoader() {
+            if (customSpinnerVisible) {
+                $("div#spinner").stop().fadeOut("fast");
+                customSpinnerVisible = false;
+            }
+        }
+
         function Editcustdetails() {
             
             $.ajax({
