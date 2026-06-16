@@ -881,7 +881,11 @@
                                                   buttons: {
                                                       ok: function () {
                                                           $('#additionsModal').modal('hide');
-                                                      }
+                                                             var offer_code =  localStorage.getItem("selectedIPO");
+                                                            if(offer_code){
+                                                                runrecon(false);
+                                                            }
+                                                        }
                                                   }
                                               });
                                       }
@@ -944,7 +948,12 @@
                                                     buttons: {
                                                         ok: function () {
                                                             $('#rejectionsModal').modal('hide');
-                                                        }
+                                                               var offer_code =  localStorage.getItem("selectedIPO");
+                                                                if(offer_code){
+                                                                    runrecon(false);
+                                                                }
+
+                                                           }
                                                     }
                                                 });
                                         }

@@ -2189,7 +2189,7 @@
         }
     }
 
-        async function generateReport() {
+        async function generateReport_old() {
          var offer_code = localStorage.getItem("selectedIPO");
          if (!offer_code) {
             $.alert({
@@ -2250,6 +2250,11 @@
                          var table31 = data.table31;
                             cin = row.client_cin;
                             $('#cin').val(row.client_cin);
+                            $.alert({
+                                title: 'IPO',
+                                content: "Report Generated, Please check the Job Status in Utility",
+                                type: 'green',
+                            });
                                       fetch('/BOA/downloadAllReports', {
                                         method: 'POST',
                                         headers: {
@@ -2300,7 +2305,7 @@
 
                                         const a = document.createElement('a');
                                         a.href = url;
-                                        a.download = "IPO_Reports.zip"; // ✅ IMPORTANT (ZIP now)
+                                        a.download = "IPO_Reports.zip"; 
 
                                         document.body.appendChild(a);
                                         a.click();
@@ -2335,8 +2340,61 @@
             hideProgress();
         }
 
-    }       
+    }
 
+            function generateReport() {
+               
+        var offer_code = localStorage.getItem("selectedIPO");
+        if (!offer_code) {
+            $.alert({
+                title: 'IPO Web',
+                content: 'Please select IPO Name',
+                type: 'red'
+            });
+            return;
+        }
+        showProgress();
+        $.ajax({
+            type: "POST",
+            url: '@Url.Action("GenerateBOAReport", "BOA")',
+            data: JSON.stringify({
+                offer_code: offer_code
+            }),
+            contentType: 'application/json; charset=utf-8',
+            success: function (response) {
+
+                hideProgress();
+
+                if (response.success) {
+
+                    $.alert({
+                        title: 'IPO',
+                        content: 'Report generation initiated. Please check Job Status in Utility.',
+                        type: 'green'
+                    });
+                }
+                else {
+
+                    $.alert({
+                        title: 'IPO',
+                        content: response.message,
+                        type: 'red'
+                    });
+                }
+            },
+            error: function () {
+
+                hideProgress();
+
+                $.alert({
+                    title: 'IPO',
+                    content: 'Unable to initiate report generation.',
+                    type: 'red'
+                });
+            }
+        });
+    }
+    
        function export_allotment() {
         var offer_code = localStorage.getItem("selectedIPO");
         window.location.href =

@@ -422,17 +422,11 @@
                   if (typeof response === "string") {
                     response = JSON.parse(response);
                 }
-
-                // SAFETY CHECK
                 if (!response.Table || response.Table.length === 0) {
                     console.error("Table missing or empty", response);
                     return;
                 }
-
                 var data = response.Table[0];
-                console.log("USER NAME:", data.user_name);
-
-                    // FAILURE
                     if (data.success === 0) {
                         $(".errormessage").html(
                             `<span class="errormessage">${data.message}</span>`
@@ -440,14 +434,12 @@
                         $("#erridmsg").show();
                         return;
                     }
-
-                    // SUCCESS ✅
                     if (data.success === 1) {
                         sessionStorage.setItem("user_id", data.user_id);
                         sessionStorage.setItem("user_name", data.user_name);
                         sessionStorage.setItem("role_code", data.role_code);
-
-                        window.location.href = '@Url.Action("Dashboard", "Dashboard")';
+                       // window.location.href = '@Url.Action("Dashboard", "Dashboard")';
+                       window.location.href = '../Dashboard/Dashboard?tab=offer';
                     }
                 },
                 error: function () {

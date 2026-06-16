@@ -19,12 +19,16 @@ using System.Runtime.ConstrainedExecution;
 using System.Security.Claims;
 using static Org.BouncyCastle.Math.EC.ECCurve;
 using System.IO.Compression;
+using System.Text;
+using DocumentFormat.OpenXml.Drawing.Charts;
+using DataTable = System.Data.DataTable;
 
 
 namespace IPOWeb.Controllers
 {
     public class BOAController : Controller
     {
+        public string job_gid = "";
         public IActionResult BOA()
         {
             return View();
@@ -53,6 +57,7 @@ namespace IPOWeb.Controllers
                     client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
                     string url = urlstring + "?offer_code=" + offer_code;
                     var response = client.GetAsync(url).Result;
+                    ApiTokenRefreshMiddleware.TokenUpdate(HttpContext, response, APIcookieName);
                     if (response.StatusCode == HttpStatusCode.Unauthorized)
                     {
                         Response.Cookies.Delete(APIcookieName);
@@ -80,7 +85,7 @@ namespace IPOWeb.Controllers
             }
         }       
 
-        private void GenerateExcel(string offer_code, string excelPath)
+        private void GenerateExcel(string offer_code, string excelPath, string token)
         {
             DataSet result = new DataSet();
             string urlstring = _configuration["Appsettings:apiurl"] + "getboareport";
@@ -89,8 +94,8 @@ namespace IPOWeb.Controllers
             {
                 client.Timeout = Timeout.InfiniteTimeSpan;
 
-                string APIcookieName = "APItoken-" + User.FindFirst(ClaimTypes.Name)?.Value + "_" + User.FindFirst(ClaimTypes.Role)?.Value;
-                string token = Request.Cookies[APIcookieName];
+                // string APIcookieName = "APItoken-" + User.FindFirst(ClaimTypes.Name)?.Value + "_" + User.FindFirst(ClaimTypes.Role)?.Value;
+                //string token = Request.Cookies[APIcookieName];
 
                 client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
                 client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
@@ -99,6 +104,7 @@ namespace IPOWeb.Controllers
                 var response = client.GetAsync(url).Result;
 
                 // Unauthorized handling
+               // ApiTokenRefreshMiddleware.TokenUpdate(HttpContext, response, APIcookieName);
                 if (response.StatusCode == HttpStatusCode.Unauthorized)
                 {
                     Response.Cookies.Delete(APIcookieName);
@@ -169,8 +175,6 @@ namespace IPOWeb.Controllers
 
         void HandleSheet(XLWorkbook wb, string sheetName, DataTable dt)
         {
-            //  WriteToSheet(wb, sheetName, dt);
-
             if (dt == null || dt.Rows.Count == 0)
             {
                 wb.Worksheet(sheetName).Hide();
@@ -178,35 +182,24 @@ namespace IPOWeb.Controllers
         }
         void WriteToSheet(XLWorkbook wb, string sheetName, DataTable dt, string topText = null)
         {
-            // ✅ Check if sheet exists
             if (!wb.Worksheets.Any(s => s.Name.Equals(sheetName, StringComparison.OrdinalIgnoreCase)))
             {
-                return; // 🚫 Do nothing if sheet not found
+                return; 
             }
-
             var ws = wb.Worksheet(sheetName);
-
             int currentRow = 1;
-
-            // Optional: clear existing content
             ws.Clear();
-
-            // ✅ Top text
             if (!string.IsNullOrEmpty(topText))
             {
                 ws.Cell(currentRow, 1).Value = topText;
                 ws.Range(currentRow, 1, currentRow, dt.Columns.Count).Merge();
                 currentRow++;
             }
-
-            // ✅ Header
             for (int i = 0; i < dt.Columns.Count; i++)
             {
                 ws.Cell(currentRow, i + 1).Value = dt.Columns[i].ColumnName;
             }
             currentRow++;
-
-            // ✅ Data
             ws.Cell(currentRow, 1).InsertData(dt.Rows);
         }
 
@@ -214,11 +207,11 @@ namespace IPOWeb.Controllers
         [HttpGet]
         public JsonResult getMomReports(string offer_code)
         {
-            urlstring = Convert.ToString(_configuration.GetSection("Appsettings")["apiurl"]) + "getMomReports";
             try
             {
                 using (var client = new HttpClient())
-                {
+                {                    
+                    urlstring = Convert.ToString(_configuration.GetSection("Appsettings")["apiurl"]) + "getMomReports";
                     client.Timeout = Timeout.InfiniteTimeSpan;
                     APIcookieName = "APItoken-" + User.FindFirst(ClaimTypes.Name)?.Value.ToString() + "_" + User.FindFirst(ClaimTypes.Role)?.Value.ToString();
                     string token = Request.Cookies[APIcookieName];
@@ -226,6 +219,7 @@ namespace IPOWeb.Controllers
                     client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
                     string url = urlstring + "?offer_code=" + offer_code;
                     var response = client.GetAsync(url).Result;
+                    ApiTokenRefreshMiddleware.TokenUpdate(HttpContext, response, APIcookieName);
                     if (response.StatusCode == HttpStatusCode.Unauthorized)
                     {
                         Response.Cookies.Delete(APIcookieName);
@@ -244,7 +238,7 @@ namespace IPOWeb.Controllers
                         if (temp is string)
                         {
                             temp = JsonConvert.DeserializeObject<dynamic>(temp);
-                        }
+                        }                                             
 
                         // Convert Table → List<Dictionary>
                         var table1Data = ((IEnumerable<dynamic>)temp.Table)
@@ -452,7 +446,6 @@ namespace IPOWeb.Controllers
                 return Json(new { success = false, message = ex.Message });
             }
         }
-
 
         private void GenerateWord(MomRequest data, string wordPath)
         {
@@ -2239,8 +2232,21 @@ namespace IPOWeb.Controllers
 
             try
             {
+                var jobModel = new insertJobModel
+                {
+                    recon_code = data.summary.offer_code,
+                    jobtype_code = "R",
+                    job_ref_gid = 0,
+                    job_name = "BOA Report",
+                    job_input_param = data.summary.offer_code,
+                    job_initiated_by = "Admin",
+                    ip_addr = "localhost",
+                    job_status = "I",
+                    job_remark = "Job Initiated"
+                };
                 // Generate files
-                GenerateExcel(data.summary.offer_code, excelPath);
+                jobinsertupdate(jobModel);
+                GenerateExcel(data.summary.offer_code, excelPath, "");
                 GenerateWord(data, wordPath);
 
                 // Create ZIP
@@ -2251,23 +2257,37 @@ namespace IPOWeb.Controllers
                     archive.CreateEntryFromFile(wordPath, "MOM_Report.docx");
                 }
 
-                // Return file as stream (better than ReadAllBytes)
                 var stream = new FileStream(zipPath, FileMode.Open, FileAccess.Read);
-
+                //jobupdate
+                var updatejobModel = new updateJobModel
+                {
+                    in_job_gid = job_gid,
+                    in_job_status = "C",
+                    in_job_remark = "Completed"
+                };
+                // Generate files
+                jobupdate(updatejobModel,"");
                 return File(stream, "application/zip", "IPO_Reports.zip");
             }
             catch (Exception ex)
             {
+                var updatejobModel = new updateJobModel
+                {
+                    in_job_gid = job_gid,
+                    in_job_status = "F",
+                    in_job_remark = ex.Message
+                };
+                jobupdate(updatejobModel, "");
                 return Json(new { success = false, message = ex.Message });
             }
             finally
             {
-                // ✅ Cleanup (VERY IMPORTANT)
                 TryDelete(excelPath);
                 TryDelete(wordPath);
-                //TryDelete(zipPath);
             }
         }
+
+
 
         private void TryDelete(string path)
         {
@@ -2302,7 +2322,7 @@ namespace IPOWeb.Controllers
                         new AuthenticationHeaderValue("Bearer", token);
 
                     var response = client.GetAsync(urlstring + "?offer_code=" + offer_code).Result;
-
+                    ApiTokenRefreshMiddleware.TokenUpdate(HttpContext, response, APIcookieName);
                     if (!response.IsSuccessStatusCode)
                         return Problem("API call failed");
 
@@ -2372,6 +2392,541 @@ namespace IPOWeb.Controllers
             }
         }
 
+
+        [HttpPost]
+        public IActionResult jobinsertupdate([FromBody] insertJobModel objinsertJob)
+        {
+            urlstring = Convert.ToString(_configuration.GetSection("Appsettings")["apiurl"]) + "InsertJob";
+            try
+            {
+                using (var client = new HttpClient())
+                {
+                    client.Timeout = Timeout.InfiniteTimeSpan;
+                    APIcookieName = "APItoken-" + User.FindFirst(ClaimTypes.Name)?.Value.ToString() + "_" + User.FindFirst(ClaimTypes.Role)?.Value.ToString();
+                    string token = Request.Cookies[APIcookieName];
+                    client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+                    client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+
+                    var json = JsonConvert.SerializeObject(objinsertJob);
+                    var content = new StringContent(json, Encoding.UTF8, "application/json");
+
+                    var response = client.PostAsync(urlstring, content).Result;
+                    ApiTokenRefreshMiddleware.TokenUpdate(HttpContext, response, APIcookieName);
+                    if (response.StatusCode == HttpStatusCode.Unauthorized)
+                    {
+                        Response.Cookies.Delete(APIcookieName);
+                        return Json(new
+                        {
+                            success = false,
+                            authExpired = true
+                        });
+                    }
+
+                    if (response.IsSuccessStatusCode)
+                    {
+                        string resultMessage = response.Content.ReadAsStringAsync().Result;
+                        dynamic companyData = JsonConvert.DeserializeObject<object>(resultMessage);
+                        JObject parsecompanyData = JObject.Parse(companyData);
+                        job_gid = parsecompanyData["outparam"]?[0]?["out_job_gid"]?.ToString();
+                        return Json(new { success = true, data = companyData });
+                    }
+                    else
+                    {
+                        return Json(new { success = false, message = "API call failed: " + response.StatusCode });
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                return Json(new { success = false, message = ex.Message });
+            }
+        }
+
+        [HttpPost]
+        public IActionResult jobupdate([FromBody] updateJobModel objupdateJob, string token)
+        {
+            urlstring = Convert.ToString(_configuration.GetSection("Appsettings")["apiurl"]) + "updateJob";
+            try
+            {
+                using (var client = new HttpClient())
+                {
+                    client.Timeout = Timeout.InfiniteTimeSpan;
+                   // APIcookieName = "APItoken-" + User.FindFirst(ClaimTypes.Name)?.Value.ToString() + "_" + User.FindFirst(ClaimTypes.Role)?.Value.ToString();
+                    //string token = Request.Cookies[APIcookieName];
+                    client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+                    client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+
+                    var json = JsonConvert.SerializeObject(objupdateJob);
+                    var content = new StringContent(json, Encoding.UTF8, "application/json");
+
+                    var response = client.PostAsync(urlstring, content).Result;
+                   // ApiTokenRefreshMiddleware.TokenUpdate(HttpContext, response, APIcookieName);
+                    if (response.StatusCode == HttpStatusCode.Unauthorized)
+                    {
+                        Response.Cookies.Delete(APIcookieName);
+                        return Json(new
+                        {
+                            success = false,
+                            authExpired = true
+                        });
+                    }
+
+                    if (response.IsSuccessStatusCode)
+                    {
+                        string resultMessage = response.Content.ReadAsStringAsync().Result;
+                        dynamic companyData = JsonConvert.DeserializeObject<object>(resultMessage);
+                        return Json(new { success = true, data = companyData });
+                    }
+                    else
+                    {
+                        return Json(new { success = false, message = "API call failed: " + response.StatusCode });
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                return Json(new { success = false, message = ex.Message });
+            }
+        }
+
+        [HttpPost]
+        public IActionResult GenerateBOAReport([FromBody] ReportRequest request)
+        {
+            try
+            {
+                string apiCookieName = "APItoken-" +
+                       User.FindFirst(ClaimTypes.Name)?.Value + "_" +
+                       User.FindFirst(ClaimTypes.Role)?.Value;
+
+                string token = Request.Cookies[apiCookieName];
+                var jobModel = new insertJobModel
+                {
+                    recon_code = request.offer_code,
+                    jobtype_code = "R",
+                    job_ref_gid = 0,
+                    job_name = "BOA Report",
+                    job_input_param = request.offer_code,
+                    job_initiated_by = User.Identity.Name,
+                    ip_addr = HttpContext.Connection.RemoteIpAddress?.ToString(),
+                    job_status = "I",
+                    job_remark = "Job Initiated"
+                };
+                job_gid = "";
+                jobinsertupdate(jobModel);
+
+                Task.Run(() =>
+                {
+                    GenerateBOAReportBackground(request.offer_code, job_gid, token);
+                });
+
+                return Json(new
+                {
+                    success = true,
+                    job_gid = job_gid
+                });
+            }
+            catch (Exception ex)
+            {
+                return Json(new
+                {
+                    success = false,
+                    message = ex.Message
+                });
+            }
+        }
+
+        private void GenerateBOAReportBackground(string offerCode, string job_gid, string token)
+        {
+            //string reportFolder = @"E:\user\ipo";
+            var myObjects = getfilepath("download_xls_folder", "", token);
+            string reportFolder = "";
+          //  List<fileconfigmodel> myObjects = JsonConvert.DeserializeObject<List<fileconfigmodel>>(out_result.Value.ToString());
+            if (myObjects.Count > 0)
+            {
+                reportFolder = myObjects[0].out_config_value;
+            }
+            try
+            {
+                string jobFolder = Path.Combine(reportFolder, job_gid);              
+                Directory.CreateDirectory(jobFolder);
+
+                //if (!Directory.Exists(reportFolder))
+                //    Directory.CreateDirectory(reportFolder);
+                string excelPath = Path.Combine(jobFolder, "BOA_Report.xlsx");
+                string wordPath = Path.Combine(jobFolder, "MOM_Report.docx");
+
+                //string excelPath = Path.Combine(reportFolder, $"{job_gid}_BOA_Report.xlsx");
+                //string wordPath = Path.Combine(reportFolder, $"{job_gid}_MOM_Report.docx");
+                //string zipPath = Path.Combine(reportFolder, $"{job_gid}.zip");
+
+                // Call API directly here
+                MomRequest data = GetMomReportData(offerCode, token);
+                try
+                {
+                    GenerateExcel(offerCode, excelPath, token);
+                }
+                catch (Exception ex)
+                {
+                    System.IO.File.WriteAllText(@"E:\user\ipo\step2.txt",
+                      ex.ToString() + Environment.NewLine +
+                      ex.StackTrace);
+                    //string appPath = AppContext.BaseDirectory;
+
+                    //string logFolder = Path.Combine(appPath, "Logs");
+                    //Directory.CreateDirectory(logFolder);
+
+                    //string logFile = Path.Combine(logFolder, "step2.txt");
+
+                    //System.IO.File.AppendAllText(
+                    //    logFile,
+                    //    $"\n[{DateTime.Now:yyyy-MM-dd HH:mm:ss}]\n" +
+                    //    ex +
+                    //    Environment.NewLine
+                    //);
+
+                }
+
+                try
+                {
+                    GenerateWord(data, wordPath);
+                }
+                catch (Exception ex)
+                {
+                     System.IO.File.WriteAllText(@"E:\user\ipo\step3.txt", ex.ToString());
+                    //string appPath = AppContext.BaseDirectory;
+
+                    //string logFolder = Path.Combine(appPath, "Logs");
+                    //Directory.CreateDirectory(logFolder);
+
+                    //string logFile = Path.Combine(logFolder, "step2.txt");
+
+                    //System.IO.File.AppendAllText(
+                    //    logFile,
+                    //    $"\n[{DateTime.Now:yyyy-MM-dd HH:mm:ss}]\n" +
+                    //    ex +
+                    //    Environment.NewLine
+                    //);
+                }                
+                jobupdate(new updateJobModel
+                {
+                    in_job_gid = job_gid,
+                    in_job_status = "C",
+                    in_job_remark = "Completed"
+                }, token);                
+            }
+            catch (Exception ex)
+            {
+                jobupdate(new updateJobModel
+                {
+                    in_job_gid = job_gid,
+                    in_job_status = "F",
+                    in_job_remark = ex.Message
+                }, token);
+                 System.IO.File.WriteAllText(@"E:\user\ipo\step4.txt", ex.Message.ToString());
+                //string appPath = AppContext.BaseDirectory;
+
+                //string logFolder = Path.Combine(appPath, "Logs");
+                //Directory.CreateDirectory(logFolder);
+
+                //string logFile = Path.Combine(logFolder, "step2.txt");
+
+                //System.IO.File.AppendAllText(
+                //    logFile,
+                //    $"\n[{DateTime.Now:yyyy-MM-dd HH:mm:ss}]\n" +
+                //    ex +
+                //    Environment.NewLine
+                //);
+            }
+        }
+        public MomRequest GetMomReportData(string offer_code, string token)
+        {
+            MomRequest result = new MomRequest();
+
+            using (var client = new HttpClient())
+            {
+                urlstring = Convert.ToString(_configuration.GetSection("Appsettings")["apiurl"]) + "getMomReports";
+
+                client.Timeout = Timeout.InfiniteTimeSpan;
+                client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+                client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+                string url = urlstring + "?offer_code=" + offer_code;
+
+                var response = client.GetAsync(url).Result;
+                if (response.StatusCode == HttpStatusCode.Unauthorized)
+                {
+                    Response.Cookies.Delete(APIcookieName);
+                    throw new UnauthorizedAccessException("Authentication expired.");
+                }
+
+                if (!response.IsSuccessStatusCode)
+                {
+                    throw new Exception("API call failed : " + response.StatusCode);
+                }
+
+                string resultMessage = response.Content.ReadAsStringAsync().Result;
+
+                dynamic temp = JsonConvert.DeserializeObject<dynamic>(resultMessage);
+
+                if (temp is string)
+                {
+                    temp = JsonConvert.DeserializeObject<dynamic>(temp.ToString());
+                }
+
+                // Table
+                result.summary = temp.Table != null && temp.Table.Count > 0
+                    ? ((JObject)temp.Table[0]).ToObject<SummaryData>()
+                    : new SummaryData();
+
+                // Table1
+                result.bankData = temp.Table1 != null
+                    ? ((IEnumerable<dynamic>)temp.Table1)
+                        .Select(x => ((JObject)x).ToObject<BankData>())
+                        .ToList()
+                    : new List<BankData>();
+
+                // Table2
+                result.nonasbabankData = temp.Table2 != null
+                    ? ((IEnumerable<dynamic>)temp.Table2)
+                        .Select(x => ((JObject)x).ToObject<BankData>())
+                        .ToList()
+                    : new List<BankData>();
+
+                // Table3
+                result.rejectionData = temp.Table3 != null
+                    ? ((IEnumerable<dynamic>)temp.Table3)
+                        .Select(x => ((JObject)x).ToObject<RejectionData>())
+                        .ToList()
+                    : new List<RejectionData>();
+
+                // Table4
+                result.categoryData = temp.Table4 != null
+                    ? ((IEnumerable<dynamic>)temp.Table4)
+                        .Select(x => ((JObject)x).ToObject<CategoryData>())
+                        .ToList()
+                    : new List<CategoryData>();
+
+                // Table5
+                result.categoryINDData = temp.Table5 != null
+                    ? ((IEnumerable<dynamic>)temp.Table5)
+                        .Select(x => ((JObject)x).ToObject<CategoryINDData>())
+                        .ToList()
+                    : new List<CategoryINDData>();
+
+                // Table6
+                result.categoryCo = temp.Table6 != null
+                    ? ((IEnumerable<dynamic>)temp.Table6)
+                        .Select(x => ((JObject)x).ToObject<CategoryCo>())
+                        .ToList()
+                    : new List<CategoryCo>();
+
+                // Table7
+                result.categoryNRA10L = temp.Table7 != null
+                    ? ((IEnumerable<dynamic>)temp.Table7)
+                        .Select(x => ((JObject)x).ToObject<CategoryNRA10L>())
+                        .ToList()
+                    : new List<CategoryNRA10L>();
+
+                // Table8
+                result.categoryNRB10L = temp.Table8 != null
+                    ? ((IEnumerable<dynamic>)temp.Table8)
+                        .Select(x => ((JObject)x).ToObject<CategoryNRB10L>())
+                        .ToList()
+                    : new List<CategoryNRB10L>();
+
+                // Table9
+                result.bankUPIData = temp.Table9 != null
+                    ? ((IEnumerable<dynamic>)temp.Table9)
+                        .Select(x => ((JObject)x).ToObject<BankUPIData>())
+                        .ToList()
+                    : new List<BankUPIData>();
+
+                // Table10
+                result.bidApplRcd = temp.Table10 != null && temp.Table10.Count > 0
+                    ? ((JObject)temp.Table10[0]).ToObject<bidApplRcdData>()
+                    : new bidApplRcdData();
+
+                // Table11
+                result.validAppln = temp.Table11 != null
+                    ? ((IEnumerable<dynamic>)temp.Table11)
+                        .Select(x => ((JObject)x).ToObject<ValidAppln>())
+                        .ToList()
+                    : new List<ValidAppln>();
+
+                // Table12
+                result.allotmentSummary = temp.Table12 != null
+                    ? ((IEnumerable<dynamic>)temp.Table12)
+                        .Select(x => ((JObject)x).ToObject<AllotmentSummary>())
+                        .ToList()
+                    : new List<AllotmentSummary>();
+
+                // Table13
+                result.bankMaster = temp.Table13 != null
+                    ? ((IEnumerable<dynamic>)temp.Table13)
+                        .Select(x => ((JObject)x).ToObject<BankMaster>())
+                        .ToList()
+                    : new List<BankMaster>();
+
+                // Table14
+                result.categoryQIB = temp.Table14 != null
+                    ? ((IEnumerable<dynamic>)temp.Table14)
+                        .Select(x => ((JObject)x).ToObject<CategoryQIB>())
+                        .ToList()
+                    : new List<CategoryQIB>();
+
+                // Table15
+                result.categoryMM = temp.Table15 != null
+                    ? ((IEnumerable<dynamic>)temp.Table15)
+                        .Select(x => ((JObject)x).ToObject<CategoryMM>())
+                        .ToList()
+                    : new List<CategoryMM>();
+
+                // Table16
+                result.categoryEMP = temp.Table16 != null
+                    ? ((IEnumerable<dynamic>)temp.Table16)
+                        .Select(x => ((JObject)x).ToObject<CategoryEMP>())
+                        .ToList()
+                    : new List<CategoryEMP>();
+
+                // Table17
+                result.categoryNIIC = temp.Table17 != null
+                    ? ((IEnumerable<dynamic>)temp.Table17)
+                        .Select(x => ((JObject)x).ToObject<CategoryNIIC>())
+                        .ToList()
+                    : new List<CategoryNIIC>();
+
+                // Table18
+                result.categorySOA = temp.Table18 != null
+                    ? ((IEnumerable<dynamic>)temp.Table18)
+                        .Select(x => ((JObject)x).ToObject<CategorySOA>())
+                        .ToList()
+                    : new List<CategorySOA>();
+
+                // Table19
+                result.categoryEXMMSOA = temp.Table19 != null
+                    ? ((IEnumerable<dynamic>)temp.Table19)
+                        .Select(x => ((JObject)x).ToObject<CategoryEXMMSOA>())
+                        .ToList()
+                    : new List<CategoryEXMMSOA>();
+
+                // Table20
+                result.categoryMARMAK = temp.Table20 != null
+                    ? ((IEnumerable<dynamic>)temp.Table20)
+                        .Select(x => ((JObject)x).ToObject<CategoryMARMAK>())
+                        .ToList()
+                    : new List<CategoryMARMAK>();
+
+                // Table21
+                result.categoryTechRej = temp.Table21 != null
+                    ? ((IEnumerable<dynamic>)temp.Table21)
+                        .Select(x => ((JObject)x).ToObject<CategoryTechRej>())
+                        .ToList()
+                    : new List<CategoryTechRej>();
+
+                // Table22
+                result.categoryUPISummary = temp.Table22 != null && temp.Table22.Count > 0
+                    ? ((JObject)temp.Table22[0]).ToObject<categoryUPISummary>()
+                    : new categoryUPISummary();
+
+                // Table23
+                result.categoryCNIIC = temp.Table23 != null && temp.Table23.Count > 0
+                    ? ((JObject)temp.Table23[0]).ToObject<CategoryCNIIC>()
+                    : new CategoryCNIIC();
+
+                // Table24
+                result.categoryCQIB = temp.Table24 != null && temp.Table24.Count > 0
+                    ? ((JObject)temp.Table24[0]).ToObject<CategoryCQIB>()
+                    : new CategoryCQIB();
+
+                // Table25
+                result.categoryCMMS = temp.Table25 != null && temp.Table25.Count > 0
+                    ? ((JObject)temp.Table25[0]).ToObject<CategoryCMMS>()
+                    : new CategoryCMMS();
+
+                // Table26
+                result.categoryCRNR = temp.Table26 != null && temp.Table26.Count > 0
+                    ? ((JObject)temp.Table26[0]).ToObject<CategoryCRNR>()
+                    : new CategoryCRNR();
+
+                // Table27
+                result.categoryCOVERSUBS = temp.Table27 != null && temp.Table27.Count > 0
+                    ? ((JObject)temp.Table27[0]).ToObject<CategoryCOVERSUBS>()
+                    : new CategoryCOVERSUBS();
+
+                // Table28
+                result.categoryCANCH = temp.Table28 != null && temp.Table28.Count > 0
+                    ? ((JObject)temp.Table28[0]).ToObject<CategoryCANCH>()
+                    : new CategoryCANCH();
+
+                // Table29
+                result.categoryCSTK = temp.Table29 != null
+                    ? ((IEnumerable<dynamic>)temp.Table29)
+                        .Select(x => ((JObject)x).ToObject<CategoryCSTK>())
+                        .ToList()
+                    : new List<CategoryCSTK>();
+
+                // Table30
+                result.bankNAMaster = temp.Table30 != null
+                    ? ((IEnumerable<dynamic>)temp.Table30)
+                        .Select(x => ((JObject)x).ToObject<BankNAMaster>())
+                        .ToList()
+                    : new List<BankNAMaster>();
+            }
+
+            return result;
+        }
+
+        public List<fileconfigmodel> getfilepath(string confing_val, string username, string token)
+        {
+            string urlstring = Convert.ToString(_configuration["Appsettings:apiurl"]) + "configvalue";
+
+            fileconfigmodel FileDownload = new fileconfigmodel();
+            var context = _configuration["Appsettings:" + confing_val];
+            FileDownload.in_config_name = context;
+            try
+            {
+                using (var client = new HttpClient())
+                {
+                    // client.DefaultRequestHeaders.Clear();
+                    client.Timeout = Timeout.InfiniteTimeSpan;
+                   // APIcookieName = "APItoken-" + User.FindFirst(ClaimTypes.Name)?.Value.ToString() + "_" + User.FindFirst(ClaimTypes.Role)?.Value.ToString();
+                    //string token = Request.Cookies[APIcookieName];
+                    client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+                    client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+                    client.DefaultRequestHeaders.Accept.Clear();
+                    client.Timeout = Timeout.InfiniteTimeSpan;
+                    client.DefaultRequestHeaders.Add("user_code", username);
+                    client.DefaultRequestHeaders.Add("lang_code", _configuration["AppSettings:lang_code"]);
+                    client.DefaultRequestHeaders.Add("role_code", _configuration["AppSettings:role_code"]);
+                    client.DefaultRequestHeaders.Add("ipaddress", _configuration["AppSettings:ipaddress"]);
+
+                    var json = JsonConvert.SerializeObject(FileDownload);
+                    var content = new StringContent(json, Encoding.UTF8, "application/json");
+
+                    var response = client.PostAsync(urlstring, content).Result;
+                    //ApiTokenRefreshMiddleware.TokenUpdate(HttpContext, response, APIcookieName);
+                    var post_data = response.Content.ReadAsStringAsync().Result;
+
+                    // ✅ Direct conversion
+                    var result = JsonConvert.DeserializeObject<List<fileconfigmodel>>(post_data);
+
+                    return result ?? new List<fileconfigmodel>();
+                }
+            }
+            catch (Exception ex)
+            {
+                CommonController objcom = new CommonController(_configuration);
+                objcom.errorlog(ex.Message, "getfilepath");
+                return new List<fileconfigmodel>();
+            }
+        }
+        public class fileconfigmodel
+        {
+            public string? in_config_name { get; set; }
+            public string? out_config_value { get; set; }
+            public string? out_msg { get; set; }
+            public string? out_result { get; set; }
+
+        }
     }
 }
 
