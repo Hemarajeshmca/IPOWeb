@@ -15,7 +15,7 @@ using System.Text;
 
 namespace IPOWeb.Controllers
 {
-    public class RejectionController : Controller
+    public class RejectionController : MenuBaseController
     {
         public IActionResult Rejection()
         {
@@ -328,7 +328,7 @@ namespace IPOWeb.Controllers
 
 
         [HttpPost]
-        public async Task<JsonResult> Getrulecode_()
+        public async Task<JsonResult> Getrulecodesdf_()
         { 
             urlstring = Convert.ToString(_configuration.GetSection("Appsettings")["apiurl"]) 
                 + "Getrulecode";
@@ -361,10 +361,10 @@ namespace IPOWeb.Controllers
             }
         }
 
-        public async Task<JsonResult> Getrulecode()
+        public async Task<JsonResult> Getrulecode(string ipo_code)
         {
             string urlstring = Convert.ToString(_configuration.GetSection("Appsettings")["apiurl"]) + "Getrulecode";
-
+            urlstring += "?ipo_code=" + Uri.EscapeDataString(ipo_code);
             try
             {
                 using (var client = new HttpClient())
