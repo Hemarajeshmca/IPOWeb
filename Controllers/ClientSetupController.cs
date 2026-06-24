@@ -12,7 +12,7 @@ using System.Text;
 
 namespace IPOWeb.Controllers
 {
-    public class ClientSetupController : Controller
+    public class ClientSetupController : MenuBaseController
     {      
         public IActionResult ClientSetup(string mode)
         {

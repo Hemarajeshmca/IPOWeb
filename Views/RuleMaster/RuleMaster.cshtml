@@ -1,0 +1,432 @@
+﻿@{
+    Layout = "~/Views/Shared/_LayoutNew.cshtml";
+    var userName = Context.Session.GetString("user_name");
+}
+
+<style>
+
+    .nav-align-top > .nav, .nav-align-top > div > .nav, .nav-align-right > .nav, .nav-align-right > div > .nav, .nav-align-bottom > .nav, .nav-align-bottom > div > .nav, .nav-align-left > .nav, .nav-align-left > div > .nav {
+        z-index: 1000 !important;
+    }
+
+    .ui-autocomplete {
+        font-weight: 400;
+        font-size: 13px !important;
+        line-height: 17px !important;
+        color: #697a8d;
+    }
+
+    .content-wrapper {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+    h5#navhead {
+        position: relative;
+        right: 424px !important;
+        width: 29% !important;
+    }
+
+    .col-md-2-4 {
+        flex: 0 0 auto;
+        width: 20%;
+    }
+
+    .nav-align-top .nav-tabs ~ .tab-content {
+        border: 1px solid #e3dcdc;
+        height: 250px;
+        padding-top: 6px;
+        /*  height: auto; */
+    }
+
+    .nav-tabs .nav-item .nav-link:not(.active) {
+        background-color: #716969;
+        color: #fff;
+    }
+
+    .nav-tabs .nav-link.active, .nav-tabs .nav-item.show .nav-link {
+        background-color: #027ed1 !important;
+        color: #fff !important;
+    }
+
+    table tbody tr:nth-child(odd) {
+        /* background-color: #5997bb !important; */
+        color: #566a7f;
+    }
+
+    table tbody tr:nth-child(even) {
+        background-color: #ffffff;
+        color: #566a7f;
+    }
+
+    .table tbody tr td {
+        padding: 2px 8px; /* reduce padding */
+        font-size: 12px; /* smaller text */
+    }
+
+    .validation {
+        color: red;
+        font-size: 12px;
+        position: relative
+    }
+
+    #offerCategoryGrid .k-grid-content {
+        height: 160px !important;
+    }
+
+    #checklistGrid .k-grid-content,
+    #checklistGrid .k-grid-content tr,
+    #checklistGrid .k-grid-content td {
+        background: transparent !important;
+    }
+
+    .modal-title {
+        font-size: 15px !important;
+        text-align: center !important;
+        font-weight: 700 !important;
+        color: #5490ff !important;
+    }
+
+    .modal-header {
+        justify-content: center !important;
+    }
+
+    #checklistGrid.k-grid.k-widget {
+        margin-top: 0px !important;
+    }
+
+
+    #checklistGrid .k-grid-header th {
+        text-align: center !important;
+    }
+
+    .btn:disabled, .btn.disabled, fieldset:disabled .btn {
+        opacity: 0.40 !important;
+        cursor: no-drop !important;
+    }
+
+    #checklistGrid.k-grid {
+        margin-top: 0px !important;
+    }
+
+
+
+    #checklistGrid .k-grid-header th {
+        text-align: center !important;
+    }
+
+    .modal-body {
+        padding-top: 0 !important;
+    }
+
+    #checklistGrid {
+        width: 850px;
+    }
+
+        /* Rule Master Grid */
+        #checklistGrid.k-grid {
+            margin-top: 0px !important;
+            border: 1px solid #d5d5d5;
+        }
+
+        #checklistGrid .k-grid-header th {
+            text-align: center !important;
+        }
+
+        #checklistGrid .k-grid-content,
+        #checklistGrid .k-grid-content tr,
+        #checklistGrid .k-grid-content td {
+            background: transparent !important;
+        }
+
+        /* Scroll only inside the grid */
+        /* #checklistGrid .k-grid-content {
+            height: 430px !important; /* Increase/Decrease as required 
+            overflow-y: auto !important;
+            overflow-x: hidden !important;
+        } */
+</style>
+
+
+<div class="modal-body" style="padding-top:2% !important;">
+    <div id="checklistGrid">
+    </div>
+    <div class="mt-3">
+        <label><b>Remarks</b></label>
+        <textarea id="txtRemarks"
+                  class="form-control"
+                  rows="3"
+                  placeholder="Enter Remarks"></textarea>
+    </div>
+    <br />
+    <div style="text-align:center; ">
+        <button type="button"
+                id="btnsave"
+                class="btn btn-success"
+                onclick="SaveAppliedRules()">
+            Save
+        </button>
+       @*  <button type="button"
+                class="btn btn-secondary"
+                data-dismiss="modal">
+            Cancel
+        </button> *@
+    </div>
+</div>
+
+<script type="text/javascript">
+        $(document).ready(function () {
+        var ipocode = localStorage.getItem("selectedIPO");
+        $('#navhead').text('IPO Rule code');
+        rulemaster_load();
+    });
+
+    function rulemaster_load() 
+    {
+
+        var data = {};
+        data.in_user_code = "1"; // sessionStorage.getItem("usrname");
+        var ipocode = localStorage.getItem("selectedIPO");
+        $.ajax({
+            type: "POST",
+            url: "../RuleMaster/GetAllRuleMaster?ipo_code=" + ipocode,
+            dataType: "json",
+            contentType: "application/json; charset=utf-8",
+
+            success: function (response) {
+
+                if (response.authExpired) {
+                    $.alert({
+                        title: "Unauthorized",
+                        content: response.message,
+                        type: "red",
+                        buttons: {
+                            ok: function () {
+                                window.location.href = "/Login/Logout";
+                            }
+                        }
+                    });
+                    return;
+                }
+
+                    if (response.success) {
+                        if (response.data) {
+                            var ruleData = JSON.parse(response.data); 
+
+                            var masterRules  = ruleData.Table;
+                            var appliedRules  = ruleData.Table1;
+
+                             
+                             
+
+                                //---------------
+                                var masterRules = ruleData.Table || [];
+
+                                var appliedRuleCodes = [];
+                                       $("#txtRemarks").val(
+                                            appliedRules.length > 0 ? (appliedRules[0].remarks || "") : ""
+                                        );
+                                if (appliedRules.length > 0 && appliedRules[0].rule_code) {
+                                    appliedRuleCodes = appliedRules[0].rule_code.split(',').map(x => x.trim());
+                                }
+                                    $.each(masterRules, function (i, item) {
+
+                                    item.enabled = true;
+                                    item.status = "NotApplied";
+
+                                    for (var j = 0; j < appliedRuleCodes.length; j++) {
+
+                                        if (appliedRuleCodes[j] === item.rule_code) {   // Exact comparison
+                                            item.status = "Applied";
+                                            break;
+                                        }
+                                    }
+
+                                });
+
+                                
+
+                                var appliedRules = [];
+                                if (ruleData.Table1 && Array.isArray(ruleData.Table1)) {
+                                    appliedRules = ruleData.Table1;
+                                }
+                                
+                                $.each(masterRules, function (i, item) {
+
+                                    var rule = appliedRules.find(function (x) {
+                                        return x.rule_code === item.rule_code;
+                                    });
+                                        console.log(masterRules);
+                                        console.log(appliedRules);
+                                     
+                                    item.enabled = true;
+                                    if (rule) {
+                                       //  item.enabled = true;
+                                         item.status = "Applied";       // Radio enabled
+                                    } else {
+                                       // item.enabled = false;
+                                        item.status = "NotApplied";     // Default selection
+                                    }
+
+                                });
+
+                                rulemaster_grid(masterRules);
+                        }
+                        else {
+                            rulemaster_grid([]);
+                        }
+
+                    }
+                    else {
+
+                        rulemaster_grid([]);
+
+                    }
+            },
+            error: function (xhr) {
+                console.log(xhr);
+            }
+        });
+
+    }
+
+    function rulemaster_grid(data) {
+
+        if ($("#checklistGrid").data("kendoGrid")) {
+            $("#checklistGrid").data("kendoGrid").destroy();
+            $("#checklistGrid").empty();
+        }
+
+        $("#checklistGrid").kendoGrid({
+
+            dataSource: {
+                data: data,
+                pageSize: 12,
+                schema: {
+                    model: {
+                        fields: {
+                            rule_code: { type: "string" },
+                            rule_name: { type: "string" },
+                            status: { type: "string" },
+                            enabled: { type: "boolean" }
+                        }
+                    }
+                }
+            },
+            pageable: true,
+            sortable: false,
+            filterable: false,
+            scrollable: true,
+            height: 300,
+            columns: [
+
+                {
+                    field: "rule_code",
+                    title: "Rule Code",
+                    width: 120
+                },
+
+                {
+                    field: "rule_name",
+                    title: "Rule Name",
+                    width: 350
+                },
+
+                {
+                    title: "Applied",
+                    width: 120,
+                    attributes: {
+                        style: "text-align:center;"
+                    },
+                    template:
+                        "<input type='radio' " +
+                        "class='status-radio' " +
+                        "name='status_#=rule_code#' " +
+                        "value='Applied' " +
+                        "#= status=='Applied' ? 'checked' : '' # " +
+                        "#= enabled ? '' : 'disabled' # />"
+                },
+
+                {
+                    title: "Not Applied",
+                    width: 120,
+                    attributes: {
+                        style: "text-align:center;"
+                    },
+                    template:
+                        "<input type='radio' " +
+                        "class='status-radio' " +
+                        "name='status_#=rule_code#' " +
+                        "value='NotApplied' " +
+                        "#= status!='Applied' ? 'checked' : '' # " +
+                        "#= enabled ? '' : 'disabled' # />"
+                }
+
+            ]
+
+        });
+
+    }
+
+
+    function SaveAppliedRules() {
+
+        var ipo_code = localStorage.getItem("selectedIPO");
+
+        var ruleCodes = [];
+
+        $("#checklistGrid tbody tr").each(function () {
+
+            var grid = $("#checklistGrid").data("kendoGrid");
+            var dataItem = grid.dataItem(this);
+
+            var status = $(this)
+                .find("input[type='radio']:checked")
+                .val();
+
+            if (status === "Applied") {
+                ruleCodes.push(dataItem.rule_code);
+            }
+        });
+
+        var rule_code = ruleCodes.join(",");
+
+        console.log("IPO Code :", ipo_code);
+        console.log("Rule Codes :", rule_code);
+
+        var remarks=$("#txtRemarks").val();
+        $.ajax({
+            type: "POST",
+            url: '@Url.Action("SaveAppliedRules", "RuleMaster")',
+            contentType: "application/json; charset=utf-8",
+            data: JSON.stringify({
+                ipo_code: ipo_code,
+                rule_code: rule_code,
+                remarks: remarks 
+            }),
+            success: function (response) {
+
+                if (response.success) {
+                    $.alert({
+                        title: "Success",
+                        content: "Rules Mapping saved successfully.",
+                        type: "green"
+                    });
+                }
+                else {
+                    $.alert({
+                        title: "Rules Mapping Error",
+                        content: response.message,
+                        type: "red"
+                    });
+                }
+            }
+        });
+
+    }
+
+     
+
+    
+</script>

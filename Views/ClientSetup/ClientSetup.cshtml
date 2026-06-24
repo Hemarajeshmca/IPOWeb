@@ -108,9 +108,12 @@
                         <input type="text" id="pin" name="pin" class="form-control"  />
                         <span id="querypin" style="color: red; font-size: 12px;position:relative;"></span>
                     </div>
-                    <div class="col-sm-3">
-                        <center><button type="button" class="btn btn-primary" id="btnSave"  onclick="saveclient()" style="padding: 3px 25px;margin-top:28px;width:40%">Save</button></center>
-                    </div>
+                    @if (ViewBag.canAdd || ViewBag.canEdit)
+                    {
+                        <div class="col-sm-3">
+                            <center><button type="button" class="btn btn-primary" id="btnSave"  onclick="saveclient()" style="padding: 3px 25px;margin-top:28px;width:40%">Save</button></center>
+                        </div>
+                    }
                 </div>
             </div>
         </div>
