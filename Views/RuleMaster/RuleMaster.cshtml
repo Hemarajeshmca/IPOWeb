@@ -178,7 +178,7 @@
 <script type="text/javascript">
         $(document).ready(function () {
         var ipocode = localStorage.getItem("selectedIPO");
-        $('#navhead').text('IPO Rule code');
+        $('#navhead').text('IPO Rule Master');
         rulemaster_load();
     });
 
@@ -268,7 +268,10 @@
                                        // item.enabled = false;
                                         item.status = "NotApplied";     // Default selection
                                     }
-
+                                    if(masterRules[i].rule_disable=="Y"){
+                                        item.enabled = false;
+                                        item.status = "Applied";
+                                    }
                                 });
 
                                 rulemaster_grid(masterRules);
@@ -315,8 +318,8 @@
                 }
             },
             pageable: true,
-            sortable: false,
-            filterable: false,
+            sortable: true,
+            filterable: true,
             scrollable: true,
             height: 300,
             columns: [
@@ -334,7 +337,7 @@
                 },
 
                 {
-                    title: "Applied",
+                    title: "Enable",
                     width: 120,
                     attributes: {
                         style: "text-align:center;"
@@ -349,7 +352,7 @@
                 },
 
                 {
-                    title: "Not Applied",
+                    title: "Disable",
                     width: 120,
                     attributes: {
                         style: "text-align:center;"

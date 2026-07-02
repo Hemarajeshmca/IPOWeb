@@ -229,11 +229,15 @@
 
                             </div>
                         </div>
-                        <div class="col-sm-3">
+                        <div class="col-sm-6">
+                            <input type="hidden" id="addrule_disable" /><br />
+                            &nbsp;
+                            <label id="addlblstatus" style="color: indianred; display: none; font-size:medium;"></label>
                         </div> 
+                        @* <div class="col-sm-3">
+                        </div> *@
                         <div class="col-sm-3">
-                        </div>
-                        <div class="col-sm-3">
+                           
                         </div>
                         <div class="col-sm-3">
                             <center><button type="button" onclick = "addSave()" class="btn btn-primary" id="btnAddSave" style="padding: 3px 25px;margin-top:28px;">Save</button></center>
@@ -302,11 +306,11 @@
                             <label class="form-label">Remarks</label>
                             <input type="text" id="additionremarks" class="form-control">
                         </div> 
-                        <div class="col-sm-3">
+                        <div class="col-sm-3"> 
                         </div>
                         <div class="col-sm-3">
                         </div>
-                        <div class="col-sm-3">
+                        <div class="col-sm-3"> 
                         </div> 
                         <div class="col-sm-3">
                             <center><button type="button" onclick="rejSave()" class="btn btn-primary" id="btnRejSave" style="padding: 3px 25px;margin-top:28px;">Save</button></center>
@@ -501,7 +505,7 @@
 
      $(document).on("change", "#selectAll", function () {
         var grid = $("#rejectionList").data("kendoGrid");
-
+        selectedCodes = [];
         if (this.checked) {
             var allData = grid.dataSource.data();
             selectedCodes = allData.map(function (item) {
@@ -518,7 +522,6 @@
         var row = $(this).closest("tr");
         var dataItem = grid.dataItem(row);
         var code = dataItem.rule_code;
-
         if ($(this).is(":checked")) {
             if (!selectedCodes.includes(code)) {
                 selectedCodes.push(code);
@@ -533,6 +536,7 @@
     function exportSummary() {
         var grid = $("#rejectionList").data("kendoGrid");
         grid.saveAsExcel();
+        selectedCodes = [];
     }
 
     function exportdetailSummary_old() {
@@ -571,6 +575,7 @@
             + '&rule_code=' + encodeURIComponent(rule_code);
 
         window.location.href = url;
+        selectedCodes = [];
     }
 
     $(document).ready(function () {
@@ -651,7 +656,8 @@
                                                     shared_applied_price:item.shared_applied_price,
                                                     total_amount:item.total_amount,
                                                     rule_code:item.rule_code,
-                                                    rejected_reason:item.rejected_reason
+                                                    rejected_reason:item.rejected_reason,
+                                                    addrule_disable:item.rule_disable
                                                 };
                                             }));
                                         },
@@ -681,7 +687,8 @@
                                                     shared_applied_price:item.shared_applied_price,
                                                     total_amount:item.total_amount,
                                                     rule_code:item.rule_code,
-                                                    rejected_reason:item.rejected_reason
+                                                    rejected_reason:item.rejected_reason,
+                                                    addrule_disable:item.rule_disable
                                                     };
                                                 }));
                                             },
@@ -711,7 +718,8 @@
                                                     shared_applied_price:item.shared_applied_price,
                                                     total_amount:item.total_amount,
                                                     rule_code:item.rule_code,
-                                                    rejected_reason:item.rejected_reason
+                                                    rejected_reason:item.rejected_reason,
+                                                    addrule_disable:item.rule_disable
                                                 };
                                             }));
                                         },
@@ -883,7 +891,8 @@
                                       if (result[0].result == 1) {
                                                $.alert({
                                                   title: 'IPO Allotment',
-                                                  content: result[0].message,
+                                                  //content: result[0].message,
+                                                  content: "Added Sucessfully",
                                                   type: 'green',
                                                   buttons: {
                                                       ok: function () {
@@ -950,7 +959,8 @@
                                         if (result[0].result == 1) {
                                                  $.alert({
                                                     title: 'IPO Allotment',
-                                                    content: result[0].message,
+                                                    //content: result[0].message,
+                                                    content: "Rejection Sucessfully",
                                                     type: 'green',
                                                     buttons: {
                                                         ok: function () {
@@ -989,6 +999,17 @@
         $("#rule_code").val(item.rule_code);
         $("#reject_remarks").val(item.rejected_reason);
         $("#remarks").val("");
+        alert(item.addrule_disable);
+        $("#addrule_disable").val(item.addrule_disable);
+        $("#addlblstatus").val("");
+        if (item.addrule_disable == "Y") {
+        $("#addlblstatus").show().text("Exchanges Rejection applications are not changed");
+        $("#btnAddSave").hide();
+        } else {
+            $("#addlblstatus").hide().text("");
+            $("#btnAddSave").show();
+        }
+        
     }
 
        function populateRDetails(item) {
@@ -998,7 +1019,7 @@
           $("#rshares").val(item.quantity);
           $("#ramt").val(item.total_amount);
           $("#rshared_applied_price").val(item.shared_applied_price);
-          $("#rremarks").val(item.rejected_reason);
+          $("#rremarks").val(item.rejected_reason); 
       }
  
     function get_rule_code() {
