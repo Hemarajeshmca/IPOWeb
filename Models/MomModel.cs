@@ -365,6 +365,7 @@ namespace IPOWeb.Models
     public class ReportRequest
     {
         public string offer_code { get; set; }
+        public string user_code { get; set; }
     }
 
     public class MomReportData
@@ -400,5 +401,19 @@ namespace IPOWeb.Models
         public List<Dictionary<string, object>> table29 { get; set; }
         public List<Dictionary<string, object>> table30 { get; set; }
         public List<Dictionary<string, object>> table31 { get; set; }
+    }
+
+    public class boacheckedVistedModel
+    {
+        public string? in_ipo_code { get; set; }
+        public string? in_user_code { get; set; }
+        public string? in_role_code { get; set; }
+        public string pageName { get; set; }
+        //public string? in_visited_offersetup { get; set; }
+        //public string? in_visited_ipo_summary { get; set; }
+        //public string? in_visited_bid_bank { get; set; }
+        //public string? in_visited_bid_upi { get; set; }
+        //public string? in_visited_upi_bid { get; set; }
+        //public string? in_visited_run_rejection { get; set; }
     }
 }

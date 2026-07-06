@@ -5,6 +5,11 @@ using IPOWeb;
 using Microsoft.AspNetCore.Http.Features;
 
 var builder = WebApplication.CreateBuilder(args);
+var sessionTimeout = builder.Configuration.GetValue<int>(
+    "Appsettings:SessionSettings:SessionTimeoutMinutes");
+
+var authTimeout = builder.Configuration.GetValue<int>(
+    "Appsettings:SessionSettings:AuthCookieTimeoutMinutes");
 
 builder.WebHost.ConfigureKestrel(options =>
 {
@@ -21,10 +26,13 @@ builder.Services.Configure<FormOptions>(options =>
 builder.Services.AddDistributedMemoryCache(); // Required for Session
 builder.Services.AddSession(options =>
 {
-    options.IdleTimeout = TimeSpan.FromMinutes(30); // Session timeout
+    options.IdleTimeout = TimeSpan.FromMinutes(sessionTimeout);
+    options.Cookie.Name = "IPO.Session";
+    //options.IdleTimeout = TimeSpan.FromMinutes(10); // Session timeout
+    //  options.IdleTimeout = TimeSpan.FromHours(12);
     options.Cookie.HttpOnly = true;                // Security: prevent JS access
     options.Cookie.IsEssential = true;             // Required for GDPR/compliance
-    options.Cookie.Name = ".STA.Session";
+   // options.Cookie.Name = ".STA.Session";
 
 });
 builder.Services.AddControllersWithViews()
@@ -40,11 +48,12 @@ builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationSc
     .AddCookie(options =>
     {
         options.LoginPath = "/Login/Login";
+        options.Cookie.Name = "IPO.Auth";
         options.Cookie.SecurePolicy = CookieSecurePolicy.None; // localhost
         options.AccessDeniedPath = "/Login/Login";
         //options.AccessDeniedPath = "/Login/Denied";
-        // options.ExpireTimeSpan = TimeSpan.FromMinutes(30);
-        options.ExpireTimeSpan = TimeSpan.FromHours(5);
+        options.ExpireTimeSpan = TimeSpan.FromMinutes(authTimeout);
+        // options.ExpireTimeSpan = TimeSpan.FromHours(12);
         options.SlidingExpiration = true;
     });
 builder.Services.AddAuthorization();

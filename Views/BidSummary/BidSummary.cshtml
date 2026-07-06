@@ -1,5 +1,38 @@
 ﻿@{
     Layout = "~/Views/Shared/_LayoutNew.cshtml";
+    var userName = Context.Session.GetString("user_name");
+    var role_code = Context.Session.GetString("user_role");
+    var userCode = Context.Session.GetString("user_code");
+    var menuJson = Context.Session.GetString("UserMenus");
+    var menus = new List<MenuModel>();
+
+    if (!string.IsNullOrEmpty(menuJson))
+    {
+        menus = System.Text.Json.JsonSerializer.Deserialize<List<MenuModel>>(menuJson);
+    }
+
+    var currentPath = Context.Request.Path.Value.ToLower();
+    var normalizedPath = currentPath.Trim('/').ToLower();
+    var currentMenu = menus?.FirstOrDefault(x =>
+        (x.menu_url ?? "")
+            .Replace("../", "")
+            .Trim('/')
+            .ToLower() == normalizedPath
+    );
+
+    var getBoaMenu = menus?.FirstOrDefault(x =>
+        (x.menu_url ?? "")
+            .Replace("../", "")
+            .Trim('/')
+            .ToLower() == "boa/boa"
+    );
+
+    var menuId = currentMenu?.menu_id;
+    var addPerm = currentMenu?.add_perm;
+    var modPerm = currentMenu?.mod_perm;
+    var viewPerm = currentMenu?.view_perm;
+    var delPerm = currentMenu?.delete_perm;
+    var Boachecklist = getBoaMenu?.Boachecklist_perm;
 }
 
 <!DOCTYPE html>
@@ -29,6 +62,8 @@
             font-weight: 600;
             text-align: center;
         }
+
+
 
         .k-grid.k-widget {
             height: auto !important;
@@ -73,6 +108,13 @@
             background: #fff !important;
         }
 
+        #summaryGrid {
+            height: 60px !important;
+        }
+
+        #rejectionList table {
+            width: 100% !important;
+        }
    
     </style>
 
@@ -84,14 +126,14 @@
             <div class="card-body" style="margin-top:5px;height: 556px;width: 103%;margin-left: -18px;">
                 <input type="hidden" id="ipocode" />
                 <input type="hidden" id="cid" />
-                <div class="row" style="margin-top:-11px;">                    
+                <div class="row" style="margin-top:-20px;">                    
                      <div class="col-sm-12">
                         <div id="totalBidsGrid"></div>
-                        <br />
+                        @* <br /> *@
                         @* <div id="invalidBidsGrid"></div> *@                         
                     </div>                   
                 </div>
-                <div class="row" style="margin-top: -25px;">
+                <div class="row" style="margin-top: -5px;margin-bottom: -5px;">
                     <div class="col-sm-2">
                         <h5 style="font-size: 13px !important;font-weight: 700;color:#000;float: left;margin-left: 3px !important;">
                             Rejections
@@ -105,7 +147,7 @@
                 </div>
                 <div class="row" style="margin-top: -3px;">
                     <div class="col-sm-2">
-                        <h5 style="font-size: 13px !important;font-weight: 700;color:#000;float: left;margin-left: 3px !important;">
+                        <h5 style="font-size: 13px !important;font-weight: 700;color:#000;float: left;margin-left: 3px !important; margin-top:5px !important; margin-bottom:5px !important;">
                             Available For Allotment
                         </h5>
                     </div>
@@ -136,8 +178,13 @@
             var cids = $("#cid").val();
             $('#navhead').text(cids + ' - IPO Summary');             
              BidSummary();
-            runrecon(false);            
-    });
+            runrecon(false);
+            var boaChecklist = '@Boachecklist';
+            var getnormalizedPath = '@normalizedPath';
+            if(boaChecklist == "Y") {
+                   updateboaVisit(getnormalizedPath);
+            }
+        });
 
       function BidSummary() {
         var ipo_code = $("#ipocode").val();
@@ -151,7 +198,6 @@
                     ipo_code: ipo_code
                 },
                     success: function (response) {
-                    console.log("Summary Values :", response);
                     var parsedData = JSON.parse(response.data);
                     var tableData = parsedData.Table;
                     var totalBids = [];
@@ -183,9 +229,7 @@
                         checkAndLoadSummary();
                 }
             });
-
         } catch (e) {
-
             console.log(e);
         }
     }
@@ -196,7 +240,7 @@
             {
                 field: "Flag",
                 title: "Details",
-               width: 215
+                width: 215
             },
             {
                 field: "Total_APPL_NO",
@@ -233,33 +277,26 @@
             },
             columns: columns,
                   dataBound: function (e) {
+                  var grid = e.sender;
+                grid.tbody.find("tr").each(function () {
+                var dataItem = grid.dataItem(this);
+                   if (["TOTAL", "Offer Size", "Over Subscription Ratio"].includes(dataItem.Flag)) {
+                        $(this).css({
+                            "font-weight": "bold",
+                            "background-color": "#dff0d8"
+                        });
+                    }
+                });
+            }
+                });
 
-        var grid = e.sender;
-
-        grid.tbody.find("tr").each(function () {
-
-            var dataItem = grid.dataItem(this);
-
-               if (["TOTAL", "Offer Size", "Over Subscription Ratio"].includes(dataItem.Flag)) {
-
-                    $(this).css({
-                        "font-weight": "bold",
-                        "background-color": "#dff0d8"
-                    });
-                }
-        });
-    }
-        });
-
-        $("<h6 class='fw-bold mb-1'>" + title + "</h6>")
-            .insertBefore(gridId);
-    }
+                $("<h6 class='fw-bold mb-1'>" + title + "</h6>")
+                    .insertBefore(gridId);
+            }
 
        function formatNumber(value) {
-
         if (value == null || value === "")
             return "";
-
         return Number(value).toLocaleString('en-IN');
     }
 
@@ -421,7 +458,7 @@
         dataSource: {
             data: summaryData
         },
-
+        height:100,
         scrollable: true,
         sortable: true,
         resizable: true,

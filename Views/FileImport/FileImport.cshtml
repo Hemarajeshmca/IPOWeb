@@ -2,6 +2,7 @@
     Layout = "~/Views/Shared/_LayoutNew.cshtml";
     var userName = Context.Session.GetString("user_name");
     var userRole = Context.Session.GetString("user_role");
+    var userCode = Context.Session.GetString("user_code");
     var roleName = Context.Session.GetString("role_name");
 }
 <!DOCTYPE html>
@@ -208,7 +209,7 @@
                     </div>
                 </div>
 
-               @*  <div class="row" style="margin-top:20px;">
+                @*  <div class="row" style="margin-top:20px;">
                     <div class="col-sm-12">
                         <div class="nav-align-top mb-4">
                             <ul class="nav nav-tabs" role="tablist">
@@ -305,7 +306,7 @@
                         </div>
                     </div>
                 </div> *@
-                    
+
             </div>
         </div>
     </div>
@@ -348,22 +349,22 @@
 <script>
          var selectedPipeline = "";
         var selectedDataset = "";
-        $(document).ready(function () {                    
+                 $(document).ready(function () {
             $('#navhead').text('File Import');
            var ipoName = localStorage.getItem("selectedIPOText");
-            var ipocode = localStorage.getItem("selectedIPO");           
+            var ipocode = localStorage.getItem("selectedIPO");
             var savedIPO = localStorage.getItem("selectedIPO");
             console.log("IPO Name:", ipoName);
-            console.log("IPO Code:", ipocode);           
+            console.log("IPO Code:", ipocode);
             console.log("savedIPO:", savedIPO);
             // Use based on element type
-            $("#iponame").val(ipoName);   // or .text()          
-           
+            $("#iponame").val(ipoName);   // or .text()
+
             $("#ipocode").val(ipocode);   // or .text()
               showgrid();
-               grid_jobhistory([]);                   
-               showpipelinelist();
+               grid_jobhistory([]);
 
+               showpipelinelist();
 
         $("#btnPre").click(function () {
 
@@ -373,6 +374,7 @@
             $("#datasetList").show();
         });
     });
+
 
     function loadBank(){
          $.ajax({
@@ -398,13 +400,13 @@
                 }
                     var result = JSON.parse(response.data);
                     $("#bank").empty();
-                    $("#bank").append('<option value="">--- Select Bank ---</option>');
-                    $.each(result.Table, function (index, item) {
-                        $("#bank").append(
-                            '<option value="' + item.bank_code + '">' +
-                            item.bank_name +
-                            '</option>'
-                        );
+                $("#bank").append('<option value="">--- Select Bank ---</option>');
+                $.each(result.Table, function (index, item) {
+                  $("#bank").append(
+                        '<option value="' + item.bank_code + '">' +
+                        item.bank_name +
+                        '</option>'
+                    );
 
                 });
             }
@@ -447,13 +449,11 @@
                                 { field: "dataset_category", title: "Category" },
                                 { field: "dataset_table_name", title: "Dataset Table Name", hidden: true },
                                 { field: "system_flag", hidden: true },
-                                {
-                                    title: "Info",
-                                    width: 80,
-                                    template: '<img src="/Assets/images/topnotes.png" style="cursor:pointer;width:18px;" onclick="openInfoModel(\'#=dataset_code#\')" data-bs-toggle="modal" data-bs-target="\\#myModal" />'
-                                    //template: "<a href='' style='cursor:pointer;' onclick='openInfoModel(this)' value='edit' data-bs-toggle='modal'><img style='height:17px;width:17px' src = '../Assets/images/topnotes.png'></a>&nbsp;&nbsp;&nbsp;",
-						
-                                }
+                                // {
+                                //     title: "Info",
+                                //     width: 80,
+                                //    template: '<img src="/Assets/images/topnotes.png" style="cursor:pointer;width:18px;" onclick="openInfoModel(\'#=dataset_code#\')" data-bs-toggle="modal" data-bs-target="\\#myModal" />'
+                                // }
                                 ]
                     });
             },
@@ -464,43 +464,6 @@
 
         }
 
-<<<<<<< HEAD
-      function nextprocess() 
-      {                 
-        var selected = $("input[name='clientSelect']:checked");
-        if (selected.length === 0) 
-        { 
-                $.alert({
-                title: 'IPO Allotment' ,
-                content: "Please select a dataset",
-                type: 'red',
-            });
-            return;
-        }
-        document.getElementById("MultipleFile").value = "";
-        var dataset_gid = selected.val();
-        var dataset_code = selected.data("code");
-        var dataset_name = selected.data("name");
-        selectedDataset = selected.data("code");
-        console.log("Dataset GID:", dataset_gid);
-        console.log("Dataset Code:", dataset_code);
-        $("#datasetname").text(dataset_name );
-            if (typeof dataset_name === "string" && dataset_name.toLowerCase().includes("bank")) 
-            {
-                $("#bankrow").show();
-                $("#categoryrow").show();
-                loadBank();
-            } else {
-                $("#bankrow").hide(); 
-            }
-             if ((typeof dataset_name === "string" && dataset_name.toLowerCase().includes("bendem")) ||
-    (typeof dataset_name === "string" && dataset_name.toLowerCase().includes("exchange upi")) ||
-     (typeof dataset_name === "string" && dataset_name.toLowerCase().includes("exchange pan"))
-    )
-    {
-        $("#categoryrow").hide();
-            }
-=======
 
      function openSelectedInfoModel() {
 
@@ -553,9 +516,9 @@
                 console.log("Error:", xhr.responseText);
             }
         });
-    }   
+    }
 
-      function nextprocess() {                 
+      function nextprocess() {
             var selected = $("input[name='clientSelect']:checked");
             if (selected.length === 0) {
                 // alert("Please select a dataset");
@@ -569,24 +532,24 @@
             document.getElementById("MultipleFile").value = "";
             var dataset_gid = selected.val();
             var dataset_code = selected.data("code");
-            var dataset_name = selected.data("name");           
+            var dataset_name = selected.data("name");
             selectedDataset = selected.data("code");
             console.log("Dataset GID:", dataset_gid);
-            console.log("Dataset Code:", dataset_code);           
+            console.log("Dataset Code:", dataset_code);
             $("#datasetname").text(dataset_name );
             if (typeof dataset_name === "string" && dataset_name.toLowerCase().includes("bank")) {
                     $("#bankrow").show();
                     $("#categoryrow").show();
                     loadBank();
                 } else {
-                    $("#bankrow").hide(); 
+                    $("#bankrow").hide();
                 }
-                if ((typeof dataset_name === "string" && dataset_name.toLowerCase().includes("bendem")) || 
+                if ((typeof dataset_name === "string" && dataset_name.toLowerCase().includes("bendem")) ||
                 (typeof dataset_name === "string" && dataset_name.toLowerCase().includes("exchange upi")) ||
                  (typeof dataset_name === "string" && dataset_name.toLowerCase().includes("exchange pan")) ||
                  (typeof dataset_name === "string" && dataset_name.toLowerCase().includes("market"))
                 )
-                {                   
+                {
                     $("#categoryrow").hide();
                 }
             var tabTrigger = document.querySelector('button[data-bs-target="#navs-top-progress"]');
@@ -602,8 +565,8 @@
                         console.log(response.message);
                         return;
                     }
-                    var data = response.data;
-                    $("#pipeline").empty();
+                   var data = response.data;
+                   $("#pipeline").empty();
                     $.each(data, function (i, item) {
                         $("#pipeline").append(
                             $('<option>', {
@@ -612,9 +575,9 @@
                             })
                         );
                     });
-                    $("#pipeline").val(data[0].pipeline_name);
-                    selectedPipeline = data[0].pipeline_code;
-                    console.log(data);
+                   $("#pipeline").val(data[0].pipeline_name);
+                   selectedPipeline = data[0].pipeline_code;
+                   console.log(data);
                 },
                 error: function (xhr) {
                     console.log("Error:", xhr.responseText);
@@ -634,7 +597,7 @@
             var formData = new FormData();
             formData.append("file", fileInput.files[0]);
             formData.append("pipeline_code", selectedPipeline);
-            formData.append("initiated_by",'@userName' );
+            formData.append("initiated_by",'@userCode' );
             formData.append("dataset_code", selectedDataset);
             var refBankList = [
                 {
@@ -675,7 +638,7 @@
                 console.log(err);
                 }
             });
-        } 
+        }
         function getPipeline_code() {
             selectedPipeline = $("#pipeline").val();
             console.log(selectedPipeline);
@@ -738,68 +701,6 @@
             });
         }
 
-<<<<<<< HEAD
-         function infopopupGrid_old(e) {
-            var grid = $("#infoGrid").data("kendoGrid");
-            var row = $(e).closest("tr");
-            var dataItem = grid.dataItem(row);
-            var dscode=dataItem.dataset_code; alert(dscode); consile.log(dscode);
-            window.location.href = "../IssueSetup/IssueSetup";
-        }
-        function openInfoModel(dataset_code) {
-            try {
-        customAjax({
-            type: "POST",
-            url: '@Url.Action("datasethistory", "FileImport")',
-            dataType: 'json',
-            contentType: "application/json",
-            data: JSON.stringify({
-                ipo_code: $("#ipocode").val().trim(),
-                dataset_code: dataset_code
-            }),
-            success: function (response) { 
-                if (response.authExpired) {
-                    $.alert({
-                        title: 'Unauthorized',
-                        content: response.message || 'Unauthorized User',
-                        type: 'red',
-                        buttons: {
-                            ok: function () {
-                                window.location.href = '/login/logout';
-                            }
-                        }
-                    });
-                    return;
-                } 
-                console.log("Response:", response.data);
-                var grid = $("#grid_jobhistory").data("kendoGrid");
-                grid.dataSource.data([]);
-                if (grid && response.success) { 
-                        let data = response.data; 
-                        if (data && data.Table) {
-                            data = data.Table;
-                        } 
-                        grid.dataSource.data(data || []);
-                        $("#myModal").modal("show");
-                    } else {
-                        grid.dataSource.data([]);
-                    }
-                
-            },
-            error: function (xhr) {
-                console.log("Error:", xhr.responseText);
-                alert("Something went wrong while fetching info.");
-            }
-        });
-         } catch (e) {
-            console.log(e);
-        }
-            }
-</script>
-
-<script>
-     
-=======
              function infopopupGrid_old(e) {
         var grid = $("#infoGrid").data("kendoGrid");
         var row = $(e).closest("tr");
@@ -858,10 +759,11 @@
     }
         }
 
-           
+
 </script>
 
 <script>
+
 
     function grid_jobhistory(data) {
         $("#grid_jobhistory").kendoGrid({

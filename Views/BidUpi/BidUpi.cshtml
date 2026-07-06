@@ -1,6 +1,24 @@
 ﻿@{
     Layout = "~/Views/Shared/_LayoutNew.cshtml";
     var userName = Context.Session.GetString("user_name");
+    var role_code = Context.Session.GetString("user_role");
+    var userCode = Context.Session.GetString("user_code");
+    var menuJson = Context.Session.GetString("UserMenus");
+    var menus = new List<MenuModel>();
+
+    if (!string.IsNullOrEmpty(menuJson))
+    {
+        menus = System.Text.Json.JsonSerializer.Deserialize<List<MenuModel>>(menuJson);
+    }
+    var currentPath = Context.Request.Path.Value.ToLower();
+    var normalizedPath = currentPath.Trim('/').ToLower();
+    var getBoaMenu = menus?.FirstOrDefault(x =>
+        (x.menu_url ?? "")
+            .Replace("../", "")
+            .Trim('/')
+            .ToLower() == "boa/boa"
+    );
+    var Boachecklist = getBoaMenu?.Boachecklist_perm;
 }
 <!DOCTYPE html>
 <html>  
@@ -137,6 +155,11 @@
         var ipocode = localStorage.getItem("selectedIPO");
         $("#iponame").val(ipoName);
         $("#ipocode").val(ipocode); 
+        var boaChecklist = '@Boachecklist';
+        var getnormalizedPath = '@normalizedPath';
+        if(boaChecklist == "Y") {
+           updateboaVisit(getnormalizedPath);
+        }
     });
 
     function runrecon() { 
@@ -237,122 +260,228 @@
         }
     }
 
-    function fetchgrid(data){
-        var columns = [
+    function fetchgrid(data) {
+
+    var columns = [
+        {
+            title: "Select",
+            width: 45,
+            locked: true,
+            headerAttributes: { style: "text-align:center;" },
+            attributes: { style: "text-align:center;" },
+            headerTemplate:
+                "<div style='text-align:center;'>" +
+                "<input type='checkbox' id='selectAll' /> " +
+                "<label for='selectAll' style='cursor:pointer;'>All</label>" +
+                "</div>",
+            template: "<input type='checkbox' class='client-checkbox' value='#= bnk_code #' />"
+        },
+        {
+            field: "bnk_code",
+            title: "Bank Code",
+            hidden: true,
+            locked: true
+        },
+        {
+            field: "bnk_name",
+            title: "UPI",
+            width: 150,
+            locked: true
+        },
+        {
+            field: "status",
+            title: "Status",
+            width: 120,
+            locked: true,
+            footerTemplate: "<div style='font-weight:bold'>TOTAL</div>",
+            footerAttributes: { style: "text-align:center;font-weight:bold;" }
+        },
+        {
+            title: "As per Bid",
+            headerAttributes: { style: "text-align:center;font-weight:bold;" },
+            columns: [
                 {
-                title: "Select",
-                width: 45,
-                locked: true,
-                headerAttributes: { style: "text-align:center;" },
-                attributes: { style: "text-align:center;" },
-                headerTemplate:
-                    "<div style='text-align:center;'>" +
-                    "<input type='checkbox' id='selectAll' /> " +
-                    "<label for='selectAll' style='cursor:pointer;'>All</label>" +
-                    "</div>",
-                template: "<input type='checkbox' class='client-checkbox' value='#= bnk_code #' />"
-                },
-                {
-                field: "bnk_code",
-                title: "Bank Code",
-                locked: true,
-                hidden: true,
-            },
-            {
-                field: "bnk_name",
-                title: "UPI",
-                width: 150,
-                locked: true
-            },
-            {
-                    field: "status",
-                    title: "Status",
+                    field: "bid_appl_count",
+                    title: "No.of Appl",
                     width: 120,
-                    locked: true,
-                    footerTemplate: "<div style='font-weight:bold'>TOTAL</div>"
+                    attributes: { style: "text-align:right;" },
+                    footerTemplate: "<div style='text-align:right;font-weight:bold'>#= kendo.toString(sum,'n0') #</div>",
+                    footerAttributes: { style: "text-align:right;font-weight:bold;" }
                 },
-                  {
-              title: "As per Bid",
-              headerAttributes: { style: "text-align:center;font-weight:bold;" },
-              columns: [
-                          { field: "bid_appl_count", title: "No.of Appl", width: 120, attributes:{style:"text-align:right;"},footerTemplate: "<div style='text-align:right;font-weight:bold'>" + "#= kendo.toString(sum, 'n0') #" + "</div>"},
-                      { field: "bid_quantity", title: "No.of Shares", width: 130, attributes:{style:"text-align:right;"},footerTemplate: "<div style='text-align:right;font-weight:bold'>" + "#= kendo.toString(sum, 'n0') #" + "</div>" },
-                      { field: "bid_amount", title: "Amount", width: 120, attributes:{style:"text-align:right;"},footerTemplate: "<div style='text-align:right;font-weight:bold'>" + "#= kendo.toString(sum, 'n0') #" +  "</div>" }
-              ]
-          },
-          {
-              title: "As per UPI",
-              headerAttributes: { style: "text-align:center;font-weight:bold;" },
-              columns: [
-                      { field: "upi_appl_count", title: "No.of Appl", width: 120, attributes:{style:"text-align:right;"},footerTemplate: "<div style='text-align:right;font-weight:bold'>" +  "#= kendo.toString(sum, 'n0') #" + "</div>" },
-                      { field: "upi_quantity", title: "No.of Shares", width: 130, attributes:{style:"text-align:right;"}, footerTemplate: "<div style='text-align:right;font-weight:bold'>" + "#= kendo.toString(sum, 'n0') #" + "</div>" },
-                      { field: "upi_amount", title: "Amount", width: 120, attributes:{style:"text-align:right;"},footerTemplate: "<div style='text-align:right;font-weight:bold'>" + "#= kendo.toString(sum, 'n0') #" + "</div>"}
-              ]
-          },
+                {
+                    field: "bid_quantity",
+                    title: "No.of Shares",
+                    width: 130,
+                    attributes: { style: "text-align:right;" },
+                    footerTemplate: "<div style='text-align:right;font-weight:bold'>#= kendo.toString(sum,'n0') #</div>",
+                    footerAttributes: { style: "text-align:right;font-weight:bold;" }
+                },
+                {
+                    field: "bid_amount",
+                    title: "Amount",
+                    width: 120,
+                    attributes: { style: "text-align:right;" },
+                    footerTemplate: "<div style='text-align:right;font-weight:bold'>#= kendo.toString(sum,'n0') #</div>",
+                    footerAttributes: { style: "text-align:right;font-weight:bold;" }
+                }
+            ]
+        },
+        {
+            title: "As per UPI",
+            headerAttributes: { style: "text-align:center;font-weight:bold;" },
+            columns: [
+                {
+                    field: "upi_appl_count",
+                    title: "No.of Appl",
+                    width: 120,
+                    attributes: { style: "text-align:right;" },
+                    footerTemplate: "<div style='text-align:right;font-weight:bold'>#= kendo.toString(sum,'n0') #</div>",
+                    footerAttributes: { style: "text-align:right;font-weight:bold;" }
+                },
+                {
+                    field: "upi_quantity",
+                    title: "No.of Shares",
+                    width: 130,
+                    attributes: { style: "text-align:right;" },
+                    footerTemplate: "<div style='text-align:right;font-weight:bold'>#= kendo.toString(sum,'n0') #</div>",
+                    footerAttributes: { style: "text-align:right;font-weight:bold;" }
+                },
+                {
+                    field: "upi_amount",
+                    title: "Amount",
+                    width: 120,
+                    attributes: { style: "text-align:right;" },
+                    footerTemplate: "<div style='text-align:right;font-weight:bold'>#= kendo.toString(sum,'n0') #</div>",
+                    footerAttributes: { style: "text-align:right;font-weight:bold;" }
+                }
+            ]
+        },
+        {
+            title: "Diff.",
+            headerAttributes: { style: "text-align:center;font-weight:bold;" },
+            columns: [
+                {
+                    field: "diff_appl_count",
+                    title: "No.of Appl",
+                    width: 120,
+                    attributes: { style: "text-align:right;color:red;" },
+                    footerTemplate: "<div style='text-align:right;font-weight:bold'>#= kendo.toString(sum,'n0') #</div>",
+                    footerAttributes: { style: "text-align:right;font-weight:bold;" }
+                },
+                {
+                    field: "diff_quantity",
+                    title: "No.of Shares",
+                    width: 130,
+                    attributes: { style: "text-align:right;color:red;" },
+                    footerTemplate: "<div style='text-align:right;font-weight:bold'>#= kendo.toString(sum,'n0') #</div>",
+                    footerAttributes: { style: "text-align:right;font-weight:bold;" }
+                },
+                {
+                    field: "diff_amount",
+                    title: "Amount",
+                    width: 120,
+                    attributes: { style: "text-align:right;color:red;" },
+                    footerTemplate: "<div style='text-align:right;font-weight:bold'>#= kendo.toString(sum,'n0') #</div>",
+                    footerAttributes: { style: "text-align:right;font-weight:bold;" }
+                }
+            ]
+        }
+    ];
 
-          {
-              title: "Diff.",
-              headerAttributes: { style: "text-align:center;font-weight:bold;" },
-              columns: [
-                      { field: "diff_appl_count", title: "No.of Appl", width: 120,attributes:{style:"text-align:right;color:red;"}, footerTemplate: "<div style='text-align:right;font-weight:bold'>" + "#= kendo.toString(sum, 'n0') #" + "</div>" },
-                      { field: "diff_quantity", title: "No.of Shares", width: 130, attributes:{style:"text-align:right;color:red;"}, footerTemplate: "<div style='text-align:right;font-weight:bold'>" + "#= kendo.toString(sum, 'n0') #" + "</div>" },
-                      { field: "diff_amount", title: "Amount", width: 120, attributes:{style:"text-align:right;color:red;"}, footerTemplate: "<div style='text-align:right;font-weight:bold'>" + "#= kendo.toString(sum, 'n0') #" + "</div>" }
-              ]
-          }
-                 ];
-                 if ($("#banktList").data("kendoGrid")) {
-                    $("#banktList").data("kendoGrid").destroy();
-                    $("#banktList").empty();
-                 }
-                     $("#banktList").kendoGrid({
-                     dataSource: {
-                         data: data,
-                         pageSize: 20,
-                            aggregate: [
-                            { field: "bid_appl_count", aggregate: "sum" },
-                            { field: "bid_quantity", aggregate: "sum" },
-                            { field: "bid_amount", aggregate: "sum" },
-
-                            { field: "upi_appl_count", aggregate: "sum" },
-                            { field: "upi_quantity", aggregate: "sum" },
-                            { field: "upi_amount", aggregate: "sum" },
-
-                            { field: "diff_appl_count", aggregate: "sum" },
-                            { field: "diff_quantity", aggregate: "sum" },
-                            { field: "diff_amount", aggregate: "sum" }
-                        ]
-                     },
-                     showFooter: true,
-                     height: 410,
-                     pageable: {
-                         pageSizes: [10, 20, 30],
-                         refresh: true
-                     },
-                     sortable: true,
-                     filterable: true,
-                     resizable: true,
-                     columns: columns,
-                      excel: {
-                        fileName: "BidUPI_Summary_Report.xlsx",
-                        allPages: true,   
-                        filterable: true
-                       },
-                     dataBound: function () {
-                        var grid = this;
-                        grid.tbody.find("tr").each(function () {
-                            var dataItem = grid.dataItem(this);
-                            if (selectedCodes.includes(dataItem.bnk_code)) {
-                                $(this).find(".client-checkbox").prop("checked", true);
-                            }
-                        });
-                     }
-                 });
+    if ($("#banktList").data("kendoGrid")) {
+        $("#banktList").data("kendoGrid").destroy();
+        $("#banktList").empty();
     }
 
-    function exportSummary() {
-        var grid = $("#banktList").data("kendoGrid");
+    $("#banktList").kendoGrid({
+
+        dataSource: {
+            data: data,
+            pageSize: 20,
+            aggregate: [
+                { field: "bid_appl_count", aggregate: "sum" },
+                { field: "bid_quantity", aggregate: "sum" },
+                { field: "bid_amount", aggregate: "sum" },
+
+                { field: "upi_appl_count", aggregate: "sum" },
+                { field: "upi_quantity", aggregate: "sum" },
+                { field: "upi_amount", aggregate: "sum" },
+
+                { field: "diff_appl_count", aggregate: "sum" },
+                { field: "diff_quantity", aggregate: "sum" },
+                { field: "diff_amount", aggregate: "sum" }
+            ]
+        },
+
+        showFooter: true,
+        height: 410,
+
+        pageable: {
+            pageSizes: [10, 20, 30],
+            refresh: true
+        },
+
+        sortable: true,
+        filterable: true,
+        resizable: true,
+
+        columns: columns,
+
+        excel: {
+            fileName: "BidUPI_Summary_Report.xlsx",
+            allPages: true,
+            filterable: true
+        },
+
+        excelExport: function (e) {
+
+            var sheet = e.workbook.sheets[0];
+
+            sheet.rows.forEach(function (row) {
+
+                if (row.type === "footer") {
+
+                    row.cells.forEach(function (cell) {
+
+                        if (typeof cell.value === "string") {
+                            cell.value = cell.value.replace(/<[^>]+>/g, "").trim();
+                        }
+
+                        cell.bold = true;
+                    });
+
+                }
+
+            });
+
+        },
+
+        dataBound: function () {
+
+            var grid = this;
+
+            grid.tbody.find("tr").each(function () {
+
+                var dataItem = grid.dataItem(this);
+
+                if (selectedCodes.includes(dataItem.bnk_code)) {
+                    $(this).find(".client-checkbox").prop("checked", true);
+                }
+
+            });
+
+        }
+
+    });
+
+}
+
+function exportSummary() {
+    var grid = $("#banktList").data("kendoGrid");
+    if (grid) {
         grid.saveAsExcel();
     }
+}
 
         function exportdetailSummary() { 
         $("#btnGensummary").prop("disabled", true);

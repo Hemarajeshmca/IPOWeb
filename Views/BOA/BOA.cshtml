@@ -534,11 +534,11 @@
                             </div>
                         </div>
                     </div>
-                     <div class="button-row" style="text-align:center;">
+                     <div class="button-row" id="btn_row" style="text-align:center;">
                          @if (Boachecklist == "Y")
 					{
-                        <button class="btn btn-primary" style="border-color: green;background-color: green; border-radius: 5px;color: white;margin-bottom: 30px;margin-bottom: 20px;padding: 3px 25px;" id="approveBtn" onclick="boachecklist()">Approve Checklist</button>                      
-                    }
+                            <button class="btn btn-primary" style="border-color: green;background-color: green; border-radius: 5px;color: white;margin-bottom: 30px;margin-bottom: 20px;padding: 3px 25px;" id="approveBtn" onclick="fetchcheckerVistedlist()">Approve Checklist</button>
+                        }
                         <button class="btn btn-primary" style="background: #027ed1;border-color:#027ed1;padding: 3px 25px;margin-bottom:20px;" id="generateBtn" onclick="runboa()" disabled>Generate</button>
                         <button class="btn btn-primary" style="border-color: green;background-color: green; border-radius: 5px;color: white;margin-bottom: 30px;margin-bottom: 20px;padding: 3px 25px;" id="generateRptBtn" onclick="generateReport()" disabled>Download</button>                      
                         <button class="btn btn-primary" style="border-color: blue;background-color: blue; border-radius: 5px;color: white;margin-bottom: 30px;margin-bottom: 20px;padding: 3px 25px;" id="exportBtn" onclick="export_allotment()" disabled>Export Allotment</button>
@@ -638,21 +638,29 @@
                    $("#offer_code").val(offer_code);
                    fetchIssuesetup();
               } else {
+                  emptyallvalue();
                     $.alert({
                         title: 'Validation',
-                        content: 'Please Select Offer Code .!',
+                        content:'Please Select Offer Code .!',
                         type: 'red',
-                        buttons: {
-                                ok: {
-                                    text: 'OK',
-                                    btnClass: 'btn-green',
-                                    action: function () {    
-                                        window.location.href = "../Dashboard/Dashboard?tab=offer";
-                                       // location.reload();
-                                    }
-                                }
-                            }
-                        });
+                    });
+
+                    // $.alert({
+                    //     title: 'Validation',
+                    //     content: 'Please Select Offer Code .!',
+                    //     type: 'red',
+                    //     buttons: {
+                    //             ok: {
+                    //                 text: 'OK',
+                    //                 btnClass: 'btn-green',
+                    //                 action: function () {   
+                                       
+                    //                    // window.location.href = "../Dashboard/Dashboard?tab=offer";
+                    //                    // location.reload();
+                    //                 }
+                    //             }
+                    //         }
+                    //     });
               }
               $("#status").change(function () {
                 var selectedValue = $(this).val();
@@ -820,18 +828,26 @@
                     dataType: 'json',
                     data: JSON.stringify(payload),
                     contentType: 'application/json; charset=utf-8',
-                    success: function (response) {
+                    success: function (response) {                        
                         if (response && response.success) {
                             var data = JSON.parse(response.data);
-                            $("#offer_header_gid").val(data[0].in_offer_header_gid);
-                            $("#offer_code").val(data[0].in_offer_code);
-                            $("#issuestatus").val(data[0].issue_status);
-                            fetchIssuesetup();
-                            $.alert({
-                            title: 'IPO Allotment',
-                            content:data[0].out_msg,
-                            type: 'green',
-                            });
+                            if(data[0].out_result == '0') {
+                                $.alert({
+                               title: 'IPO Allotment',
+                               content:data[0].out_msg,
+                               type: 'red',
+                               });
+                            } else {                            
+                                $("#offer_header_gid").val(data[0].in_offer_header_gid);
+                                $("#offer_code").val(data[0].in_offer_code);
+                                $("#issuestatus").val(data[0].issue_status);
+                                fetchIssuesetup();
+                                $.alert({
+                                title: 'IPO Allotment',
+                                content:data[0].out_msg,
+                                type: 'green',
+                                });
+                            }
                         }
                     },
                     error: function (er) {
@@ -909,6 +925,11 @@
                     console.log(er)
                 }
             });
+                var boaChecklist = '@Boachecklist';
+                var getnormalizedPath = '@normalizedPath';
+                if(boaChecklist == "Y") {
+                   updateboaVisit(getnormalizedPath);
+                }
         }
             catch (e) {
                 console.log(e)
@@ -2358,7 +2379,8 @@
             type: "POST",
             url: '@Url.Action("GenerateBOAReport", "BOA")',
             data: JSON.stringify({
-                offer_code: offer_code
+                offer_code: offer_code,
+                user_code: '@userCode'
             }),
             contentType: 'application/json; charset=utf-8',
             success: function (response) {
@@ -2401,24 +2423,14 @@
             '/BOA/Export_allotment_bo?offer_code=' + encodeURIComponent(offer_code);
     }
 
-    function boachecklist(){
-           var verificationData = [
-        { id: 1, process_name: "Offer Setup", status: "NotVerified" },
-        { id: 2, process_name: "All Imports / IPO Summary", status: "NotVerified" },
-        { id: 3, process_name: "Bid Vs Bank", status: "NotVerified" },
-        { id: 4, process_name: "Bank Vs Bid", status: "NotVerified" },
-        { id: 5, process_name: "Bid Vs UPI", status: "NotVerified" },
-        { id: 6, process_name: "UPI Vs Bid", status: "NotVerified" },
-        { id: 7, process_name: "Run Rejection", status: "NotVerified" }
-    ];
-
+    function boachecklist(data){       
     if ($("#checklistGrid").data("kendoGrid")) {
         $("#checklistGrid").data("kendoGrid").destroy();
         $("#checklistGrid").empty();
     }
 
     $("#checklistGrid").kendoGrid({
-        dataSource: verificationData,
+        dataSource: data,
         scrollable: true,
         height: 210,
         sortable: false,
@@ -2427,26 +2439,26 @@
             {
                 field: "process_name",
                 title: "Verification Page",
-                width: 300,                
+                width: 300,
             },
-            {
-                title: "Verified",
-                width: 120,
-                attributes: {
-                style: "text-align:center;"
-            },
-                template:
-                    "<input type='radio' class='status-radio' name='status_#=id#' value='Verified' #= status == 'Verified' ? 'checked' : '' # />"
-            },
-            {
-                title: "Not Verified",
-                width: 120,
-                attributes: {
-                style: "text-align:center;"
-            },
-                template:
-                    "<input type='radio' class='status-radio' name='status_#=id#' value='NotVerified' #= status == 'NotVerified' ? 'checked' : '' # />"
-            }
+                {
+                    title: "Verified",
+                    width: 120,
+                    attributes: {
+                        style: "text-align:center;"
+                    },
+                    template:
+                        "<input type='radio' class='status-radio' name='status_#=id#' value='Verified' #= status == 'Verified' ? 'checked' : '' # />"
+                },
+                {
+                    title: "Not Verified",
+                    width: 120,
+                    attributes: {
+                        style: "text-align:center;"
+                    },
+                    template:
+                        "<input type='radio' class='status-radio' name='status_#=id#' value='NotVerified' #= status == 'NotVerified' ? 'checked' : '' # />"
+                }
         ]
     });
         validateApproveButton();
@@ -2454,52 +2466,163 @@
     }
 
     function approveVerification() {
-
-            var results = [];
-
+        var results = [];
         $("#checklistGrid tbody tr").each(function () {
-
             var grid = $("#checklistGrid").data("kendoGrid");
             var dataItem = grid.dataItem(this);
-
             var status = $(this)
                 .find("input[type='radio']:checked")
                 .val();
-
             results.push({
                 process_name: dataItem.process_name,
                 status: status
             });
         });
         var remarks = $("#txtRemarks").val();
-
         offerHeaderSave('Y', remarks);
-
         $("#checklistModal").modal("hide");
     }
 
+        $(document).on("change", ".status-radio", function () {
+             console.log("Changed");
+    console.log($(this).val());
+        var grid = $("#checklistGrid").data("kendoGrid");
+        var row = $(this).closest("tr");
+        var dataItem = grid.dataItem(row);
 
-    $(document).on("change", ".status-radio", function () {
+        dataItem.set("status", $(this).val());
+
         validateApproveButton();
     });
 
-        function validateApproveButton() {
+    function validateApproveButton() {
 
-        var totalRows = $("#checklistGrid tbody tr").length;
-        var verifiedRows = 0;
+        var grid = $("#checklistGrid").data("kendoGrid");
+        var data = grid.dataSource.data();
 
-        $("#checklistGrid tbody tr").each(function () {
-            var selectedValue = $(this)
-                .find("input[type='radio']:checked")
-                .val();
-            if (selectedValue === "Verified") {
-                verifiedRows++;
-            }
+        var allVerified = data.every(function(item) {
+            return item.status === "Verified";
         });
-        $("#btnApprove").prop("disabled", verifiedRows !== totalRows);
+
+        $("#btnApprove").prop("disabled", !allVerified);
     }
+
 
     function closeModel() {
          $("#checklistModal").modal("hide");
+    }
+
+    function emptyallvalue(){
+       $("#btn_row").css("visibility", "hidden");
+        clearheader();
+        clearheaderdetail();
+        clearbankerform();
+        clearstackform();
+        clearmilestoen();
+    }
+
+    function clearmilestoen(){
+        $("#milestone_gid").val("");
+        $("#iod").val("");
+        $("#icd").val("");
+        $("#alotdate").val("");
+        $("#apdate").val("");
+        $("#ldate").val("");
+        $("#nsdldate").val("");
+        $("#cdsldate").val("");
+        $("#refunddate").val("");
+    }
+
+    function clearheaderdetail(){
+        $("#offer_detail_gid").val("");
+        $("#preissue").val("");
+        $("#issuesize").val("");
+        $("#postissue").val("");
+        $("#lotsize").val("");
+        $("#facevalue").val("");
+        $("#premium").val("");
+        $("#pricetype").val("").trigger("change");
+        $("#fprice").val("");
+        $("#minprice").val("");
+        $("#maxprice").val("");
+        $("#cutoffprice").val("");
+    }
+
+    function clearheader(){
+            $("#offer_header_gid").val("");
+            $("#createedit").val("");
+            $("#offer_code").val("");
+            $("#offer_type").val("");
+            $("#listing").val("");
+            $("#isin").val("");
+            $("#status").val("");
+            $("#issuestatus").val("");
+            $("#empdiscount").val("");
+            $("#remarks").val("");
+            $("#clientcode").val("");
+            $("#clientname").val("");
+            $("#ipostatus").val("");
+    }
+    
+    function fetchcheckerVistedlist() {
+         var payload = {
+            in_ipo_code :  $("#offer_code").val(),
+            in_user_code: '@userCode',
+            in_role_code: '@role_code'
+            }
+          customAjax({
+                type: "POST",
+                url: '@Url.Action("fetchcheckerVistedlist", "Common")',
+                data: JSON.stringify(payload),
+                success: function (response) {
+                if (response && response.success) {
+                    var res  = JSON.parse(response.data);
+                    var row = res[0];
+                    var data = [
+                                {
+                                    id: 1,
+                                    process_name: "Offer Setup",
+                                    status: row.visited_offersetup == "Y" ? "Verified" : "NotVerified"
+                                },
+                                {
+                                    id: 2,
+                                    process_name: "IPO Summary",
+                                    status: row.visited_ipo_summary == "Y" ? "Verified" : "NotVerified"
+                                },
+                                {
+                                    id: 3,
+                                    process_name: "Bid Bank",
+                                    status: row.visited_bid_bank == "Y" ? "Verified" : "NotVerified"
+                                },
+                                {
+                                    id: 4,
+                                    process_name: "Bid UPI",
+                                    status: row.visited_bid_upi == "Y" ? "Verified" : "NotVerified"
+                                },
+                                {
+                                    id: 5,
+                                    process_name: "UPI Bid",
+                                    status: row.visited_upi_bid == "Y" ? "Verified" : "NotVerified"
+                                },
+                                {
+                                    id: 6,
+                                    process_name: "Run Rejection",
+                                    status: row.visited_run_rejection == "Y" ? "Verified" : "NotVerified"
+                                }
+                            ];
+                        boachecklist(data);
+                    }
+                    else {
+                        $.alert({
+                            title: 'IPO Allotment',
+                            content: 'Save failed!',
+                            type: 'red',
+                        });
+                    }
+                },
+                error: function (er) {
+                    console.log(er);
+                }
+            });
     }
  </script>

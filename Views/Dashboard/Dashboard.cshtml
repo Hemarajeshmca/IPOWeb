@@ -782,19 +782,20 @@
                             var canDelete = (delPerm === 'Y');
 
                             // Existing business rule
-                            if (role_code == 'IPOMKR' &&
+                            if (
+                                //role_code == 'IPOMKR' &&
                                 (dataItem.ipo_status == 'MS' ||
                                  dataItem.ipo_status == 'CA' ||
-                                 dataItem.ipo_status == 'MRS')) {
+                                 dataItem.ipo_status == 'MRS' )) {
 
                                 canEdit = false;
                                 canDelete = false;
                             }
 
-                            if (role_code == 'IPOCHK') {
-                                canEdit = false;
-                                canDelete = false;
-                            }
+                            // if (role_code == 'IPOCHK') {
+                            //     canEdit = false;
+                            //     canDelete = false;
+                            // }
 
                             return `
                                 <img src='../Assets/images/viewicons.png'
@@ -1075,8 +1076,6 @@
         window.viewPerm = menu.viewPerm;
         window.delPerm = menu.delPerm;
         window.addPerm = menu.addPerm;
-        window.download_perm = menu.download_perm;
-        console.log("downloadPerm =", window.download_perm);
-        console.log(menu);
+        window.download_perm = menu.download_perm;       
     }
 </script>

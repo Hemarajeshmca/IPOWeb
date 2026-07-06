@@ -129,7 +129,6 @@
         $("#createedit").val("Create");
         $("#clientcode").val("<< Client Code >>");
         $("#clientstatus").val("Draft");
-
          $("#clientname").on("input", function () {
             this.value = this.value.replace(/[^A-Za-z\s]/g, '');
         });
@@ -139,65 +138,61 @@
         $("#pin").on("input", function () {
         this.value = this.value.replace(/[^0-9]/g, '').slice(0,6);
           });
-            loadMasterDropdown("QCD_MAST_CLIENT_TYPE", "ctype", "QCD_PUBLIC_UNLISTED");
-        loadMasterDropdown("QCD_MAST_COUNTRY", "country");
-       loadMasterDropdown("QCD_MAST_STATE", "state");
-        setTimeout(function () {
+         $.when(
+        loadMasterDropdown("QCD_MAST_CLIENT_TYPE", "ctype", "QCD_PUBLIC_UNLISTED"),
+        loadMasterDropdown("QCD_MAST_COUNTRY", "country"),
+        loadMasterDropdown("QCD_MAST_STATE", "state")
+        ).done(function () {        
             var client_gid = sessionStorage.getItem("edit_client_gid");
             if (client_gid) {
                 loadClientDetails(client_gid);
                 sessionStorage.removeItem("edit_client_gid");
             }
-        }, 500);
+             }).fail(function () {
+                console.log("One or more dropdowns failed to load");
+            });
+        });
 
-    });
+    function loadClientDetails(client_gid) {
+             $('#btnSave').text("Update");
+            $.ajax({
+                type: "POST",
+                url: '@Url.Action("GetClientList", "Dashboard")',
+                data: JSON.stringify({ p_client_gid: client_gid,p_action: "I" }),
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                    success: function (response) {
 
- function loadClientDetails(client_gid) {
-         $('#btnSave').text("Update");
-         debugger;            
-        $.ajax({
-            type: "POST",
-            url: '@Url.Action("GetClientList", "Dashboard")',
-            data: JSON.stringify({ p_client_gid: client_gid,p_action: "I" }),
-            contentType: "application/json; charset=utf-8",
-            dataType: "json",
-            success: function (response) {
-                console.log("responses:", response);
-                var data = JSON.parse(response._data)[0];
-                $("#client_gid").val(data.client_gid);
-                $("#clientname").val(data.client_name);
-                $("#ctype").val(data.client_type);
-                $("#cin").val(data.client_cin);
-                $("#cperson").val(data.client_contact_person);
-                $("#mobno").val(data.client_mob_no);
-                $("#email").val(data.client_email_id);
-                $("#address").val(data.client_addr);
-                $("#country").val(data.client_country);
-                     $("#createedit").val("Edit");
-                    $("#clientcode").val(data.client_code);
-                $("#clientstatus").val("Active");
-                 loadMasterDropdown("QCD_MAST_STATE", "state", data.client_country);
-                 setTimeout(function () {                  
-                    $("#state").val(data.client_state);                  
-                    // loadMasterDropdown("QCD_MAST_CITY", "city", data.client_state);
-                    loadMasterDropdown(data.client_state,"city",data.client_city,   // ✅ selected value
-                function () {
-                    console.log("City loaded and selected");
-                }
-            );
-                    setTimeout(function () {                     
-                    $("#city").val(data.client_city);                        
-                    }, 300);
-                }, 300);
-                $("#pin").val(data.client_pincode);
+            var data = JSON.parse(response._data)[0];
+            $("#client_gid").val(data.client_gid);
+            $("#clientname").val(data.client_name);
+            $("#ctype").val(data.client_type);
+            $("#cin").val(data.client_cin);
+            $("#cperson").val(data.client_contact_person);
+            $("#mobno").val(data.client_mob_no);
+            $("#email").val(data.client_email_id);
+            $("#address").val(data.client_addr);
+            $("#country").val(data.client_country);
+            $("#createedit").val("Edit");
+            $("#clientcode").val(data.client_code);
+            $("#clientstatus").val("Active");
+            $("#pin").val(data.client_pincode);
+            loadMasterDropdown("QCD_MAST_STATE", "state", data.client_country)
+            .done(function () {
+                $("#state").val(data.client_state);
+                loadMasterDropdown(data.client_state,"city",data.client_city);
+            })
+            .done(function () {
+                loadMasterDropdown(data.client_state,"city",data.client_city);
+                $("#city").val(data.client_city);
+            });
             },
             error: function (xhr) {
-                console.log("Error:", xhr.responseText);                   
-            }               
-        });
-    } 
-
-$("#country").on("change", function () {
+                console.log("Error:", xhr.responseText);
+            }
+          });
+        }
+    $("#country").on("change", function () {
      var country = $(this).val();
     $("#state").empty();
     $("#city").empty();

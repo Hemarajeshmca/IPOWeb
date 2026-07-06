@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using DocumentFormat.OpenXml.InkML;
+using Microsoft.AspNetCore.Mvc;
 
 namespace IPOWeb.Controllers
 {
@@ -13,7 +14,8 @@ namespace IPOWeb.Controllers
         {
             ViewBag.HideIPO = true;
             var pipe = _configuration.GetValue<string>("AppSettings:pipeline");
-            var user_code = _configuration.GetSection("AppSettings")["user_code"].ToString();
+            //var user_code = _configuration.GetSection("AppSettings")["user_code"].ToString();             
+            var user_code = HttpContext.Session.GetString("user_code");
             ViewBag.pipe = pipe + "?user_code=" + user_code;
             return View();
         }

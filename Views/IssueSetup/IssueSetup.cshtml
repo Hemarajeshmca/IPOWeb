@@ -22,6 +22,14 @@
     var modPerm = currentMenu?.mod_perm ?? "N";
     var viewPerm = currentMenu?.view_perm ?? "N";
     var delPerm = currentMenu?.delete_perm ?? "N";
+    var appRejPerm = currentMenu?.Approve_perm ?? "N";
+    var getBoaMenu = menus?.FirstOrDefault(x =>
+        (x.menu_url ?? "")
+            .Replace("../", "")
+            .Trim('/')
+            .ToLower() == "boa/boa"
+    );
+    var Boachecklist = getBoaMenu?.Boachecklist_perm;
 }
 <!DOCTYPE html>
 <html>
@@ -35,6 +43,9 @@
         font-size: 13px !important;
         line-height: 17px !important;
         color: #697a8d;
+            max-height: 195px;
+            overflow-y: auto;
+            overflow-x: hidden;
         }
 
         .content-wrapper {
@@ -217,7 +228,7 @@
                                     <input type="text" id="remarks" name="remarks" class="form-control" />
                                     <span id="v_remarks" class="validation"></span>
                                 </div>
-                                @if (role_code == "IPOMKR")
+                                @if (addPerm == "Y" || modPerm == "Y")
                                 {
                                     <div class="col-sm-1">
                                         <center><button type="button" onclick="offerHeaderSave()" class="btn btn-primary" id="headerBtnSave" style="padding: 3px 25px;margin-top:30px;">Save</button></center>
@@ -229,7 +240,7 @@
                                             </button>
                                         </center>
                                     </div>
-                                } else {
+                                } else if(appRejPerm == "Y") {
                                     <div class="col-sm-1" style="width: 10%;">
                                         <center><button type="button" onclick="chkofferHeaderSave('CA')" class="btn btn-primary" id="chkheaderBtnSave" style="padding: 3px 25px;margin-top:30px;background-color: green !important;color: #fff !important;">Approve</button></center>
                                     </div>
@@ -604,7 +615,6 @@
                   loadMasterDropdown("QCD_MAST_STATE", "sh_state"),
                   loadMasterDropdown("QCD_STACK_HOLDER_TYPE", "sh_type"),
                   getclientlist(),
-                  getifsclist(),
             ).done(function () {
             $('#offer_header_gid').val(0);
             $("#offer_detail_gid").val(0);
@@ -664,6 +674,7 @@
         offerCategory = "";
         offerMillstone = "";
         var activeOfferStatus = false;
+        let isLoadingIfsc = false;
 
         $("#pricetype").change(function () {
             var value = $(this).val();
@@ -859,31 +870,45 @@
                 }
     }
 
-        function getifsclist(){
-            var mymodel = {
-                p_client_gid: 0,
-                p_action: "IFSC"
-            };
+     $("#ifsc").on("keyup", function () {
+        var ifsc = $(this).val().trim();
+        if (ifsc.length > 3 && !isLoadingIfsc) {
+            isLoadingIfsc = true;
+           // getifsclist(ifsc);
+            getifsclist(ifsc)
+            .always(function () {   
+                isLoadingIfsc = false;
+            });
+        }
+    });
+
+     function getifsclist(ifsc){
             try {
                 $.ajax({
-                    type: "POST",
-                    url: '@Url.Action("GetClientList", "Dashboard")',
+                    type: "GET",
+                    url: '@Url.Action("Getifscdetails", "IssueSetup")',
                     dataType: 'json',
-                    data: JSON.stringify(mymodel),
+                     data: {
+                          ifsc_search: ifsc
+                     },
                     contentType: 'application/json; charset=utf-8',
                     success: function (response) {
                         if (response ) {
-                         var clientList = JSON.parse(response._data);
+                         var clientList = JSON.parse(response._data);                        
                          $("#ifsc").autocomplete({
                             source: $.map(clientList, function (item) {
                                 return {
-                                    label: item.ifsc_code +" - "+item.address,
+                                   // label: item.ifsc_code +" - "+item.address,
+                                    label: item.ifsc_code,
                                     ifsc_code: item.ifsc_code,
                                     city: item.city,
                                     state: item.state,
                                     address:item.address
-                                };
+                                };                            
                             }),
+                            classes: {
+                                "ui-autocomplete": "ifsc-autocomplete"
+                            },
                             select: function (event, ui) {
                                 $("#ifsc").val(ui.item.ifsc_code);
                                 $("#city").val(ui.item.city);
@@ -894,6 +919,7 @@
                                 return false;
                             }
                         });
+                        isLoadingIfsc = false;
                         }
                         else {
 
@@ -1065,6 +1091,11 @@
                     console.log(er)
                 }
             });
+                var boaChecklist = '@Boachecklist';
+                var getnormalizedPath = '@normalizedPath';
+                if(boaChecklist == "Y") {
+                   updateboaVisit(getnormalizedPath);
+                }
         }
             catch (e) {
                 console.log(e)
@@ -1075,11 +1106,9 @@
         function fetchofferHeader(data){
                   var role_code =  '@role_code';
                 $("#offer_header_gid").val(data.offer_header_gid);
-               if(role_code == 'IPOCHK' && $("#createedit").val() == "VIEW") {
+               if($("#createedit").val() == "VIEW") {
                   $("#createedit").val("VIEW");
-              } else if(role_code == 'IPOMKR' && $("#createedit").val() == "VIEW") {
-                  $("#createedit").val("VIEW");
-              } else if(role_code == 'IPOMKR' && $("#createedit").val() == "VIEW" && (data.ipo_status == 'MS' || data.ipo_status == 'CA' || data.ipo_status == 'MRS')){
+              } else if($("#createedit").val() == "VIEW" && (data.ipo_status == 'MS' || data.ipo_status == 'CA' || data.ipo_status == 'MRS')){
                    $("#createedit").val("VIEW");
               } else if(data.offer_header_gid == 0){
                   $("#createedit").val("CREATE");
