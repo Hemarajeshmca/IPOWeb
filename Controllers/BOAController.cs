@@ -93,18 +93,11 @@ namespace IPOWeb.Controllers
             using (var client = new HttpClient())
             {
                 client.Timeout = Timeout.InfiniteTimeSpan;
-
-                // string APIcookieName = "APItoken-" + User.FindFirst(ClaimTypes.Name)?.Value + "_" + User.FindFirst(ClaimTypes.Role)?.Value;
-                //string token = Request.Cookies[APIcookieName];
-
                 client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
                 client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
 
                 string url = urlstring + "?offer_code=" + offer_code;
                 var response = client.GetAsync(url).Result;
-
-                // Unauthorized handling
-               // ApiTokenRefreshMiddleware.TokenUpdate(HttpContext, response, APIcookieName);
                 if (response.StatusCode == HttpStatusCode.Unauthorized)
                 {
                     Response.Cookies.Delete(APIcookieName);
@@ -161,13 +154,14 @@ namespace IPOWeb.Controllers
                 wb.Worksheet("QIB_data").Visibility = XLWorksheetVisibility.Hidden;
                 wb.Worksheet("co_data").Visibility = XLWorksheetVisibility.Hidden;
                 wb.Worksheet("Data").Visibility = XLWorksheetVisibility.Hidden;
+                wb.Worksheet("Corporate").Visibility = XLWorksheetVisibility.Hidden;            
 
                 HandleSheet(wb, "RETAIL", dtRetail);
                 HandleSheet(wb, "NRA10L", dtNRA10L);
                 HandleSheet(wb, "NRB10L", dtNRB10L);
                 HandleSheet(wb, "Market Maker", dtMM);
                 HandleSheet(wb, "QIB", dtQIB);
-                HandleSheet(wb, "Corporate", dtCO);
+               // HandleSheet(wb, "Corporate", dtCO);
 
                 wb.Save();
             }
@@ -2287,8 +2281,6 @@ namespace IPOWeb.Controllers
             }
         }
 
-
-
         private void TryDelete(string path)
         {
             try
@@ -2506,7 +2498,7 @@ namespace IPOWeb.Controllers
                     job_ref_gid = 0,
                     job_name = "BOA Report",
                     job_input_param = request.offer_code,
-                    job_initiated_by = User.Identity.Name,
+                    job_initiated_by = request.user_code,
                     ip_addr = HttpContext.Connection.RemoteIpAddress?.ToString(),
                     job_status = "I",
                     job_remark = "Job Initiated"
@@ -2567,9 +2559,13 @@ namespace IPOWeb.Controllers
                 }
                 catch (Exception ex)
                 {
-                    System.IO.File.WriteAllText(@"E:\user\ipo\step2.txt",
-                      ex.ToString() + Environment.NewLine +
-                      ex.StackTrace);
+                    throw ex;
+                    // Log for windows
+                    //System.IO.File.WriteAllText(@"E:\user\ipo\step2.txt",
+                    //  ex.ToString() + Environment.NewLine +
+                    //  ex.StackTrace);
+
+                    //LogBase for Linux
                     //string appPath = AppContext.BaseDirectory;
 
                     //string logFolder = Path.Combine(appPath, "Logs");
@@ -2592,7 +2588,10 @@ namespace IPOWeb.Controllers
                 }
                 catch (Exception ex)
                 {
-                     System.IO.File.WriteAllText(@"E:\user\ipo\step3.txt", ex.ToString());
+                    throw ex;
+                    // Log for windows
+                    // System.IO.File.WriteAllText(@"E:\user\ipo\step3.txt", ex.ToString());
+                    //LogBase for Linux
                     //string appPath = AppContext.BaseDirectory;
 
                     //string logFolder = Path.Combine(appPath, "Logs");
@@ -2606,7 +2605,7 @@ namespace IPOWeb.Controllers
                     //    ex +
                     //    Environment.NewLine
                     //);
-                }                
+                }
                 jobupdate(new updateJobModel
                 {
                     in_job_gid = job_gid,
@@ -2622,7 +2621,8 @@ namespace IPOWeb.Controllers
                     in_job_status = "F",
                     in_job_remark = ex.Message
                 }, token);
-                 System.IO.File.WriteAllText(@"E:\user\ipo\step4.txt", ex.Message.ToString());
+
+                // System.IO.File.WriteAllText(@"E:\user\ipo\step4.txt", ex.Message.ToString());
                 //string appPath = AppContext.BaseDirectory;
 
                 //string logFolder = Path.Combine(appPath, "Logs");
@@ -2927,6 +2927,7 @@ namespace IPOWeb.Controllers
             public string? out_result { get; set; }
 
         }
+   
     }
 }
 

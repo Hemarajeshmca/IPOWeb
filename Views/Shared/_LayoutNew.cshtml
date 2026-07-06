@@ -3,6 +3,7 @@
     var userId = Context.Session.GetString("user_id");
     var userName = Context.Session.GetString("user_name");
     var userCode = Context.Session.GetString("user_code");
+    var role_code = Context.Session.GetString("user_role");
     var userEmail = Context.Session.GetString("user_email");
     var roleName = Context.Session.GetString("role_name");
     var menuJson = Context.Session.GetString("UserMenus");
@@ -2459,7 +2460,7 @@
         //     }
         // });
 
-                function setColor(rows, resultData) {
+        function setColor(rows, resultData) {
             for (var i = 0; i < rows.length; i++) {
                 var row = $(rows[i]);
                 row.css('backgroundColor', 'black');
@@ -2469,6 +2470,33 @@
 
             var child_copy = $('.k-grid-Copy').children('span:first');
             $('.k-grid-Copy').html(child_copy);
+        }
+
+        function updateboaVisit(page){
+            var page = page; // window.location.pathname.toLowerCase();
+            var ipocode = localStorage.getItem("selectedIPO"); 
+            var user_code = '@userCode';
+            var role_code = '@role_code';
+            var obj = {
+                in_ipo_code: ipocode,
+                in_user_code: user_code,
+                in_role_code: role_code,
+                pageName: page
+            };
+            $.ajax({
+                url: '@Url.Action("boacheckedVisted", "Common")',
+                type: 'POST',
+                contentType: 'application/json',
+                data: JSON.stringify(obj),
+                success: function (response) {
+                    if (response.success) {
+                        console.log("Page visit updated.");
+                    }
+                },
+                error: function (xhr) {
+                    console.log(xhr);
+                }
+            });
         }
     </script>
 

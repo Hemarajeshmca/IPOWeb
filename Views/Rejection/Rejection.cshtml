@@ -1,5 +1,24 @@
 ﻿@{
     Layout = "~/Views/Shared/_LayoutNew.cshtml";
+    var userName = Context.Session.GetString("user_name");
+    var role_code = Context.Session.GetString("user_role");
+    var userCode = Context.Session.GetString("user_code");
+    var menuJson = Context.Session.GetString("UserMenus");
+    var menus = new List<MenuModel>();
+
+    if (!string.IsNullOrEmpty(menuJson))
+    {
+        menus = System.Text.Json.JsonSerializer.Deserialize<List<MenuModel>>(menuJson);
+    }
+    var currentPath = Context.Request.Path.Value.ToLower();
+    var normalizedPath = currentPath.Trim('/').ToLower();
+    var getBoaMenu = menus?.FirstOrDefault(x =>
+        (x.menu_url ?? "")
+            .Replace("../", "")
+            .Trim('/')
+            .ToLower() == "boa/boa"
+    );
+    var Boachecklist = getBoaMenu?.Boachecklist_perm;
 }
 <!DOCTYPE html>
 <html>  
@@ -335,7 +354,12 @@
             var offer_code =  localStorage.getItem("selectedIPO");
             if(offer_code){
                 runrecon(false);
-            }           
+            }       
+            var boaChecklist = '@Boachecklist';
+            var getnormalizedPath = '@normalizedPath';
+            if(boaChecklist == "Y") {
+               updateboaVisit(getnormalizedPath);
+            }
         });
 
        function runrecon(runRule) {       
@@ -398,101 +422,112 @@
                 title: "Reject Reason",
                 width: 260,
                 locked: true,
-                footerTemplate: "<div style='font-weight:bold;text-align:center;'>TOTAL</div>"
+                footerTemplate: "TOTAL",
+                footerAttributes: {
+                    style: "text-align:center;font-weight:bold;"
+                }
             },
             {
                 title: "Original Rejections",
                 headerAttributes: { style: "text-align:center;font-weight:bold;" },
                 columns: [
-                        { field: "original_appl_count", title: "No.of Appl", width: 120, attributes:{style:"text-align:right;"}, footerTemplate: "<div style='text-align:right;font-weight:bold'>" + "#= kendo.toString(sum, 'n0') #" + "</div>" }, 
-                        { field: "original_qty_count", title: "No.of Shares", width: 130, attributes:{style:"text-align:right;"}, footerTemplate: "<div style='text-align:right;font-weight:bold'>" + "#= kendo.toString(sum, 'n0') #" + "</div>" }, 
-                        { field: "original_total_amount", title: "Amount", width: 120, attributes:{style:"text-align:right;"}, footerTemplate: "<div style='text-align:right;font-weight:bold'>" + "#= kendo.toString(sum, 'n0') #" + "</div>"
-    },
+                        { field: "original_appl_count", title: "No.of Appl", width: 120, attributes:{style:"text-align:right;"}, footerTemplate: "#= kendo.toString(sum, 'n0') #", footerAttributes: { style: "text-align:right;font-weight:bold;" } }, 
+                        { field: "original_qty_count", title: "No.of Shares", width: 130, attributes:{style:"text-align:right;"}, footerTemplate: "#= kendo.toString(sum, 'n0') #",  footerAttributes: { style: "text-align:right;font-weight:bold;" } }, 
+                        { field: "original_total_amount", title: "Amount", width: 120, attributes:{style:"text-align:right;"}, footerTemplate: "#= kendo.toString(sum, 'n0') #",  footerAttributes: { style: "text-align:right;font-weight:bold;" }  },
                 ]
             },
-
             {
                 title: "Additions",
                 headerAttributes: { style: "text-align:center;font-weight:bold;" },
                 columns: [
-                        { field: "additions_appl_count", title: "No.of Appl", width: 120, attributes:{style:"text-align:right;"}, footerTemplate: "<div style='text-align:right;font-weight:bold'>" + "#= kendo.toString(sum, 'n0') #" + "</div>" }, 
-                        { field: "additions_qty_count", title: "No.of Shares", width: 130, attributes:{style:"text-align:right;"} , footerTemplate: "<div style='text-align:right;font-weight:bold'>" + "#= kendo.toString(sum, 'n0') #" + "</div>" },
-                        { field: "additions_total_amount", title: "Amount", width: 120, attributes:{style:"text-align:right;"}, footerTemplate: "<div style='text-align:right;font-weight:bold'>" + "#= kendo.toString(sum, 'n0') #" + "</div>"
-    },
+                        { field: "additions_appl_count", title: "No.of Appl", width: 120, attributes:{style:"text-align:right;"}, footerTemplate: "#= kendo.toString(sum, 'n0') #",  footerAttributes: { style: "text-align:right;font-weight:bold;" }}, 
+                        { field: "additions_qty_count", title: "No.of Shares", width: 130, attributes:{style:"text-align:right;"} , footerTemplate: "#= kendo.toString(sum, 'n0') #",  footerAttributes: { style: "text-align:right;font-weight:bold;" } },
+                        { field: "additions_total_amount", title: "Amount", width: 120, attributes:{style:"text-align:right;"},footerTemplate: "#= kendo.toString(sum, 'n0') #",  footerAttributes: { style: "text-align:right;font-weight:bold;" } },
                 ]
             },
-
              {
                 title: "Rejections",
                 headerAttributes: { style: "text-align:center;font-weight:bold;" },
                 columns: [
-                        { field: "rejections_appl_count", title: "No.of Appl", width: 120, attributes:{style:"text-align:right;"}, footerTemplate: "<div style='text-align:right;font-weight:bold'>" + "#= kendo.toString(sum, 'n0') #" + "</div>" }, 
-                        { field: "rejections_qty_count", title: "No.of Shares", width: 130, attributes:{style:"text-align:right;"}, footerTemplate: "<div style='text-align:right;font-weight:bold'>" + "#= kendo.toString(sum, 'n0') #" + "</div>" }, 
-                        { field: "rejections_total_amount", title: "Amount", width: 120, attributes:{style:"text-align:right;"}, footerTemplate: "<div style='text-align:right;font-weight:bold'>" + "#= kendo.toString(sum, 'n0') #" + "</div>"
-    },
+                        { field: "rejections_appl_count", title: "No.of Appl", width: 120, attributes:{style:"text-align:right;"}, footerTemplate: "#= kendo.toString(sum, 'n0') #",  footerAttributes: { style: "text-align:right;font-weight:bold;" } }, 
+                        { field: "rejections_qty_count", title: "No.of Shares", width: 130, attributes:{style:"text-align:right;"}, footerTemplate: "#= kendo.toString(sum, 'n0') #",  footerAttributes: { style: "text-align:right;font-weight:bold;" } }, 
+                        { field: "rejections_total_amount", title: "Amount", width: 120, attributes:{style:"text-align:right;"}, footerTemplate: "#= kendo.toString(sum, 'n0') #",  footerAttributes: { style: "text-align:right;font-weight:bold;" } },
                 ]
             },
-
             {
                 title: "Final Rejections",
                 headerAttributes: { style: "text-align:center;font-weight:bold;" },
                 columns: [
-                    { field: "total_app_count", title: "No.of Appl", width: 120, attributes:{style:"text-align:right;color:red;"},footerTemplate: "<div style='text-align:right;font-weight:bold'>" + "#= kendo.toString(sum, 'n0') #" + "</div>" },
-                    { field: "total_qty_amount", title: "No.of Shares", width: 130, attributes:{style:"text-align:right;color:red;"},footerTemplate: "<div style='text-align:right;font-weight:bold'>" + "#= kendo.toString(sum, 'n0') #" + "</div>" },
-                    { field: "total_amount", title: "Amount", width: 120, attributes:{style:"text-align:right;color:red;"},footerTemplate: "<div style='text-align:right;font-weight:bold'>" + "#= kendo.toString(sum, 'n0') #" + "</div>" }
+                    { field: "total_app_count", title: "No.of Appl", width: 120, attributes:{style:"text-align:right;color:red;"},footerTemplate: "#= kendo.toString(sum, 'n0') #",  footerAttributes: { style: "text-align:right;font-weight:bold;" } },
+                    { field: "total_qty_amount", title: "No.of Shares", width: 130, attributes:{style:"text-align:right;color:red;"},footerTemplate: "#= kendo.toString(sum, 'n0') #",  footerAttributes: { style: "text-align:right;font-weight:bold;" } },
+                    { field: "total_amount", title: "Amount", width: 120, attributes:{style:"text-align:right;color:red;"},footerTemplate: "#= kendo.toString(sum, 'n0') #",  footerAttributes: { style: "text-align:right;font-weight:bold;" } }
                 ]
             }
         ];
-                 if ($("#rejectionList").data("kendoGrid")) {
-                    $("#rejectionList").data("kendoGrid").destroy();
-                    $("#rejectionList").empty();                    
-                 }
-                     $("#rejectionList").kendoGrid({
-                     dataSource: {
-                         data: data,
-                         pageSize: 20,
-                         aggregate: [
-                            { field: "original_appl_count", aggregate: "sum" },
-                            { field: "original_qty_count", aggregate: "sum" },
-                            { field: "original_total_amount", aggregate: "sum" },
+        if ($("#rejectionList").data("kendoGrid")) {
+        $("#rejectionList").data("kendoGrid").destroy();
+        $("#rejectionList").empty();                    
+        }
+            $("#rejectionList").kendoGrid({
+            dataSource: {
+                data: data,
+                pageSize: 20,
+                aggregate: [
+                { field: "original_appl_count", aggregate: "sum" },
+                { field: "original_qty_count", aggregate: "sum" },
+                { field: "original_total_amount", aggregate: "sum" },
 
-                            { field: "additions_appl_count", aggregate: "sum" },
-                            { field: "additions_qty_count", aggregate: "sum" },
-                            { field: "additions_total_amount", aggregate: "sum" },
+                { field: "additions_appl_count", aggregate: "sum" },
+                { field: "additions_qty_count", aggregate: "sum" },
+                { field: "additions_total_amount", aggregate: "sum" },
 
-                            { field: "rejections_appl_count", aggregate: "sum" },
-                            { field: "rejections_qty_count", aggregate: "sum" },
-                            { field: "rejections_total_amount", aggregate: "sum" },
+                { field: "rejections_appl_count", aggregate: "sum" },
+                { field: "rejections_qty_count", aggregate: "sum" },
+                { field: "rejections_total_amount", aggregate: "sum" },
 
-                            { field: "total_app_count", aggregate: "sum" },
-                            { field: "total_qty_amount", aggregate: "sum" },
-                            { field: "total_amount", aggregate: "sum" }
-                        ]
-                     },
-                     height: 410,
-                     pageable: {
-                         pageSizes: [10, 20, 30],
-                         refresh: true
-                     },
-                     sortable: true,
-                     filterable: true,
-                     resizable: true,
-                     columns: columns,
-                      excel: {
-                        fileName: "Rejection_Summary_Report.xlsx",
-                        allPages: true,
-                        filterable: true
-                       },
-                     dataBound: function () {
-                        var grid = this;
-                        grid.tbody.find("tr").each(function () {
-                            var dataItem = grid.dataItem(this);
-                            if (selectedCodes.includes(dataItem.rule_code)) {
-                                $(this).find(".client-checkbox").prop("checked", true);
+                { field: "total_app_count", aggregate: "sum" },
+                { field: "total_qty_amount", aggregate: "sum" },
+                { field: "total_amount", aggregate: "sum" }
+            ]
+            },
+            height: 410,
+            pageable: {
+                pageSizes: [10, 20, 30],
+                refresh: true
+            },
+            sortable: true,
+            filterable: true,
+            resizable: true,
+            columns: columns,
+            excel: {
+                fileName: "Rejection_Summary_Report.xlsx",
+                allPages: true,
+                filterable: true
+            },
+            excelExport: function (e) {
+                var sheet = e.workbook.sheets[0];
+                sheet.rows.forEach(function (row) {
+                    if (row.type === "footer") {
+                        row.cells.forEach(function (cell) {
+                            if (typeof cell.value === "string") {
+                                cell.value = cell.value.replace(/<[^>]+>/g, "");
                             }
+                            cell.bold = true;
+                            cell.hAlign = "right";
                         });
-                     }
-                 });
+                    }
+                });
+            },
+            dataBound: function () {
+            var grid = this;
+            grid.tbody.find("tr").each(function () {
+                var dataItem = grid.dataItem(this);
+                if (selectedCodes.includes(dataItem.rule_code)) {
+                    $(this).find(".client-checkbox").prop("checked", true);
+                }
+            });
+            }
+        });
     }
     
      $(document).on("click", "#selectAll", function () {
@@ -529,37 +564,15 @@
         } else {
             selectedCodes = selectedCodes.filter(x => x !== code);
         }
-
-        console.log("Selected:", selectedCodes);
     });
 
     function exportSummary() {
         var grid = $("#rejectionList").data("kendoGrid");
         grid.saveAsExcel();
         selectedCodes = [];
-    }
-
-    function exportdetailSummary_old() {
-
-        // if (selectedCodes.length === 0) {
-        //     $.alert({
-        //         title: 'IPO Web',
-        //         content: "Please select at least one bank",
-        //         type: 'red',
-        //     });
-        //     return;
-        // }
-        // var rule_code = selectedCodes.join(",");
-        // var offer_code = localStorage.getItem("selectedIPO");
-        // var url = '/Rejection/getdetailRejectionSummary'
-        //     + '?offer_code=' + encodeURIComponent(offer_code)
-        //     + '&rule_code=' + encodeURIComponent(rule_code);
-
-        // window.location.href = url;
-    }
+    }  
 
     function exportdetailSummary() {
-
         if (selectedCodes.length === 0) {
             $.alert({
                 title: 'IPO Web',
@@ -573,7 +586,6 @@
         var url = '/Rejection/getdetailRejectionSummary'
             + '?offer_code=' + encodeURIComponent(offer_code)
             + '&rule_code=' + encodeURIComponent(rule_code);
-
         window.location.href = url;
         selectedCodes = [];
     }
@@ -599,7 +611,6 @@
         modal.show();
         var offer_code =  localStorage.getItem("selectedIPO");
         loadaddrejlist(offer_code)
-          // addSave(offer_code);
     }
 
       function rejections() {
@@ -629,12 +640,9 @@
                     ipo_code: offer_code
                 },
                     success: function (response) {
-                    console.log(response);
                     var result = JSON.parse(response.data);
                     var applList = result.Table;
                     var rejectionList = result.Table1;
-                    console.log(result.Table);
-                     console.log(result.Table1);
                      if (result.Table.length > 0) {
                             $("#ipo").val(offer_code);
                                   $("#appno").autocomplete({
@@ -885,13 +893,11 @@
                           data: JSON.stringify(mymodel),
                           contentType: 'application/json; charset=utf-8',
                           success: function (response) {
-                              console.log(response);
                               var result = JSON.parse(response._data);
                                 if (result.length > 0) {
                                       if (result[0].result == 1) {
                                                $.alert({
                                                   title: 'IPO Allotment',
-                                                  //content: result[0].message,
                                                   content: "Added Sucessfully",
                                                   type: 'green',
                                                   buttons: {
@@ -953,7 +959,6 @@
                             data: JSON.stringify(mymodel),
                             contentType: 'application/json; charset=utf-8',
                             success: function (response) {
-                                console.log(response);
                                 var result = JSON.parse(response._data);
                                   if (result.length > 0) {
                                         if (result[0].result == 1) {
@@ -999,7 +1004,6 @@
         $("#rule_code").val(item.rule_code);
         $("#reject_remarks").val(item.rejected_reason);
         $("#remarks").val("");
-        alert(item.addrule_disable);
         $("#addrule_disable").val(item.addrule_disable);
         $("#addlblstatus").val("");
         if (item.addrule_disable == "Y") {
@@ -1033,13 +1037,10 @@
             dataType: "json",
             success: function (response) {
                 if (!response.success) {
-                    console.log(response.message);
                     return;
                 }
-                //var data = response.data;
                 var data = JSON.parse(response.data);
                 $("#rrule_code").empty();
-                // ✅ Default option
                 $("#rrule_code").append(
                     $('<option>', {
                         value: '',
