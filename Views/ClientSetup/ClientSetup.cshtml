@@ -124,6 +124,7 @@
 </html>
 <script>
   $(document).ready(function () {
+         
         $('#navhead').text('Client Setup');
         $("#iponame").val("");
         $("#createedit").val("Create");
@@ -162,7 +163,6 @@
                 contentType: "application/json; charset=utf-8",
                 dataType: "json",
                     success: function (response) {
-
             var data = JSON.parse(response._data)[0];
             $("#client_gid").val(data.client_gid);
             $("#clientname").val(data.client_name);
@@ -177,15 +177,16 @@
             $("#clientcode").val(data.client_code);
             $("#clientstatus").val("Active");
             $("#pin").val(data.client_pincode);
-            loadMasterDropdown("QCD_MAST_STATE", "state", data.client_country)
-            .done(function () {
-                $("#state").val(data.client_state);
-                loadMasterDropdown(data.client_state,"city",data.client_city);
-            })
-            .done(function () {
-                loadMasterDropdown(data.client_state,"city",data.client_city);
-                $("#city").val(data.client_city);
-            });
+                loadMasterDropdown("QCD_MAST_STATE", "state", data.client_country,  null, false )
+                .done(function () {
+                       return loadMasterDropdown(
+                            data.client_state,
+                            "city",
+                            data.client_city,
+                            null,
+                            false
+                        );                   
+                });
             },
             error: function (xhr) {
                 console.log("Error:", xhr.responseText);
@@ -199,7 +200,7 @@
     loadMasterDropdown("QCD_MAST_STATE", "state", country);
   });
 
-function stateChange(targetId, el){
+function stateChange(targetId, el){        
         var value = el.value;
         loadMasterDropdown(value, targetId);
 }
