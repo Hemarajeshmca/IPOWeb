@@ -2299,7 +2299,7 @@
         }
 
 
-           function loadMasterDropdown(masterCode, dropdownId,selectedValue, callback) {
+           function loadMasterDropdown(masterCode, dropdownId,selectedValue, callback, triggerChange = true) {
             var mymodel = {
                 in_master_code: masterCode,
                 in_user_code: ""
@@ -2341,10 +2341,14 @@
                         });
 
                         if (selectedValue) {
-                            $ddl.val(selectedValue).trigger("change");
+                           // $ddl.val(selectedValue).trigger("change");
+                            $ddl.val(selectedValue);
+                            if (triggerChange) {
+                                $ddl.trigger("change");
+                            }
                         }
                         console.log("After Set:", $ddl.val());
-                            if (callback) callback(result);
+                        if (callback) callback(result);
                     },
                 error: function (xhr) {
                     console.log("Dropdown load error:", xhr.responseText);
