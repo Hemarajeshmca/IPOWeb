@@ -1,34 +1,45 @@
-name Build and Deploy to Local IIS
+name: Deploy to Local IIS
 
-on
-  push
-    branches
+on:
+  push:
+    branches:
       - main
 
-jobs
-  deploy
-    runs-on self-hosted
+jobs:
+  deploy:
+    runs-on: self-hosted
 
-    steps
-      - name Checkout Repository
-        uses actionscheckout@v4
+    steps:
+      - name: Checkout Source
+        uses: actions/checkout@v4
 
-      - name Setup .NET SDK
-        uses actionssetup-dotnet@v4
-        with
-          dotnet-version '8.0.x'   # Change if your project targets .NET 6 or .NET 7
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '8.0.x'
 
-      - name Restore Packages
-        run dotnet restore IPOWeb.sln
+      - name: Restore Packages
+        run: dotnet restore
 
-      - name Build Solution
-        run dotnet build IPOWeb.sln --configuration Release --no-restore
+      - name: Build Project
+        run: dotnet build --configuration Release --no-restore
 
-      - name Publish Application
-        run dotnet publish IPOWeb.csproj --configuration Release --output CPublishIPOWeb
+      - name: Publish Project
+        run: dotnet publish --configuration Release --output "D:\Publish\ipoweb"
 
-      - name Deploy to IIS Folder
-        shell powershell
-        run 
-          New-Item -ItemType Directory -Force -Path CDeployIPOWeb
-          Copy-Item CPublishIPOWeb CDeployIPOWeb -Recurse -Force
+      - name: Stop IIS App Pool
+        shell: powershell
+        run: |
+          Import-Module WebAdministration
+          Stop-WebAppPool -Name "ipoweb"
+
+      - name: Copy Files to IIS
+        shell: powershell
+        run: |
+          Copy-Item "D:\Publish\ipoweb\*" "D:\inetpub\wwwroot\ipoweb" -Recurse -Force
+
+      - name: Start IIS App Pool
+        shell: powershell
+        run: |
+          Import-Module WebAdministration
+          Start-WebAppPool -Name "ipoweb"
