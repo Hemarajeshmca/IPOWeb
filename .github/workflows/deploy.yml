@@ -31,31 +31,35 @@ jobs:
           if (Test-Path "D:\Publish\ipoweb") {
               Remove-Item "D:\Publish\ipoweb\*" -Recurse -Force -ErrorAction SilentlyContinue
           }
+          else {
+              New-Item -ItemType Directory -Path "D:\Publish\ipoweb" | Out-Null
+          }
 
       - name: Publish Project
         shell: cmd
         run: dotnet publish IPOWeb.csproj --configuration Release --output D:\Publish\ipoweb
 
       - name: Runner Identity
-  	shell: powershell
-  	run: |
-    	whoami
-    	[System.Security.Principal.WindowsIdentity]::GetCurrent().Name
-    	$PSVersionTable.PSVersion
-
-      - name: Test IIS Access
-  	shell: powershell
-  	run: |
-    	Import-Module WebAdministration
-    	Get-WebAppPoolState -Name "ipoweb"
-
-      - name: Stop IIS App Pool
         shell: powershell
         run: |
-          Import-Module WebAdministration
-          if ((Get-WebAppPoolState -Name "ipoweb").Value -eq "Started") {
-              Stop-WebAppPool -Name "ipoweb"
-          }
+          Write-Host "Current User:"
+          whoami
+
+          Write-Host "Windows Identity:"
+          [System.Security.Principal.WindowsIdentity]::GetCurrent().Name
+
+          Write-Host "PowerShell Version:"
+          $PSVersionTable.PSVersion
+
+      - name: Test IIS Access
+        shell: cmd
+        run: |
+          C:\Windows\System32\inetsrv\appcmd.exe list apppool
+
+      - name: Stop IIS App Pool
+        shell: cmd
+        run: |
+          C:\Windows\System32\inetsrv\appcmd.exe stop apppool /apppool.name:"ipoweb"
 
       - name: Deploy to IIS
         shell: cmd
@@ -65,13 +69,11 @@ jobs:
           exit /b %ERRORLEVEL%
 
       - name: Start IIS App Pool
-        shell: powershell
+        shell: cmd
         run: |
-          Import-Module WebAdministration
-          Start-WebAppPool -Name "ipoweb"
+          C:\Windows\System32\inetsrv\appcmd.exe start apppool /apppool.name:"ipoweb"
 
-      - name: Verify IIS Site
-        shell: powershell
+      - name: Verify IIS App Pool
+        shell: cmd
         run: |
-          Import-Module WebAdministration
-          Get-WebAppPoolState -Name "ipoweb"
+          C:\Windows\System32\inetsrv\appcmd.exe list apppool "ipoweb"
