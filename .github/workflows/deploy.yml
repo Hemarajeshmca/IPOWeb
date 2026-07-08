@@ -36,6 +36,19 @@ jobs:
         shell: cmd
         run: dotnet publish IPOWeb.csproj --configuration Release --output D:\Publish\ipoweb
 
+      - name: Runner Identity
+  	shell: powershell
+  	run: |
+    	whoami
+    	[System.Security.Principal.WindowsIdentity]::GetCurrent().Name
+    	$PSVersionTable.PSVersion
+
+      - name: Test IIS Access
+  	shell: powershell
+  	run: |
+    	Import-Module WebAdministration
+    	Get-WebAppPoolState -Name "ipoweb"
+
       - name: Stop IIS App Pool
         shell: powershell
         run: |
