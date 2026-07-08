@@ -1,4 +1,4 @@
-name: Deploy to Local IIS
+name: Deploy IPOWeb to Local IIS
 
 on:
   push:
@@ -13,6 +13,10 @@ jobs:
       - name: Checkout Source
         uses: actions/checkout@v4
 
+      - name: Verify .NET SDK
+        shell: cmd
+        run: dotnet --info
+
       - name: Restore Packages
         shell: cmd
         run: dotnet restore IPOWeb.sln
@@ -20,6 +24,13 @@ jobs:
       - name: Build Project
         shell: cmd
         run: dotnet build IPOWeb.sln --configuration Release --no-restore
+
+      - name: Clean Publish Folder
+        shell: powershell
+        run: |
+          if (Test-Path "D:\Publish\ipoweb") {
+              Remove-Item "D:\Publish\ipoweb\*" -Recurse -Force -ErrorAction SilentlyContinue
+          }
 
       - name: Publish Project
         shell: cmd
@@ -29,15 +40,25 @@ jobs:
         shell: powershell
         run: |
           Import-Module WebAdministration
-          Stop-WebAppPool -Name "ipoweb"
+          if ((Get-WebAppPoolState -Name "ipoweb").Value -eq "Started") {
+              Stop-WebAppPool -Name "ipoweb"
+          }
 
-      - name: Copy Files to IIS
-        shell: powershell
+      - name: Deploy to IIS
+        shell: cmd
         run: |
-          Copy-Item "D:\Publish\ipoweb\*" "D:\inetpub\wwwroot\ipoweb" -Recurse -Force
+          robocopy D:\Publish\ipoweb D:\inetpub\wwwroot\ipoweb /MIR
+          if %ERRORLEVEL% LEQ 3 exit /b 0
+          exit /b %ERRORLEVEL%
 
       - name: Start IIS App Pool
         shell: powershell
         run: |
           Import-Module WebAdministration
           Start-WebAppPool -Name "ipoweb"
+
+      - name: Verify IIS Site
+        shell: powershell
+        run: |
+          Import-Module WebAdministration
+          Get-WebAppPoolState -Name "ipoweb"
