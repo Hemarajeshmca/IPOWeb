@@ -1,0 +1,34 @@
+name Build and Deploy to Local IIS
+
+on
+  push
+    branches
+      - main
+
+jobs
+  deploy
+    runs-on self-hosted
+
+    steps
+      - name Checkout Repository
+        uses actionscheckout@v4
+
+      - name Setup .NET SDK
+        uses actionssetup-dotnet@v4
+        with
+          dotnet-version '8.0.x'   # Change if your project targets .NET 6 or .NET 7
+
+      - name Restore Packages
+        run dotnet restore IPOWeb.sln
+
+      - name Build Solution
+        run dotnet build IPOWeb.sln --configuration Release --no-restore
+
+      - name Publish Application
+        run dotnet publish IPOWeb.csproj --configuration Release --output CPublishIPOWeb
+
+      - name Deploy to IIS Folder
+        shell powershell
+        run 
+          New-Item -ItemType Directory -Force -Path CDeployIPOWeb
+          Copy-Item CPublishIPOWeb CDeployIPOWeb -Recurse -Force
