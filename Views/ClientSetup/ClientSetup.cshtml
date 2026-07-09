@@ -176,9 +176,10 @@
             $("#createedit").val("Edit");
             $("#clientcode").val(data.client_code);
             $("#clientstatus").val("Active");
-            $("#pin").val(data.client_pincode);
+            $("#pin").val(data.client_pincode);            
                 loadMasterDropdown("QCD_MAST_STATE", "state", data.client_country,  null, false )
                 .done(function () {
+                        $("#state").val(data.client_state);
                        return loadMasterDropdown(
                             data.client_state,
                             "city",
