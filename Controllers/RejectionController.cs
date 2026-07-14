@@ -349,7 +349,11 @@ namespace IPOWeb.Controllers
                     client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
 
                     client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
-
+                    string userCode = User.FindFirst(ClaimTypes.Name)?.Value.ToString();
+                    if (!string.IsNullOrEmpty(userCode))
+                    {
+                        client.DefaultRequestHeaders.Add("User_Code", userCode);
+                    }
                     var json = JsonConvert.SerializeObject(mymodel);
                     var content = new StringContent(json, Encoding.UTF8, "application/json");
 
