@@ -1,0 +1,584 @@
+﻿
+@{
+    Layout = "~/Views/Shared/_LayoutNew.cshtml";
+    var userName = Context.Session.GetString("user_name");
+}
+<style>
+
+    .nav-align-top > .nav, .nav-align-top > div > .nav, .nav-align-right > .nav, .nav-align-right > div > .nav, .nav-align-bottom > .nav, .nav-align-bottom > div > .nav, .nav-align-left > .nav, .nav-align-left > div > .nav {
+        z-index: 1000 !important;
+    }
+
+    .ui-autocomplete {
+        font-weight: 400;
+        font-size: 13px !important;
+        line-height: 17px !important;
+        color: #697a8d;
+    }
+
+    .content-wrapper {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+    h5#navhead {
+        position: relative;
+        right: 424px !important;
+        width: 29% !important;
+    }
+
+    .col-md-2-4 {
+        flex: 0 0 auto;
+        width: 20%;
+    }
+
+    .nav-align-top .nav-tabs ~ .tab-content {
+        border: 1px solid #e3dcdc;
+        height: 250px;
+        padding-top: 6px;
+        /*  height: auto; */
+    }
+
+    .nav-tabs .nav-item .nav-link:not(.active) {
+        background-color: #716969;
+        color: #fff;
+    }
+
+    .nav-tabs .nav-link.active, .nav-tabs .nav-item.show .nav-link {
+        background-color: #027ed1 !important;
+        color: #fff !important;
+    }
+
+    table tbody tr:nth-child(odd) {
+        /* background-color: #5997bb !important; */
+        color: #566a7f;
+    }
+
+    table tbody tr:nth-child(even) {
+        background-color: #ffffff;
+        color: #566a7f;
+    }
+
+    .table tbody tr td {
+        padding: 2px 8px; /* reduce padding */
+        font-size: 12px; /* smaller text */
+    }
+
+    .validation {
+        color: red;
+        font-size: 12px;
+        position: relative
+    }
+
+    #offerCategoryGrid .k-grid-content {
+        height: 160px !important;
+    }
+
+    #checklistGrid .k-grid-content,
+    #checklistGrid .k-grid-content tr,
+    #checklistGrid .k-grid-content td {
+        background: transparent !important;
+    }
+
+    .modal-title {
+        font-size: 15px !important;
+        text-align: center !important;
+        font-weight: 700 !important;
+        color: #5490ff !important;
+    }
+
+    .modal-header {
+        justify-content: center !important;
+    }
+
+    #checklistGrid.k-grid.k-widget {
+        margin-top: 0px !important;
+    }
+
+
+    #checklistGrid .k-grid-header th {
+        text-align: center !important;
+    }
+
+    .btn:disabled, .btn.disabled, fieldset:disabled .btn {
+        opacity: 0.40 !important;
+        cursor: no-drop !important;
+    }
+
+    #checklistGrid.k-grid {
+        margin-top: 0px !important;
+    }
+
+
+
+    #checklistGrid .k-grid-header th {
+        text-align: center !important;
+    }
+
+    .modal-body {
+        padding-top: 0 !important;
+    }
+
+    #checklistGrid {
+        width: 1300px;
+    }
+
+        /* Rule Master Grid */
+        #checklistGrid.k-grid {
+            margin-top: 0px !important;
+            border: 1px solid #d5d5d5;
+        }
+
+        #checklistGrid .k-grid-header th {
+            text-align: center !important;
+        }
+
+        #checklistGrid .k-grid-content,
+        #checklistGrid .k-grid-content tr,
+        #checklistGrid .k-grid-content td {
+            background: transparent !important;
+        }
+
+    .btn-secondary {
+        background-color: #5a6268;
+        color: #fff;
+        border: 1px solid #6c757d;
+    }
+
+        .btn-secondary:hover {
+            background-color: #5a6268;
+            border-color: #545b62;
+        }
+</style>
+
+<div class="modal-body" style="padding-top:2% !important;">
+    <div id="checklistGrid">
+    </div>
+    <div class="mt-3">
+        <label><b>Remarks</b></label>
+        <textarea id="txtRemarks"
+                  class="form-control"
+                  rows="3"
+                  placeholder="Enter Remarks"></textarea>
+    </div>
+    <br />
+    <div style="text-align:center; ">
+        <button type="button"
+                id="btnsave"
+                class="btn btn-success"
+                onclick="CheckerApprover('A')">
+            Approve
+        </button> &nbsp; &nbsp;
+        <button type="button"
+                id="btnreject"
+                class="btn btn-secondary"
+                onclick="CheckerApprover('R')">
+            Reject
+        </button>
+    </div>
+</div>
+
+<script type="text/javascript">
+    var selectedCodes = [];
+        $(document).ready(function () {
+        var ipocode = localStorage.getItem("selectedIPO");
+        $('#navhead').text('IPO Plus Minus Approval');
+        plusminus_load();
+    });
+
+    function plusminus_load()
+    {
+
+        var data = {}; 
+        var ipocode = localStorage.getItem("selectedIPO");
+        $.ajax({
+            type: "POST",
+            url: "../PlusMinus/FetchPlusMinus?ipo_code=" + ipocode,
+            dataType: "json",
+            contentType: "application/json; charset=utf-8", 
+            success: function (response) { 
+                if (response.authExpired) {
+                    $.alert({
+                        title: "Unauthorized",
+                        content: response.message,
+                        type: "red",
+                        buttons: {
+                            ok: function () {
+                                window.location.href = "/Login/Logout";
+                            }
+                        }
+                    });
+                    return;
+                } 
+                if (response.success) {
+                    if (response.data) {
+                        var ruleData = JSON.parse(response.data); 
+                        var masterRules  = ruleData.Table;  
+                        plusminus_grid(masterRules);
+                    }
+                    else {
+                        plusminus_grid([]);
+                    } 
+                }
+                else { 
+                    plusminus_grid([]); 
+                }
+            },
+            error: function (xhr) {
+                console.log(xhr);
+            }
+        });
+
+    }
+     function plusminus_grid_old(data) {
+
+        if ($("#checklistGrid").data("kendoGrid")) {
+            $("#checklistGrid").data("kendoGrid").destroy();
+            $("#checklistGrid").empty();
+        }
+
+        $("#checklistGrid").kendoGrid({
+
+            dataSource: {
+                data: data,
+                pageSize: 12,
+                schema: {
+                    model: {
+                        fields: {
+                            appl_no: { type: "string" },
+                            order_no: { type: "string" },
+                            pan_no: { type: "string" },
+                            quantity: { type: "string" },
+                            price: { type: "string" },
+                            amount: { type: "string" },
+                            rule_code: { type: "string" },
+                            addition_remarks: { type: "string" },
+                            addminus_status: { type: "string" }
+                        }
+                    }
+                }
+            },
+            pageable: true,
+            sortable: true,
+            filterable: true,
+            scrollable: true,
+            height: 300,
+            columns: [
+                {
+                    title: "Select",
+                    width: 45,
+                    locked: true,
+                    headerAttributes: { style: "text-align:center;" },
+                    attributes: { style: "text-align:center;" },
+                    headerTemplate:
+                        "<div style='text-align:center;'>" +
+                        "<input type='checkbox' id='selectAll' /> " +
+                        "<label for='selectAll' style='cursor:pointer;'>All</label>" +
+                        "</div>",
+                    template: "<input type='checkbox' class='client-checkbox' value='#= appl_no #' />"
+                },
+                {
+                    field: "addminus_status",
+                    title: "Status",
+                    width: 80
+                },
+                {
+                    field: "appl_no",
+                    title: "Appl.No",
+                    width: 170
+                },
+
+                {
+                    field: "order_no",
+                    title: "OrderNo",
+                    width: 110
+                },
+                {
+                    field: "pan_no",
+                    title: "PANNo",
+                    width: 100
+                },
+                {
+                    field: "quantity",
+                    title: "Quantity",
+                    width: 100
+                },
+                {
+                    field: "price",
+                    title: "Shares",
+                    width: 100
+                },
+                {
+                    field: "amount",
+                    title: "Amount",
+                    width: 130
+                },
+                {
+                    field: "rule_code",
+                    title: "Rule code",
+                    width: 200
+                },
+                {
+                    field: "addition_remarks",
+                    title: "Remarks",
+                    width: 400
+                }
+            ],
+            // dataBound: function () {
+            //                 var grid = this;
+            //                 grid.tbody.find("tr").each(function () {
+            //                     var dataItem = grid.dataItem(this);
+            //                     if (selectedCodes.includes(dataItem.appl_no)) {
+            //                         $(this).find(".client-checkbox").prop("checked", true);
+            //                     }
+            //                 });
+            //                  $("#selectAll").prop(
+            //                     "checked",
+            //                     selectedCodes.length === grid.dataSource.data().length
+            //                 );
+            //              }
+                dataBound: function () { 
+                    var grid = this; 
+                    grid.tbody.find("tr").each(function () { 
+                        var item = grid.dataItem(this);
+
+                        $(this).find(".client-checkbox").prop(
+                            "checked",
+                            selectedCodes.includes(item.appl_no)
+                        );
+                    });
+
+                    $("#selectAll").prop(
+                        "checked",
+                        selectedCodes.length === grid.dataSource.data().length
+                    );
+                }
+
+        });
+
+    }
+         var selectedCodes = [];
+
+    function plusminus_grid(data) {
+
+        if ($("#checklistGrid").data("kendoGrid")) {
+            $("#checklistGrid").data("kendoGrid").destroy();
+            $("#checklistGrid").empty();
+        }
+
+        $("#checklistGrid").kendoGrid({
+
+            dataSource: {
+                data: data,
+                pageSize: 12,
+                schema: {
+                    model: {
+                        fields: {
+                            appl_no: { type: "string" },
+                            order_no: { type: "string" },
+                            pan_no: { type: "string" },
+                            quantity: { type: "string" },
+                            price: { type: "string" },
+                            amount: { type: "string" },
+                            rule_code: { type: "string" },
+                            remarks: { type: "string" },
+                            addminus_status: { type: "string" }
+                        }
+                    }
+                }
+            },
+
+            pageable: true,
+            sortable: true,
+            filterable: true,
+            scrollable: true,
+            height: 300,
+
+            columns: [
+                {
+                    title: "Select",
+                    width: 60,
+                    headerTemplate:
+                        "<input type='checkbox' id='selectAll' /> All",
+                    template:
+                        "<input type='checkbox' class='client-checkbox' value='#= appl_no #' />",
+                    attributes: { style: "text-align:center" },
+                    headerAttributes: { style: "text-align:center" }
+                },
+                {
+                    field: "addminus_status",
+                    title: "Status",
+                    width: 100
+                },
+                {
+                    field: "appl_no",
+                    title: "Appl.No",
+                    width: 150
+                },
+                {
+                    field: "order_no",
+                    title: "OrderNo",
+                    width: 105
+                },
+                {
+                    field: "pan_no",
+                    title: "PANNo",
+                    width: 105
+                },
+                {
+                    field: "quantity",
+                    title: "Quantity",
+                    width: 85
+                },
+                {
+                    field: "price",
+                    title: "Shares",
+                    width: 110
+                },
+                {
+                    field: "amount",
+                    title: "Amount",
+                    width: 130
+                },
+                {
+                    field: "rule_code",
+                    title: "Rule Code",
+                    width: 200
+                },
+                {
+                    field: "remarks",
+                    title: "Remarks",
+                    width: 400
+                }
+            ],
+
+            dataBound: function () {
+
+                var grid = this;
+
+                grid.tbody.find("tr").each(function () {
+
+                    var item = grid.dataItem(this);
+
+                    $(this).find(".client-checkbox")
+                        .prop("checked", selectedCodes.indexOf(item.appl_no) !== -1);
+
+                });
+
+                $("#selectAll").prop(
+                    "checked",
+                    selectedCodes.length === grid.dataSource.data().length
+                );
+
+            }
+        });
+    }
+
+
+    // SELECT ALL
+    $(document).off("change", "#selectAll").on("change", "#selectAll", function () {
+
+        var grid = $("#checklistGrid").data("kendoGrid");
+
+        if ($(this).is(":checked")) {
+
+            selectedCodes = [];
+
+            grid.dataSource.data().forEach(function (item) {
+                selectedCodes.push(item.appl_no);
+            });
+
+        } else {
+
+            selectedCodes = [];
+
+        }
+
+        grid.refresh();
+
+    });
+
+
+    // SINGLE ROW
+    $(document).off("change", ".client-checkbox").on("change", ".client-checkbox", function () {
+
+        var value = $(this).val();
+
+        if ($(this).is(":checked")) {
+
+            if (selectedCodes.indexOf(value) === -1)
+                selectedCodes.push(value);
+
+        } else {
+
+            selectedCodes = selectedCodes.filter(function (x) {
+                return x != value;
+            });
+
+        }
+
+        var grid = $("#checklistGrid").data("kendoGrid");
+
+        $("#selectAll").prop(
+            "checked",
+            selectedCodes.length === grid.dataSource.data().length
+        );
+
+    });
+
+
+         function CheckerApprover(flag) { 
+                var grid = $("#checklistGrid").data("kendoGrid");
+
+                var applNos = [];
+
+                grid.dataSource.data().forEach(function (item) {
+                    if (selectedCodes.includes(item.appl_no)) {
+                        applNos.push(item.appl_no);
+                    }
+                });
+
+                var model = {
+                    ipo_code: localStorage.getItem("selectedIPO"),
+                    applno: applNos.join(","),      // e.g. 0IC7650002484228,0IC7650002484233
+                    rejremarks: $("#txtRemarks").val(), 
+                    audit_flag: "C",
+                    flag:flag
+                };
+
+                $.ajax({
+                    url: "/PlusMinus/ApprovePlusMinus",
+                    type: "POST",
+                    contentType: "application/json",
+                    data: JSON.stringify(model),
+                    success: function (response) {
+                    var result = JSON.parse(response._data);console.log(result);
+                        if (result.length > 0) {
+                            if (result[0].result == 1) {
+                                $.alert({
+                                    title: 'IPO Allotment', 
+                                    content: result[0].message,
+                                    type: 'green',
+                                    buttons: {
+                                        ok: function () { 
+                                                var offer_code =  localStorage.getItem("selectedIPO");
+                                                if(offer_code){
+                                                    plusminus_load();
+                                                }
+
+                                            }
+                                    }
+                                });
+                            }
+                        }
+                        
+                       $("#txtRemarks").val("");
+                    },
+                    error: function (xhr) {
+                        console.log(xhr);
+                    }
+                });
+            }
+
+</script>
