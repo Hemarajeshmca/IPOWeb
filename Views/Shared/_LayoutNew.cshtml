@@ -792,14 +792,14 @@
         localStorage.setItem("selectedClientId", clientId);
         console.log("ipoId :", ipoId);
         console.log("ipoText :", ipoText);
-        });
+        }); 
         $(document).ready(function () {
             getofferList();
             var savedIPO = localStorage.getItem("selectedIPO");
             if (savedIPO) {
                 $("#iponames").val(savedIPO);
             }
-        });
+        }); 
         function openNav() {
             $(document).ready(function () {
                 $('#layout-menu').toggleClass('active');
@@ -2422,10 +2422,13 @@
                                );
                            });
                            var savedIPO = localStorage.getItem("selectedIPO");
-
-                    if (savedIPO) {
-                        $ddl.val(savedIPO).trigger("change"); // 🔥 important
-                    }
+                            var firstIPO = filteredData[0].offer_code;
+                            localStorage.setItem("selectedIPO", firstIPO);
+                           // $ddl.val(firstIPO).trigger("change");
+                            $ddl.val(savedIPO);
+                            // if (savedIPO) {
+                            //     $ddl.val(savedIPO).trigger("change"); // 🔥 important
+                            // }
                        }
                        else {
                               $ddl.empty();
@@ -2455,6 +2458,7 @@
            localStorage.setItem("selectedIPOText", ipoText);
            $("#iponame").val(ipoText);
            $("#ipocode").val(ipoId);
+           location.reload();
         }
 
         //    window.addEventListener("beforeunload", function () {

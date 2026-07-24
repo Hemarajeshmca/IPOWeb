@@ -764,11 +764,22 @@
                             $("#shared_applied_price").val('');
                             $("#reject_remarks").val('');
                             $("#rule_code").val('');
-                            $.alert({
+                            if(flag=="R")
+                            {
+                                $.alert({
                                 title: 'IPO Allotment',
-                                content:"Data not available!",
+                                content:"Given Appl.no has already Invalid",
                                 type: 'red',
                             });
+                            }
+                            else{
+                                $.alert({
+                                title: 'IPO Allotment',
+                                content:"Given Appl.no has already valid",
+                                type: 'red',
+                            });
+                            }
+                            
                         }
 
                     },
