@@ -784,6 +784,9 @@
     <script>
         var selectedIPO = "";
         $(document).on("change", "#iponames", function () {
+        if ($(this).val() == "0" || $(this).val() == "") {
+            $(this).prop("selectedIndex", 1);   // Select first actual item (skip value 0)
+          } 
         var ipoId = $(this).val();
         var ipoText = $("#iponames option:selected").text();
         var clientId = ipoId.split('-')[0];
@@ -792,13 +795,14 @@
         localStorage.setItem("selectedClientId", clientId);
         console.log("ipoId :", ipoId);
         console.log("ipoText :", ipoText);
+        location.reload(); 
         }); 
         $(document).ready(function () {
-            getofferList();
+            getofferList(); 
             var savedIPO = localStorage.getItem("selectedIPO");
             if (savedIPO) {
                 $("#iponames").val(savedIPO);
-            }
+            }  
         }); 
         function openNav() {
             $(document).ready(function () {
@@ -2422,13 +2426,18 @@
                                );
                            });
                            var savedIPO = localStorage.getItem("selectedIPO");
-                            var firstIPO = filteredData[0].offer_code;
-                            localStorage.setItem("selectedIPO", firstIPO);
-                           // $ddl.val(firstIPO).trigger("change");
-                            $ddl.val(savedIPO);
-                            // if (savedIPO) {
-                            //     $ddl.val(savedIPO).trigger("change"); // 🔥 important
-                            // }
+                           var offer_codes =localStorage.getItem("selectedIPO");
+                           if (!savedIPO){
+                                offer_codes = filteredData[0].offer_code;
+                                //localStorage.setItem("selectedIPO", firstIPO);
+                           } 
+                           console.log("Before set :", $ddl.val()); 
+                            $ddl.val(offer_codes);  
+                            localStorage.setItem("selectedIPO", offer_codes);
+                            var ipoTexts = $("#iponames option:selected").text();
+                            localStorage.setItem("selectedIPOText",ipoTexts);
+                            console.log(ipoTexts);
+                            
                        }
                        else {
                               $ddl.empty();
@@ -2457,8 +2466,7 @@
            localStorage.setItem("selectedIPO", ipoId);
            localStorage.setItem("selectedIPOText", ipoText);
            $("#iponame").val(ipoText);
-           $("#ipocode").val(ipoId);
-           location.reload();
+           $("#ipocode").val(ipoId); 
         }
 
         //    window.addEventListener("beforeunload", function () {

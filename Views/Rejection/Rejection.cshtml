@@ -388,7 +388,7 @@
 <script>
         var selectedCodes = [];
              $(document).ready(function () {
-                $('#navhead').text('Run Rejection');
+                $('#navhead').text('Run Rejection'); 
                 var ipoName = localStorage.getItem("selectedIPOText");
                 $("#iponame").val(ipoName);
                 $("#rejectionList").hide();
@@ -655,7 +655,10 @@
             $("#shared_applied_price").val('');
             $("#reject_remarks").val('');
             $("#rule_code").val('');
-
+            $("#queryappno").text("");
+            $("#queryorderno").text("");
+            $("#querypanno").text("");
+            $("#queryremarks").text("");
             var modal = new bootstrap.Modal(
                 document.getElementById('additionsModal')
             );
@@ -737,17 +740,8 @@
                         console.log(result);
                         var data = JSON.parse(result.data);
                         if (data.Table && data.Table.length > 0) {
-                            if(flag=="R"){
-                                 $("#ipo").val(ipoCode);
-                                 populateDetails(data.Table[0]);
-                            }
-                            else{
-                                 $("#ripo").val(ipoCode);
-                                  populateRDetails(data.Table[0]);
-                            }
-
-                        } else {
-                            $("#rappno").val('');
+                            if(data.Table[0].errors=="0"){
+                                    $("#rappno").val('');
                             $("#rorderno").val('');
                             $("#rpanno").val('');
                             $("#rshares").val('');
@@ -764,21 +758,65 @@
                             $("#shared_applied_price").val('');
                             $("#reject_remarks").val('');
                             $("#rule_code").val('');
-                            if(flag=="R")
-                            {
-                                $.alert({
-                                title: 'IPO Allotment',
-                                content:"Given Appl.no has already Invalid",
-                                type: 'red',
-                            });
+                                    $.alert({
+                                        title: 'IPO Allotment',
+                                        content:"Invalid Appl.no.",
+                                        type: 'red',
+                                    });
                             }
-                            else{
-                                $.alert({
-                                title: 'IPO Allotment',
-                                content:"Given Appl.no has already valid",
-                                type: 'red',
-                            });
+                            else
+                            { 
+                                if( data.Table1.length > 0)
+                                {
+                                    if(flag=="R"){
+                                         $("#ipo").val(ipoCode);  
+                                        populateDetails(data.Table1[0]); 
+                                 
+                                    }
+                                    else{
+                                         $("#ripo").val(ipoCode); 
+                                        populateRDetails(data.Table1[0]); 
+                                    }
+
+                                }
+                                else
+                                {
+                                    $("#rappno").val('');
+                                    $("#rorderno").val('');
+                                    $("#rpanno").val('');
+                                    $("#rshares").val('');
+                                    $("#rshared_applied_price").val('');
+                                    $("#ramt").val('');
+                                    $("#additionremarks").val('');
+                                    $("#appno").val('');
+                                    $("#orderno").val('');
+                                    $("#panno").val('');
+                                    $("#qty").val('');
+                                    $("#shares").val('');
+                                    $("#amt").val('');
+                                    $("#remarks").val('');
+                                    $("#shared_applied_price").val('');
+                                    $("#reject_remarks").val('');
+                                    $("#rule_code").val('');
+                                    if(flag=="R")
+                                    {
+                                        $.alert({
+                                        title: 'IPO Allotment',
+                                        content:"Given Appl.no has already not valid",
+                                        type: 'red',
+                                    });
+                                    }
+                                    else{
+                                        $.alert({
+                                        title: 'IPO Allotment',
+                                        content:"Given Appl.no has already valid",
+                                        type: 'red',
+                                    });
+                                    }
+                                }
                             }
+                        } else {
+                            
                             
                         }
 
@@ -1007,14 +1045,14 @@
                var isValid = true;
                var offer_code =  localStorage.getItem("selectedIPO");
                 var ipo = offer_code;
-                var appno = $('#appno').val();
-                var orderno = $('#orderno').val();
-                var panno = $('#panno').val();
-                var qty = $('#shares').val();
-                var shares = $('#shared_applied_price').val();
-                var amt = $('#amt').val();
+                var appno = $('#appno').val().trim();
+                var orderno = $('#orderno').val().trim();
+                var panno = $('#panno').val().trim();
+                var qty = $('#shares').val().trim();
+                var shares = $('#shared_applied_price').val().trim();
+                var amt = $('#amt').val().trim();
                 var rule_code =$('#rule_code').val().split('/').pop().trim();
-                 var remarks = $('#remarks').val();
+                 var remarks = $('#remarks').val().trim();
                   if(appno === "") {
                         $("#queryappno").text("Please Enter Appl. No");
                     isValid = false;
@@ -1099,14 +1137,14 @@
         function rejSave() {
                     var offer_code =  localStorage.getItem("selectedIPO");
                     var ipo = offer_code;
-                    var appno = $('#rappno').val();
-                    var orderno = $('#rorderno').val();
-                    var panno = $('#rpanno').val();
-                    var qty = $('#rshares').val();
-                    var shares = $('#rshared_applied_price').val();
-                    var amt = $('#ramt').val();
-                    var rule_code =$('#rrule_code').val();
-                    var remarks = $('#additionremarks').val();
+                    var appno = $('#rappno').val().trim();
+                    var orderno = $('#rorderno').val().trim();
+                    var panno = $('#rpanno').val().trim();
+                    var qty = $('#rshares').val().trim();
+                    var shares = $('#rshared_applied_price').val().trim();
+                    var amt = $('#ramt').val().trim();
+                    var rule_code =$('#rrule_code').val().trim();
+                    var remarks = $('#additionremarks').val().trim();
                     var mymodel = {
                         ipo_code: ipo,
                         applno: appno,
