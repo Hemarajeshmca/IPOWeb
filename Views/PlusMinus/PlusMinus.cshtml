@@ -528,7 +528,16 @@
     });
 
 
-         function CheckerApprover(flag) { 
+         function CheckerApprover(flag) {
+             var remarks = $('#txtRemarks').val().trim();
+             if(remarks=== ""){
+                  $.alert({
+                    title: 'IPO Allotment',
+                    content:"Enter the remarks",
+                    type: 'red',
+                });
+                return;
+             }
                 var grid = $("#checklistGrid").data("kendoGrid");
 
                 var applNos = [];
@@ -538,7 +547,6 @@
                         applNos.push(item.appl_no);
                     }
                 });
-
                 var model = {
                     ipo_code: localStorage.getItem("selectedIPO"),
                     applno: applNos.join(","),      // e.g. 0IC7650002484228,0IC7650002484233
