@@ -82,7 +82,57 @@ namespace IPOWeb.Controllers
         }
 
         [HttpGet]
-        public IActionResult DownloadAllZip(string offer_code, string curdate,string trandate,string bank_name,string banker_address, string account_no, string ifsc,string account_title)
+        public IActionResult getBankFundDetailsDownload(string offer_code, string bank_code)
+        {
+            try
+            {
+                string urlstring = _configuration["Appsettings:apiurl"] + "getBankFundDetailsdownload";
+
+                using (var client = new HttpClient())
+                {
+                    client.Timeout = Timeout.InfiniteTimeSpan;
+
+                    string cookieName = "APItoken-" +
+                        User.FindFirst(ClaimTypes.Name)?.Value + "_" +
+                        User.FindFirst(ClaimTypes.Role)?.Value;
+
+                    string token = Request.Cookies[cookieName];
+
+                    client.DefaultRequestHeaders.Authorization =
+                        new AuthenticationHeaderValue("Bearer", token);
+
+                    client.DefaultRequestHeaders.Accept.Add(
+                        new MediaTypeWithQualityHeaderValue("application/json"));
+
+                    string url = urlstring + "?offer_code=" + offer_code+"&bank_code="+ bank_code;
+
+                    var response = client.GetAsync(url).Result;
+                    ApiTokenRefreshMiddleware.TokenUpdate(HttpContext, response, APIcookieName);
+
+                    if (response.StatusCode == HttpStatusCode.Unauthorized)
+                    {
+                        Response.Cookies.Delete(cookieName);
+                        return Json(new { success = false, authExpired = true });
+                    }
+
+                    if (!response.IsSuccessStatusCode)
+                        return Json(new { success = false, message = "API failed" });
+
+                    string result = response.Content.ReadAsStringAsync().Result;
+
+                    return Content(result, "application/json");
+                }
+            }
+            catch (Exception ex)
+            {
+                return Json(new { success = false, message = ex.Message });
+            }
+        }
+
+
+
+        [HttpGet]
+        public IActionResult DownloadAllZip(string offer_code, string bank_code, string curdate,string trandate,string bank_name,string banker_address, string account_no, string ifsc,string account_title)
         {
             try
             {
@@ -113,7 +163,7 @@ namespace IPOWeb.Controllers
                 // =========================
                 // ✅ CALL BANK API
                 // =========================
-                string urlstring = _configuration["Appsettings:apiurl"] + "getBankFundDetails";
+                string urlstring = _configuration["Appsettings:apiurl"] + "getBankFundDetailsdownload";
 
                 List<NSBBankData> nsbbankList;
                 List<SBBankData> sbbankList;
@@ -134,7 +184,7 @@ namespace IPOWeb.Controllers
                     client.DefaultRequestHeaders.Accept.Add(
                         new MediaTypeWithQualityHeaderValue("application/json"));
 
-                    var response = client.GetAsync(urlstring + "?offer_code=" + offer_code).Result;
+                    var response = client.GetAsync(urlstring + "?offer_code=" + offer_code+"&bank_code="+bank_code).Result;
 
                     ApiTokenRefreshMiddleware.TokenUpdate(HttpContext, response, APIcookieName);
                     if (!response.IsSuccessStatusCode)
@@ -142,10 +192,10 @@ namespace IPOWeb.Controllers
 
                     string result = response.Content.ReadAsStringAsync().Result;
 
-                    var apiData = JsonConvert.DeserializeObject<BankApiResponse>(result);
+                    var apiData = JsonConvert.DeserializeObject<BankApiResponsedownload>(result);
 
-                    nsbbankList = apiData?.nsbsummary ?? new List<NSBBankData>();
-                    sbbankList = apiData?.sbsummary ?? new List<SBBankData>();
+                    nsbbankList = apiData?.nsbsummarydownload ?? new List<NSBBankData>();
+                    sbbankList = apiData?.sbsummarydownload ?? new List<SBBankData>();
                 }
 
                 // =========================
@@ -272,11 +322,11 @@ namespace IPOWeb.Controllers
 
                         AddCell(table, "NSM", normalFont);
                         AddCell(table,
-                         nsb != null ? nsb.nsb_allocated_block_amount.ToString("N2") : "0.00",
+                         nsb != null ? nsb.nsb_total_amount.ToString("N2") : "0.00",
                          normalFont, Element.ALIGN_RIGHT);
 
                         AddCell(table,
-                            nsb != null ? nsb.nsb_total_amount.ToString("N2") : "0.00",
+                            nsb != null ? nsb.nsb_allocated_block_amount.ToString("N2") : "0.00",
                             normalFont, Element.ALIGN_RIGHT);
 
                     AddCell(table,
@@ -347,9 +397,7 @@ namespace IPOWeb.Controllers
                 // =========================
                 // ✅ ALLOTMENT FILES
                 // =========================
-                string urlstring1 =
-     _configuration["Appsettings:apiurl"] +
-     "Fund_Transfer_bank_details";
+                string urlstring1 = _configuration["Appsettings:apiurl"] + "Fund_Transfer_bank_details";
 
                 using (var client = new HttpClient())
                 {
@@ -364,7 +412,7 @@ namespace IPOWeb.Controllers
                         new MediaTypeWithQualityHeaderValue("application/json"));
 
                     var response =
-                        client.GetAsync(urlstring1 + "?offer_code=" + offer_code).Result;
+                        client.GetAsync(urlstring1 + "?offer_code=" + offer_code + "&bank_code=" + bank_code).Result;
 
                     if (!response.IsSuccessStatusCode)
                         return BadRequest("Excel API failed");
@@ -471,6 +519,13 @@ namespace IPOWeb.Controllers
             public List<NSBBankData> nsbsummary { get; set; }
             public List<SBBankData> sbsummary { get; set; }
             public List<BankerData> banker { get; set; }
+        }
+
+        public class BankApiResponsedownload
+        {
+            public List<NSBBankData> nsbsummarydownload { get; set; }
+            public List<SBBankData> sbsummarydownload { get; set; }
+            public List<BankerData> bankerdownload { get; set; }
         }
     }
 }
