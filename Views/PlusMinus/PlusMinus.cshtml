@@ -528,65 +528,71 @@
     });
 
 
-         function CheckerApprover(flag) {
-             var remarks = $('#txtRemarks').val().trim();
-             if(remarks=== ""){
-                  $.alert({
-                    title: 'IPO Allotment',
-                    content:"Enter the remarks",
-                    type: 'red',
-                });
-                return;
-             }
-                var grid = $("#checklistGrid").data("kendoGrid");
-
-                var applNos = [];
-
-                grid.dataSource.data().forEach(function (item) {
-                    if (selectedCodes.includes(item.appl_no)) {
-                        applNos.push(item.appl_no);
-                    }
-                });
-                var model = {
-                    ipo_code: localStorage.getItem("selectedIPO"),
-                    applno: applNos.join(","),      // e.g. 0IC7650002484228,0IC7650002484233
-                    rejremarks: $("#txtRemarks").val(), 
-                    audit_flag: "C",
-                    flag:flag
-                };
-
-                $.ajax({
-                    url: "/PlusMinus/ApprovePlusMinus",
-                    type: "POST",
-                    contentType: "application/json",
-                    data: JSON.stringify(model),
-                    success: function (response) {
-                    var result = JSON.parse(response._data);console.log(result);
-                        if (result.length > 0) {
-                            if (result[0].result == 1) {
-                                $.alert({
-                                    title: 'IPO Allotment', 
-                                    content: result[0].message,
-                                    type: 'green',
-                                    buttons: {
-                                        ok: function () { 
-                                                var offer_code =  localStorage.getItem("selectedIPO");
-                                                if(offer_code){
-                                                    plusminus_load();
-                                                }
-
-                                            }
-                                    }
-                                });
-                            }
-                        }
-                        
-                       $("#txtRemarks").val("");
-                    },
-                    error: function (xhr) {
-                        console.log(xhr);
-                    }
-                });
+    function CheckerApprover(flag) {
+        var grid = $("#checklistGrid").data("kendoGrid");
+        var applNos = [];
+        grid.dataSource.data().forEach(function (item) {
+            if (selectedCodes.includes(item.appl_no)) {
+                applNos.push(item.appl_no);
             }
+        });
+        var remarks = $('#txtRemarks').val().trim();
+        if(remarks=== ""){
+             $.alert({
+               title: 'IPO Allotment',
+               content:"Enter the remarks",
+               type: 'red',
+           });
+           return;
+        }
+        if(selectedCodes.length==0){
+             $.alert({
+                        title: 'IPO Allotment',
+                        content:"kinldy select any one appl.no",
+                        type: 'red',
+                    });
+            return;
+        }
+        var model = {
+            ipo_code: localStorage.getItem("selectedIPO"),
+            applno: applNos.join(","),      // e.g. 0IC7650002484228,0IC7650002484233
+            rejremarks: $("#txtRemarks").val(),
+            audit_flag: "C",
+            flag:flag
+        };
+
+        $.ajax({
+            url: "/PlusMinus/ApprovePlusMinus",
+            type: "POST",
+            contentType: "application/json",
+            data: JSON.stringify(model),
+            success: function (response) {
+            var result = JSON.parse(response._data);console.log(result);
+                if (result.length > 0) {
+                    if (result[0].result == 1) {
+                        $.alert({
+                            title: 'IPO Allotment',
+                            content: result[0].message,
+                            type: 'green',
+                            buttons: {
+                                ok: function () {
+                                        var offer_code =  localStorage.getItem("selectedIPO");
+                                        if(offer_code){
+                                            plusminus_load();
+                                        }
+
+                                    }
+                            }
+                        });
+                    }
+                }
+
+               $("#txtRemarks").val("");
+            },
+            error: function (xhr) {
+                console.log(xhr);
+            }
+        });
+    }
 
 </script>
