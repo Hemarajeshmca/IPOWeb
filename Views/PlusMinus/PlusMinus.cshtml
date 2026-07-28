@@ -538,7 +538,24 @@
                         applNos.push(item.appl_no);
                     }
                 });
-
+                console.log(selectedCodes.length);
+                var remarks = $('#txtRemarks').val().trim();
+                if(remarks=== ""){
+                     $.alert({
+                       title: 'IPO Allotment',
+                       content:"Enter the remarks",
+                       type: 'red',
+                   });
+                   return;
+                }
+                if(selectedCodes.length==0){
+                     $.alert({
+                                title: 'IPO Allotment',
+                                content:"kinldy select any one appl.no",
+                                type: 'red',
+                            });
+                    return;
+                }
                 var model = {
                     ipo_code: localStorage.getItem("selectedIPO"),
                     applno: applNos.join(","),      // e.g. 0IC7650002484228,0IC7650002484233
