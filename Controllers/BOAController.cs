@@ -584,9 +584,17 @@ namespace IPOWeb.Controllers
                 ReplaceText(body, "{total_iposize}", total_iposize.ToString("N0"));
                 ReplaceText(body, "{total_mm}", total_mm.ToString("N0"));
                 ReplaceText(body, "{mm_shares}", mm_shares.ToString("N0"));
-                DateTime openingDate = Convert.ToDateTime(summary.offer_openingdate);
+                // DateTime openingDate = Convert.ToDateTime(summary.offer_openingdate);
+                DateTime openingDate = DateTime.ParseExact(
+                 summary.offer_openingdate,
+                 "MM/dd/yyyy HH:mm:ss",
+                 CultureInfo.InvariantCulture);
                 ReplaceText(body, "{offer_openingdate}", openingDate.ToString("dd MMMM yyyy"));
-                DateTime closingDate = Convert.ToDateTime(summary.offer_closingdate);
+                //DateTime closingDate = Convert.ToDateTime(summary.offer_closingdate);
+                DateTime closingDate = DateTime.ParseExact(
+                    summary.offer_closingdate,
+                    "MM/dd/yyyy HH:mm:ss",
+                    CultureInfo.InvariantCulture);
                 ReplaceText(body, "{offer_closingdate}", closingDate.ToString("dd MMMM yyyy"));
                 ReplaceText(body, "{public_shares}", public_shares.ToString("N0"));
                 ReplaceText(body, "{issue_percentage}",summary.issue_percentage.ToString("N2"));
@@ -646,13 +654,29 @@ namespace IPOWeb.Controllers
                 ReplaceText(body, "{mm_offer_fixedprice}", CategoryCANCH.mm_offer_fixedprice.ToString("N2"));
                 ReplaceText(body, "{mma_allocated_amount}", mma_allocated_amount.ToString("N0"));
                 ReplaceText(body, "{mma_shares_available_for_public}", mma_shares_available_for_public.ToString("N0"));
-                DateTime openingDate1 = Convert.ToDateTime(CategoryCANCH.mm_offer_openingdate);
+                // DateTime openingDate1 = Convert.ToDateTime(CategoryCANCH.mm_offer_openingdate);
+                DateTime openingDate1 = DateTime.ParseExact(
+                CategoryCANCH.mm_offer_openingdate,
+                "MM/dd/yyyy HH:mm:ss",
+                CultureInfo.InvariantCulture);
                 ReplaceText(body, "{mm_offer_openingdate}", openingDate1.ToString("dd MMMM yyyy"));
-                DateTime openingDate2 = Convert.ToDateTime(CategoryCANCH.mm_offer_closingdate);
+                // DateTime openingDate2 = Convert.ToDateTime(CategoryCANCH.mm_offer_closingdate);
+                DateTime openingDate2 = DateTime.ParseExact(
+               CategoryCANCH.mm_offer_closingdate,
+               "MM/dd/yyyy HH:mm:ss",
+               CultureInfo.InvariantCulture);
                 ReplaceText(body, "{mm_offer_closingdate}", openingDate2.ToString("dd MMMM yyyy"));
-                DateTime openingDate3 = Convert.ToDateTime(CategoryCANCH.mm_offer_allotmentdate);
+                // DateTime openingDate3 = Convert.ToDateTime(CategoryCANCH.mm_offer_allotmentdate);
+                DateTime openingDate3 = DateTime.ParseExact(
+               CategoryCANCH.mm_offer_allotmentdate,
+               "MM/dd/yyyy HH:mm:ss",
+               CultureInfo.InvariantCulture);
                 ReplaceText(body, "{mm_offer_allotmentdate}", openingDate3.ToString("dd MMMM yyyy"));
-                DateTime openingDate4 = Convert.ToDateTime(CategoryCANCH.mm_offer_listingdate);
+                // DateTime openingDate4 = Convert.ToDateTime(CategoryCANCH.mm_offer_listingdate);
+                DateTime openingDate4 = DateTime.ParseExact(
+                  CategoryCANCH.mm_offer_listingdate,
+                  "MM/dd/yyyy HH:mm:ss",
+                  CultureInfo.InvariantCulture);
                 ReplaceText(body, "{mm_offer_listingdate}", openingDate4.ToString("dd MMMM yyyy"));
                 ReplaceText(body, "{mma_bid_book_subscription}", CategoryCANCH.mma_bid_book_subscription.ToString("N2"));
                 ReplaceText(body, "{mm_final_subscription}", CategoryCANCH.mm_final_subscription.ToString("N2"));

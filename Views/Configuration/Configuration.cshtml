@@ -1,0 +1,269 @@
+﻿@{
+    Layout = "~/Views/Shared/_LayoutNew.cshtml";
+    var userName = Context.Session.GetString("user_name");
+    var userRole = Context.Session.GetString("user_role");
+    var roleName = Context.Session.GetString("role_name");
+}
+<!DOCTYPE html>
+<html>  
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>Client Setup</title>
+    <style>
+        .nav-tabs .nav-link.active, .nav-tabs .nav-item.show .nav-link {
+            background-color: #027ed1 !important;
+            color: #fff !important;
+        }
+
+        .nav-tabs .nav-item .nav-link:not(.active) {
+            background-color: #716969;
+            color: #fff;
+        }
+        .content-wrapper {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        h5#navhead {
+            position: relative;
+            right: 129px;
+            width: 23%;
+        }
+    </style>
+</head>
+
+<body class="hold-transition skin-blue sidebar-mini fixed">
+    <div class="content-wrapper">
+        <div class="container-xxl flex-grow-1 container-p-y">
+            <div class="card-body" style="margin-top:5px;height: 550px;width: 103%;margin-left: -18px;box-shadow: 0px 6px 7px -1px rgba(67, 89, 113, 0.12);">
+              <div class="row">
+                    <div class="col-xl-12">                        
+                        <div class="nav-align-top mb-4">
+                            <ul class="nav nav-tabs" role="tablist">
+                                <li class="nav-item">
+                                    <button type="button"
+                                            class="nav-link active"
+                                            role="tab"
+                                            data-bs-toggle="tab"
+                                            data-bs-target="#navs-top-home"
+                                            aria-controls="navs-top-home"
+                                            aria-selected="true">
+                                        Password Policy
+                                    </button>
+                                </li>
+                                <li class="nav-item">
+                                    <button type="button"
+                                            class="nav-link"
+                                            role="tab"
+                                            data-bs-toggle="tab"
+                                            data-bs-target="#navs-top-profile"
+                                            aria-controls="navs-top-profile"
+                                            aria-selected="false">
+                                        Session
+                                    </button>
+                                </li>
+                                <li class="nav-item">
+                                    <button type="button"
+                                            class="nav-link"
+                                            role="tab"
+                                            data-bs-toggle="tab"
+                                            data-bs-target="#navs-top-messages"
+                                            aria-controls="navs-top-messages"
+                                            aria-selected="false">
+                                        DB Backup
+                                    </button>
+                                </li>
+                            </ul>
+                            <div class="tab-content">
+                                <div class="tab-pane fade show active" id="navs-top-home" role="tabpanel">
+                                    <div class="row">
+                                        <div class="col-sm-2">
+                                            <label class="form-label" for="ReferredBy" data-field="ReferredBy">Min. Password Length</label>
+                                            <input type="text" id="password_min_len" class="form-control">
+                                        </div>
+                                        <div class="col-sm-2">
+                                            <label class="form-label" for="ReferredBy" data-field="ReferredBy">Max. Password Length</label>
+                                            <input type="text" id="password_max_len" class="form-control">
+                                        </div>
+                                        <div class="col-sm-2 radio-group" style="position: relative;left: 20px;">
+                                            <label class="form-label" for="ReferredBy" data-field="ReferredBy">Req. Uppercase</label><br />
+                                            <label>
+                                                <input type="radio" name="pwd_require_uppercase" value="Y">
+                                                Yes
+                                            </label>
+                                            <label>
+                                                <input type="radio" name="pwd_require_uppercase" value="N">
+                                                No
+                                            </label>
+                                        </div>
+                                        <div class="col-sm-2 radio-group">
+                                            <label class="form-label" for="ReferredBy" data-field="ReferredBy">Req. Lowercase</label><br />
+                                            <label>
+                                                <input type="radio" name="pwd_require_lowercase" value="Y">
+                                                Yes
+                                            </label>
+                                            <label>
+                                                <input type="radio" name="pwd_require_lowercase" value="N">
+                                                No
+                                            </label>
+                                        </div>
+                                        <div class="col-sm-2 radio-group">
+                                            <label class="form-label" for="ReferredBy" data-field="ReferredBy">Req. Number</label><br />
+                                            <label>
+                                                <input type="radio" name="pwd_require_number" value="Y">
+                                                Yes
+                                            </label>
+                                            <label>
+                                                <input type="radio" name="pwd_require_number" value="N">
+                                                No
+                                            </label>
+                                        </div>
+                                        <div class="col-sm-2 radio-group">
+                                            <label class="form-label" for="ReferredBy" data-field="ReferredBy">Req. Spl. Character</label><br />
+                                            <label>
+                                                <input type="radio" name="pwd_require_special_char" value="Y">
+                                                Yes
+                                            </label>
+                                            <label>
+                                                <input type="radio" name="pwd_require_special_char" value="N">
+                                                No
+                                            </label>
+                                        </div>
+                                    </div>
+                                    <div class="row" style="margin-top:10px;">
+                                        <div class="col-sm-2">
+                                            <label class="form-label" for="ReferredBy" data-field="ReferredBy">Password History Count</label>
+                                            <input type="text" id="pwd_history_count" class="form-control">
+                                        </div>
+                                        <div class="col-sm-2">
+                                            <label class="form-label" for="ReferredBy" data-field="ReferredBy">Max. Failed Login Attempts</label>
+                                            <input type="text" id="password_attempt_count" class="form-control">
+                                        </div>
+                                        <div class="col-sm-2" style="position: relative;left: 20px;">
+                                            <label class="form-label" for="ReferredBy" data-field="ReferredBy">Lock Duration Mins.</label>
+                                            <input type="text" id="pwd_lockout_duration_minutes" class="form-control">
+                                        </div>
+                                        <div class="col-sm-3" style="margin-left:43px;">
+                                            <button type="button" class="btn btn-primary" id="btnSave" onclick="savepwdpolicy()" style="padding: 3px 25px;margin-top:28px;width:40%">Save</button>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="tab-pane fade" id="navs-top-profile" role="tabpanel">
+                                    <p>
+                                        Donut dragée jelly pie halvah. Danish gingerbread bonbon cookie wafer candy oat cake ice
+                                        cream. Gummies halvah tootsie roll muffin biscuit icing dessert gingerbread. Pastry ice cream
+                                        cheesecake fruitcake.
+                                    </p>
+                                    <p class="mb-0">
+                                        Jelly-o jelly beans icing pastry cake cake lemon drops. Muffin muffin pie tiramisu halvah
+                                        cotton candy liquorice caramels.
+                                    </p>
+                                </div>
+                                <div class="tab-pane fade" id="navs-top-messages" role="tabpanel">
+                                    <p>
+                                        Oat cake chupa chups dragée donut toffee. Sweet cotton candy jelly beans macaroon gummies
+                                        cupcake gummi bears cake chocolate.
+                                    </p>
+                                    <p class="mb-0">
+                                        Cake chocolate bar cotton candy apple pie tootsie roll ice cream apple pie brownie cake. Sweet
+                                        roll icing sesame snaps caramels danish toffee. Brownie biscuit dessert dessert. Pudding jelly
+                                        jelly-o tart brownie jelly.
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+              </div>      
+               
+                
+            </div>
+        </div>
+    </div>      
+   
+</body>
+
+</html>
+
+<script type="text/javascript">
+    $( document ).ready(function() {
+        fetchdata();
+    });
+
+    function fetchdata() {
+         $.ajax({
+             type: "POST",
+            url: '@Url.Action("GetConfigList", "Configuration")',
+            dataType: "json",
+             contentType: 'application/json; charset=utf-8',
+             success: function (data) {
+                 console.log("CONFDATA:", data);
+                 var configList = JSON.parse(data.data);
+                 var configRow = configList[0];
+                 var passwordConfig = JSON.parse(configRow.password_config);
+                 var requireUpper = passwordConfig.pwd_require_uppercase;
+                 var requireLower = passwordConfig.pwd_require_lowercase;
+                  var requireNumber = passwordConfig.pwd_require_number;   
+                  var requireSplChar = passwordConfig.pwd_require_special_char;
+
+                 $("#password_min_len").val(passwordConfig.password_min_len);
+                 $("#password_max_len").val(passwordConfig.password_max_len);
+                  $("input[name='pwd_require_uppercase'][value='" + requireUpper + "']") .prop("checked", true);
+                  $("input[name='pwd_require_lowercase'][value='" + requireLower + "']") .prop("checked", true);
+                 $("input[name='pwd_require_number'][value='" + requireNumber + "']") .prop("checked", true);
+                 $("input[name='pwd_require_special_char'][value='" + requireSplChar + "']") .prop("checked", true);
+                 $("#pwd_history_count").val(passwordConfig.pwd_history_count);
+                 $("#password_attempt_count").val(passwordConfig.password_attempt_count);
+                 $("#pwd_lockout_duration_minutes").val(passwordConfig.pwd_lockout_duration_minutes);
+             }
+         });
+    }
+
+    function savepwdpolicy() {
+     var requestData = {
+        user_id: "@userName",
+        password_max_len: $("#password_max_len").val(),
+        password_min_len: $("#password_min_len").val(),
+        password_attempt_count: $("#password_attempt_count").val(),
+
+        pwd_require_uppercase: $("input[name='pwd_require_uppercase']:checked").val(),
+        pwd_require_lowercase: $("input[name='pwd_require_lowercase']:checked").val(),
+        pwd_require_number: $("input[name='pwd_require_number']:checked").val(),
+        pwd_require_special_char: $("input[name='pwd_require_special_char']:checked").val(),
+
+        pwd_history_count: $("#pwd_history_count").val(),
+        pwd_lockout_duration_minutes: $("#pwd_lockout_duration_minutes").val()
+    };
+
+    console.log("UPDATE DATA:", requestData);
+    console.log("UPDATE JSON:", JSON.stringify(requestData));
+               $.ajax({
+                    url: '@Url.Action("UpdateConfig", "Configuration")',
+                    type: 'POST',
+                    contentType: 'application/json; charset=utf-8',
+                    dataType: 'json',
+                    data: JSON.stringify(requestData),
+
+                    success: function (response) {
+                        console.log("UPDATE RESPONSE:", response);
+                        if (response.success && response.data) {
+                            var resultData = JSON.parse(response.data);
+                            if (resultData.length > 0) {
+                                var message = resultData[0].result;
+                                    $.dialog({
+                                            title: 'Success',
+                                            content: message,
+                                            type: 'green',                                           
+                                        });
+                            }
+                        }
+                    },
+
+                    error: function (xhr, status, error) {
+                        console.log("ERROR:", error);
+                        console.log("RESPONSE:", xhr.responseText);
+                    }
+                });
+    }
+
+</script>

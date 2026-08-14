@@ -298,6 +298,9 @@ namespace IPOWeb.Controllers
                             HttpContext.Session.SetString("user_code", Convert.ToString(firstRow["user_code"]));
                             HttpContext.Session.SetString("user_email", Convert.ToString(firstRow["email"]));
                             HttpContext.Session.SetString("role_name", Convert.ToString(firstRow["role_name"]));
+                            HttpContext.Session.SetString("force_password_change_flag", Convert.ToString(firstRow["force_password_change_flag"]));
+                            HttpContext.Session.SetString("password_expiry_days", Convert.ToString(firstRow["password_expiry_days"]));
+                            HttpContext.Session.SetString("lock_flag", Convert.ToString(firstRow["lock_flag"]));
                         }
                         HttpContext.Session.SetString("LoginSessionId", LoginSessionId);
                         // Build Menu List
@@ -339,6 +342,9 @@ namespace IPOWeb.Controllers
                         string email = Convert.ToString(result.Tables[0].Rows[0]["email"]);
                         string role = Convert.ToString(result.Tables[0].Rows[0]["role_code"]);
                         string user_code = Convert.ToString(result.Tables[0].Rows[0]["user_code"]);
+                        string force_password_change_flag = Convert.ToString(result.Tables[0].Rows[0]["force_password_change_flag"]);
+                        string password_expiry_days = Convert.ToString(result.Tables[0].Rows[0]["password_expiry_days"]);
+                        string lock_flag = Convert.ToString(result.Tables[0].Rows[0]["lock_flag"]);
                         // 🔹 Step 5: Cookie authentication for website
                         var claims = new List<Claim>
                       {
@@ -490,9 +496,9 @@ namespace IPOWeb.Controllers
         }
 
         [HttpPost]
-        public JsonResult ChangePassword([FromBody] LoginModel mymodel)
+        public JsonResult ChangePassword([FromBody] ChangePasswordModel mymodel)
         {
-            var apiUrl = _configuration.GetSection("Appsettings")["apiurl"] + "/ChangePassword";
+            var apiUrl = _configuration.GetSection("Appsettings")["cumsapiurl"] + "/UpdUser";
 
             try
             {
@@ -523,19 +529,17 @@ namespace IPOWeb.Controllers
                 }
 
                 var rawJson = response.Content.ReadAsStringAsync().Result;
-                var nestedJson = JsonConvert.DeserializeObject<string>(rawJson);
-                var parsedResult = JsonConvert.DeserializeObject<Dictionary<string, List<Dictionary<string, string>>>>(nestedJson);
 
-                var message = parsedResult?["Table"]?.FirstOrDefault()?["result"] ?? "Unknown response";
-                var isSuccess = message.ToLower().Contains("success");
+                var apiResult = JsonConvert.DeserializeObject(rawJson);
 
-                return Json(new { success = isSuccess, message });
+                return Json(apiResult);
             }
             catch (Exception ex)
             {
                 return Json(new { success = false, message = ex.Message });
             }
         }
+
 
         public IActionResult generateOTP(String empEmail)
         {

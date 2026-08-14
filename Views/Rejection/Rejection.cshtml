@@ -687,370 +687,163 @@
             //  loadaddrejlist(offer_code)
         }
 
-        function SearchRejectionData(type,flag)
+           function SearchRejectionData(type,flag)
+    {
+        var ipoCode =  localStorage.getItem("selectedIPO");
+        var appNo = "";
+        var orderNo = "";
+        var panNo = "";
+        if(flag=="R")
         {
-            var ipoCode =  localStorage.getItem("selectedIPO");
-            var appNo = "";
-            var orderNo = "";
-            var panNo = "";
-            if(flag=="R")
-            {
 
-                if (type == "APP")
-                    appNo = $("#appno").val().trim();
+            if (type == "APP")
+                appNo = $("#appno").val().trim();
 
-                if (type == "ORDER")
-                    orderNo = $("#orderno").val().trim();
+            if (type == "ORDER")
+                orderNo = $("#orderno").val().trim();
 
-                if (type == "PAN")
-                    panNo = $("#panno").val().trim();
-            }
-            else if(flag=="A")
-            {
+            if (type == "PAN")
+                panNo = $("#panno").val().trim();
+        }
+        else if(flag=="A")
+        {
 
-                 if (type == "APP")
-                    appNo = $("#rappno").val().trim();
+             if (type == "APP")
+                appNo = $("#rappno").val().trim();
 
-                if (type == "ORDER")
-                    orderNo = $("#rorderno").val().trim();
+            if (type == "ORDER")
+                orderNo = $("#rorderno").val().trim();
 
-                if (type == "PAN")
-                    panNo = $("#rpanno").val().trim();
-            }
-            if(appNo === "" && orderNo === "" && panNo === "") {
-                  $.alert({
-                            title: 'IPO Allotment',
-                            content:"Enter Appl.No / Order No/ PAN No",
-                            type: 'red',
-                        });
-            }
-            else
-            {
-                $.ajax({
-                    url: '@Url.Action("GetAddRejList", "Rejection")',
-                    type: 'POST',
-                    dataType: 'json',
-                    data: {
-                        ipo_code: ipoCode,
-                        appl_no: appNo,
-                        order_no: orderNo,
-                        pan_no: panNo,
-                        flag: flag,
-                    },
-                    success: function (result) {
-                        console.log(result);
-                        var data = JSON.parse(result.data);
-                        if (data.Table && data.Table.length > 0) {
-                            if(data.Table[0].errors=="0"){
-                                    $("#rappno").val('');
-                            $("#rorderno").val('');
-                            $("#rpanno").val('');
-                            $("#rshares").val('');
-                            $("#rshared_applied_price").val('');
-                            $("#ramt").val('');
-                            $("#additionremarks").val('');
-                            $("#appno").val('');
-                            $("#orderno").val('');
-                            $("#panno").val('');
-                            $("#qty").val('');
-                            $("#shares").val('');
-                            $("#amt").val('');
-                            $("#remarks").val('');
-                            $("#shared_applied_price").val('');
-                            $("#reject_remarks").val('');
-                            $("#addlblstatus").text("");
-                            $("#rule_code").val('');
-                                    $.alert({
-                                        title: 'IPO Allotment',
-                                        content:"Invalid Appl.no.",
-                                        type: 'red',
-                                    });
-                            }
-                            else if(data.Table[0].errors=="C")
-                            {
+            if (type == "PAN")
+                panNo = $("#rpanno").val().trim();
+        }
+        if(appNo === "" && orderNo === "" && panNo === "") {
+              $.alert({
+                        title: 'IPO Allotment',
+                        content:"Enter Appl.No / Order No/ PAN No",
+                        type: 'red',
+                    });
+        }
+        else
+        {
+            $.ajax({
+                url: '@Url.Action("GetAddRejList", "Rejection")',
+                type: 'POST',
+                dataType: 'json',
+                data: {
+                    ipo_code: ipoCode,
+                    appl_no: appNo,
+                    order_no: orderNo,
+                    pan_no: panNo,
+                    flag: flag,
+                },
+                success: function (result) {
+                    console.log(result);
+                    var data = JSON.parse(result.data);
+                    if (data.Table && data.Table.length > 0) {
+                        if(data.Table[0].errors=="0"){
+                                $("#rappno").val('');
+                        $("#rorderno").val('');
+                        $("#rpanno").val('');
+                        $("#rshares").val('');
+                        $("#rshared_applied_price").val('');
+                        $("#ramt").val('');
+                        $("#additionremarks").val('');
+                        $("#appno").val('');
+                        $("#orderno").val('');
+                        $("#panno").val('');
+                        $("#qty").val('');
+                        $("#shares").val('');
+                        $("#amt").val('');
+                        $("#remarks").val('');
+                        $("#shared_applied_price").val('');
+                        $("#reject_remarks").val('');
+                        $("#addlblstatus").text("");
+                        $("#rule_code").val('');
                                 $.alert({
-                                title: 'IPO Allotment',
-                                content:"Application moved to checker queue",
-                                type: 'red',
+                                    title: 'IPO Allotment',
+                                    content:"Invalid Appl.no.",
+                                    type: 'red',
                                 });
+                        }
+                        else if(data.Table[0].errors=="C")
+                        {
+                            $.alert({
+                            title: 'IPO Allotment',
+                            content:"Application moved to checker queue",
+                            type: 'red',
+                            });
+                        }
+                        else
+                        {
+                            if( data.Table1.length > 0)
+                            {
+                                if(flag=="R"){
+                                        $("#ipo").val(ipoCode);
+                                    populateDetails(data.Table1[0]);
+
+                                }
+                                else{
+                                        $("#ripo").val(ipoCode);
+                                    populateRDetails(data.Table1[0]);
+                                }
+
                             }
                             else
-                            { 
-                                if( data.Table1.length > 0)
-                                { 
-                                    if(flag=="R"){
-                                            $("#ipo").val(ipoCode);  
-                                        populateDetails(data.Table1[0]); 
-                                 
-                                    }
-                                    else{
-                                            $("#ripo").val(ipoCode); 
-                                        populateRDetails(data.Table1[0]); 
-                                    } 
-
-                                }
-                                else
+                            {
+                                $("#rappno").val('');
+                                $("#rorderno").val('');
+                                $("#rpanno").val('');
+                                $("#rshares").val('');
+                                $("#rshared_applied_price").val('');
+                                $("#ramt").val('');
+                                $("#additionremarks").val('');
+                                $("#appno").val('');
+                                $("#orderno").val('');
+                                $("#panno").val('');
+                                $("#qty").val('');
+                                $("#shares").val('');
+                                $("#amt").val('');
+                                $("#remarks").val('');
+                                $("#shared_applied_price").val('');
+                                $("#reject_remarks").val('');
+                                $("#addlblstatus").text("");
+                                $("#rule_code").val('');
+                                if(flag=="A")
                                 {
-                                    $("#rappno").val('');
-                                    $("#rorderno").val('');
-                                    $("#rpanno").val('');
-                                    $("#rshares").val('');
-                                    $("#rshared_applied_price").val('');
-                                    $("#ramt").val('');
-                                    $("#additionremarks").val('');
-                                    $("#appno").val('');
-                                    $("#orderno").val('');
-                                    $("#panno").val('');
-                                    $("#qty").val('');
-                                    $("#shares").val('');
-                                    $("#amt").val('');
-                                    $("#remarks").val('');
-                                    $("#shared_applied_price").val('');
-                                    $("#reject_remarks").val('');
-                                    $("#addlblstatus").text("");
-                                    $("#rule_code").val('');
-                                    if(flag=="A")
-                                    {
-                                        $.alert({
-                                        title: 'IPO Allotment',
-                                        content:"Given Appl.no has already not valid",
-                                        type: 'red',
-                                    });
-                                    }
-                                    else{
-                                        $.alert({
-                                        title: 'IPO Allotment',
-                                        content:"Given Appl.no has already valid",
-                                        type: 'red',
-                                    });
-                                    }
+                                    $.alert({
+                                    title: 'IPO Allotment',
+                                    content:"Given Appl.no has already not valid",
+                                    type: 'red',
+                                });
+                                }
+                                else{
+                                    $.alert({
+                                    title: 'IPO Allotment',
+                                    content:"Given Appl.no has already valid",
+                                    type: 'red',
+                                });
                                 }
                             }
-                        } else {
-                            
-                            
                         }
+                    } else {
 
-                    },
-                    error: function () {
-                         $.alert({
-                                title: 'IPO Allotment',
-                                content:"Error while fetching data.",
-                                type: 'red',
-                            });
 
                     }
-                });
-            }
 
-        }
+                },
+                error: function () {
+                     $.alert({
+                            title: 'IPO Allotment',
+                            content:"Error while fetching data.",
+                            type: 'red',
+                        });
 
-        function loadaddrejlist_old(offer_code) {
-            try {
-               $.ajax({
-                    type: "GET",
-                    url: '@Url.Action("GetAddRejList", "Rejection")',
-                    dataType: 'json',
-                    contentType: 'application/json; charset=utf-8',
-                    data: {
-                        ipo_code: offer_code
-                    },
-                        success: function (response) {
-                        var result = JSON.parse(response.data);
-                        var applList = result.Table;
-                        var rejectionList = result.Table1;
-                         if (result.Table.length > 0) {
-                                $("#ipo").val(offer_code);
-                                      $("#appno").autocomplete({
-                                            appendTo: "#additionsModal",
-                                            minLength: 3,
-                                            source: function (request, response) {
-                                                var matches = $.grep(applList, function (item) {
-                                                    return item.appl_no.toLowerCase()
-                                                        .indexOf(request.term.toLowerCase()) >= 0;
-                                                });
-                                                response($.map(matches.slice(0, 20), function (item) {
-                                                    return {
-                                                        label: item.appl_no,
-                                                        value: item.appl_no,
-                                                        appl_no: item.appl_no,
-                                                        order_no: item.order_no,
-                                                        pan_no: item.pan_no,
-                                                        quantity:item.quantity,
-                                                        shared_applied_price:item.shared_applied_price,
-                                                        total_amount:item.total_amount,
-                                                        rule_code:item.rule_code,
-                                                        rejected_reason:item.rejected_reason,
-                                                        addrule_disable:item.rule_disable
-                                                    };
-                                                }));
-                                            },
-                                            select: function (event, ui) {
-                                                populateDetails(ui.item);
-                                                return false;
-                                            }
-                                        });
-                                       $("#orderno").autocomplete({
-                                                appendTo: "#additionsModal",
-                                                minLength: 3,
-                                                source: function (request, response) {
-
-                                                    var matches = $.grep(applList, function (item) {
-                                                        return item.order_no.toLowerCase()
-                                                            .indexOf(request.term.toLowerCase()) >= 0;
-                                                    });
-
-                                                    response($.map(matches.slice(0, 20), function (item) {
-                                                        return {
-                                                            label: item.appl_no,
-                                                        value: item.appl_no,
-                                                        appl_no: item.appl_no,
-                                                        order_no: item.order_no,
-                                                        pan_no: item.pan_no,
-                                                        quantity:item.quantity,
-                                                        shared_applied_price:item.shared_applied_price,
-                                                        total_amount:item.total_amount,
-                                                        rule_code:item.rule_code,
-                                                        rejected_reason:item.rejected_reason,
-                                                        addrule_disable:item.rule_disable
-                                                        };
-                                                    }));
-                                                },
-                                                select: function (event, ui) {
-                                                    populateDetails(ui.item);
-                                                    return false;
-                                                }
-                                            });
-                                        $("#panno").autocomplete({
-                                            appendTo: "#additionsModal",
-                                            minLength: 3,
-                                            source: function (request, response) {
-
-                                                var matches = $.grep(applList, function (item) {
-                                                    return item.pan_no.toLowerCase()
-                                                        .indexOf(request.term.toLowerCase()) >= 0;
-                                                });
-
-                                                response($.map(matches.slice(0, 20), function (item) {
-                                                    return {
-                                                         label: item.appl_no,
-                                                        value: item.appl_no,
-                                                        appl_no: item.appl_no,
-                                                        order_no: item.order_no,
-                                                        pan_no: item.pan_no,
-                                                        quantity:item.quantity,
-                                                        shared_applied_price:item.shared_applied_price,
-                                                        total_amount:item.total_amount,
-                                                        rule_code:item.rule_code,
-                                                        rejected_reason:item.rejected_reason,
-                                                        addrule_disable:item.rule_disable
-                                                    };
-                                                }));
-                                            },
-                                            select: function (event, ui) {
-                                                 populateDetails(ui.item);
-                                                return false;
-                                            }
-                                        });
-                                }
-
-                                  if (result.Table1.length > 0) {
-                                  $("#ripo").val(offer_code);
-                                        $("#rappno").autocomplete({
-                                                appendTo: "#rejectionsModal",
-                                              minLength: 3,
-                                              source: function (request, response) {
-                                                    var matches = $.grep(rejectionList, function (item) {
-                                                      return item.appl_no.toLowerCase()
-                                                          .indexOf(request.term.toLowerCase()) >= 0;
-                                                  });
-                                                  response($.map(matches.slice(0, 20), function (item) {
-                                                      return {
-                                                           label: item.appl_no,
-                                                        value: item.appl_no,
-                                                        appl_no: item.appl_no,
-                                                        order_no: item.order_no,
-                                                        pan_no: item.pan_no,
-                                                        quantity:item.quantity,
-                                                        shared_applied_price:item.shared_applied_price,
-                                                        total_amount:item.total_amount,
-                                                        rule_code:item.rule_code,
-                                                        rejected_reason:item.rejected_reason
-                                                      };
-                                                  }));
-                                              },
-                                              select: function (event, ui) {
-                                                  populateRDetails(ui.item);
-                                                  return false;
-                                              }
-                                          });
-                                         $("#rorderno").autocomplete({
-                                                    appendTo: "#rejectionsModal",
-                                                  minLength: 3,
-                                                  source: function (request, response) {
-
-                                                        var matches = $.grep(rejectionList, function (item) {
-                                                          return item.order_no.toLowerCase()
-                                                              .indexOf(request.term.toLowerCase()) >= 0;
-                                                      });
-
-                                                      response($.map(matches.slice(0, 20), function (item) {
-                                                          return {
-                                                              label: item.appl_no,
-                                                        value: item.appl_no,
-                                                        appl_no: item.appl_no,
-                                                        order_no: item.order_no,
-                                                        pan_no: item.pan_no,
-                                                        quantity:item.quantity,
-                                                        shared_applied_price:item.shared_applied_price,
-                                                        total_amount:item.total_amount,
-                                                        rule_code:item.rule_code,
-                                                        rejected_reason:item.rejected_reason
-                                                          };
-                                                      }));
-                                                  },
-                                                  select: function (event, ui) {
-                                                      populateRDetails(ui.item);
-                                                      return false;
-                                                  }
-                                              });
-                                          $("#rpanno").autocomplete({
-                                                appendTo: "#rejectionsModal",
-                                              minLength: 3,
-                                              source: function (request, response) {
-
-                                                    var matches = $.grep(rejectionList, function (item) {
-                                                      return item.pan_no.toLowerCase()
-                                                          .indexOf(request.term.toLowerCase()) >= 0;
-                                                  });
-
-                                                  response($.map(matches.slice(0, 20), function (item) {
-                                                      return {
-                                                          label: item.appl_no,
-                                                        value: item.appl_no,
-                                                        appl_no: item.appl_no,
-                                                        order_no: item.order_no,
-                                                        pan_no: item.pan_no,
-                                                        quantity:item.quantity,
-                                                        shared_applied_price:item.shared_applied_price,
-                                                        total_amount:item.total_amount,
-                                                        rule_code:item.rule_code,
-                                                        rejected_reason:item.rejected_reason
-                                                      };
-                                                  }));
-                                              },
-                                              select: function (event, ui) {
-                                                   populateRDetails(ui.item);
-                                                  return false;
-                                              }
-                                          });
-                                  }
-                        }
-               });
-            } catch (e) {
-                    console.log(e)
                 }
+            });
         }
+
+    }
 
         function addSave() {
                var isValid = true;
