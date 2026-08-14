@@ -2,6 +2,9 @@
 using DocumentFormat.OpenXml.EMMA;
 using DocumentFormat.OpenXml.Office2010.Excel;
 using DocumentFormat.OpenXml.Spreadsheet;
+using IPOWeb.Controllers;
+using IPOWeb.Models;
+using IPOWeb.Services;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authorization;
@@ -10,8 +13,6 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
-using IPOWeb.Controllers;
-using IPOWeb.Models;
 using System.Data;
 using System.Diagnostics;
 using System.Net;
@@ -29,14 +30,16 @@ namespace IPOWeb.Controllers
         string _data = "";
         string APIcookieName = "";
         string set_Apitoken = "";
+        private readonly IClientInfoService _clientInfoService;
 
         //public LoginController()
         //{
 
         //}
-        public LoginController(IConfiguration configuration)
+        public LoginController(IConfiguration configuration , IClientInfoService clientInfoService)
         {
             _configuration = configuration;
+            _clientInfoService = clientInfoService;
         }
         string urlstring = "";
         public IActionResult Login()
@@ -288,7 +291,7 @@ namespace IPOWeb.Controllers
                             HttpContext.Session.SetString("user_email", Convert.ToString(firstRow["email"]));
                             HttpContext.Session.SetString("role_name", Convert.ToString(firstRow["role_name"]));
                         }
-
+                        HttpContext.Session.SetString("LoginSessionId", LoginSessionId);
                         // Build Menu List
                         List<MenuModel> menuList = new List<MenuModel>();
 
