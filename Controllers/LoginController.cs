@@ -22,6 +22,7 @@ using System.Security.Claims;
 using System.Text;
 
 
+
 namespace IPOWeb.Controllers
 {
     public class LoginController : Controller
@@ -140,6 +141,11 @@ namespace IPOWeb.Controllers
 
         public async Task<IActionResult> ChkLogin(string empCode, string txt_pwd, string app_code)
         {
+
+            string ipAddress = _clientInfoService.GetClientIp();
+            string userAgent = _clientInfoService.GetUserAgent();
+            string LoginSessionId = Guid.NewGuid().ToString();
+
             app_code = _configuration.GetSection("AppSettings")["App_code"];
             urlstring = Convert.ToString(_configuration.GetSection("Appsettings")["cumsapiurl"]) + "/ChkLogin";
 
@@ -175,6 +181,8 @@ namespace IPOWeb.Controllers
                     context.empCode = empCode;
                     context.txt_pwd = txt_pwd;
                     context.app_code = app_code;
+                    context.ipaddress = ipAddress;
+                    context.browseragent = userAgent;
                     HttpContent content = new StringContent(JsonConvert.SerializeObject(context), UTF8Encoding.UTF8, "application/json");
                     var response = client.PostAsync(loginApiUrl, content).Result;
                     if (response.StatusCode == HttpStatusCode.Unauthorized)
@@ -322,85 +330,6 @@ namespace IPOWeb.Controllers
                             });
                         }
 
-                        //DataTable dtPermission = result.Tables[0];
-                        //DataTable dtMenu = result.Tables[1];
-                        //// Add columns if they don't exist
-                        //if (!dtPermission.Columns.Contains("menu_gid"))
-                        //    dtPermission.Columns.Add("menu_gid", typeof(string));
-
-                        //if (!dtPermission.Columns.Contains("menu_name"))
-                        //    dtPermission.Columns.Add("menu_name", typeof(string));
-
-                        //if (!dtPermission.Columns.Contains("menu_url"))
-                        //    dtPermission.Columns.Add("menu_url", typeof(string));
-
-                        //if (!dtPermission.Columns.Contains("menu_order"))
-                        //    dtPermission.Columns.Add("menu_order", typeof(string));
-
-                        //if (!dtPermission.Columns.Contains("parent_menu_code"))
-                        //    dtPermission.Columns.Add("parent_menu_code", typeof(string));
-
-                        //if (!dtPermission.Columns.Contains("icon_path"))
-                        //    dtPermission.Columns.Add("icon_path", typeof(string));
-
-                        //var menuLookup = dtMenu.AsEnumerable()
-                        //    .ToDictionary(
-                        //        r => Convert.ToString(r["menu_code"]),
-                        //        r => new
-                        //        {
-                        //            MenuGid = Convert.ToString(r["menu_gid"]),
-                        //            MenuName = Convert.ToString(r["menu_name"]),
-                        //            MenuUrl = Convert.ToString(r["menu_url"]),
-                        //            MenuOrder = Convert.ToString(r["menu_order"]),
-                        //            ParentMenuCode = Convert.ToString(r["parent_menu_code"]),
-                        //            IconPath = Convert.ToString(r["icon_path"])
-                        //        });
-
-                        //foreach (DataRow row in dtPermission.Rows)
-                        //{
-                        //    string menuCode = Convert.ToString(row["menu_code"]);
-
-                        //    if (menuLookup.TryGetValue(menuCode, out var menu))
-                        //    {
-                        //        row["menu_gid"] = menu.MenuGid;
-                        //        row["menu_name"] = menu.MenuName;
-                        //        row["menu_url"] = menu.MenuUrl;
-                        //        row["menu_order"] = menu.MenuOrder;
-                        //        row["parent_menu_code"] = menu.ParentMenuCode;
-                        //        row["icon_path"] = menu.IconPath;
-                        //    }
-                        //}
-
-                        //HttpContext.Session.SetString("user_role", Convert.ToString(result.Tables[0].Rows[0]["role_code"]));
-                        //HttpContext.Session.SetString("user_id", Convert.ToString(result.Tables[0].Rows[0]["user_id"]));
-                        //HttpContext.Session.SetString("user_name", Convert.ToString(result.Tables[0].Rows[0]["user_name"]));
-                        //HttpContext.Session.SetString("user_code", Convert.ToString(result.Tables[0].Rows[0]["user_code"]));
-                        //HttpContext.Session.SetString("user_email", Convert.ToString(result.Tables[0].Rows[0]["email"]));
-                        //HttpContext.Session.SetString("role_name", Convert.ToString(result.Tables[0].Rows[0]["role_name"]));
-                        //List<MenuModel> menuList = new List<MenuModel>();
-
-                        //foreach (DataRow row in result.Tables[0].Rows)
-                        //{
-                        //    menuList.Add(new MenuModel
-                        //    {
-                        //        //menu_id = row["menu_id"].ToString(),
-                        //        //menu_name = row["menu_name"].ToString(),
-                        //        //menu_url = row["menu_url"].ToString(),
-                        //        menu_code = row["menu_url"].ToString(),
-                        //        add_perm = row["add_perm"].ToString(),
-                        //        mod_perm = row["mod_perm"].ToString(),
-                        //        view_perm = row["view_perm"].ToString(),
-                        //        delete_perm = row["delete_perm"].ToString(),
-                        //        download_perm = row["download_perm"].ToString(),
-                        //        link_perm = row["link_perm"].ToString(),
-                        //        mail_perm = row["mail_perm"].ToString(),
-                        //        retreq_perm = row["retreq_perm"].ToString(),
-                        //        Approve_perm = row["Approve_perm"].ToString(),
-                        //        Boachecklist_perm = row["Boachecklist_perm"].ToString(),
-                        //        deny_perm = row["deny_perm"].ToString(),
-                        //        menu_type = row["menu_type"].ToString()
-                        //    });
-                        //}
                         var menuJson = JsonConvert.SerializeObject(menuList);
                         HttpContext.Session.SetString("UserMenus", menuJson);
                         set_Apitoken = Convert.ToString(result.Tables[0].Rows[0]["user_code"] + "_" + Convert.ToString(result.Tables[0].Rows[0]["role_code"]));
