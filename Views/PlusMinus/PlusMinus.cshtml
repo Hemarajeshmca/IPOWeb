@@ -528,38 +528,24 @@
     });
 
 
-    function CheckerApprover(flag) {
-        var grid = $("#checklistGrid").data("kendoGrid");
-        var applNos = [];
-        grid.dataSource.data().forEach(function (item) {
-            if (selectedCodes.includes(item.appl_no)) {
-                applNos.push(item.appl_no);
-            }
-        });
-        var remarks = $('#txtRemarks').val().trim();
-        if(remarks=== ""){
-             $.alert({
-               title: 'IPO Allotment',
-               content:"Enter the remarks",
-               type: 'red',
-           });
-           return;
-        }
-        if(selectedCodes.length==0){
-             $.alert({
-                        title: 'IPO Allotment',
-                        content:"kinldy select any one appl.no",
-                        type: 'red',
-                    });
-            return;
-        }
-        var model = {
-            ipo_code: localStorage.getItem("selectedIPO"),
-            applno: applNos.join(","),      // e.g. 0IC7650002484228,0IC7650002484233
-            rejremarks: $("#txtRemarks").val(),
-            audit_flag: "C",
-            flag:flag
-        };
+         function CheckerApprover(flag) { 
+                var grid = $("#checklistGrid").data("kendoGrid");
+
+                var applNos = [];
+
+                grid.dataSource.data().forEach(function (item) {
+                    if (selectedCodes.includes(item.appl_no)) {
+                        applNos.push(item.appl_no);
+                    }
+                });
+
+                var model = {
+                    ipo_code: localStorage.getItem("selectedIPO"),
+                    applno: applNos.join(","),      // e.g. 0IC7650002484228,0IC7650002484233
+                    rejremarks: $("#txtRemarks").val(), 
+                    audit_flag: "C",
+                    flag:flag
+                };
 
         $.ajax({
             url: "/PlusMinus/ApprovePlusMinus",

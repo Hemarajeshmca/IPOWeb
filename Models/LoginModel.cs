@@ -19,7 +19,11 @@ namespace IPOWeb.Models
         public Int16 menuGid { get; set; }
 		public string fileType { get; set; }
 		public string reportName { get; set; }
-		public partial class menu
+        public string ipaddress { get; set; }
+        public string browseragent { get; set; }
+        public string LoginSessionId { get; set; }
+
+        public partial class menu
         {
             public int menu_gid { get; set; }
             public string menu_name { get; set; }
