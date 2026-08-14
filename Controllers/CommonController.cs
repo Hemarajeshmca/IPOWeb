@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using IPOWeb.Models;
+using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using System.Data;
 using System.Linq.Expressions;
@@ -6,6 +7,7 @@ using System.Net;
 using System.Net.Http.Headers;
 using System.Security.Claims;
 using System.Text;
+using static IPOWeb.Models.CommonModels;
 
 
 namespace IPOWeb.Controllers
@@ -446,6 +448,96 @@ namespace IPOWeb.Controllers
 			public string deny { get; set; }
 			public string in_user_code { get; set; }
 		}
-		#endregion 
-	}
+        #endregion
+
+        // boacheckedVistedData
+        [HttpPost]
+        public JsonResult boacheckedVisted([FromBody] CommonModels.boacheckedVistedModel objboacheckedVisted)
+        {
+            urlstring = Convert.ToString(_configuration.GetSection("Appsettings")["apiurl"]) + "boacheckedVisted";
+            try
+            {
+                using (var client = new HttpClient())
+                {
+                    client.Timeout = Timeout.InfiniteTimeSpan;
+                    APIcookieName = "APItoken-" + User.FindFirst(ClaimTypes.Name)?.Value.ToString() + "_" + User.FindFirst(ClaimTypes.Role)?.Value.ToString();
+                    string token = Request.Cookies[APIcookieName];
+                    client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+                    client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+                    var json = JsonConvert.SerializeObject(objboacheckedVisted);
+                    var content = new StringContent(json, Encoding.UTF8, "application/json");
+                    var response = client.PostAsync(urlstring, content).Result;
+                    ApiTokenRefreshMiddleware.TokenUpdate(HttpContext, response, APIcookieName);
+                    if (response.StatusCode == HttpStatusCode.Unauthorized)
+                    {
+                        Response.Cookies.Delete(APIcookieName);
+                        return Json(new
+                        {
+                            success = false,
+                            authExpired = true
+                        });
+                    }
+                    if (response.IsSuccessStatusCode)
+                    {
+                        string resultMessage = response.Content.ReadAsStringAsync().Result;
+                        var companyData = JsonConvert.DeserializeObject<object>(resultMessage);
+                        return Json(new { success = true, data = companyData });
+                    }
+                    else
+                    {
+                        return Json(new { success = false, message = "API call failed: " + response.StatusCode });
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                return Json(new { success = false, message = ex.Message });
+            }
+        }
+
+        [HttpPost]
+        public JsonResult fetchcheckerVistedlist([FromBody] CommonModels.fetchcheckerVistedModel objfetchcheckerVisted)
+        {
+            urlstring = Convert.ToString(_configuration.GetSection("Appsettings")["apiurl"]) + "fetchcheckerVistedlist";
+            try
+            {
+                using (var client = new HttpClient())
+                {
+                    client.Timeout = Timeout.InfiniteTimeSpan;
+                    APIcookieName = "APItoken-" + User.FindFirst(ClaimTypes.Name)?.Value.ToString() + "_" + User.FindFirst(ClaimTypes.Role)?.Value.ToString();
+                    string token = Request.Cookies[APIcookieName];
+                    client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+                    client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+                    var json = JsonConvert.SerializeObject(objfetchcheckerVisted);
+                    var content = new StringContent(json, Encoding.UTF8, "application/json");
+                    var response = client.PostAsync(urlstring, content).Result;
+                    ApiTokenRefreshMiddleware.TokenUpdate(HttpContext, response, APIcookieName);
+                    if (response.StatusCode == HttpStatusCode.Unauthorized)
+                    {
+                        Response.Cookies.Delete(APIcookieName);
+                        return Json(new
+                        {
+                            success = false,
+                            authExpired = true
+                        });
+                    }
+                    if (response.IsSuccessStatusCode)
+                    {
+                        string resultMessage = response.Content.ReadAsStringAsync().Result;
+                        var companyData = JsonConvert.DeserializeObject<object>(resultMessage);
+                        return Json(new { success = true, data = companyData });
+                    }
+                    else
+                    {
+                        return Json(new { success = false, message = "API call failed: " + response.StatusCode });
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                return Json(new { success = false, message = ex.Message });
+            }
+        }
+
+    }
 }

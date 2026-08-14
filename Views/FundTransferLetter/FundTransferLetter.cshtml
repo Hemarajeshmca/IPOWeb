@@ -336,19 +336,23 @@
     function bankPDF() {
          var isValid = true;
         var offer_code = localStorage.getItem("selectedIPO");
-        var curdate = $("#curdate").val();     // e.g. 27 April 2026
+        var curdate = $("#curdate").val();    
         var trandate = $("#trandate").val();
         var grid = $("#banktList").data("kendoGrid");
         var totalBanks = grid.dataSource.data().length;
         var selectedBanks = $(".client-checkbox:checked").length;
+        var selectedBankCodes = $(".client-checkbox:checked").map(function () {
+                                    return $(this).val();
+                                }).get().join(",");
+        console.log("selectedBankCodes", selectedBankCodes);
          if(!trandate) {
-                $("#querytrandate").text("Please Select Date");
+            $("#querytrandate").text("Please Select Date");
             isValid = false;
             } else {
                 $("#querytrandate").text("");
          }    
-        if (totalBanks !== selectedBanks) {
-        $("#querybanklist").text("Please Select All Banks");
+        if (selectedBanks == 0) {
+        $("#querybanklist").text("Please Select atleast one Bank");
             isValid = false;
             } else {
                 $("#querybanklist").text("");
@@ -372,24 +376,20 @@
     if(isValid) {
          $.ajax({
             type: "GET",
-            url: '@Url.Action("getBankFundDetails", "FundTransferLetter")',
-            data: { offer_code: offer_code },
-
+            url: '@Url.Action("getBankFundDetailsdownload", "FundTransferLetter")',
+            data: { offer_code: offer_code,
+                    bank_code: selectedBankCodes},
             success: function (response) {
-
                 console.log("Full Response:", response);
-
-                // ✅ FIX HERE
-                var nsbsummary = response.nsbsummary;
-                var sbsummary = response.sbsummary;
-                var banker = response.banker;
-
+                var nsbsummary = response.nsbsummarydownload;
+                var sbsummary = response.sbsummarydownload;
+                var banker = response.bankerdownload;
                 console.log("Bank Summary:", nsbsummary);
                 console.log("Banker Data:", banker);
-
                 if (nsbsummary && nsbsummary.length > 0) {
                    var url = '/FundTransferLetter/DownloadAllZip?' +
                         'offer_code=' + offer_code +
+                        '&bank_code=' + selectedBankCodes +
                         '&curdate=' + encodeURIComponent(curdate) +
                         '&trandate=' + encodeURIComponent(trandate) +
                         '&bank_name=' + encodeURIComponent(selectedData.bank_name) +
@@ -403,6 +403,7 @@
                  if (sbsummary && sbsummary.length > 0) {
                    var url = '/FundTransferLetter/DownloadAllZip?' +
                         'offer_code=' + offer_code +
+                        '&bank_code=' + selectedBankCodes +
                         '&curdate=' + encodeURIComponent(curdate) +
                         '&trandate=' + encodeURIComponent(trandate) +
                         '&bank_name=' + encodeURIComponent(selectedData.bank_name) +

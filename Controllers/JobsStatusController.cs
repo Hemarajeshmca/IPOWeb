@@ -429,12 +429,51 @@ namespace IPOWeb.Controllers
                     var response = client.PostAsync("files", content).Result;
 
                     // ================= NON-XLSX FILE =================
-                    if (filetype != "xlsx")
+                    if (filetype != "xlsx" && filetype != "Folder")
                     {
                         var bytes = response.Content.ReadAsByteArrayAsync().Result;
                         string zipName = file_name + ".zip";
 
                         return File(bytes, "application/octet-stream", zipName);
+                    } else if(filetype == "Folder")
+                    {
+                        var obj_outresult = getfilepath("download_xls_folder", username);
+                        string out_filepath = "";
+                        if (obj_outresult != null && obj_outresult.Count > 0)
+                        {
+                            out_filepath = obj_outresult[0].out_config_value;
+                        }
+                        string folderPath = Path.Combine(out_filepath, file_name);
+
+                        if (!Directory.Exists(folderPath))
+                            return NotFound("Folder not found.");
+
+                        using (var memoryStream = new MemoryStream())
+                        {
+                            using (var archive = new ZipArchive(memoryStream, ZipArchiveMode.Create, true))
+                            {
+                                foreach (string file in Directory.GetFiles(folderPath, "*", SearchOption.AllDirectories))
+                                {
+                                    string relativePath = Path.GetRelativePath(folderPath, file);
+
+                                    var entry = archive.CreateEntry(relativePath, CompressionLevel.Optimal);
+
+                                    using (var entryStream = entry.Open())
+                                    using (var fileStream = System.IO.File.OpenRead(file))
+                                    {
+                                        fileStream.CopyTo(entryStream);
+                                    }
+                                }
+                            }
+
+                            memoryStream.Seek(0, SeekOrigin.Begin);
+
+                            return File(
+                                memoryStream.ToArray(),
+                                "application/zip",
+                                $"{file_name}.zip"
+                            );
+                        }
                     }
 
                     // ================= XLSX FILE =================

@@ -3,6 +3,33 @@
     var userName = Context.Session.GetString("user_name");
     var userCode = Context.Session.GetString("user_code");
     var role_code = Context.Session.GetString("user_role");
+    var menuJson = Context.Session.GetString("UserMenus");
+    var menus = string.IsNullOrEmpty(menuJson)
+        ? new List<MenuModel>()
+        : System.Text.Json.JsonSerializer.Deserialize<List<MenuModel>>(menuJson);
+
+    var currentPath = Context.Request.Path.Value?.ToLower() ?? "";
+    var normalizedPath = currentPath.Trim('/');
+
+    var currentMenu = menus.FirstOrDefault(x =>
+        (x.menu_url ?? "")
+            .Replace("../", "")
+            .Trim('/')
+            .ToLower() == normalizedPath
+    );
+
+    var addPerm = currentMenu?.add_perm ?? "N";
+    var modPerm = currentMenu?.mod_perm ?? "N";
+    var viewPerm = currentMenu?.view_perm ?? "N";
+    var delPerm = currentMenu?.delete_perm ?? "N";
+    var appRejPerm = currentMenu?.Approve_perm ?? "N";
+    var getBoaMenu = menus?.FirstOrDefault(x =>
+        (x.menu_url ?? "")
+            .Replace("../", "")
+            .Trim('/')
+            .ToLower() == "boa/boa"
+    );
+    var Boachecklist = getBoaMenu?.Boachecklist_perm;
 }
 <!DOCTYPE html>
 <html>
@@ -16,6 +43,9 @@
         font-size: 13px !important;
         line-height: 17px !important;
         color: #697a8d;
+            max-height: 195px;
+            overflow-y: auto;
+            overflow-x: hidden;
         }
 
         .content-wrapper {
@@ -95,6 +125,12 @@
         overflow-y: hidden;
         }
 
+        .btn:disabled, .btn.disabled, fieldset:disabled .btn {
+            
+            opacity: 0.40 !important;
+            cursor: no-drop !important;
+        }
+
     </style>
 </head>
 
@@ -141,6 +177,7 @@
                                 <div class="col-sm-2">
                                     <input type="text" id="issuestatus" class="form-control" readonly value="@ViewBag.IssueStatus" />
                                     <input type="text" id="ipostatus" class="form-control" hidden />
+                                    @* <select name="ipostatus" id="ipostatus" class="form-select" hidden></select>   *@                                 
                                     <input type="text" id="offer_header_gid" class="form-control" hidden />
                                 </div>
                                 <div class="col-sm-6">
@@ -191,26 +228,26 @@
                                     <input type="text" id="remarks" name="remarks" class="form-control" />
                                     <span id="v_remarks" class="validation"></span>
                                 </div>
-                                @if (role_code == "IPOMKR")
+                                @if (addPerm == "Y" || modPerm == "Y")
                                 {
                                     <div class="col-sm-1">
                                         <center><button type="button" onclick="offerHeaderSave()" class="btn btn-primary" id="headerBtnSave" style="padding: 3px 25px;margin-top:30px;">Save</button></center>
                                     </div>
                                     <div class="col-sm-1">
                                         <center>
-                                            <button type="button" onclick="submitofferHeader('Y')" class="btn btn-primary" id="headerBtnsubmit" style="padding: 3px 25px;margin-top:30px;background-color: green !important;color: #fff !important;">
+                                            <button type="button" onclick="submitofferHeader()" class="btn btn-primary" id="headerBtnsubmit" style="padding: 3px 25px;margin-top:30px;background-color: green !important;color: #fff !important;">
                                                 Submit
                                             </button>
                                         </center>
                                     </div>
-                                } else {
+                                } else if(appRejPerm == "Y") {
                                     <div class="col-sm-1" style="width: 10%;">
-                                        <center><button type="button" onclick="chkofferHeaderSave('A')" class="btn btn-primary" id="chkheaderBtnSave" style="padding: 3px 25px;margin-top:30px;background-color: green !important;color: #fff !important;">Approved</button></center>
+                                        <center><button type="button" onclick="chkofferHeaderSave('CA')" class="btn btn-primary" id="chkheaderBtnSave" style="padding: 3px 25px;margin-top:30px;background-color: green !important;color: #fff !important;">Approve</button></center>
                                     </div>
                                     <div class="col-sm-1">
                                         <center>
-                                            <button type="button" onclick="chkofferHeaderSave('R')" class="btn btn-danger" id="chkheaderBtnsubmit" style="padding: 3px 25px;margin-top:30px;">
-                                                Rejected
+                                            <button type="button" onclick="chkofferHeaderSave('CR')" class="btn btn-danger" id="chkheaderBtnsubmit" style="padding: 3px 25px;margin-top:30px;">
+                                                Reject
                                             </button>
                                         </center>
                                     </div>
@@ -344,14 +381,14 @@
                                                         <select name="banktype" id="banktype" class="form-select"></select>
                                                         <input id="banker_gid" class="form-control" hidden />
                                                     </div>
-                                                    <div class="col-sm-3">
-                                                        <label class="form-label">Bank Name</label>
-                                                        <select id="bank" class="form-select"></select>
-                                                    </div>
                                                     <div class="col-sm-2">
                                                         <label class="form-label">IFSC Code</label>
                                                         <input type="text" id="ifsc" class="form-select" />
                                                     </div>
+                                                    <div class="col-sm-3">
+                                                        <label class="form-label">Bank Name</label>
+                                                        <select id="bank" class="form-select"></select>
+                                                    </div>                                                    
                                                     <div class="col-sm-3">
                                                         <label class="form-label">Address</label>
                                                         <textarea id="address" class="form-control" cols="10" rows="2"></textarea>
@@ -382,10 +419,8 @@
                                                     <div class="col-sm-2">
                                                         <label class="form-label">Confirm Account No.</label>
                                                         <input type="text" id="confirmAcno" class="form-control">
-                                                        <span id="acnoError" style="color:red;display:none;">
-                                                            Account numbers do not match.
-                                                        </span>
-                                                    </div>
+                                                        <span id="acnoError" style="color: red; font-size: 12px;position:relative;"></span>
+                                                        </div>
                                                     <div class="col-sm-2">
                                                         <label class="form-label">Account Name</label>
                                                         <input type="text" id="acname" class="form-control" />
@@ -548,31 +583,57 @@
                         </div>
                             
                         </div>                     
-                    </div>
+                  
                 </div>               
             </div>
         </div>
     </div>
-
 </body>
 
 </html>
 <script>
-      $( document ).ready(function() {
-              $('#navhead').text('Offer Setup');
+    window.addPerm = '@addPerm';
+    window.modPerm = '@modPerm';
+    window.viewPerm = '@viewPerm';
+    window.delPerm = '@delPerm';
+</script>
+<script>
+        $(document).ready(function () {
+             $('#navhead').text('Offer Setup');
                var ipocode = localStorage.getItem("selectedIPO");
                $("#ipocode").val(ipocode);
-               var role_code =  '@role_code';
-              var mode = new URLSearchParams(window.location.search).get('mode');
-                var defaultStatus = sessionStorage.getItem("default_status");
-                loadMasterDropdown("QCD_STATUS", "status", "D");
-                setTimeout(function () {
-                    if (mode === "Create" && defaultStatus) {
+               var mode = new URLSearchParams(window.location.search).get('mode');
+               var defaultStatus = sessionStorage.getItem("default_status")
+             $.when(
+                  loadMasterDropdown("QCD_STATUS", "status", "D"),
+                  loadMasterDropdown("QCD_MAST_OFFER_TYPE", "offer_type"),
+                  loadMasterDropdown("QCD_MAST_LISTING", "listing"),
+                  loadBank(),
+                  loadMasterDropdown("QCD_PRICE_TYPE", "pricetype"),
+                  loadMasterDropdown("QCD_BANK_TYPE", "banktype"),
+                  loadMasterDropdown("QCD_MAST_STATE", "state"),
+                  loadMasterDropdown("QCD_MAST_STATE", "sh_state"),
+                  loadMasterDropdown("QCD_STACK_HOLDER_TYPE", "sh_type"),
+                  getclientlist(),
+            ).done(function () {
+            $('#offer_header_gid').val(0);
+            $("#offer_detail_gid").val(0);
+            $("#banker_gid").val(0);
+            $("#stack_gid").val(0);
+            $("#milestone_gid").val(0);
+            $("#createedit").val($('#offer_header_gid').val() == 0 ? "CREATE" : "EDIT");
+            var offer_code = sessionStorage.getItem("edit_offer_code");
+            var client_code = sessionStorage.getItem("edit_client_code");
+            $("#clientcode").val(client_code);
+            $("#offer_code").val(offer_code);
+            if (offer_code && client_code) {
+                if (mode === "Create" && defaultStatus) {
                         $("#status").val(defaultStatus).trigger("change");
                         sessionStorage.removeItem("default_status");
+                    } else if(mode === "View") {
+                        $("#createedit").val("VIEW");
                     }
-                }, 500); // increase if still not working
-                  var activeTab = localStorage.getItem("activeTab");
+                 var activeTab = localStorage.getItem("activeTab");
                     if (activeTab) {
                         var triggerEl = document.querySelector('[data-bs-target="' + activeTab + '"]');
                         if (triggerEl) {
@@ -580,66 +641,30 @@
                             tab.show();
                         }
                         localStorage.removeItem("activeTab");
-                    }                   
-              $('#offer_header_gid').val(0);
-              $("#offer_detail_gid").val(0);
-              $("#banker_gid").val(0);
-              $("#stack_gid").val(0);
-              $("#milestone_gid").val(0);
-              $("#createedit").val($('#offer_header_gid').val() == 0 ? "CREATE": "EDIT");
-              var offer_code = sessionStorage.getItem("edit_offer_code");
-              var client_code = sessionStorage.getItem("edit_client_code");
-              $("#clientcode").val(client_code);
-              $("#offer_code").val(offer_code);
-              loadMasterDropdown("QCD_MAST_OFFER_TYPE", "offer_type");
-              loadMasterDropdown("QCD_MAST_LISTING", "listing");
-              loadMasterDropdown("QCD_STATUS", "status", "D");
-              
-
-            //   loadMasterDropdown("QCD_STATUS", "status", "D", function (data) {
-            //     var filtered = role_code == 'IPOCHK'
-            //         ? data.filter(x => x.master_code == "Y" || x.master_code == "S")
-            //         : data.filter(x => x.master_code != "Y" && x.master_code != "S");
-
-            //     var $ddl = $("#status");
-            //     $ddl.empty();
-            //     $ddl.append('<option value="">--- Select ---</option>');
-
-            //     $.each(filtered, function (i, item) {
-            //         $ddl.append(
-            //             '<option value="' + item.master_code + '">' +
-            //             item.master_name +
-            //             '</option>'
-            //         );
-            //     });
-
-            //     $ddl.val("D");
-            // });
-               
-              loadBank();
-              loadMasterDropdown("QCD_PRICE_TYPE", "pricetype");
-              loadMasterDropdown("QCD_BANK_TYPE", "banktype");
-              loadMasterDropdown("QCD_MAST_STATE", "state");
-              loadMasterDropdown("QCD_MAST_STATE", "sh_state");
-              loadMasterDropdown("QCD_STACK_HOLDER_TYPE", "sh_type");
-              getclientlist();
-               getifsclist();
-              if(offer_code && client_code) {
-                  fetchIssuesetup();
-                   auditGrid();
-              } else {
-                  loadCatagory();
-              }
-              
-              // $("#status").change(function () {
-              //   var selectedValue = $(this).val();
-              //   if (selectedValue === "I" || selectedValue === "S" || selectedValue === "Y") {
-              //       $("#remarks").prop("readonly", false);
-              //   } else {
-              //       $("#remarks").prop("readonly", true);
-              //   }
-              // });
-        });
+                    }
+                     //  $('#offer_header_gid').val(0);
+                     //  $("#offer_detail_gid").val(0);
+                     //  $("#banker_gid").val(0);
+                     //  $("#stack_gid").val(0);
+                     //  $("#milestone_gid").val(0);
+                     // // $("#createedit").val($('#offer_header_gid').val() == 0 ? "CREATE": "EDIT");
+                     //  var offer_code = sessionStorage.getItem("edit_offer_code");
+                     //  var client_code = sessionStorage.getItem("edit_client_code");
+                     //  $("#clientcode").val(client_code);
+                     //  $("#offer_code").val(offer_code);
+                 if(offer_code && client_code) {
+                     fetchIssuesetup();
+                      // auditGrid();
+                 } else {
+                     loadCatagory();
+                 }
+               } else {
+                loadCatagory();
+            }
+        }).fail(function () {
+            console.log("One or more dropdowns failed to load");
+        });       
+    });    
 
         // Global variables
         offerHeader = "";
@@ -649,6 +674,7 @@
         offerCategory = "";
         offerMillstone = "";
         var activeOfferStatus = false;
+        let isLoadingIfsc = false;
 
         $("#pricetype").change(function () {
             var value = $(this).val();
@@ -731,7 +757,6 @@
                     ipo_code: ipo_code
                 },
                     success: function (response) {
-                    console.log(response);
                     if (response.success) {
                         // Convert string to JSON object
                         var auditData = JSON.parse(response.data);
@@ -778,11 +803,11 @@
                                 title: "Status",
                                 width: 80
                             },
-                            {
-                                field: "Action",
-                                title: "Action",
-                                width: 80
-                            },
+                            // {
+                            //     field: "Action",
+                            //     title: "Action",
+                            //     width: 80
+                            // },
                             {
                                 field: "AuditRemarks",
                                 title: "Audit Remarks",
@@ -845,39 +870,56 @@
                 }
     }
 
-        function getifsclist(){
-            var mymodel = {
-                p_client_gid: 0,
-                p_action: "IFSC"
-            };
+     $("#ifsc").on("keyup", function () {
+        var ifsc = $(this).val().trim();
+        if (ifsc.length > 3 && !isLoadingIfsc) {
+            isLoadingIfsc = true;
+           // getifsclist(ifsc);
+            getifsclist(ifsc)
+            .always(function () {   
+                isLoadingIfsc = false;
+            });
+        }
+    });
+
+     function getifsclist(ifsc){
             try {
                 $.ajax({
-                    type: "POST",
-                    url: '@Url.Action("GetClientList", "Dashboard")',
+                    type: "GET",
+                    url: '@Url.Action("Getifscdetails", "IssueSetup")',
                     dataType: 'json',
-                    data: JSON.stringify(mymodel),
+                     data: {
+                          ifsc_search: ifsc
+                     },
                     contentType: 'application/json; charset=utf-8',
                     success: function (response) {
                         if (response ) {
-                         var clientList = JSON.parse(response._data);
+                         var clientList = JSON.parse(response._data);                        
                          $("#ifsc").autocomplete({
                             source: $.map(clientList, function (item) {
                                 return {
-                                    label: item.ifsc_code +" - "+item.address,
+                                   // label: item.ifsc_code +" - "+item.address,
+                                    label: item.ifsc_code,
                                     ifsc_code: item.ifsc_code,
                                     city: item.city,
                                     state: item.state,
                                     address:item.address
-                                };
+                                };                            
                             }),
+                            classes: {
+                                "ui-autocomplete": "ifsc-autocomplete"
+                            },
                             select: function (event, ui) {
                                 $("#ifsc").val(ui.item.ifsc_code);
                                 $("#city").val(ui.item.city);
                                 $("#state").val(ui.item.state);
-                                 $("#address").val(ui.item.address);
+                                $("#address").val(ui.item.address);
+                                var bankCode = ui.item.ifsc_code.substring(0, 4);
+                                 $("#bank").val(bankCode).trigger("change");
                                 return false;
                             }
                         });
+                        isLoadingIfsc = false;
                         }
                         else {
 
@@ -904,27 +946,10 @@
             if($("#isin").val() === "") { $("#v_isin").text("Please Enter ISIN"); isValid = false; } else {$("#v_isin").text(""); }
             if($("#status").val() === "") { $("#v_status").text("Please Choose status");isValid = false; } else {$("#v_status").text(""); }
             if(($("#status").val() === "I" || $("#status").val() === "C") && $("#remarks").val() === "") { $("#v_remarks").text("Please Enter Remark"); isValid = false;} else {$("#v_remarks").text(""); }
-            // var status = $("#status").val();
-            // var remarks = $("#remarks").val();
-            // if (remarks === "") {
-            //     if (role_code === "IPOCHK") {
-            //         if (status === "I" || status === "C" || status === "S") {
-            //             $("#v_remarks").text("Please Enter Remark");
-            //             isValid = false;
-            //         }
-            //     } else {
-            //          if (status === "I" || status === "C") {
-            //             $("#v_remarks").text("Please Enter Remark");
-            //             isValid = false;
-            //         }
-            //     }
-            // } else {
-            //      $("#v_remarks").text("");
-            // }
             var clientname = $("#clientname").val();
             var status = $("#status").val();
             if(clientname) {
-                 if ((status === "Y" && activeOfferStatus) || (status === "D" && !activeOfferStatus) || (status === "I") || (status === "C") ) {
+                 if ((status === "Y" && activeOfferStatus) || (status === "D") || (status === "I") || (status === "C") ) {
               if (isValid) {
                 var payload = {};
                 payload.offer_header_gid = $("#offer_header_gid").val();
@@ -939,9 +964,10 @@
                 payload.user_code = '@userCode';
                 payload.role_code = role_code;
                 payload.active_status = 'Y';
-                payload.ipo_status = $("#ipostatus").val();
+                payload.ipo_status = $("#status").val() == 'D' ? "IP" : $("#ipostatus").val();
                 payload.action = $("#offer_header_gid").val() == 0 ? "INSERT": "UPDATE";
                 payload.delete_flag = 'N';
+                payload.boa_checked_status = 'N'
                 try {
                 $.ajax({
                     type: "POST",
@@ -950,20 +976,44 @@
                     data: JSON.stringify(payload),
                     contentType: 'application/json; charset=utf-8',
                     success: function (response) {
+                        var msg = "";
                         if (response && response.success) {
-                            if($("#ipostatus").val() == 'A' || $("#ipostatus").val() == 'Y' || $("#ipostatus").val() == 'R') {
-                                  window.location.href = "../Dashboard/Dashboard?tab=offer";
-                            }
-                            var data = JSON.parse(response.data);
-                            $("#offer_header_gid").val(data[0].in_offer_header_gid);
-                            $("#offer_code").val(data[0].in_offer_code);
-                            $("#issuestatus").val(data[0].issue_status);
-                            fetchIssuesetup();
-                            $.alert({
+                            if($("#ipostatus").val() == 'MS' || $("#ipostatus").val() == 'CA' || $("#ipostatus").val() == 'CR' || $("#ipostatus").val() == 'MRS') {
+                               if($("#ipostatus").val() == 'MS') {
+                                   msg = "Submitted Sucessfully .!"
+                               } else if($("#ipostatus").val() == 'CA') {
+                                   msg = "Approved Sucessfully .!"
+                               } else if($("#ipostatus").val() == 'CR') {
+                                   msg = "Rejected Sucessfully .!"
+                               } else if($("#ipostatus").val() == 'MRS') {
+                                   msg = "Resubmitted Sucessfully .!"
+                               }
+                                $.alert({
                                 title: 'IPO Allotment',
-                                content:data[0].out_msg,
+                                content:msg,
                                 type: 'green',
-                            });
+                                buttons: {
+                                    ok: {
+                                        text: 'OK',
+                                        action: function () {
+                                           window.location.href = "../Dashboard/Dashboard?tab=offer";
+                                        }
+                                    }
+                                }  
+                              });
+                            } else {
+                                 var data = JSON.parse(response.data);
+                                $("#offer_header_gid").val(data[0].in_offer_header_gid);
+                                $("#offer_code").val(data[0].in_offer_code);
+                                $("#issuestatus").val(data[0].issue_status);
+                                fetchIssuesetup();
+                                $.alert({
+                                    title: 'IPO Allotment',
+                                    content:data[0].out_msg,
+                                    type: 'green',
+                                });
+                            }
+                           
                         }
                     },
                     error: function (er) {
@@ -1032,8 +1082,7 @@
                         } else {
                             activeOfferStatus = false;
                         }
-                                console.log("finalactiveOfferStatus", activeOfferStatus);
-                                 enableDisable();
+                        enableDisable();
                     } else {
                     }
                 },
@@ -1042,6 +1091,11 @@
                     console.log(er)
                 }
             });
+                var boaChecklist = '@Boachecklist';
+                var getnormalizedPath = '@normalizedPath';
+                if(boaChecklist == "Y") {
+                   updateboaVisit(getnormalizedPath);
+                }
         }
             catch (e) {
                 console.log(e)
@@ -1052,15 +1106,19 @@
         function fetchofferHeader(data){
                   var role_code =  '@role_code';
                 $("#offer_header_gid").val(data.offer_header_gid);
-               // $("#createedit").val(data.offer_header_gid == 0 ? "CREATE": "EDIT");
-               if(role_code == 'IPOCHK') {
+               if($("#createedit").val() == "VIEW") {
                   $("#createedit").val("VIEW");
-              } else if(role_code == 'IPOMKR' && (data.ipo_status == 'A' || data.ipo_status == 'Y')){
+              } else if($("#createedit").val() == "VIEW" && (data.ipo_status == 'MS' || data.ipo_status == 'CA' || data.ipo_status == 'MRS')){
                    $("#createedit").val("VIEW");
               } else if(data.offer_header_gid == 0){
                   $("#createedit").val("CREATE");
               } else {
                   $("#createedit").val("EDIT");
+                   if(data.offer_status == 'Y') {
+                    $("#headerBtnsubmit").prop('disabled', false);
+                } else {
+                    $("#headerBtnsubmit").prop('disabled', true);
+                }
               }
                 $("#offer_code").val(data.offer_code);
                 $("#offer_type").val(data.offer_type);
@@ -1076,19 +1134,7 @@
                 $("#remarks").val(data.offer_remarks);
                 $("#clientcode").val(data.client_code);
                 $("#clientname").val(data.client_name);
-                // if(data.offer_status == 'I'){
-                //     $("#remarks").prop("readonly", false);
-                // } else {
-                //     $("#remarks").prop("readonly", true);
-                // }
-    //             $("#status").change(function () {
-    //               var selectedValue = $(this).val();
-    //               if((selectedValue === "D") || (selectedValue === "Y")) {
-    //                  $("#remarks").val("");
-    //               } else {
-    //                   $("#remarks").val(data.offer_remarks);
-    //               }
-    // });
+                $("#ipostatus").val(data.ipo_status);               
             }
 
 
@@ -1194,7 +1240,6 @@
            function setPostPrice(){
             var preCaptital = parseFloat($("#preissue").val().replace(/,/g, '')) || 0;
             var offer_issuesize = parseFloat($("#issuesize").val().replace(/,/g, '')) || 0;
-            console.log("Pre:", preCaptital, "Issue:", offer_issuesize);
             var postprice = preCaptital + offer_issuesize;
             $("#postissue").val(postprice.toFixed(2));
         }
@@ -1345,75 +1390,87 @@
              var status = $("#status").val();
              var clientname = $("#clientname").val();
             var isValid = true;
+            if ($("#acno").val().trim() === "") {
+                $("#acnoError").text("Please enter account number");
+                isValid = false;
+            }
+            else if ($("#confirmAcno").val().trim() === "") {
+                $("#acnoError").text("Please confirm account number");
+                isValid = false;
+            }
+            else if ($("#acno").val().trim() !== $("#confirmAcno").val().trim()) {
+                $("#acnoError").text("Account numbers and confirm account number not Matched");
+                isValid = false;
+            }
+            else {
+                $("#acnoError").text("");
+            }
             if (!isValid) return;
-
-                 if(clientname) {
+               if(clientname) {
                        if((status === "Y" && activeOfferStatus ==="false") || (status === "" && activeOfferStatus === "false")) {
                         $.alert({
-                     title: 'Validation',
-                     content: 'Change the status to Draft and proceed...',
-                     type: 'red'
-                 });
-           } else {
-                   var payload = {
-                    banker_gid: $("#banker_gid").val() ? parseInt($("#banker_gid").val()) : 0,
-                    banker_type: $("#banktype").val(),
-                    banker_name: $("#bank").val(),
-                    banker_address: $("#address").val(),
-                    banker_city: $("#city").val(),
-                    banker_state: $("#state").val(),
-                    banker_pincode: $("#pin").val(),
-                    banker_holdname: $("#acname").val(),
-                    banker_accountno: $("#acno").val(),
-                    banker_ifsc: $("#ifsc").val(),
-                    offer_code: $("#offer_code").val(),
-                    client_code: $("#clientcode").val(),
-                    user_code: '@userCode',
-                    action: $("#banker_gid").val() == 0 ? "INSERT" : "UPDATE"
-                };
-                try {
-                    customAjax({
-                        type: "POST",
-                        url: '@Url.Action("OfferBankersSave", "IssueSetup")',
-                        data: JSON.stringify(payload),
-                        success: function (response) {
-                            if (response && response.success) {
-                                clearbankerform();
-                                $("#banker_gid").val(0);
-                                var data = JSON.parse(response.data);
-                                fetchIssuesetup();
-                                $.alert({
-                                    title: 'IPO Allotment',
-                                    content: data[0].out_msg,
-                                    type: 'green',
+                             title: 'Validation',
+                             content: 'Change the status to Draft and proceed...',
+                             type: 'red'
+                         });
+                       } else {
+                               var payload = {
+                                banker_gid: $("#banker_gid").val() ? parseInt($("#banker_gid").val()) : 0,
+                                banker_type: $("#banktype").val(),
+                                banker_name: $("#bank").val(),
+                                banker_address: $("#address").val(),
+                                banker_city: $("#city").val(),
+                                banker_state: $("#state").val(),
+                                banker_pincode: $("#pin").val(),
+                                banker_holdname: $("#acname").val(),
+                                banker_accountno: $("#acno").val(),
+                                banker_ifsc: $("#ifsc").val(),
+                                offer_code: $("#offer_code").val(),
+                                client_code: $("#clientcode").val(),
+                                user_code: '@userCode',
+                                action: $("#banker_gid").val() == 0 ? "INSERT" : "UPDATE"
+                            };
+                            try {
+                                customAjax({
+                                    type: "POST",
+                                    url: '@Url.Action("OfferBankersSave", "IssueSetup")',
+                                    data: JSON.stringify(payload),
+                                    success: function (response) {
+                                        if (response && response.success) {
+                                            clearbankerform();
+                                            $("#banker_gid").val(0);
+                                            var data = JSON.parse(response.data);
+                                            fetchIssuesetup();
+                                            $.alert({
+                                                title: 'IPO Allotment',
+                                                content: data[0].out_msg,
+                                                type: 'green',
+                                            });
+                                        }
+                                        else {
+                                            $.alert({
+                                                title: 'IPO Allotment',
+                                                content: 'Save failed!',
+                                                type: 'red',
+                                            });
+                                        }
+                                    },
+                                    error: function (er) {
+                                        console.log(er);
+                                    }
                                 });
+                            } catch (e) {
+                                console.log(e);
                             }
-                            else {
-                                $.alert({
-                                    title: 'IPO Allotment',
-                                    content: 'Save failed!',
-                                    type: 'red',
-                                });
-                            }
-                        },
-                        error: function (er) {
-                            console.log(er);
-                        }
-                    });
-                } catch (e) {
-                    console.log(e);
-                }
-           }
-         }
-         else {
-                  $.alert({
-                    title: 'Validation',
-                    content: 'Client Code must not be empty!',
-                    type: 'red'
+                    }
+             }
+             else {
+                      $.alert({
+                        title: 'Validation',
+                        content: 'Client Code must not be empty!',
+                        type: 'red'
                 });
-        }
-
-
+            }
         }
 
          function clearbankerform(){
@@ -1433,7 +1490,6 @@
             var grid = $("#offerBankGrid").data("kendoGrid");
             var row = $(e).closest("tr");
             var dataItem = grid.dataItem(row);
-                console.log("records :",dataItem );
             $("#state").val(dataItem.banker_state);
             loadMasterDropdown(
                 dataItem.banker_state,
@@ -1450,6 +1506,7 @@
             $("#address").val(dataItem.banker_address);
             $("#pin").val(dataItem.banker_pincode);
             $("#acno").val(dataItem.banker_accountno);
+            $("#confirmAcno").val(dataItem.banker_accountno);
             $("#ifsc").val(dataItem.banker_ifsc);
             $("#acname").val(dataItem.banker_holdname);
         }
@@ -1461,7 +1518,6 @@
 
          function deleteBankGrid(e) {
              var status = $("#status").val();
-             console.log("delstatus:", status);
             var grid = $("#offerBankGrid").data("kendoGrid");
             var row = $(e).closest("tr");
             var dataItem = grid.dataItem(row);
@@ -1740,7 +1796,6 @@
                 var grid = $("#offerStackGrid").data("kendoGrid");
                 var row = $(e).closest("tr");
                 var dataItem = grid.dataItem(row);
-                console.log("Stack records :", dataItem);
                 $("#sh_state").val(dataItem.stack_state);
                 loadMasterDropdown(
                     dataItem.stack_state,
@@ -1855,7 +1910,6 @@
                 data: JSON.stringify(mymodel),
                 success: function (response) {
                     var result = JSON.parse(response.data);
-                    console.log("resultcategory :", result);
                     var formattedData = result.map(function (item) {
                     return {
                         category_gid: item.master_gid,
@@ -2381,6 +2435,7 @@
               $("#cdsldate").prop("disabled", true);
               $("#refunddate").prop("disabled", true);
               $("#ldate").prop("disabled", true);
+              $("#confirmAcno").prop("disabled", true);
               $("#btnSave").hide();
               $("#btnCatSave").css("visibility", "hidden");
               // $("#btnCatSave").hide();
@@ -2389,7 +2444,14 @@
               $("#btnIssueSave").hide();
               $("#headerBtnSave").hide();
               $("#headerBtnsubmit").hide();
-          }
+              if($("#ipostatus").val() == 'CA' || $("#ipostatus").val() == 'CR') {
+                   $("#chkheaderBtnSave").hide();
+                   $("#chkheaderBtnsubmit").hide();
+              }
+          } else if($("#ipostatus").val() == 'CA' || $("#ipostatus").val() == 'CR'){
+              $("#chkheaderBtnSave").hide();
+              $("#chkheaderBtnsubmit").hide();
+          } 
         }
         
         function chkofferHeaderSave(ipostatus){
@@ -2405,11 +2467,18 @@
             }           
         }
 
-        function submitofferHeader(ipostatus) {
-            if($("#status").val() == 'Y') {
-                 $("#ipostatus").val(ipostatus);
+        function submitofferHeader() {
+            if($("#status").val() == 'Y' && $("#ipostatus").val() == 'IP') {
+                 $("#ipostatus").val('MS');
+                 offerHeaderSave();
+            } else if($("#status").val() == 'Y' && $("#ipostatus").val() == 'CR') {
+                $("#ipostatus").val('MRS');
+                offerHeaderSave();              
+            }else if ($("#status").val() == 'Y' && $("#ipostatus").val() == '') {
+                $("#ipostatus").val('MS');
                 offerHeaderSave();
-            } else {
+            }           
+            else if($("#status").val() != 'Y'){
                   $.alert({
                     title: 'Validation',
                     content: 'Please Active the offer status .!',
@@ -2418,45 +2487,6 @@
             }
 
         }
-
-        function validateAccountNumber() {
-
-        var acno = $("#acno").val().trim();
-        var confirmAcno = $("#confirmAcno").val().trim();
-
-        if (acno === "") {
-            alert("Please enter Account Number");
-            $("#acno").focus();
-            return false;
-        }
-
-        if (confirmAcno === "") {
-            alert("Please enter Confirm Account Number");
-            $("#confirmAcno").focus();
-            return false;
-        }
-
-        if (acno !== confirmAcno) {
-            $("#acnoError").show();
-            $("#confirmAcno").focus();
-            return false;
-        }
-
-        $("#acnoError").hide();
-        return true;
-    }
-
-     $("#confirmAcno").on("keyup", function () {
-
-        var acno = $("#acno").val().trim();
-        var confirmAcno = $(this).val().trim();
-
-        if (confirmAcno !== "" && acno !== confirmAcno) {
-            $("#acnoError").show();
-        } else {
-            $("#acnoError").hide();
-        }
-    });
 
         function showDetailsTab() {
         var tab = new bootstrap.Tab(document.getElementById('detailsTab'));

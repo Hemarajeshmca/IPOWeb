@@ -3,6 +3,7 @@
     var userId = Context.Session.GetString("user_id");
     var userName = Context.Session.GetString("user_name");
     var userCode = Context.Session.GetString("user_code");
+    var role_code = Context.Session.GetString("user_role");
     var userEmail = Context.Session.GetString("user_email");
     var roleName = Context.Session.GetString("role_name");
     var menuJson = Context.Session.GetString("UserMenus");
@@ -16,6 +17,27 @@
         asideMenus = menus.Where(x => x.menu_type == "aside").ToList();
         navMenus = menus.Where(x => x.menu_type == "nav").ToList();
     }
+
+
+    var menuJson1 = Context.Session.GetString("UserMenus");
+    var menus1 = string.IsNullOrEmpty(menuJson)
+        ? new List<MenuModel>()
+        : System.Text.Json.JsonSerializer.Deserialize<List<MenuModel>>(menuJson);
+
+    var currentPath = Context.Request.Path.Value?.ToLower() ?? "";
+    var normalizedPath = currentPath.Trim('/');
+
+    var currentMenu = menus1.FirstOrDefault(x =>
+        (x.menu_url ?? "")
+            .Replace("../", "")
+            .Trim('/')
+            .ToLower() == normalizedPath
+    );
+
+    var addPerm = currentMenu?.add_perm ?? "N";
+    var modPerm = currentMenu?.mod_perm ?? "N";
+    var viewPerm = currentMenu?.view_perm ?? "N";
+    var delPerm = currentMenu?.delete_perm ?? "N";
 }
 <!DOCTYPE html>
 <html lang="en"
@@ -762,6 +784,9 @@
     <script>
         var selectedIPO = "";
         $(document).on("change", "#iponames", function () {
+        if ($(this).val() == "0" || $(this).val() == "") {
+            $(this).prop("selectedIndex", 1);   // Select first actual item (skip value 0)
+          } 
         var ipoId = $(this).val();
         var ipoText = $("#iponames option:selected").text();
         var clientId = ipoId.split('-')[0];
@@ -770,14 +795,15 @@
         localStorage.setItem("selectedClientId", clientId);
         console.log("ipoId :", ipoId);
         console.log("ipoText :", ipoText);
-        });
+        location.reload(); 
+        }); 
         $(document).ready(function () {
-            getofferList();
+            getofferList(); 
             var savedIPO = localStorage.getItem("selectedIPO");
             if (savedIPO) {
                 $("#iponames").val(savedIPO);
-            }
-        });
+            }  
+        }); 
         function openNav() {
             $(document).ready(function () {
                 $('#layout-menu').toggleClass('active');
@@ -920,59 +946,59 @@
             //localStorage.setItem("entityId", 0);
             //localStorage.setItem("isinNumber", 0);
            // console.log("ISIN", isinid);
-            $("#userGroupid").val(JSON.parse(localStorage.getItem("SetContextData"))[0].usergroup_gid);
-            populateDropdown(JSON.parse(localStorage.getItem("SetContextData")), 'Entity');
+           // $("#userGroupid").val(JSON.parse(localStorage.getItem("SetContextData"))[0].usergroup_gid);
+          //  populateDropdown(JSON.parse(localStorage.getItem("SetContextData")), 'Entity');
             //  populateDropdown(JSON.parse(localStorage.getItem("SetContextData")), 'Isin');
 
-            $("#empname").text(JSON.parse(localStorage.getItem("SetContextData"))[0].Emp_Name);
-            $("#empcode").text(JSON.parse(localStorage.getItem("SetContextData"))[0].Emp_Code);
-            $("#empemail").text(JSON.parse(localStorage.getItem("SetContextData"))[0].Emp_EmailId);
-            $("#empmobile").text(JSON.parse(localStorage.getItem("SetContextData"))[0].Emp_MobileNo);
-            $("#empstatus").text(JSON.parse(localStorage.getItem("SetContextData"))[0].Active);
-            $("#emprole").text(JSON.parse(localStorage.getItem("SetContextData"))[0].usergroup_name);
+            // $("#empname").text(JSON.parse(localStorage.getItem("SetContextData"))[0].Emp_Name);
+            // $("#empcode").text(JSON.parse(localStorage.getItem("SetContextData"))[0].Emp_Code);
+            // $("#empemail").text(JSON.parse(localStorage.getItem("SetContextData"))[0].Emp_EmailId);
+            // $("#empmobile").text(JSON.parse(localStorage.getItem("SetContextData"))[0].Emp_MobileNo);
+            // $("#empstatus").text(JSON.parse(localStorage.getItem("SetContextData"))[0].Active);
+            // $("#emprole").text(JSON.parse(localStorage.getItem("SetContextData"))[0].usergroup_name);
 
 
 
             //   $('select[multiple]').multiselect();
-            $("#dropdown").kendoDropDownList("select", 0);
+          //  $("#dropdown").kendoDropDownList("select", 0);
             //Editcustdetails();
             //loaddynamiccolumns1();
             //loaddynamiccolumns('');
             //$.when(loaddynamiccolumns('')).then(restore_existingheader());
-            $("#showcoursetable").click(function () {
+            // $("#showcoursetable").click(function () {
                 
-                $("#showcoursetables").show();
-            })
-            $("#showcoursetable2").click(function () {
-                $("#showcoursetables2s").show();
-            })
-            $("#showcoursetableDG").click(function () {
-                $("#showcoursetablesDG").show();
-            })
-            $("#showcoursetableDG1").click(function () {
-                $("#showcoursetablesDG").show();
-            })
-            $("#refresh4").click(function () {
-                $("#tableshow4").show();
-            });
-            $("#refresh41").click(function () {
-                $("#tableshow41").show();
-            });
-            $("#collapse_div").click(function () {
+            //     $("#showcoursetables").show();
+            // })
+            // $("#showcoursetable2").click(function () {
+            //     $("#showcoursetables2s").show();
+            // })
+            // $("#showcoursetableDG").click(function () {
+            //     $("#showcoursetablesDG").show();
+            // })
+            // $("#showcoursetableDG1").click(function () {
+            //     $("#showcoursetablesDG").show();
+            // })
+            // $("#refresh4").click(function () {
+            //     $("#tableshow4").show();
+            // });
+            // $("#refresh41").click(function () {
+            //     $("#tableshow41").show();
+            // });
+            // $("#collapse_div").click(function () {
                 
-                if ($('#collapse_org').css('display') == 'none') {
-                    $('#collapse_org').show();
-                    $('#collapse_img2').css('display', 'block');
-                    $('#collapse_img').css('display', 'none');
-                } else {
-                    $('#collapse_org').css('display', 'none');
-                    $('#collapse_img2').css('display', 'none');
-                    $('#collapse_img').css('display', 'block');
-                }
-            });
+            //     if ($('#collapse_org').css('display') == 'none') {
+            //         $('#collapse_org').show();
+            //         $('#collapse_img2').css('display', 'block');
+            //         $('#collapse_img').css('display', 'none');
+            //     } else {
+            //         $('#collapse_org').css('display', 'none');
+            //         $('#collapse_img2').css('display', 'none');
+            //         $('#collapse_img').css('display', 'block');
+            //     }
+            // });
 
-            var myLabel = document.getElementById("orglvlNavigate");
-            myLabel.innerHTML = $("#Entity").find('option:selected').text() + "&nbsp;&nbsp;/&nbsp;&nbsp;" + $("#Isin").find('option:selected').text();
+            // var myLabel = document.getElementById("orglvlNavigate");
+            // myLabel.innerHTML = $("#Entity").find('option:selected').text() + "&nbsp;&nbsp;/&nbsp;&nbsp;" + $("#Isin").find('option:selected').text();
 
 
         });
@@ -1036,6 +1062,23 @@
                 spinner.stop();
                 spinner.fadeOut("fast");
                 spinnerVisible = false;
+            }
+        }
+
+        var customSpinnerVisible = false;
+
+        function showLoader() {
+            if (!customSpinnerVisible) {
+                $("div#spinner").fadeIn("fast");
+                $("#spinner").show();
+                customSpinnerVisible = true;
+            }
+        }
+
+        function hideLoader() {
+            if (customSpinnerVisible) {
+                $("div#spinner").stop().fadeOut("fast");
+                customSpinnerVisible = false;
             }
         }
 
@@ -2260,12 +2303,12 @@
         }
 
 
-           function loadMasterDropdown(masterCode, dropdownId,selectedValue, callback) {
+           function loadMasterDropdown(masterCode, dropdownId,selectedValue, callback, triggerChange = true) {
             var mymodel = {
                 in_master_code: masterCode,
                 in_user_code: ""
             };
-            $.ajax({
+           return $.ajax({
                 type: "POST",
                 url: '@Url.Action("OfferType", "IssueSetup")',
                 data: JSON.stringify(mymodel),
@@ -2290,6 +2333,7 @@
                         }
                         var result = JSON.parse(response.data);
                         var $ddl = $("#" + dropdownId);
+                        
                         $ddl.empty();
                         $ddl.append('<option value="">--- Select ---</option>');
                         $.each(result, function (index, item) {
@@ -2301,9 +2345,14 @@
                         });
 
                         if (selectedValue) {
-                            $ddl.val(selectedValue).trigger("change");
+                           // $ddl.val(selectedValue).trigger("change");
+                            $ddl.val(selectedValue);
+                            if (triggerChange) {
+                                $ddl.trigger("change");
+                            }
                         }
-                            if (callback) callback(result);
+                        console.log("After Set:", $ddl.val());
+                        if (callback) callback(result);
                     },
                 error: function (xhr) {
                     console.log("Dropdown load error:", xhr.responseText);
@@ -2364,7 +2413,7 @@
                        if (response) {
                          var data = JSON.parse(response._data);
                           var filteredData = data.filter(function(item) {
-                                return item.ipo_status === 'A';
+                                return item.ipo_status === 'CA';
                             });
                          var $ddl = $("#" + 'iponames');
                            $ddl.empty();
@@ -2377,10 +2426,18 @@
                                );
                            });
                            var savedIPO = localStorage.getItem("selectedIPO");
-
-                    if (savedIPO) {
-                        $ddl.val(savedIPO).trigger("change"); // 🔥 important
-                    }
+                           var offer_codes =localStorage.getItem("selectedIPO");
+                           if (!savedIPO){
+                                offer_codes = filteredData[0].offer_code;
+                                //localStorage.setItem("selectedIPO", firstIPO);
+                           } 
+                           console.log("Before set :", $ddl.val()); 
+                            $ddl.val(offer_codes);  
+                            localStorage.setItem("selectedIPO", offer_codes);
+                            var ipoTexts = $("#iponames option:selected").text();
+                            localStorage.setItem("selectedIPOText",ipoTexts);
+                            console.log(ipoTexts);
+                            
                        }
                        else {
                               $ddl.empty();
@@ -2409,7 +2466,7 @@
            localStorage.setItem("selectedIPO", ipoId);
            localStorage.setItem("selectedIPOText", ipoText);
            $("#iponame").val(ipoText);
-           $("#ipocode").val(ipoId);
+           $("#ipocode").val(ipoId); 
         }
 
         //    window.addEventListener("beforeunload", function () {
@@ -2419,7 +2476,7 @@
         //     }
         // });
 
-                function setColor(rows, resultData) {
+        function setColor(rows, resultData) {
             for (var i = 0; i < rows.length; i++) {
                 var row = $(rows[i]);
                 row.css('backgroundColor', 'black');
@@ -2429,6 +2486,33 @@
 
             var child_copy = $('.k-grid-Copy').children('span:first');
             $('.k-grid-Copy').html(child_copy);
+        }
+
+        function updateboaVisit(page){
+            var page = page; // window.location.pathname.toLowerCase();
+            var ipocode = localStorage.getItem("selectedIPO"); 
+            var user_code = '@userCode';
+            var role_code = '@role_code';
+            var obj = {
+                in_ipo_code: ipocode,
+                in_user_code: user_code,
+                in_role_code: role_code,
+                pageName: page
+            };
+            $.ajax({
+                url: '@Url.Action("boacheckedVisted", "Common")',
+                type: 'POST',
+                contentType: 'application/json',
+                data: JSON.stringify(obj),
+                success: function (response) {
+                    if (response.success) {
+                        console.log("Page visit updated.");
+                    }
+                },
+                error: function (xhr) {
+                    console.log(xhr);
+                }
+            });
         }
     </script>
 

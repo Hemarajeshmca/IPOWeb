@@ -1,6 +1,8 @@
 ﻿@{
     Layout = "~/Views/Shared/_LayoutNew.cshtml";
     var userName = Context.Session.GetString("user_name");
+    var userCode = Context.Session.GetString("user_code");
+    var role_code = Context.Session.GetString("user_role");
 }
 <!DOCTYPE html>
 <html>  
@@ -470,7 +472,7 @@
                     var start_date = period_from;
                     var period_end = $("#initiated_to").val();
                     var end_date = period_end;
-                    var action_by = '@userName'; //sessionStorage.getItem("usrname");
+                    var action_by = '@userCode'; //sessionStorage.getItem("usrname");
                     $.ajax({
                         type: "POST",
                         url: '../JobsStatus/QueueListFetch',
@@ -513,7 +515,7 @@
               var start_date = $("#initiated_from_ip").val();
               var end_date = $("#initiated_to_ip").val();              
                 try {
-                    var action_by = '@userName';
+                    var action_by = '@userCode';
                     $.ajax({
                         type: "POST",
                         url: '../JobsStatus/getjobinprogresslist',
@@ -557,7 +559,7 @@
               var start_date =  $("#initiated_from_c").val();
               var end_date = $("#initiated_to_c").val();              
                 try {
-                    var action_by = '@userName';
+                    var action_by = '@userCode';
                     $.ajax({
                         type: "POST",
                         url: '../JobsStatus/Joblistfetch',
@@ -696,10 +698,12 @@
         var result = splitFile(dataItem.file_name);
         var extenstion = result.extension;
         var file_name = result.fileName;
-        var user_code = '@userName';
-        if(dataItem.file_type != 'xlsx') {
+        var user_code = '@userCode';
+        if(dataItem.file_type == 'Folder' && dataItem.job_name == 'BOA Report') {
+           window.location.href = '@Url.Action("Downloads", "JobsStatus")?jobid=' + jobId + '&filetype=' + 'Folder' + '&file_name=' + file_name + '' + '&username=' + user_code + '';
+        } else if(dataItem.file_type != 'xlsx') {
            window.location.href = '@Url.Action("Downloads", "JobsStatus")?jobid=' + jobId + '&filetype=' + 'csv' + '&file_name=' + file_name + '' + '&username=' + user_code + '';
-        } else {
+        }  else {
             window.location.href = '@Url.Action("Downloads", "JobsStatus")?jobid=' + jobId + '&filetype=' + 'xlsx' + '&file_name=' + file_name + '' + '&username=' + user_code + '';
         }
     }

@@ -2,6 +2,7 @@
     Layout = "~/Views/Shared/_LayoutNew.cshtml";
     var userName = Context.Session.GetString("user_name");
     var userRole = Context.Session.GetString("user_role");
+    var userCode = Context.Session.GetString("user_code");
     var roleName = Context.Session.GetString("role_name");
 }
 <!DOCTYPE html>
@@ -208,7 +209,7 @@
                     </div>
                 </div>
 
-               @*  <div class="row" style="margin-top:20px;">
+                @*  <div class="row" style="margin-top:20px;">
                     <div class="col-sm-12">
                         <div class="nav-align-top mb-4">
                             <ul class="nav nav-tabs" role="tablist">
@@ -305,7 +306,7 @@
                         </div>
                     </div>
                 </div> *@
-                    
+
             </div>
         </div>
     </div>
@@ -348,21 +349,21 @@
 <script>
          var selectedPipeline = "";
         var selectedDataset = "";
-                 $(document).ready(function () {                    
+                 $(document).ready(function () {
             $('#navhead').text('File Import');
            var ipoName = localStorage.getItem("selectedIPOText");
-            var ipocode = localStorage.getItem("selectedIPO");           
+            var ipocode = localStorage.getItem("selectedIPO");
             var savedIPO = localStorage.getItem("selectedIPO");
             console.log("IPO Name:", ipoName);
-            console.log("IPO Code:", ipocode);           
+            console.log("IPO Code:", ipocode);
             console.log("savedIPO:", savedIPO);
             // Use based on element type
-            $("#iponame").val(ipoName);   // or .text()          
-           
+            $("#iponame").val(ipoName);   // or .text()
+
             $("#ipocode").val(ipocode);   // or .text()
               showgrid();
-               grid_jobhistory([]);    
-               
+               grid_jobhistory([]);
+
                showpipelinelist();
 
         $("#btnPre").click(function () {
@@ -515,9 +516,9 @@
                 console.log("Error:", xhr.responseText);
             }
         });
-    }   
+    }
 
-      function nextprocess() {                 
+      function nextprocess() {
             var selected = $("input[name='clientSelect']:checked");
             if (selected.length === 0) {
                 // alert("Please select a dataset");
@@ -531,24 +532,24 @@
             document.getElementById("MultipleFile").value = "";
             var dataset_gid = selected.val();
             var dataset_code = selected.data("code");
-            var dataset_name = selected.data("name");           
+            var dataset_name = selected.data("name");
             selectedDataset = selected.data("code");
             console.log("Dataset GID:", dataset_gid);
-            console.log("Dataset Code:", dataset_code);           
+            console.log("Dataset Code:", dataset_code);
             $("#datasetname").text(dataset_name );
             if (typeof dataset_name === "string" && dataset_name.toLowerCase().includes("bank")) {
                     $("#bankrow").show();
                     $("#categoryrow").show();
                     loadBank();
                 } else {
-                    $("#bankrow").hide(); 
+                    $("#bankrow").hide();
                 }
-                if ((typeof dataset_name === "string" && dataset_name.toLowerCase().includes("bendem")) || 
+                if ((typeof dataset_name === "string" && dataset_name.toLowerCase().includes("bendem")) ||
                 (typeof dataset_name === "string" && dataset_name.toLowerCase().includes("exchange upi")) ||
                  (typeof dataset_name === "string" && dataset_name.toLowerCase().includes("exchange pan")) ||
                  (typeof dataset_name === "string" && dataset_name.toLowerCase().includes("market"))
                 )
-                {                   
+                {
                     $("#categoryrow").hide();
                 }
             var tabTrigger = document.querySelector('button[data-bs-target="#navs-top-progress"]');
@@ -596,7 +597,7 @@
             var formData = new FormData();
             formData.append("file", fileInput.files[0]);
             formData.append("pipeline_code", selectedPipeline);
-            formData.append("initiated_by",'@userName' );
+            formData.append("initiated_by",'@userCode' );
             formData.append("dataset_code", selectedDataset);
             var refBankList = [
                 {
@@ -637,7 +638,7 @@
                 console.log(err);
                 }
             });
-        } 
+        }
         function getPipeline_code() {
             selectedPipeline = $("#pipeline").val();
             console.log(selectedPipeline);
@@ -758,7 +759,7 @@
     }
         }
 
-           
+
 </script>
 
 <script>
@@ -832,4 +833,5 @@
 
         });
     }
+
 </script>

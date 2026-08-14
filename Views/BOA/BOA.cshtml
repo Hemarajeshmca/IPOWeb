@@ -1,6 +1,31 @@
 ﻿@{
     Layout = "~/Views/Shared/_LayoutNew.cshtml";
     var userName = Context.Session.GetString("user_name");
+    var role_code = Context.Session.GetString("user_role");
+    var userCode = Context.Session.GetString("user_code");
+    var menuJson = Context.Session.GetString("UserMenus");
+    var menus = new List<MenuModel>();
+
+    if (!string.IsNullOrEmpty(menuJson))
+    {
+        menus = System.Text.Json.JsonSerializer.Deserialize<List<MenuModel>>(menuJson);
+    }
+
+    var currentPath = Context.Request.Path.Value.ToLower();
+    var normalizedPath = currentPath.Trim('/').ToLower();
+
+    var currentMenu = menus?.FirstOrDefault(x =>
+        (x.menu_url ?? "")
+            .Replace("../", "")
+            .Trim('/')
+            .ToLower() == normalizedPath
+    );
+    var menuId = currentMenu?.menu_id;
+    var addPerm = currentMenu?.add_perm;
+    var modPerm = currentMenu?.mod_perm;
+    var viewPerm = currentMenu?.view_perm;
+    var delPerm = currentMenu?.delete_perm;
+    var Boachecklist = currentMenu?.Boachecklist_perm;
 }
 <!DOCTYPE html>
 <html>
@@ -103,7 +128,40 @@
             overflow-y: hidden;
         }
 
-       
+        #checklistGrid .k-grid-content,
+        #checklistGrid .k-grid-content tr,
+        #checklistGrid .k-grid-content td {
+            background: transparent !important;
+        }
+
+        .modal-title {
+            font-size: 15px !important;
+            text-align: center !important;
+            font-weight: 700 !important;
+            color: #5490ff !important;
+        }
+        .modal-header {
+            justify-content: center !important;
+        }
+
+        #checklistGrid.k-grid.k-widget {
+            margin-top:0px !important;
+        }
+
+        #checklistGrid .k-grid-content {
+            height: 174px !important; 
+            overflow-y: auto;
+        }
+
+        #checklistGrid .k-grid-header th {
+            text-align: center !important;
+        }
+
+        .btn:disabled, .btn.disabled, fieldset:disabled .btn {
+            opacity: 0.40 !important;
+            cursor: no-drop !important;
+        }
+
     </style>
 </head>
 
@@ -121,6 +179,7 @@
                     <div class="col-sm-2">
                         <input type="text" id="issuestatus" class="form-control" readonly value="@ViewBag.IssueStatus" />
                         <input type="text" id="offer_header_gid" class="form-control" hidden />
+                        <input type="text" id="ipostatus" class="form-control" hidden />
                     </div>
                     <div class="col-sm-6">
                         <img style="width:20px; height:20px; margin-bottom:-9px; cursor:pointer;float:right;" onclick="location.href='@Url.Action("Dashboard", "Dashboard")?tab=offer'" src="/Assets/images/toplist.png">
@@ -475,10 +534,14 @@
                             </div>
                         </div>
                     </div>
-                     <div class="button-row" style="text-align:center;">
-                        <button class="btn btn-primary" style="background: #027ed1;border-color:#027ed1;padding: 3px 25px;margin-bottom:20px;" id="generateBtn" onclick="runboa()">Generate</button>
-                        <button class="btn btn-primary" style="border-color: green;background-color: green; border-radius: 5px;color: white;margin-bottom: 30px;margin-bottom: 20px;padding: 3px 25px;" id="generateBtn" onclick="generateReport()">Download</button>                      
-                        <button class="btn btn-primary" style="border-color: blue;background-color: blue; border-radius: 5px;color: white;margin-bottom: 30px;margin-bottom: 20px;padding: 3px 25px;" id="exportBtn" onclick="export_allotment()">Export Allotment</button>
+                     <div class="button-row" id="btn_row" style="text-align:center;">
+                         @if (Boachecklist == "Y")
+					{
+                            <button class="btn btn-primary" style="border-color: green;background-color: green; border-radius: 5px;color: white;margin-bottom: 30px;margin-bottom: 20px;padding: 3px 25px;" id="approveBtn" onclick="fetchcheckerVistedlist()">Approve Checklist</button>
+                        }
+                        <button class="btn btn-primary" style="background: #027ed1;border-color:#027ed1;padding: 3px 25px;margin-bottom:20px;" id="generateBtn" onclick="runboa()" disabled>Generate</button>
+                        <button class="btn btn-primary" style="border-color: green;background-color: green; border-radius: 5px;color: white;margin-bottom: 30px;margin-bottom: 20px;padding: 3px 25px;" id="generateRptBtn" onclick="generateReport()" disabled>Download</button>                      
+                        <button class="btn btn-primary" style="border-color: blue;background-color: blue; border-radius: 5px;color: white;margin-bottom: 30px;margin-bottom: 20px;padding: 3px 25px;" id="exportBtn" onclick="export_allotment()" disabled>Export Allotment</button>
                     </div>
                 </div>
                  
@@ -488,6 +551,44 @@
         </div>
     </div>
 
+    <div class="modal fade" id="checklistModal" tabindex="-1" role="dialog">
+        <div class="modal-dialog modal-lg" role="document" style="max-width:900px;">
+            <div class="modal-content">
+
+                <div class="modal-header">
+                    <h5 class="modal-title boaheader">BOA Checklist</h5>
+                    @* <button type="button" class="close" data-dismiss="modal">
+                        <span>&times;</span>
+                    </button> *@
+                </div>
+
+                <div class="modal-body" style="padding-top:0px !important;">
+                    <div id="checklistGrid"></div>
+                    <div class="mt-3" style="margin-top:15px;">
+                        <label><b>Remarks</b></label>
+                        <textarea id="txtRemarks"
+                                  class="form-control"
+                                  rows="3"
+                                  placeholder="Enter Remarks"></textarea>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button"
+                            id="btnApprove"
+                            class="btn btn-success"
+                            onclick="approveVerification()" disabled>
+                        Approve
+                    </button>
+                    <button type="button"
+                            onclick="closeModel()"
+                            class="btn btn-secondary"
+                            data-dismiss="modal">
+                        Cancel
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
 </body>
 
 </html>
@@ -513,20 +614,12 @@
                         }
                         localStorage.removeItem("activeTab");
                     }
-
               $('#offer_header_gid').val(0);
               $("#offer_detail_gid").val(0);
               $("#banker_gid").val(0);
               $("#stack_gid").val(0);
               $("#milestone_gid").val(0);
-              $("#createedit").val("VIEW");
-              // var offer_code = sessionStorage.getItem("edit_offer_code");
-             // var client_code = sessionStorage.getItem("edit_client_code");
-              var offer_code = localStorage.getItem("selectedIPO");  
-              var result = offer_code.split('-');
-              var client_code = result[0];
-              $("#clientcode").val(client_code);
-              $("#offer_code").val(offer_code);
+              $("#createedit").val("VIEW");                 
               loadMasterDropdown("QCD_MAST_OFFER_TYPE", "offer_type");
               loadMasterDropdown("QCD_MAST_LISTING", "listing");
               loadMasterDropdown("QCD_STATUS", "status", "D");
@@ -536,11 +629,38 @@
               loadMasterDropdown("QCD_MAST_STATE", "state");
               loadMasterDropdown("QCD_MAST_STATE", "sh_state");
               loadMasterDropdown("QCD_STACK_HOLDER_TYPE", "sh_type");
-              getclientlist();
-              if(offer_code && client_code) {
-                  fetchIssuesetup();
+              getclientlist();     
+              var offer_code = localStorage.getItem("selectedIPO");
+              if(offer_code) {
+                  var result = offer_code.split('-');
+                  var client_code = result[0];
+                   $("#clientcode").val(client_code);
+                   $("#offer_code").val(offer_code);
+                   fetchIssuesetup();
               } else {
-                  loadCatagory();
+                  emptyallvalue();
+                    $.alert({
+                        title: 'Validation',
+                        content:'Please Select Offer Code .!',
+                        type: 'red',
+                    });
+
+                    // $.alert({
+                    //     title: 'Validation',
+                    //     content: 'Please Select Offer Code .!',
+                    //     type: 'red',
+                    //     buttons: {
+                    //             ok: {
+                    //                 text: 'OK',
+                    //                 btnClass: 'btn-green',
+                    //                 action: function () {   
+                                       
+                    //                    // window.location.href = "../Dashboard/Dashboard?tab=offer";
+                    //                    // location.reload();
+                    //                 }
+                    //             }
+                    //         }
+                    //     });
               }
               $("#status").change(function () {
                 var selectedValue = $(this).val();
@@ -669,9 +789,9 @@
                 }
     }
 
-     function offerHeaderSave() {
-        console.log("activeOfferStatussave : ", activeOfferStatus);
+     function offerHeaderSave(checklist, remarks) {
          var isValid = true;
+         var role_code =  '@role_code';
           if($("#clientname").val() === "") { $("#v_clientname").text("Please Choose Client Name"); isValid = false; } else {$("#v_clientname").text(""); }
             if($("#clientcode").val() === "") { $("#v_clientcode").text("Please Choose Client Code"); isValid = false; } else {$("#v_clientcode").text(""); }
             if($("#offer_type").val() === "") { $("#v_offer_type").text("Please Choose Offer Type");isValid = false;} else {$("#v_offer_type").text(""); }
@@ -692,12 +812,15 @@
                 payload.offer_isin = $("#isin").val();
                 payload.offer_status = $("#status").val();
                 payload.offer_empdiscount = $("#empdiscount").val();
-                payload.offer_remarks = $("#remarks").val();
+                payload.offer_remarks = remarks;
                 payload.client_code = $("#clientcode").val();
-                payload.user_code = '@userName';
+                payload.user_code = '@userCode';
+                payload.role_code = role_code;
                 payload.active_status = 'Y';
                 payload.action = $("#offer_header_gid").val() == 0 ? "INSERT": "UPDATE";
                 payload.delete_flag = 'N';
+                payload.ipo_status = $("#ipostatus").val();
+                payload.boa_checked_status = checklist
                 try {
                 $.ajax({
                     type: "POST",
@@ -705,18 +828,26 @@
                     dataType: 'json',
                     data: JSON.stringify(payload),
                     contentType: 'application/json; charset=utf-8',
-                    success: function (response) {
+                    success: function (response) {                        
                         if (response && response.success) {
                             var data = JSON.parse(response.data);
-                            $("#offer_header_gid").val(data[0].in_offer_header_gid);
-                            $("#offer_code").val(data[0].in_offer_code);
-                            $("#issuestatus").val(data[0].issue_status);
-                            fetchIssuesetup();
-                            $.alert({
-                            title: 'IPO Allotment',
-                            content:data[0].out_msg,
-                            type: 'green',
-                            });
+                            if(data[0].out_result == '0') {
+                                $.alert({
+                               title: 'IPO Allotment',
+                               content:data[0].out_msg,
+                               type: 'red',
+                               });
+                            } else {                            
+                                $("#offer_header_gid").val(data[0].in_offer_header_gid);
+                                $("#offer_code").val(data[0].in_offer_code);
+                                $("#issuestatus").val(data[0].issue_status);
+                                fetchIssuesetup();
+                                $.alert({
+                                title: 'IPO Allotment',
+                                content:data[0].out_msg,
+                                type: 'green',
+                                });
+                            }
                         }
                     },
                     error: function (er) {
@@ -785,7 +916,6 @@
                         } else {
                             activeOfferStatus = false;
                         }
-                                console.log("finalactiveOfferStatus", activeOfferStatus);
                     }
                     else {
                     }
@@ -795,14 +925,18 @@
                     console.log(er)
                 }
             });
+                var boaChecklist = '@Boachecklist';
+                var getnormalizedPath = '@normalizedPath';
+                if(boaChecklist == "Y") {
+                   updateboaVisit(getnormalizedPath);
+                }
         }
             catch (e) {
                 console.log(e)
             }
         }
 
-        function fetchofferHeader(data){
-            debugger;            
+        function fetchofferHeader(data){    
                 $("#offer_header_gid").val(data.offer_header_gid);
                 $("#createedit").val("VIEW");
                 $("#offer_code").val(data.offer_code);
@@ -819,10 +953,17 @@
                 $("#remarks").val(data.offer_remarks);
                 $("#clientcode").val(data.client_code);
                 $("#clientname").val(data.client_name);
-                if(data.offer_status == 'I'){
+                $("#ipostatus").val(data.ipo_status);
+                if(data.offer_status == 'Y'){
                     $("#remarks").prop("readonly", false);
                 } else {
                     $("#remarks").prop("readonly", true);
+                }
+                if(data.boa_checked_status == "Y") {
+                        $("#generateBtn").prop("disabled", false);
+                        $("#generateRptBtn").prop("disabled", false);
+                        $("#exportBtn").prop("disabled", false);
+                        $("#approveBtn").hide();
                 }
             }
 
@@ -929,7 +1070,6 @@
            function setPostPrice(){
             var preCaptital = parseFloat($("#preissue").val().replace(/,/g, '')) || 0;
             var offer_issuesize = parseFloat($("#issuesize").val().replace(/,/g, '')) || 0;
-            console.log("Pre:", preCaptital, "Issue:", offer_issuesize);
             var postprice = preCaptital + offer_issuesize;
             $("#postissue").val(postprice.toFixed(2));
         }
@@ -1071,7 +1211,6 @@
              var clientname = $("#clientname").val();
             var isValid = true;
             if (!isValid) return;
-
                  if(clientname) {
                        if((status === "Y" && activeOfferStatus ==="false") || (status === "" && activeOfferStatus === "false")) {
                         $.alert({
@@ -1136,7 +1275,7 @@
                     content: 'Client Code must not be empty!',
                     type: 'red'
                 });
-        }
+            }
 
 
         }
@@ -1158,7 +1297,6 @@
             var grid = $("#offerBankGrid").data("kendoGrid");
             var row = $(e).closest("tr");
             var dataItem = grid.dataItem(row);
-                console.log("records :",dataItem );
             $("#state").val(dataItem.banker_state);
             loadMasterDropdown(
                 dataItem.banker_state,
@@ -1168,7 +1306,6 @@
                     console.log("City loaded and selected");
                 }
             );
-
             $("#banker_gid").val(dataItem.banker_gid);
             $("#banktype").val(dataItem.banker_type);
             $("#bank").val(dataItem.banker_name);
@@ -1186,7 +1323,6 @@
 
          function deleteBankGrid(e) {
              var status = $("#status").val();
-             console.log("delstatus:", status);
             var grid = $("#offerBankGrid").data("kendoGrid");
             var row = $(e).closest("tr");
             var dataItem = grid.dataItem(row);
@@ -1451,7 +1587,6 @@
                 var grid = $("#offerStackGrid").data("kendoGrid");
                 var row = $(e).closest("tr");
                 var dataItem = grid.dataItem(row);
-                console.log("Stack records :", dataItem);
                 $("#sh_state").val(dataItem.stack_state);
                 loadMasterDropdown(
                     dataItem.stack_state,
@@ -1556,7 +1691,6 @@
 
 
         function loadCatagory() {
-            debugger;
             var mymodel = {
                 in_master_code: "QCD_CATEGORY",
                 in_user_code: ""
@@ -1567,7 +1701,6 @@
                 data: JSON.stringify(mymodel),
                 success: function (response) {
                     var result = JSON.parse(response.data);
-                    console.log("resultcategory :", result);
                     var formattedData = result.map(function (item) {
                     return {
                         category_gid: item.master_gid,
@@ -1868,12 +2001,11 @@
         // ==================== Offer Milstone ===========
 
              function fetchofferMillstone(data){
-                 console.log("Milestones :", data);
                  $("#milestone_gid").val(data.milestone_gid);
                 $("#iod").val(formatDate(data.offer_openingdate));
                 $("#icd").val(formatDate(data.offer_closingdate));
                 $("#alotdate").val(formatDate(data.offer_allotmentdate));
-                    $("#apdate").val(formatDate(data.offer_approvaldate));
+                $("#apdate").val(formatDate(data.offer_approvaldate));
                 $("#ldate").val(formatDate(data.offer_listingdate));
                 $("#nsdldate").val(formatDate(data.offer_nsdldate));
                 $("#cdsldate").val(formatDate(data.offer_cdsldate));
@@ -2078,7 +2210,7 @@
         }
     }
 
-        async function generateReport() {
+        async function generateReport_old() {
          var offer_code = localStorage.getItem("selectedIPO");
          if (!offer_code) {
             $.alert({
@@ -2099,7 +2231,6 @@
                     success: function (response) {
                         if (response && response.success) {
                             var data = response.data;
-                            console.log("Datasets :", data);
                             var details = data.table1;
                             var row = details[0];
                             var bank = data.table2;
@@ -2140,6 +2271,11 @@
                          var table31 = data.table31;
                             cin = row.client_cin;
                             $('#cin').val(row.client_cin);
+                            $.alert({
+                                title: 'IPO',
+                                content: "Report Generated, Please check the Job Status in Utility",
+                                type: 'green',
+                            });
                                       fetch('/BOA/downloadAllReports', {
                                         method: 'POST',
                                         headers: {
@@ -2190,7 +2326,7 @@
 
                                         const a = document.createElement('a');
                                         a.href = url;
-                                        a.download = "IPO_Reports.zip"; // ✅ IMPORTANT (ZIP now)
+                                        a.download = "IPO_Reports.zip"; 
 
                                         document.body.appendChild(a);
                                         a.click();
@@ -2225,12 +2361,263 @@
             hideProgress();
         }
 
-    }       
+    }
 
+            function generateReport() {
+               
+        var offer_code = localStorage.getItem("selectedIPO");
+        if (!offer_code) {
+            $.alert({
+                title: 'IPO Web',
+                content: 'Please select IPO Name',
+                type: 'red'
+            });
+            return;
+        }
+        showProgress();
+        $.ajax({
+            type: "POST",
+            url: '@Url.Action("GenerateBOAReport", "BOA")',
+            data: JSON.stringify({
+                offer_code: offer_code,
+                user_code: '@userCode'
+            }),
+            contentType: 'application/json; charset=utf-8',
+            success: function (response) {
+
+                hideProgress();
+
+                if (response.success) {
+
+                    $.alert({
+                        title: 'IPO',
+                        content: 'Report generation initiated. Please check Job Status in Utility.',
+                        type: 'green'
+                    });
+                }
+                else {
+
+                    $.alert({
+                        title: 'IPO',
+                        content: response.message,
+                        type: 'red'
+                    });
+                }
+            },
+            error: function () {
+
+                hideProgress();
+
+                $.alert({
+                    title: 'IPO',
+                    content: 'Unable to initiate report generation.',
+                    type: 'red'
+                });
+            }
+        });
+    }
+    
        function export_allotment() {
         var offer_code = localStorage.getItem("selectedIPO");
         window.location.href =
             '/BOA/Export_allotment_bo?offer_code=' + encodeURIComponent(offer_code);
     }
 
+    function boachecklist(data){       
+    if ($("#checklistGrid").data("kendoGrid")) {
+        $("#checklistGrid").data("kendoGrid").destroy();
+        $("#checklistGrid").empty();
+    }
+
+    $("#checklistGrid").kendoGrid({
+        dataSource: data,
+        scrollable: true,
+        height: 210,
+        sortable: false,
+        pageable: false,
+        columns: [
+            {
+                field: "process_name",
+                title: "Verification Page",
+                width: 300,
+            },
+                {
+                    title: "Verified",
+                    width: 120,
+                    attributes: {
+                        style: "text-align:center;"
+                    },
+                    template:
+                        "<input type='radio' class='status-radio' name='status_#=id#' value='Verified' #= status == 'Verified' ? 'checked' : '' # />"
+                },
+                {
+                    title: "Not Verified",
+                    width: 120,
+                    attributes: {
+                        style: "text-align:center;"
+                    },
+                    template:
+                        "<input type='radio' class='status-radio' name='status_#=id#' value='NotVerified' #= status == 'NotVerified' ? 'checked' : '' # />"
+                }
+        ]
+    });
+        validateApproveButton();
+        $("#checklistModal").modal("show");
+    }
+
+    function approveVerification() {
+        var results = [];
+        $("#checklistGrid tbody tr").each(function () {
+            var grid = $("#checklistGrid").data("kendoGrid");
+            var dataItem = grid.dataItem(this);
+            var status = $(this)
+                .find("input[type='radio']:checked")
+                .val();
+            results.push({
+                process_name: dataItem.process_name,
+                status: status
+            });
+        });
+        var remarks = $("#txtRemarks").val();
+        offerHeaderSave('Y', remarks);
+        $("#checklistModal").modal("hide");
+    }
+
+        $(document).on("change", ".status-radio", function () {
+             console.log("Changed");
+    console.log($(this).val());
+        var grid = $("#checklistGrid").data("kendoGrid");
+        var row = $(this).closest("tr");
+        var dataItem = grid.dataItem(row);
+
+        dataItem.set("status", $(this).val());
+
+        validateApproveButton();
+    });
+
+    function validateApproveButton() {
+
+        var grid = $("#checklistGrid").data("kendoGrid");
+        var data = grid.dataSource.data();
+
+        var allVerified = data.every(function(item) {
+            return item.status === "Verified";
+        });
+
+        $("#btnApprove").prop("disabled", !allVerified);
+    }
+
+
+    function closeModel() {
+         $("#checklistModal").modal("hide");
+    }
+
+    function emptyallvalue(){
+       $("#btn_row").css("visibility", "hidden");
+        clearheader();
+        clearheaderdetail();
+        clearbankerform();
+        clearstackform();
+        clearmilestoen();
+    }
+
+    function clearmilestoen(){
+        $("#milestone_gid").val("");
+        $("#iod").val("");
+        $("#icd").val("");
+        $("#alotdate").val("");
+        $("#apdate").val("");
+        $("#ldate").val("");
+        $("#nsdldate").val("");
+        $("#cdsldate").val("");
+        $("#refunddate").val("");
+    }
+
+    function clearheaderdetail(){
+        $("#offer_detail_gid").val("");
+        $("#preissue").val("");
+        $("#issuesize").val("");
+        $("#postissue").val("");
+        $("#lotsize").val("");
+        $("#facevalue").val("");
+        $("#premium").val("");
+        $("#pricetype").val("").trigger("change");
+        $("#fprice").val("");
+        $("#minprice").val("");
+        $("#maxprice").val("");
+        $("#cutoffprice").val("");
+    }
+
+    function clearheader(){
+            $("#offer_header_gid").val("");
+            $("#createedit").val("");
+            $("#offer_code").val("");
+            $("#offer_type").val("");
+            $("#listing").val("");
+            $("#isin").val("");
+            $("#status").val("");
+            $("#issuestatus").val("");
+            $("#empdiscount").val("");
+            $("#remarks").val("");
+            $("#clientcode").val("");
+            $("#clientname").val("");
+            $("#ipostatus").val("");
+    }
+    
+    function fetchcheckerVistedlist() {
+         var payload = {
+            in_ipo_code :  $("#offer_code").val(),
+            in_user_code: '@userCode',
+            in_role_code: '@role_code'
+            }
+          customAjax({
+                type: "POST",
+                url: '@Url.Action("fetchcheckerVistedlist", "Common")',
+                data: JSON.stringify(payload),
+                success: function (response) {
+                if (response && response.success) {
+                    var res  = JSON.parse(response.data);
+                    var row = res[0];
+                    var data = [
+                                {
+                                    id: 1,
+                                    process_name: "Offer Setup",
+                                    status: row.visited_offersetup == "Y" ? "Verified" : "NotVerified"
+                                },
+                                {
+                                    id: 2,
+                                    process_name: "IPO Summary",
+                                    status: row.visited_ipo_summary == "Y" ? "Verified" : "NotVerified"
+                                },
+                                {
+                                    id: 3,
+                                    process_name: "Bid Vs Bank",
+                                    status: row.visited_bid_bank == "Y" ? "Verified" : "NotVerified"
+                                },
+                                {
+                                    id: 4,
+                                    process_name: "Bid Vs UPI",
+                                    status: row.visited_bid_upi == "Y" ? "Verified" : "NotVerified"
+                                },                                
+                                {
+                                    id: 5,
+                                    process_name: "Rejection Process",
+                                    status: row.visited_run_rejection == "Y" ? "Verified" : "NotVerified"
+                                }
+                            ];
+                        boachecklist(data);
+                    }
+                    else {
+                        $.alert({
+                            title: 'IPO Allotment',
+                            content: 'Save failed!',
+                            type: 'red',
+                        });
+                    }
+                },
+                error: function (er) {
+                    console.log(er);
+                }
+            });
+    }
  </script>

@@ -37,7 +37,7 @@ namespace IPOWeb.Controllers
         string APIcookieName = "";
 
         [HttpGet]
-        public JsonResult getBidBank(string offer_code, string category)
+        public JsonResult getBidBank(string offer_code, string category, string recontype)
         {
             urlstring = Convert.ToString(_configuration.GetSection("Appsettings")["apiurl"]) + "GetbidBank";
             try
@@ -52,8 +52,10 @@ namespace IPOWeb.Controllers
                     //string url = urlstring + "?offer_code=" + offer_code;
                     string url = urlstring +
                          "?offer_code=" + offer_code +
-                         "&category=" + Uri.EscapeDataString(category);
+                         "&category=" + Uri.EscapeDataString(category) +
+                         "&recontype=" + recontype;
                     var response = client.GetAsync(url).Result;
+                    ApiTokenRefreshMiddleware.TokenUpdate(HttpContext, response, APIcookieName);
                     if (response.StatusCode == HttpStatusCode.Unauthorized)
                     {
                         Response.Cookies.Delete(APIcookieName);
@@ -96,6 +98,7 @@ namespace IPOWeb.Controllers
                     client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
                     string url = urlstring + "?offer_code=" + offer_code + "&bank_code=" + bank_code;
                     var response = client.GetAsync(url).Result;
+                    ApiTokenRefreshMiddleware.TokenUpdate(HttpContext, response, APIcookieName);
                     if (response.StatusCode == HttpStatusCode.Unauthorized)
                     {
                         Response.Cookies.Delete(APIcookieName);
@@ -159,6 +162,7 @@ namespace IPOWeb.Controllers
                     client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
                     string url = urlstring + "?offer_code=" + offer_code + "&user_code=" + user_code;
                     var response = client.GetAsync(url).Result;
+                    ApiTokenRefreshMiddleware.TokenUpdate(HttpContext, response, APIcookieName);
                     if (response.StatusCode == HttpStatusCode.Unauthorized)
                     {
                         Response.Cookies.Delete(APIcookieName);

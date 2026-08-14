@@ -2,6 +2,7 @@
 	ViewData["Title"] = "Report Generation";
 	Layout = "~/Views/Shared/_LayoutNew.cshtml";
 	var userName = Context.Session.GetString("user_name");
+	var userCode = Context.Session.GetString("user_code");
 }
 <!Doctype html>
 <html>
@@ -572,7 +573,7 @@
 			data.in_user_gid = 0;
 			data.in_active_status = '';
 			// data.in_user_code = sessionStorage.getItem("usrname");
-			data.in_user_code = '@userName';
+			data.in_user_code = '@userCode';
 			var Context = data;
 			$.ajax({
 				type: "POST",
@@ -641,7 +642,6 @@
 				$("#txtmode").val(getlocalStorage('btn_clk_val'));
 			}
 			else if (getlocalStorage('btn_clk_val') == "View" || getlocalStorage('btn_clk_val') == "Edit") {
-				debugger;
 				if (getlocalStorage("ls_pageList") != undefined) {
 					var getselectedTemplate = getlocalStorage("selectedTemplate");
 					if(getselectedTemplate.report_exec_type !='M')
@@ -1124,7 +1124,7 @@
 			function combo_editor_man1(container, cmbid, datasource, datafield, code_datafield, grid_id, Sdata) {
 				var arr = [];
 				var in_master_code = "QCD_RP_CONSTRAINT";
-				var in_user_code = '@userName';
+				var in_user_code = '@userCode';
 				$.ajax({
 					type: "POST",
 					url: '../Common/Qcdmaster',
@@ -1293,7 +1293,7 @@
 					"in_outputfile_flag": true,
 					"in_outputfile_type": 'csv',
 					"in_ip_addr": "",
-					"in_user_code": '@userName',
+					"in_user_code": '@userCode',
 					//"in_user_code": 'test',
 					"file_name": $("#file_name").val(),
 					"in_report_name": concatName,
@@ -1541,7 +1541,7 @@
 					data.in_reporttemplateresultset_code = $("#resultsetname").val();
 					data.in_recon_code = selected_template.recon_code;
 					data.in_report_code = exec_type_code != 'M' ? selected_template.report_code : '';
-					data.in_action_by = '@userName';
+					data.in_action_by = '@userCode';
 					$.ajax({
 						type: "POST",
 						url: '../Reports/getPageNoReport',
@@ -1836,7 +1836,7 @@
 					}
 				var template_code = getlocalStorage("ls_pageList");
 				// var txtusername = sessionStorage.getItem("usrname");
-				var txtusername = '@userName';
+				var txtusername = '@userCode';
 
 				var str = $("#rt_name").val();
 				var concatName = str.replace(/[^\w\s]|_/gi, '').replace(/\s+/g, '');
@@ -1853,7 +1853,7 @@
 					"file_name": $("#file_name").val(),
 					"in_report_name": concatName,
 					// "in_action_by": sessionStorage.getItem("usrname"),
-					"in_action_by": '@userName',
+					"in_action_by": '@userCode',
 					"in_reporttemplateresultset_code": ""
 				};
 				dataArray.push(dataset1);
@@ -1936,7 +1936,7 @@
 					} else {
 
 					var condition = buildReportConditionFromGrid("#grid_tempfilter", 'Query');
-					var txtusername = '@userName';
+					var txtusername = '@userCode';
 					var selected_template = getlocalStorage("selectedTemplate");
 					var str = $("#rt_name").val();
 					var dataset1 = {
@@ -2623,7 +2623,7 @@
 			let completed = 0;
 			let hasError = false;
 			let successMessages = "";
-		const txtusername = '@userName';
+			const txtusername = '@userCode';
 			const selected_template = getlocalStorage("selectedTemplate");
 			const recon_code = selected_template.recon_code;
 			Object.keys(grouped).forEach(reportCode => {

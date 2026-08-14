@@ -1,0 +1,79 @@
+name: Deploy IPOWeb to Local IIS
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    runs-on: self-hosted
+
+    steps:
+      - name: Checkout Source
+        uses: actions/checkout@v4
+
+      - name: Verify .NET SDK
+        shell: cmd
+        run: dotnet --info
+
+      - name: Restore Packages
+        shell: cmd
+        run: dotnet restore IPOWeb.sln
+
+      - name: Build Project
+        shell: cmd
+        run: dotnet build IPOWeb.sln --configuration Release --no-restore
+
+      - name: Clean Publish Folder
+        shell: powershell
+        run: |
+          if (Test-Path "D:\Publish\ipoweb") {
+              Remove-Item "D:\Publish\ipoweb\*" -Recurse -Force -ErrorAction SilentlyContinue
+          }
+          else {
+              New-Item -ItemType Directory -Path "D:\Publish\ipoweb" | Out-Null
+          }
+
+      - name: Publish Project
+        shell: cmd
+        run: dotnet publish IPOWeb.csproj --configuration Release --output D:\Publish\ipoweb
+
+      - name: Runner Identity
+        shell: powershell
+        run: |
+          Write-Host "Current User:"
+          whoami
+
+          Write-Host "Windows Identity:"
+          [System.Security.Principal.WindowsIdentity]::GetCurrent().Name
+
+          Write-Host "PowerShell Version:"
+          $PSVersionTable.PSVersion
+
+      - name: Test IIS Access
+        shell: cmd
+        run: |
+          C:\Windows\System32\inetsrv\appcmd.exe list apppool
+
+      - name: Stop IIS App Pool
+        shell: cmd
+        run: |
+          C:\Windows\System32\inetsrv\appcmd.exe stop apppool /apppool.name:"ipoweb"
+
+      - name: Deploy to IIS
+        shell: cmd
+        run: |
+          robocopy D:\Publish\ipoweb D:\inetpub\wwwroot\ipoweb /MIR
+          if %ERRORLEVEL% LEQ 3 exit /b 0
+          exit /b %ERRORLEVEL%
+
+      - name: Start IIS App Pool
+        shell: cmd
+        run: |
+          C:\Windows\System32\inetsrv\appcmd.exe start apppool /apppool.name:"ipoweb"
+
+      - name: Verify IIS App Pool
+        shell: cmd
+        run: |
+          C:\Windows\System32\inetsrv\appcmd.exe list apppool "ipoweb"

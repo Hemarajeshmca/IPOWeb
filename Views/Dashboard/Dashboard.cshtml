@@ -3,6 +3,10 @@
     var userName = Context.Session.GetString("user_name");
     var role_code = Context.Session.GetString("user_role");
     var userCode = Context.Session.GetString("user_code");
+    var menuJson = Context.Session.GetString("UserMenus");
+    var menus = string.IsNullOrEmpty(menuJson)
+        ? new List<MenuModel>()
+        : System.Text.Json.JsonSerializer.Deserialize<List<MenuModel>>(menuJson);
 }
 <!DOCTYPE html>
 <html>  
@@ -46,11 +50,12 @@
     <div class="content-wrapper">
         <div class="container-xxl flex-grow-1 container-p-y">
             <div class="card-body" style="margin-top:5px;height: 556px;width: 103%;margin-left: -18px;">
+                <input type="hidden" id="activeTab" value="dashboard" />
                 <div class="nav-align-top mb-4">
                     <ul class="nav nav-tabs" role="tablist">
                         <li class="nav-item">
                             <button type="button"
-                            class="nav-link active"
+                            class="nav-link "
                             role="tab"
                             data-bs-toggle="tab"
                             data-bs-target="#navs-top-dashboard"
@@ -62,7 +67,7 @@
                         <li class="nav-item" onclick="offersTab()" style="cursor:pointer;">
                             <button type="button"
                             onclick="offersTab()"
-                            class="nav-link"
+                            class="nav-link active"
                             role="tab"
                             data-bs-toggle="tab"
                             data-bs-target="#navs-top-offer"
@@ -85,7 +90,7 @@
                         </li>
                     </ul>
                     <div class="tab-content" style="height: 508px;">
-                        <div class="tab-pane fade show active" id="navs-top-dashboard" role="tabpanel">
+                        <div class="tab-pane fade" id="navs-top-dashboard" role="tabpanel">
                             <div class="row" style="margin-top: -20px;">
                                 <div class="col-sm-2" id="legends" style="background:#186449">
                                     <p id="clientsCount">0</p>
@@ -127,18 +132,18 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="tab-pane fade" id="navs-top-offer" role="tabpanel">
-                            @if (role_code == "IPOMKR")
-                            {
+                        <div class="tab-pane fade show active" id="navs-top-offer" role="tabpanel">
+                            @* @if (role_code == "IPOMKR")
+                            { *@
                                 <div class="row" style="margin-top:-13px;">
-                                    <div class="col-sm-6">
-                                        <img id="plusIcon" onclick="navOfferPage()" style="width:11px; height:11px;margin-bottom:12px;cursor:pointer" src="~/Assets/images/plus.png" />
+                                <div class="col-sm-6" id="addOfferContainer">
+                                    <img id="plusOfferIcon" onclick="navOfferPage()" style="width:11px; height:11px;margin-bottom:12px;cursor:pointer" src="~/Assets/images/plus.png" />
                                     </div>
-                                    <div class="col-sm-6">
+                                <div class="col-sm-6" id="downloadOfferContainer">
                                         <i class='fas fa-file-excel' onclick="exportOfferList()"  style='font-size:20px;cursor:pointer;color:green;float:right'></i>
                                     </div>
                                 </div>
-                            }
+                            @* } *@
                             <div class="row">
                                 <div class="col-sm-12">
                                     <div id="offerListGrid"></div>
@@ -147,10 +152,10 @@
                         </div>
                         <div class="tab-pane fade" id="navs-top-client" role="tabpanel">
                             <div class="row" style="margin-top:-13px;">
-                                <div class="col-sm-6">
-                                    <img id="plusIcon" onclick="location.href='@Url.Action("ClientSetup", "ClientSetup", new { mode = "Create" })'" style="width:11px; height:11px;margin-bottom:12px;cursor:pointer" src="~/Assets/images/plus.png" />
+                                <div class="col-sm-6" id="addClientContainer">
+                                    <img id="plusClientIcon" onclick="location.href='@Url.Action("ClientSetup", "ClientSetup", new { mode = "Create" })'" style="width:11px; height:11px;margin-bottom:12px;cursor:pointer" src="~/Assets/images/plus.png" />
                                 </div>
-                                <div class="col-sm-6">
+                                <div class="col-sm-6" id="downloadClientContainer">
                                     <i class='fas fa-file-excel' onclick="exportClientList()" style='font-size:20px;cursor:pointer;color:green;float:right'></i>
                                 </div>
                             </div>
@@ -169,27 +174,44 @@
 
 </html>
 <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+<script>
+    var menuPermissions = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(
+        menus.Select(x => new
+        {
+            url = x.menu_url,
+            addPerm = x.add_perm,
+            modPerm = x.mod_perm,
+            viewPerm = x.view_perm,
+            delPerm = x.delete_perm,
+            download_perm = x.download_perm
+        })
+    ));
+</script>
 <script>    
      $( document ).ready(function() {
+         offersTab();
           $('#navhead').text('Dashboard');
-          showdashboarddetails();
          const tab = new URLSearchParams(window.location.search).get('tab');
             if (tab) {
                 const triggerEl = document.querySelector(`[data-bs-target="#navs-top-${tab}"]`);
-
                 if (triggerEl) {
-                    new bootstrap.Tab(triggerEl).show();
+                     triggerEl.addEventListener('shown.bs.tab', function () {
+                        if (tab === "offer") {
+                            offersTab();
+                        }
+                    }, { once: true });
 
-                    // manually call for offer tab
-                    if (tab === "offer") {
-                        offersTab();
-                    } 
+                    new bootstrap.Tab(triggerEl).show();
+                    // new bootstrap.Tab(triggerEl).show();
+                    // if (tab === "offer") {
+                    //     offersTab();
+                    // } 
                 }
                 history.replaceState(null, null, window.location.pathname);
             }
     }); 
 
-     google.charts.load("current", {packages:["corechart"]});
+      google.charts.load("current", {packages:["corechart"]});
       google.charts.setOnLoadCallback(drawChart);
     function drawChart(mainboard, sme) {
 
@@ -213,20 +235,15 @@
 
 
      google.charts.load('current', {'packages':['corechart']});
-      // google.charts.setOnLoadCallback(drawCharts);
-
        function drawBarChart(inprogress, completed) {
-
         var data = google.visualization.arrayToDataTable([
             ['IPO Status', 'Count', { role: 'style' }],
-
             ['In Progress', completed, '#12526f'],
             ['Completed', inprogress, '#db5b17']
         ]);
 
         var options = {           
             legend: { position: 'none' },
-
             chartArea: {
                 width: '70%',
                 height: '50%'
@@ -244,9 +261,7 @@
     var clientGridLoaded = false;
 
     $('button[data-bs-target="#navs-top-issue"]').on('shown.bs.tab', function () {
-
         if (!issueGridLoaded) {
-
             $("#issueListGrid").kendoGrid({
                 dataSource: {
                     transport: {
@@ -288,17 +303,14 @@
     });
     
     $('button[data-bs-target="#navs-top-client"]').on('shown.bs.tab', function () {
-
         if (!clientGridLoaded) {
             showclientGrid();
             clientGridLoaded = true; 
         }
-
     });
 
      $('button[data-bs-target="#navs-top-dashboard"]').on('shown.bs.tab', function () {
          showdashboarddetails();    
-
     });
 
     function showdashboarddetails() {
@@ -309,9 +321,7 @@
              success: function (response) {
                console.log(response);       
                var data = JSON.parse(response._data);
-            // Get first row
             var result = data[0];
-            // Bind clients value
             $("#clientsCount").text(result.clients);
             const totalShares =  Number(result.mainboard_total_shares_value) +  Number(result.sme_total_shares_value);
             let formattedTotal = "";
@@ -320,7 +330,6 @@
             } else {
                 formattedTotal = (totalShares / 100000).toFixed(2) + " L";
             }
-
             $("#totalipos").text( result.total_ipos + " (Rs. " + formattedTotal + ")");
             $("#mainboardipocount").text(result.main_board_ipo_count + " (Rs. " + result.mainboard_total_shares + ")");
             $("#smeipocount").text(result.sme_ipo_count + " (Rs. " + result.sme_total_shares + ")");
@@ -342,7 +351,9 @@
                      });
                 }
 
-    function showclientGrid() {
+    function showclientGrid_old() {
+         $("#activeTab").val("client");
+        applyPermissions("client");
         var mymodel = {
             p_client_gid: 0,
             p_action: "A"
@@ -375,6 +386,7 @@
                                 title: "Action",
                                 width: 70,
                                 template: `
+                                    
                                     <img src='../Assets/images/editicons.png'
                                          onclick="editGrid(this)"
                                          style="height:12px;width:12px;cursor:pointer;margin-right:10px;" />
@@ -415,7 +427,6 @@
                         }                      
 
                      ];
-                     // $('#clientListGrid').append('<div id="example" class="table-responsive text-nowrap" id="chk1"><table id="grid" data-bind="source: gridRows" class="table table-sm" style="width:100%;height: 358px;line-height:1em;font-size:12px;border-bottom: 1px solid #e1e1e1;"></table></div>');
                       if ($("#clientListGrid").data("kendoGrid")) {
                         $("#clientListGrid").data("kendoGrid").destroy();
                         $("#clientListGrid").empty();
@@ -442,13 +453,169 @@
                              dataBound: function () {
                                 var grid = this;
                                 grid.columns.forEach(function (col, index) {
-                                    // grid.autoFitColumn(index);
                                 });
                             }
                      });
                  }
          });
-          clientGridLoaded = true;
+        clientGridLoaded = true;
+    }
+
+        function showclientGrid() {
+
+        $("#activeTab").val("client");
+        console.log("addPerm =", window.addPerm); 
+        // Load permissions for Client screen
+        applyPermissions("client");
+        $("#plusClientIcon").toggle(window.addPerm === "Y");
+        $("#downloadClientContainer").toggle(window.download_perm === "Y");
+        // if (window.addPerm === "Y") {
+        //     $("#addClientContainer").show();
+        // } else {
+        //     $("#addClientContainer").hide();
+        // }
+
+        var mymodel = {
+            p_client_gid: 0,
+            p_action: "A"
+        };
+
+        $.ajax({
+            type: "POST",
+            url: '@Url.Action("GetClientList", "Dashboard")',
+            data: JSON.stringify(mymodel),
+            dataType: "json",
+            contentType: 'application/json; charset=utf-8',
+
+            success: function (data) {
+
+                if (data.authExpired) {
+                    $.alert({
+                        title: 'Unauthorized',
+                        content: data.message || 'Unauthorized User',
+                        type: 'red',
+                        buttons: {
+                            ok: {
+                                text: 'OK',
+                                action: function () {
+                                    window.location.href = '/login/logout';
+                                }
+                            }
+                        }
+                    });
+                    return;
+                }
+
+                var gridData = JSON.parse(data._data);
+
+                let columns = [
+                    {
+                        title: "Action",
+                        width: 90,
+                        template: function (dataItem) {
+
+                            var canView = (viewPerm === 'Y');
+                            var canEdit = (modPerm === 'Y');
+                            var canDelete = (delPerm === 'Y');
+
+                            return `
+                       
+
+                                <img src='../Assets/images/editicons.png'
+                                     onclick="${canEdit ? "editGrid(this)" : ''}"
+                                     title="Edit"
+                                     style="height:12px;
+                                            width:12px;
+                                            margin-right:10px;
+                                            cursor:${canEdit ? 'pointer' : 'not-allowed'};
+                                            opacity:${canEdit ? '1' : '0.2'};
+                                            pointer-events:${canEdit ? 'auto' : 'none'};" />
+
+                                <img src='../Assets/images/del.png'
+                                     onclick="${canDelete ? "deleteGrid(this)" : ''}"
+                                     title="Delete"
+                                     style="height:12px;
+                                            width:12px;
+                                            cursor:${canDelete ? 'pointer' : 'not-allowed'};
+                                            opacity:${canDelete ? '1' : '0.2'};
+                                            pointer-events:${canDelete ? 'auto' : 'none'};" />
+                            `;
+                        }
+                    },
+                    {
+                        field: "client_gid",
+                        title: "ID",
+                        hidden: true
+                    },
+                    {
+                        field: "client_code",
+                        title: "Client Code"
+                    },
+                    {
+                        field: "client_name",
+                        title: "Client Name"
+                    },
+                    {
+                        field: "client_type",
+                        title: "Client Type"
+                    },
+                    {
+                        field: "client_country",
+                        title: "Client Country"
+                    },
+                    {
+                        field: "client_state",
+                        title: "Client State"
+                    },
+                    {
+                        field: "client_city",
+                        title: "Client City"
+                    }
+                ];
+
+                // Destroy existing grid if already loaded
+                if ($("#clientListGrid").data("kendoGrid")) {
+                    $("#clientListGrid").data("kendoGrid").destroy();
+                    $("#clientListGrid").empty();
+                }
+
+                $("#clientListGrid").kendoGrid({
+                    dataSource: {
+                        data: gridData,
+                        pageSize: 10
+                    },
+                    excel: {
+                        fileName: "ClientList.xlsx",
+                        allPages: true
+                    },
+                    height: 358,
+                    pageable: {
+                        pageSizes: [10, 20, 30],
+                        refresh: true
+                    },
+                    sortable: true,
+                    filterable: true,
+                    resizable: true,
+                    columns: columns,
+                    dataBound: function () {
+                        var grid = this;
+                        grid.columns.forEach(function (col, index) {
+                            // Additional logic if required
+                        });
+                    }
+                });
+
+                clientGridLoaded = true;
+            },
+
+            error: function () {
+                $.alert({
+                    title: 'Error',
+                    content: 'Error loading Client List',
+                    type: 'red'
+                });
+            }
+        });
     }
 
     function editGrid(e) {
@@ -546,8 +713,32 @@
         });
     }
 
-    function offersTab() {
-        showofferGrid();
+    // function offersTab() {
+    //      $("#activeTab").val("offer");
+    //     applyPermissions("offer");
+    //     showofferGrid();
+    // }
+
+        function offersTab() {
+        $("#activeTab").val("offer"); 
+        applyPermissions("offer");
+
+        var grid = $("#offerListGrid").data("kendoGrid");
+
+        if (grid) {
+            grid.dataSource.read(); // Refresh existing grid
+        } else {
+            showofferGrid(); // Create grid for the first time
+        }
+        $("#plusOfferIcon").toggle(window.addPerm === "Y");
+        $("#downloadOfferContainer").toggle(window.download_perm === "Y");
+        
+        // if (window.addPerm === "Y") {
+        //     $("#addOfferContainer").show();
+        // } else {
+        //     $("#addOfferContainer").hide();
+        // }
+         
     }
 
      function showofferGrid() {
@@ -582,32 +773,60 @@
                 var columns = [
                     {
                         title: "Action",
-                        width: 70,
-                        template: function(dataItem) {
-                            if (role_code == 'IPOMKR' && (dataItem.ipo_status == 'A' || dataItem.ipo_status == 'Y')) {
-                                return `
-                                    <img src='../Assets/images/viewicons.png'
-                                         onclick="editOfferGrid(this)"
-                                         style="height:12px;width:12px;cursor:pointer;" />
-                                `;
-                            } else if(role_code == 'IPOCHK') {
-                                 return `
-                                    <img src='../Assets/images/viewicons.png'
-                                         onclick="editOfferGrid(this)"
-                                         style="height:12px;width:12px;cursor:pointer;" />
-                                `;
-                            } else {
-                                 return `
-                                <img src='../Assets/images/editicons.png'
-                                     onclick="editOfferGrid(this)"
-                                     style="height:12px;width:12px;cursor:pointer;margin-right:10px;" />
+                        width: 90,
+                        
+                            template: function(dataItem) {
 
-                                <img src='../Assets/images/del.png'
-                                     onclick="deleteOfferGrid(this)"
-                                     style="height:12px;width:12px;cursor:pointer;" />
-                            `;
+                            var canView = (viewPerm === 'Y');
+                            var canEdit = (modPerm === 'Y');
+                            var canDelete = (delPerm === 'Y');
+
+                            // Existing business rule
+                            if (
+                                //role_code == 'IPOMKR' &&
+                                (dataItem.ipo_status == 'MS' ||
+                                 dataItem.ipo_status == 'CA' ||
+                                 dataItem.ipo_status == 'MRS' )) {
+
+                                canEdit = false;
+                                canDelete = false;
                             }
 
+                            // if (role_code == 'IPOCHK') {
+                            //     canEdit = false;
+                            //     canDelete = false;
+                            // }
+
+                            return `
+                                <img src='../Assets/images/viewicons.png'
+                                     onclick="${canView ? "editOfferGrid(this, 'View')" : ''}"
+                                     title="View"
+                                     style="height:12px;
+                                            width:12px;
+                                            margin-right:10px;
+                                            cursor:${canView ? 'pointer' : 'not-allowed'};
+                                            opacity:${canView ? '1' : '0.2'};
+                                            pointer-events:${canView ? 'auto' : 'none'};" />
+
+                                <img src='../Assets/images/editicons.png'
+                                     onclick="${canEdit ? "editOfferGrid(this, 'edit')" : ''}"
+                                     title="Edit"
+                                     style="height:12px;
+                                            width:12px;
+                                            margin-right:10px;
+                                            cursor:${canEdit ? 'pointer' : 'not-allowed'};
+                                            opacity:${canEdit ? '1' : '0.2'};
+                                            pointer-events:${canEdit ? 'auto' : 'none'};" />
+
+                                <img src='../Assets/images/del.png'
+                                     onclick="${canDelete ? 'deleteOfferGrid(this)' : ''}"
+                                     title="Delete"
+                                     style="height:12px;
+                                            width:12px;
+                                            cursor:${canDelete ? 'pointer' : 'not-allowed'};
+                                            opacity:${canDelete ? '1' : '0.2'};
+                                            pointer-events:${canDelete ? 'auto' : 'none'};" />
+                            `;
                         }
                     },
                     {
@@ -699,13 +918,13 @@
         window.location.href = "../IssueSetup/IssueSetup?mode=Create";     
     }
      
-     function editOfferGrid(e) {
+     function editOfferGrid(e, mode) {
         var grid = $("#offerListGrid").data("kendoGrid");
         var row = $(e).closest("tr");
         var dataItem = grid.dataItem(row);
         sessionStorage.setItem("edit_offer_code", dataItem.offer_code);
         sessionStorage.setItem("edit_client_code", dataItem.client_code);
-        window.location.href = "../IssueSetup/IssueSetup";
+        window.location.href = "../IssueSetup/IssueSetup?mode="+mode;
     }
 
      function deleteOfferGrid(e) {
@@ -826,5 +1045,37 @@
             // Restore original page size after export
             grid.dataSource.pageSize(originalPageSize);
         });
+    }
+
+        function applyPermissions(tabName) {
+
+        let menuUrl = "";
+
+        switch(tabName) {
+            case "offer":
+                menuUrl = "../IssueSetup/IssueSetup";
+                break;
+
+            case "client":
+                menuUrl = "../ClientSetup/ClientSetup";
+                break;
+
+            default:
+                menuUrl = "../Dashboard/Dashboard";
+                break;
+        }
+
+        let menu = menuPermissions.find(x =>
+            x.url &&
+            x.url.toLowerCase() === menuUrl.toLowerCase()
+        );
+
+        if (!menu) return;
+
+        window.modPerm = menu.modPerm;
+        window.viewPerm = menu.viewPerm;
+        window.delPerm = menu.delPerm;
+        window.addPerm = menu.addPerm;
+        window.download_perm = menu.download_perm;       
     }
 </script>
