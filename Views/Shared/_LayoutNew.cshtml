@@ -38,6 +38,8 @@
     var modPerm = currentMenu?.mod_perm ?? "N";
     var viewPerm = currentMenu?.view_perm ?? "N";
     var delPerm = currentMenu?.delete_perm ?? "N";
+
+    @inject IConfiguration Configuration
 }
 <!DOCTYPE html>
 <html lang="en"
@@ -2372,8 +2374,8 @@
                 success: function (response) {
                     if (response.authExpired) {
                         $.alert({
-                            title: 'Unauthorized',
-                            content: response.message || 'Unauthorized User',
+                            title: 'Unauthorizedl',
+                            content: response.message || 'Unauthorized Userl',
                             type: 'red',
                             buttons: {
                                 ok: {
@@ -2391,11 +2393,25 @@
                     }
                 },
                 error: function (xhr) {
+                    // $.alert({
+                    //     title: 'Error',
+                    //     content: 'Something went wrong!',
+                    //     type: 'red'
+                    // });
                     $.alert({
-                        title: 'Error',
-                        content: 'Something went wrong!',
-                        type: 'red'
+                        title: 'Login Expired',
+                        content: 'Login Expired ! Rediret to Login page',
+                        type: 'red',
+                        buttons: {
+                            ok: {
+                                text: 'OK',
+                                action: function () {
+                                    window.location.href = '/login/logout';
+                                }
+                            }
+                        }
                     });
+                    return;
                     if (options.error) {
                         options.error(xhr);
                     }
@@ -2410,6 +2426,22 @@
                    url: '@Url.Action("GetOffersList", "Dashboard")',
                    dataType: "json",
                    success: function (response) {
+                       if (response.authExpired) {
+                            $.alert({
+                                 title: 'Session Expired',
+                                content: response.message || 'Redirect to Login page',
+                                type: 'red',
+                                buttons: {
+                                    ok: {
+                                        text: 'OK',
+                                        action: function () {
+                                            window.location.href = '/login/logout';
+                                        }
+                                    }
+                                }
+                            });
+                            return;
+                        }
                        if (response) {
                          var data = JSON.parse(response._data);
                           var filteredData = data.filter(function(item) {
@@ -2515,7 +2547,83 @@
             });
         }
     </script>
+   @*  <script>
+        let idleTimer;
 
+        const idleTime = 1 * 60 * 1000; // 1 minute
+
+        function resetIdleTimer() {
+
+            clearTimeout(idleTimer);
+
+            idleTimer = setTimeout(function () {
+
+                // alert("Your session has expired. You will be redirected to the login page.");
+
+                // window.location.href = '/Login/Login';
+
+                $.alert({
+                    title: 'Session Expired',
+                    content:  'Redirect to Login page',
+                    type: 'red',
+                    buttons: {
+                        ok: {
+                            text: 'OK',
+                            action: function () {
+                                window.location.href = '/login/logout';
+                            }
+                        }
+                    }
+                });
+
+            }, idleTime);
+        }
+
+        document.addEventListener('mousemove', resetIdleTimer);
+        document.addEventListener('mousedown', resetIdleTimer);
+        document.addEventListener('keydown', resetIdleTimer);
+        document.addEventListener('scroll', resetIdleTimer);
+        document.addEventListener('touchstart', resetIdleTimer);
+
+        resetIdleTimer();
+    </script> *@
+
+    <script>
+        let idleTimer;
+
+
+        const idleTime = @Configuration["Appsettings:SessionSettings:SessionTimeoutMinutes"] * 60 * 1000;
+        function resetIdleTimer() {
+
+            clearTimeout(idleTimer);
+
+            idleTimer = setTimeout(function () {
+
+                $.alert({
+                    title: 'Session Expired',
+                    content: 'Redirect to Login page',
+                    type: 'red',
+                    buttons: {
+                        ok: {
+                            text: 'OK',
+                            action: function () {
+                                window.location.href = '/login/logout';
+                            }
+                        }
+                    }
+                });
+
+            }, idleTime);
+        }
+
+        document.addEventListener('mousemove', resetIdleTimer);
+        document.addEventListener('mousedown', resetIdleTimer);
+        document.addEventListener('keydown', resetIdleTimer);
+        document.addEventListener('scroll', resetIdleTimer);
+        document.addEventListener('touchstart', resetIdleTimer);
+
+        resetIdleTimer();
+    </script>
 </body>
 
 

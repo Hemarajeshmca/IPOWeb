@@ -1,8 +1,10 @@
 ﻿using FluentValidation;
 using FluentValidation.AspNetCore;
-using Microsoft.AspNetCore.Authentication.Cookies;
 using IPOWeb;
+using IPOWeb.Services;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Http.Features;
+using Microsoft.AspNetCore.HttpOverrides;
 
 var builder = WebApplication.CreateBuilder(args);
 var sessionTimeout = builder.Configuration.GetValue<int>(
@@ -48,19 +50,36 @@ builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationSc
     .AddCookie(options =>
     {
         options.LoginPath = "/Login/Login";
+        options.AccessDeniedPath = "/Login/Login";
         options.Cookie.Name = "IPO.Auth";
         options.Cookie.SecurePolicy = CookieSecurePolicy.None; // localhost
-        options.AccessDeniedPath = "/Login/Login";
         //options.AccessDeniedPath = "/Login/Denied";
         options.ExpireTimeSpan = TimeSpan.FromMinutes(authTimeout);
         // options.ExpireTimeSpan = TimeSpan.FromHours(12);
-        options.SlidingExpiration = true;
+        options.SlidingExpiration = false;
     });
 builder.Services.AddAuthorization();
 builder.Services.AddHttpContextAccessor();
-builder.Services.AddDistributedMemoryCache();
+//builder.Services.AddDistributedMemoryCache();
 builder.Services.AddSession();
 //builder.Services.AddScoped<UserProvider>();
+
+
+// Forwarded Headers
+
+builder.Services.AddHttpContextAccessor();
+
+builder.Services.AddScoped<IClientInfoService, ClientInfoService>();
+builder.Services.Configure<ForwardedHeadersOptions>(options =>
+{
+    options.ForwardedHeaders =
+        ForwardedHeaders.XForwardedFor |
+        ForwardedHeaders.XForwardedProto;
+
+    // If your application is behind a known proxy/load balancer,
+    // you can add its IP here for stronger security.
+    // options.KnownProxies.Add(IPAddress.Parse("127.0.0.1"));
+});
 
 var app = builder.Build();
 
@@ -71,6 +90,7 @@ if (!app.Environment.IsDevelopment())
     app.UseHsts();
 }
 
+app.UseForwardedHeaders();
 //app.UseHttpsRedirection();
 app.UseStaticFiles();
 app.UseSession();
