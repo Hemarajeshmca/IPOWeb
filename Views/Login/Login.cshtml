@@ -323,7 +323,68 @@
         return randomNumber;
     }
 
-    function saveNewPassword() {
+    var loginUserData = null;
+    function CheckLogin() {
+        var empCode = $("#txtusername").val();
+        var txt_pwd = $("#txtpwd").val();
+        if (empCode == "") {
+            $(".errormessage").html('<span class="errormessage"  id="mess">Please Enter Username...!!</span>');
+            $("#erridmsg").show();
+            return false;
+        }
+        if (txt_pwd == "") {
+            $(".errormessage").html('<span class="errormessage"  id="mess">Please Enter Password...!!</span>');
+            $("#erridmsg").show();
+            return false;
+        }
+            $.ajax({
+                url: '@Url.Action("ChkLogin", "Login")?empCode=' + empCode + '&txt_pwd=' + txt_pwd,
+                type: 'POST',
+                dataType: 'json',              // ⭐ REQUIRED
+                success: function (response) {
+                  if (typeof response === "string") {
+                    response = JSON.parse(response);
+                }
+                if (!response.Table || response.Table.length === 0) {
+                    console.error("Table missing or empty", response);
+                    return;
+                }
+                var data = response.Table[0];
+                loginUserData = response.Table[0];
+                console.log("DTASAAA:", loginUserData);
+                 saveNewPassword(data);
+                    if (data.success === 0) {
+                        $(".errormessage").html(
+                            `<span class="errormessage">${data.message}</span>`
+                        );
+                        $("#erridmsg").show();
+                        return;
+                    }
+                    if (data.success === 1 && data.force_password_change_flag == "N") {
+                        sessionStorage.setItem("user_id", data.user_id);
+                        sessionStorage.setItem("user_name", data.user_name);
+                        sessionStorage.setItem("role_code", data.role_code);
+                      $('#changePasswordModal').modal('show');
+                    } else  {
+                        sessionStorage.setItem("user_id", data.user_id);
+                        sessionStorage.setItem("user_name", data.user_name);
+                        sessionStorage.setItem("role_code", data.role_code);
+                       // window.location.href = '@Url.Action("Dashboard", "Dashboard")';
+                       window.location.href = '../Dashboard/Dashboard?tab=offer';
+                    }
+                },
+                error: function () {
+                    $.alert({
+                        title: 'Error',
+                        content: 'Login request failed',
+                        type: 'red'
+                    });
+                }
+            });
+    }
+
+
+     function saveNewPassword() {
         debugger;
         var isValid = true;
         var empcode = $('#changePasswordEmail').val();
@@ -333,13 +394,22 @@
         var txt_pwd = $("#txtpwd").val();
         const minLength = 6;
 
-        var data = {
-            old_pwd: oldPwd,
-            new_pwd: newPwd,
-            empCode: empcode,
-            con_pwd: confirmPwd
-        };
-
+              var data = {
+                    id: loginUserData.user_id,
+                    empcode: loginUserData.user_code,
+                    name: loginUserData.user_name,
+                    email: loginUserData.email,
+                    pan: "",
+                    usermobile: String(loginUserData.mobileno),
+                    userotp: "",
+                    isclient: loginUserData.is_client,
+                    userrole: loginUserData.role_code,
+                    userpwd: confirmPwd,
+                    status: "Y",
+                    userpwdexpdays: String(loginUserData.password_expiry_days),
+                    lock_flag: loginUserData.lock_flag
+    };
+    console.log("Change Password Data:", data);
         if (oldPwd === "" || newPwd === "" || confirmPwd === "") {
             queryErrorAllEmpty.textContent = "All Fields Required";
             isValid = false;
@@ -364,93 +434,78 @@
             queryErrorNewCnfPwd.textContent = ""; // Clear any previous error
         }
 
+              if (isValid) {
+        $.ajax({
+           url: '@Url.Action("ChangePassword", "Login")',
+            type: 'POST',
+            contentType: 'application/json; charset=utf-8',
+            dataType: 'json',
+            data: JSON.stringify(data),
 
-        if(isValid) {
-            $.ajax({
-                url: '@Url.Action("ChangePassword", "Login")',
-                type: 'POST',
-                data: JSON.stringify(data),
-                contentType: 'application/json',
-                success: function (response) {
-                    console.log("Response:", response);
+            success: function (response) {
 
-                    if (response.success) {
+                console.log("passres:", response);
+
+                // Convert JSON string to object
+                if (typeof response === "string") {
+                    response = JSON.parse(response);
+                }
+
+                console.log("Parsed response:", response);
+
+                if (response.Table && response.Table.length > 0) {
+
+                    var result = response.Table[0];
+
+                    console.log("Status:", result.status);
+                    console.log("Message:", result.message);
+
+                    if (result.status === "Success") {
+
                         $.dialog({
                             title: 'Success',
-                            content: response.message,
+                            content: result.message,
                             type: 'green',
                             onClose: function () {
                                 $("#changePasswordForm")[0].reset();
                                 location.reload();
                             }
                         });
+
                     } else {
+
                         $.dialog({
                             title: 'Error',
-                            content: response.message,
+                            content: result.message,
                             type: 'red'
                         });
                     }
-                },
-                error: function (error) {
-                    console.error("Error:", error);
-                    alert("Error changing password");
-                }
-            });
-        }
-    }
-    function CheckLogin() {
-        var empCode = $("#txtusername").val();
-        var txt_pwd = $("#txtpwd").val();
-        if (empCode == "") {
-            $(".errormessage").html('<span class="errormessage"  id="mess">Please Enter Username...!!</span>');
-            $("#erridmsg").show();
-            return false;
-        }
-        if (txt_pwd == "") {
-            $(".errormessage").html('<span class="errormessage"  id="mess">Please Enter Password...!!</span>');
-            $("#erridmsg").show();
-            return false;
-        }
 
-            $.ajax({
-                url: '@Url.Action("ChkLogin", "Login")?empCode=' + empCode + '&txt_pwd=' + txt_pwd,
-                type: 'POST',
-                dataType: 'json',              // ⭐ REQUIRED
-                success: function (response) {
+                } else {
 
-                  if (typeof response === "string") {
-                    response = JSON.parse(response);
-                }
-                if (!response.Table || response.Table.length === 0) {
-                    console.error("Table missing or empty", response);
-                    return;
-                }
-                var data = response.Table[0];
-                    if (data.success === 0) {
-                        $(".errormessage").html(
-                            `<span class="errormessage">${data.message}</span>`
-                        );
-                        $("#erridmsg").show();
-                        return;
-                    }
-                    if (data.success === 1) {
-                        sessionStorage.setItem("user_id", data.user_id);
-                        sessionStorage.setItem("user_name", data.user_name);
-                        sessionStorage.setItem("role_code", data.role_code);
-                       // window.location.href = '@Url.Action("Dashboard", "Dashboard")';
-                       window.location.href = '../Dashboard/Dashboard?tab=offer';
-                    }
-                },
-                error: function () {
-                    $.alert({
+                    $.dialog({
                         title: 'Error',
-                        content: 'Login request failed',
+                        content: 'Invalid response received from server.',
                         type: 'red'
                     });
                 }
-            });
+            },
+
+            error: function (xhr, status, error) {
+
+                console.log("AJAX Error:", error);
+                console.log("Response:", xhr.responseText);
+
+                $.dialog({
+                    title: 'Error',
+                    content: 'Unable to change password. Please try again.',
+                    type: 'red'
+                });
+            }
+        });
     }
+    }
+    
 
     function ForgotPassword() {
         debugger;
