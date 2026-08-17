@@ -7,6 +7,7 @@
     var userEmail = Context.Session.GetString("user_email");
     var roleName = Context.Session.GetString("role_name");
     var menuJson = Context.Session.GetString("UserMenus");
+    var LoginSessionIds = Context.Session.GetString("LoginSessionId");
     var menus = new List<MenuModel>();
     var asideMenus = new List<MenuModel>();
     var navMenus = new List<MenuModel>();
@@ -728,7 +729,7 @@
                                         </a>*@
                                         <a class="dropdown-item"
                                            href="#"
-                                           onclick="logoutUser();">
+                                           onclick="logoutUser('UserLogout'); return false;">
                                             <i class="bx bx-power-off me-2"></i>
                                             <span class="align-middle">Log Out</span>
                                         </a>
@@ -748,7 +749,7 @@
                     @RenderBody()
 
                 </div>
-
+                
                 <!-- Content wrapper -->
             </div>
             <!-- / Layout page -->
@@ -2193,12 +2194,65 @@
 
         }
 
-             function logoutUser() {
-                localStorage.removeItem("selectedIPO");
-                localStorage.removeItem("selectedIPOText");
-            const url = '@Url.Action("Logout", "Login")';
-            window.location.href = url;
+      
+
+        function logoutUser(logoutAction) {
+             
+        var user_code = '@userCode';
+        var sessionids='@LoginSessionIds'; 
+                const url = '@Url.Action("Logout", "Login")'
+        + '?logoutAction=' + encodeURIComponent(logoutAction)
+        + '&usercode=' + encodeURIComponent(user_code)
+        + '&sessionids=' + encodeURIComponent(sessionids);
+        sessionStorage.clear();
+        localStorage.clear();
+        localStorage.removeItem("selectedIPO");
+            localStorage.removeItem("selectedIPOText");
+             
+            $.ajax({
+                type: "GET",
+                url: url,
+                dataType: "json",
+
+                success: function (response) {
+
+                    if (logoutAction === "LoginExpired") {
+
+                        $.alert({
+                            title: 'Session Expired',
+                            content: 'Session expired. Redirect to Login.',
+                            type: 'red',
+                            buttons: {
+                                ok: {
+                                    text: 'OK',
+                                    action: function () {
+                                        window.location.href =
+                                            '@Url.Action("Login", "Login")';
+                                    }
+                                }
+                            }
+                        });
+
+                    }
+                    else {
+
+                        // Manual logout
+                        window.location.href =
+                            '@Url.Action("Login", "Login")';
+                    }
+                    sessionStorage.clear();
+                },
+
+                error: function (xhr) {
+
+                    console.log("Logout error:", xhr.status);
+
+                    window.location.href =
+                        '@Url.Action("Login", "Login")';
+                }
+            });
         }
+             
          function validateDateFormat(date) {
                 // const regex = /^(0[1-9]|[12][0-9]|3[01])\/(0[1-9]|1[0-2])\/\d{4}$/; // Reg exp for dd/mm/yyyy
             const regex = /^\d{4}-(0[1-9]|1[0-2])-(0[1-9]|[12][0-9]|3[01])$/; // Reg exp for dd-mm-yyyy
@@ -2547,71 +2601,23 @@
             });
         }
     </script>
-   @*  <script>
-        let idleTimer;
 
-        const idleTime = 1 * 60 * 1000; // 1 minute
-
-        function resetIdleTimer() {
-
-            clearTimeout(idleTimer);
-
-            idleTimer = setTimeout(function () {
-
-                // alert("Your session has expired. You will be redirected to the login page.");
-
-                // window.location.href = '/Login/Login';
-
-                $.alert({
-                    title: 'Session Expired',
-                    content:  'Redirect to Login page',
-                    type: 'red',
-                    buttons: {
-                        ok: {
-                            text: 'OK',
-                            action: function () {
-                                window.location.href = '/login/logout';
-                            }
-                        }
-                    }
-                });
-
-            }, idleTime);
-        }
-
-        document.addEventListener('mousemove', resetIdleTimer);
-        document.addEventListener('mousedown', resetIdleTimer);
-        document.addEventListener('keydown', resetIdleTimer);
-        document.addEventListener('scroll', resetIdleTimer);
-        document.addEventListener('touchstart', resetIdleTimer);
-
-        resetIdleTimer();
-    </script> *@
 
     <script>
+
         let idleTimer;
 
-
-        const idleTime = @Configuration["Appsettings:SessionSettings:SessionTimeoutMinutes"] * 60 * 1000;
+        const idleTime =
+            @Configuration["Appsettings:SessionSettings:SessionTimeoutMinutes"]
+            * 60 * 1000;
+        //const idleTime = 30 * 1000; // 30 seconds
         function resetIdleTimer() {
 
             clearTimeout(idleTimer);
 
-            idleTimer = setTimeout(function () {
-
-                $.alert({
-                    title: 'Session Expired',
-                    content: 'Redirect to Login page',
-                    type: 'red',
-                    buttons: {
-                        ok: {
-                            text: 'OK',
-                            action: function () {
-                                window.location.href = '/login/logout';
-                            }
-                        }
-                    }
-                });
+            idleTimer = setTimeout(function () { 
+                // FIRST call logout
+                logoutUser("LoginExpired");
 
             }, idleTime);
         }
@@ -2623,6 +2629,7 @@
         document.addEventListener('touchstart', resetIdleTimer);
 
         resetIdleTimer();
+
     </script>
 </body>
 
