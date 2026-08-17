@@ -265,6 +265,7 @@
                                 @* <span class="input-group-addon"><i class="glyphicon glyphicon-user"></i></span> *@
                                 <label for="newPassword">New Password</label>
                                 <input type="password" class="form-control" id="newPassword" required>
+                                <span id="queryErrorNewPwd" style="color: red; font-size: 12px;position:relative;"></span>
                                 @* <small id="oldPwdError" class="form-text text-danger"></small> *@
                             </div>
                             <span id="newError" style="color: red; font-size: 12px;position:relative;top:-14px;"></span>
@@ -292,7 +293,7 @@
 </html>
 
 <script type="text/javascript">
-
+    
     const glow = document.querySelector('.cursor-glow');
 
     document.addEventListener('mousemove', (e) => {
@@ -315,6 +316,7 @@
 
 </script>
 <script>
+    var loginUserData = null;
     function generate16DigitRandomNumber() {
         let randomNumber = '';
         for (let i = 0; i < 16; i++) {
@@ -322,8 +324,7 @@
         }
         return randomNumber;
     }
-
-    var loginUserData = null;
+    
     function CheckLogin() {
         var empCode = $("#txtusername").val();
         var txt_pwd = $("#txtpwd").val();
@@ -352,7 +353,7 @@
                 var data = response.Table[0];
                 loginUserData = response.Table[0];
                 console.log("DTASAAA:", loginUserData);
-                 saveNewPassword(data);
+                 saveNewPassword(loginUserData);
                     if (data.success === 0) {
                         $(".errormessage").html(
                             `<span class="errormessage">${data.message}</span>`
@@ -505,7 +506,106 @@
         });
     }
     }
-    
+    function validateNewPassword(loginUserData) {
+
+        var newPwd = $("#newPassword").val().trim();
+
+        var minPwdLength = parseInt(loginUserData.password_min_len);
+        var maxPwdLength = parseInt(loginUserData.password_max_len);
+
+        var requireUppercase = loginUserData.pwd_require_uppercase;
+        var requireLowercase = loginUserData.pwd_require_lowercase;
+        var requireNumber = loginUserData.pwd_require_number;
+        var requireSpecialChar = loginUserData.pwd_require_special_char;
+
+        var missingRules = [];
+        var rules = [];
+
+        // Configured rules
+        if (requireUppercase === "Y") {
+            rules.push("A-Z");
+        }
+
+        if (requireLowercase === "Y") {
+            rules.push("a-z");
+        }
+
+        if (requireNumber === "Y") {
+            rules.push("0-9");
+        }
+
+        if (requireSpecialChar === "Y") {
+            rules.push("special character");
+        }
+
+        // Empty password
+        if (newPwd === "") {
+            queryErrorNewPwd.textContent =
+                "Use " +
+                minPwdLength +
+                "-" +
+                maxPwdLength +
+                " characters" +
+                (rules.length > 0 ? " with " + rules.join(", ") : "") +
+                ".";
+
+            return false;
+        }
+
+        // Uppercase
+        if (requireUppercase === "Y" && !/[A-Z]/.test(newPwd)) {
+            missingRules.push("A-Z");
+        }
+
+        // Lowercase
+        if (requireLowercase === "Y" && !/[a-z]/.test(newPwd)) {
+            missingRules.push("a-z");
+        }
+
+        // Number
+        if (requireNumber === "Y" && !/[0-9]/.test(newPwd)) {
+            missingRules.push("0-9");
+        }
+
+        // Special character
+        if (requireSpecialChar === "Y" && !/[^A-Za-z0-9]/.test(newPwd)) {
+            missingRules.push("special character");
+        }
+
+        var message = "";
+
+        // Length
+        if (newPwd.length < minPwdLength ||
+            newPwd.length > maxPwdLength) {
+
+            message =
+                "Use " +
+                minPwdLength +
+                "-" +
+                maxPwdLength +
+                " characters";
+        }
+
+        // Missing rules
+        if (missingRules.length > 0) {
+
+            if (message !== "") {
+                message += " with ";
+            } else {
+                message = "Include ";
+            }
+
+            message += missingRules.join(", ");
+        }
+
+        if (message !== "") {
+            queryErrorNewPwd.textContent = message + ".";
+            return false;
+        }
+
+        queryErrorNewPwd.textContent = "";
+        return true;
+    }
 
     function ForgotPassword() {
         debugger;
@@ -576,6 +676,9 @@
         else {
             $("#divEntity").hide();
         }
+        $("#newPassword").on("input", function () {
+            validateNewPassword(loginUserData);
+        });
     });
 
 

@@ -13,6 +13,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using System;
 using System.Data;
 using System.Diagnostics;
 using System.Net;
@@ -183,6 +184,7 @@ namespace IPOWeb.Controllers
                     context.app_code = app_code;
                     context.ipaddress = ipAddress;
                     context.browseragent = userAgent;
+                    context.LoginSessionId = LoginSessionId;
                     HttpContent content = new StringContent(JsonConvert.SerializeObject(context), UTF8Encoding.UTF8, "application/json");
                     var response = client.PostAsync(loginApiUrl, content).Result;
                     if (response.StatusCode == HttpStatusCode.Unauthorized)
@@ -372,129 +374,7 @@ namespace IPOWeb.Controllers
         }
 
 
-        public async Task<IActionResult> ChkLogin_Old(string empCode, string txt_pwd, string app_code)
-        {
-            app_code = _configuration.GetSection("AppSettings")["App_code"];
-            urlstring = Convert.ToString(_configuration.GetSection("Appsettings")["cumsapiurl"]) + "/ChkLogin";
-
-
-            string preTokenUrl = _configuration["Appsettings:cumsapiurl"] + "/auth/generate-token";
-            string loginApiUrl = _configuration["Appsettings:cumsapiurl"] + "/ChkLogin";
-
-            using var clients = new HttpClient
-            {
-                Timeout = TimeSpan.FromMinutes(5) // or seconds
-            };
-
-            // 🔹 Step 1: Get pre-token from API
-            var preTokenResponse = await clients.PostAsync(preTokenUrl, null);
-            if (!preTokenResponse.IsSuccessStatusCode)
-                return Json(new { success = false, message = "Unable to get pre-token" });
-
-            var preTokenJson = await preTokenResponse.Content.ReadAsStringAsync();
-            var preToken = JObject.Parse(preTokenJson)["token"]?.ToString();
-
-
-            DataSet result = new DataSet();
-            string post_data = "";
-            try
-            {
-                using (var client = new HttpClient())
-                {
-                    client.DefaultRequestHeaders.Accept.Clear();
-                    client.Timeout = Timeout.InfiniteTimeSpan;
-                    client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", preToken);
-                    client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
-                    LoginModel context = new LoginModel();
-                    context.empCode = empCode;
-                    context.txt_pwd = txt_pwd;
-                    context.app_code = app_code;
-                    HttpContent content = new StringContent(JsonConvert.SerializeObject(context), UTF8Encoding.UTF8, "application/json");
-                    var response = client.PostAsync(loginApiUrl, content).Result;
-                    if (response.StatusCode == HttpStatusCode.Unauthorized)
-                    {
-                        Response.Cookies.Delete(APIcookieName);
-                        return Json(new
-                        {
-                            success = false,
-                            authExpired = true
-                        });
-                    }
-                    Stream data = response.Content.ReadAsStreamAsync().Result;
-                    StreamReader reader = new StreamReader(data);
-                    post_data = reader.ReadToEnd();
-                    _data = JsonConvert.DeserializeObject<string>(post_data);
-                    result = JsonConvert.DeserializeObject<DataSet>(_data);
-
-                    _data = JsonConvert.SerializeObject(result);
-                    int success = Convert.ToInt32(result.Tables[0].Rows[0]["success"]);
-
-                    //if (result != null && result.Tables.Count > 0 && result.Tables[0].Rows.Count > 0)
-                    if (success == 1)
-                    {
-                        HttpContext.Session.SetString("user_role", Convert.ToString(result.Tables[0].Rows[0]["role_code"]));
-                        HttpContext.Session.SetString("user_id", Convert.ToString(result.Tables[0].Rows[0]["user_id"]));
-                        HttpContext.Session.SetString("user_name", Convert.ToString(result.Tables[0].Rows[0]["user_name"]));
-                        HttpContext.Session.SetString("user_code", Convert.ToString(result.Tables[0].Rows[0]["user_code"]));
-                        HttpContext.Session.SetString("user_email", Convert.ToString(result.Tables[0].Rows[0]["email"]));
-                        HttpContext.Session.SetString("role_name", Convert.ToString(result.Tables[0].Rows[0]["role_name"]));
-                        List<MenuModel> menuList = new List<MenuModel>();
-
-                        foreach (DataRow row in result.Tables[0].Rows)
-                        {
-                            menuList.Add(new MenuModel
-                            {
-                                menu_id = row["menu_id"].ToString(),
-                                menu_name = row["menu_name"].ToString(),
-                                menu_url = row["menu_url"].ToString(),
-                                add_perm = row["add_perm"].ToString(),
-                                mod_perm = row["mod_perm"].ToString(),
-                                view_perm = row["view_perm"].ToString(),
-                                delete_perm = row["delete_perm"].ToString(),
-                                download_perm = row["download_perm"].ToString(),
-                                link_perm = row["link_perm"].ToString(),
-                                mail_perm = row["mail_perm"].ToString(),
-                                retreq_perm = row["retreq_perm"].ToString(),
-                                deny_perm = row["deny_perm"].ToString(),
-                                menu_type = row["menu_type"].ToString()
-                            });
-                        }
-                        var menuJson = JsonConvert.SerializeObject(menuList);
-                        HttpContext.Session.SetString("UserMenus", menuJson);
-                        //HttpContext.Session.SetString("mandatory_field_id", Convert.ToString(result.Tables[0].Rows[0]["mandatory_field_id"]));
-                        set_Apitoken = Convert.ToString(result.Tables[0].Rows[0]["user_code"] + "_" + Convert.ToString(result.Tables[0].Rows[0]["role_code"]));
-
-                        string id = Convert.ToString(result.Tables[0].Rows[0]["user_id"]);
-                        string name = Convert.ToString(result.Tables[0].Rows[0]["user_name"]);
-                        string email = Convert.ToString(result.Tables[0].Rows[0]["email"]);
-                        string role = Convert.ToString(result.Tables[0].Rows[0]["role_code"]);
-                        string user_code = Convert.ToString(result.Tables[0].Rows[0]["user_code"]);
-                        // 🔹 Step 5: Cookie authentication for website
-                        var claims = new List<Claim>
-                             {
-                                 new Claim(ClaimTypes.NameIdentifier, id.ToString()),
-                                 new Claim(ClaimTypes.Role, role.ToString()),
-                                 new Claim(ClaimTypes.Name, user_code.ToString()),
-                                 
-                             };
-                        var identity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
-                        await HttpContext.SignInAsync(
-                            CookieAuthenticationDefaults.AuthenticationScheme,
-                            new ClaimsPrincipal(identity)
-                        );
-                    }
-                    ApiTokenRefreshMiddleware.TokenUpdate(HttpContext, response, set_Apitoken);
-                }
-                return Json(_data);
-            }
-            catch (Exception ex)
-            {
-                CommonController objcom = new CommonController(_configuration);
-                objcom.errorlog(ex.Message, "setFieldlist");
-                return Json(ex.Message);
-            }
-        }
-
+        
         [HttpPost]
         public JsonResult ChangePassword([FromBody] ChangePasswordModel mymodel)
         {
@@ -587,11 +467,132 @@ namespace IPOWeb.Controllers
             }
         }
 
-        public async Task<IActionResult> Logout()
+        [HttpGet]
+        public async Task<IActionResult> Logout(string logoutAction = "",string usercode = "",string sessionids = "")
         {
-            set_Apitoken = "APItoken-" + User.FindFirst(ClaimTypes.Name)?.Value.ToString() + "_" + User.FindFirst(ClaimTypes.Role)?.Value.ToString();
-            Response.Cookies.Delete(set_Apitoken);
-            return RedirectToAction("Login", "Login");
+
+            string requestUrl =
+        $"{Request.Scheme}://{Request.Host}{Request.Path}{Request.QueryString}";
+
+            string ipAddress = _clientInfoService.GetClientIp();
+            string userAgent = _clientInfoService.GetUserAgent();
+
+            string app_code = _configuration
+                .GetSection("AppSettings")["App_code"];
+
+            string loginApiUrl =
+                _configuration["Appsettings:cumsapiurl"]
+                + "/UsersLogout";
+
+            string APIcookieName = User.FindFirst(ClaimTypes.Name)?.Value.ToString() + "_" + User.FindFirst(ClaimTypes.Role)?.Value.ToString();
+            
+            try
+            {
+                string empCode =
+                    HttpContext.Session.GetString("user_code");
+
+                string loginSessionId =
+                    HttpContext.Session.GetString("LoginSessionId");
+
+                string userName =
+                    User.FindFirst(ClaimTypes.Name)?.Value;
+
+                string role =
+                    User.FindFirst(ClaimTypes.Role)?.Value;
+
+                APIcookieName =
+                    "APItoken-" + userName + "_" + role;
+
+                string token =
+                    Request.Cookies[APIcookieName];
+
+                using (var client = new HttpClient())
+                {
+                    client.Timeout = Timeout.InfiniteTimeSpan;
+
+                    client.DefaultRequestHeaders.Accept.Clear();
+
+                    client.DefaultRequestHeaders.Accept.Add(
+                        new MediaTypeWithQualityHeaderValue(
+                            "application/json"));
+
+                    if (!string.IsNullOrEmpty(token))
+                    {
+                        client.DefaultRequestHeaders.Authorization =
+                            new AuthenticationHeaderValue(
+                                "Bearer",
+                                token);
+                    }
+
+                    LoginModel context = new LoginModel
+                    {
+                        empCode = usercode,
+                        app_code = app_code,
+                        ipaddress = ipAddress,
+                        browseragent = userAgent,
+                        LoginSessionId = sessionids,
+                        action = logoutAction
+                    };
+
+                    HttpContent content =
+                        new StringContent(
+                            JsonConvert.SerializeObject(context),
+                            Encoding.UTF8,
+                            "application/json");
+
+                    var response =
+                        await client.PostAsync(
+                            loginApiUrl,
+                            content);
+
+                    string postData =
+                        await response.Content.ReadAsStringAsync();
+
+                    // API response can be logged if required
+                     
+                }
+
+                // Clear authentication
+                Response.Cookies.Delete(APIcookieName);
+                Response.Cookies.Delete("IPO.Session");
+                Response.Cookies.Delete("APItoken-");
+                HttpContext.Session.Clear();
+
+                await HttpContext.SignOutAsync();
+
+                // Return JSON to AJAX
+                return Json(new
+                {
+                    success = true,
+                    action = logoutAction
+                });
+            }
+            catch (Exception ex)
+            {
+                CommonController objcom =
+                    new CommonController(_configuration);
+
+                objcom.errorlog(
+                    ex.Message,
+                    "Logout");
+
+                // Clear local authentication
+                if (!string.IsNullOrEmpty(APIcookieName))
+                {
+                    Response.Cookies.Delete(APIcookieName);
+                }
+
+                HttpContext.Session.Clear();
+
+                await HttpContext.SignOutAsync();
+
+                return Json(new
+                {
+                    success = false,
+                    action = logoutAction,
+                    message = ex.Message
+                });
+            }
         }
     }
 }
