@@ -303,6 +303,7 @@ namespace IPOWeb.Controllers
                             HttpContext.Session.SetString("force_password_change_flag", Convert.ToString(firstRow["force_password_change_flag"]));
                             HttpContext.Session.SetString("password_expiry_days", Convert.ToString(firstRow["password_expiry_days"]));
                             HttpContext.Session.SetString("lock_flag", Convert.ToString(firstRow["lock_flag"]));
+                            HttpContext.Session.SetString("password_attempt_count", Convert.ToString(firstRow["password_attempt_count"]));
                         }
                         HttpContext.Session.SetString("LoginSessionId", LoginSessionId);
                         // Build Menu List
@@ -347,6 +348,7 @@ namespace IPOWeb.Controllers
                         string force_password_change_flag = Convert.ToString(result.Tables[0].Rows[0]["force_password_change_flag"]);
                         string password_expiry_days = Convert.ToString(result.Tables[0].Rows[0]["password_expiry_days"]);
                         string lock_flag = Convert.ToString(result.Tables[0].Rows[0]["lock_flag"]);
+                        string password_attempt_count = Convert.ToString(result.Tables[0].Rows[0]["password_attempt_count"]);
                         // 🔹 Step 5: Cookie authentication for website
                         var claims = new List<Claim>
                       {

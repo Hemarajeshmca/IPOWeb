@@ -188,7 +188,7 @@
             <div class="row">
                 <div class="col-sm-4">
                 </div>
-                <div class="col-sm-4 login-card" style="animation: floatBlob 6s infinite ease-in-out;border: 1px solid #6967676e;margin: 20px;float:right;overflow:hidden;border-radius: 45px;background:#fff;height: 273px;margin-top:140px;box-shadow: 0 4px 8px 0 rgb(0 0 0 / 90%), 0 6px 20px 0 rgb(0 0 0 / 83%); ">
+                <div class="col-sm-4 login-card" style="animation: floatBlob 6s infinite ease-in-out;border: 1px solid #6967676e;margin: 20px;float:right;overflow:hidden;border-radius: 45px;background:#fff;height: 225px;margin-top:140px;box-shadow: 0 4px 8px 0 rgb(0 0 0 / 90%), 0 6px 20px 0 rgb(0 0 0 / 83%); ">
 
                     <form action="" method="post" style="margin-top: 36px;">
                         <div class="form-group input-group">
@@ -215,7 +215,7 @@
                         <div class="form-group" id="OTPbtn" style="margin-top:10px;">
                             <center>
                                 @* <button id="btnGenerateOtp" type="button" style="background-color:#0e9ac8;color:white;" class="btn btn-def btn-block" data-toggle="modal" data-target="#changePasswordModal"> Change Password </button> *@
-                                <button onclick="return ForgotPassword();" id="ForgetPwd" type="button" style="background-color:#0e9ac8;color:white;" class="btn btn-def btn-block"> Forgot Password </button>
+                                @* <button onclick="return ForgotPassword();" id="ForgetPwd" type="button" style="background-color:#0e9ac8;color:white;" class="btn btn-def btn-block"> Forgot Password </button> *@
                             </center>
                         </div>
                         <div class="form-group text-center" style="color:red">
@@ -366,6 +366,8 @@
                         sessionStorage.setItem("user_name", data.user_name);
                         sessionStorage.setItem("role_code", data.role_code);
                       $('#changePasswordModal').modal('show');
+                       queryErrorAllEmpty.textContent = "";
+                        queryErrorOldPwd.textContent = "";
                     } else  {
                         sessionStorage.setItem("user_id", data.user_id);
                         sessionStorage.setItem("user_name", data.user_name);
@@ -393,6 +395,7 @@
         var newPwd = $("#newPassword").val();
         var confirmPwd = $("#confirmPassword").val();
         var txt_pwd = $("#txtpwd").val();
+        var passwordAttemptCount =  parseInt(loginUserData.password_attempt_count) || 0;
         const minLength = 6;
 
               var data = {
@@ -418,12 +421,26 @@
             queryErrorAllEmpty.textContent = ""; // Clear any previous error
         }
 
-        if (oldPwd!= "" && oldPwd != txt_pwd){
-            queryErrorOldPwd.textContent = "Old Password Not Same";
-            isValid = false;
-        }else {
-            queryErrorOldPwd.textContent = ""; // Clear any previous error
-        }
+        if (oldPwd === "") {
+                    queryErrorOldPwd.textContent = "Please enter old password";
+                    isValid = false;
+                }
+                else if (oldPwd !== txt_pwd) {
+                    passwordAttemptCount--;
+                    loginUserData.password_attempt_count =   passwordAttemptCount;
+                    if (passwordAttemptCount > 0) {
+                        queryErrorOldPwd.textContent =  "Incorrect password. You have " +  passwordAttemptCount +  " attempts remaining.";
+                    }
+                    else {
+                        queryErrorOldPwd.textContent =   "Incorrect password. All attempts have been exhausted. Please contact admin.";
+                        $("#oldPassword").prop("disabled", true);
+                        $("#changePasswordSubmit").prop("disabled", true);
+                    }
+                    isValid = false;
+                }
+                else {
+                    queryErrorOldPwd.textContent = "";
+                }
 
         if (newPwd != confirmPwd){
             queryErrorNewCnfPwd.textContent = "New Password And Confirm Password Not Same";
@@ -462,33 +479,48 @@
                     console.log("Message:", result.message);
 
                     if (result.status === "Success") {
-
-                        $.dialog({
+                        $.confirm({
                             title: 'Success',
                             content: result.message,
                             type: 'green',
-                            onClose: function () {
-                                $("#changePasswordForm")[0].reset();
-                                location.reload();
+                          buttons: {
+                                OK: {
+                                    text: 'OK',
+                                    btnClass: 'btn-green',
+                                    action: function () {
+                                        $("#changePasswordForm")[0].reset();
+                                        location.reload();
+                                    }
+                                }
                             }
                         });
 
                     } else {
-
-                        $.dialog({
-                            title: 'Error',
-                            content: result.message,
-                            type: 'red'
-                        });
+                           $.confirm({
+                                title: 'Error',
+                                content: result.message,
+                                type: 'red',
+                                buttons: {
+                                    OK: {
+                                        text: 'OK',
+                                        btnClass: 'btn-red'
+                                    }
+                                }
+                            });
                     }
 
                 } else {
-
-                    $.dialog({
-                        title: 'Error',
-                        content: 'Invalid response received from server.',
-                        type: 'red'
-                    });
+                        $.confirm({
+                            title: 'Error',
+                            content: "Invalid response received from server",
+                            type: 'red',
+                            buttons: {
+                                OK: {
+                                    text: 'OK',
+                                    btnClass: 'btn-red'
+                                }
+                            }
+                        });
                 }
             },
 
