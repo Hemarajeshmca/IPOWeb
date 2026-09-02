@@ -27,6 +27,8 @@ namespace IPOWeb.Services
             return context.Connection.RemoteIpAddress?.ToString() ?? string.Empty;
         }
 
+
+
         public string GetUserAgent()
         {
             var context = _httpContextAccessor.HttpContext;

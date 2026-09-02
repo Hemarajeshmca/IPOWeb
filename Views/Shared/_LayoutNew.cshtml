@@ -11,6 +11,7 @@
     var menus = new List<MenuModel>();
     var asideMenus = new List<MenuModel>();
     var navMenus = new List<MenuModel>();
+    var sessiontimeout = Context.Session.GetString("screen_session_timeout"); 
 
     if (!string.IsNullOrEmpty(menuJson))
     {
@@ -106,6 +107,12 @@
 
         i.bx.bx-slider-alt.fs-4.me-1 {
             color: #5490ff;
+        }
+
+        i.fa.fa-file-excel-o {
+            color: #5490ff;
+            margin-right:10px;
+            font-size:18px;
         }
 
         i.bx.bx-atom.fs-4.me-1 {
@@ -544,7 +551,7 @@
                                                         <span class="align-middle">@child.menu_name</span>
                                                     </a>
                                                 </li>
-                                            }
+                                            }                                           
                                         </ul>
                                     }
                                 </li>
@@ -2605,18 +2612,17 @@
 
     <script>
 
-        let idleTimer;
 
-        const idleTime =
-            @Configuration["Appsettings:SessionSettings:SessionTimeoutMinutes"]
-            * 60 * 1000;
-        //const idleTime = 30 * 1000; // 30 seconds
+       let idleTimer;
+
+        const idleTime = parseInt('@sessiontimeout') * 60 * 1000;
+
         function resetIdleTimer() {
 
             clearTimeout(idleTimer);
 
-            idleTimer = setTimeout(function () { 
-                // FIRST call logout
+            idleTimer = setTimeout(function () {
+
                 logoutUser("LoginExpired");
 
             }, idleTime);
@@ -2631,6 +2637,8 @@
         resetIdleTimer();
 
     </script>
+
+    
 </body>
 
 

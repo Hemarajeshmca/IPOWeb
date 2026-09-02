@@ -14,6 +14,7 @@ namespace IPOWeb.Models
         public string pwd_require_special_char { get; set; }
         public string pwd_history_count { get; set; }
         public string pwd_lockout_duration_minutes { get; set; }
+        public string screen_session_timeout { get; set; }
 
     }
 
