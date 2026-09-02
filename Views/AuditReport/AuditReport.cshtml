@@ -1,0 +1,279 @@
+﻿@{
+    Layout = "~/Views/Shared/_LayoutNew.cshtml";
+    var userName = Context.Session.GetString("user_name");
+    var userRole = Context.Session.GetString("user_role");
+    var roleName = Context.Session.GetString("role_name");
+}
+<!DOCTYPE html>
+<html>  
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>Client Setup</title>
+    <style>
+        .content-wrapper {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        h5#navhead {
+            position: relative;
+            right: 129px;
+            width: 23%;
+        }
+        .k-grid-content {
+            height:260px !important;
+        }
+
+        .k-grid-header {
+            padding-right:1px !important;
+        }
+    </style>
+</head>
+
+<body class="hold-transition skin-blue sidebar-mini fixed">
+    <div class="content-wrapper">
+        <div class="container-xxl flex-grow-1 container-p-y">
+            <div class="card-body" style="margin-top:15px;height: 515px;width: 103%;margin-left: -18px;box-shadow: 0px 6px 7px -1px rgba(67, 89, 113, 0.12);">
+               <div class="row">
+                  <div class="col-sm-3">
+                        <label class="form-label" for="ctype" data-field="ctype">Audit Type</label>
+                        <select name="list" id="list" class="form-select">
+                            <option value="">--- Select ---</option>
+                            <option value="login audit">Login Audit</option>
+                            <option value="Auditlog">Page Audit</option>
+                        </select>
+                  </div>
+                  <div class="col-sm-3">
+                        <label class="form-label" for="ctype" data-field="ctype">Start Date</label>
+                        <input type="date" id="startdate" class="form-control"/>
+                  </div>
+                    <div class="col-sm-3">
+                        <label class="form-label" for="ctype" data-field="ctype">End Date</label>
+                        <input type="date" id="enddate" class="form-control" />
+                    </div>
+                    <div class="col-sm-3">
+                        <button type="button" class="btn btn-primary" id="btnSubmit" onclick="submit()" style="padding: 3px 25px;margin-top:28px;width:40%">Submit</button>
+                    </div>
+               </div>
+               <div class="row" style="margin-top:15px;">
+                   <div class="col-sm-12">
+                       <div id="auditgrid"></div>
+                   </div>
+               </div>
+            </div>
+        </div>
+    </div>      
+   
+</body>
+
+</html>
+
+ <script>
+
+
+
+    function submit () {       
+         var list = $("#list").val();
+         var sdate = $("#startdate").val();
+         var edate = $("#enddate").val();
+           try {
+               $.ajax({
+                   type: "GET",
+                   url: '@Url.Action("GetAuditReportTrail", "AuditReport")',
+                   dataType: 'json',
+                   contentType: 'application/json; charset=utf-8',
+                   data: {
+                       list: list,
+                       sdate:sdate,
+                       edate:edate
+                   },
+                       success: function (response) {
+                       if (response.success) {                         
+                           // Convert string to JSON object
+                           var auditData = JSON.parse(response.data);
+                           // Get Table array
+                           var auditRows = auditData.Table;
+                           console.log(auditRows);
+                              var auditType = list;
+                                console.log("Audit Type:", auditType);
+                                loadAuditGrid(auditRows, auditType);
+                       }
+                   }
+                           });
+
+                   }  catch (e) {
+                       console.log(e);
+                   }
+    }
+
+      function loadAuditGrid(auditRows, auditType) {
+
+        auditType = auditType || "";
+        auditType = auditType.toString().trim().toLowerCase();
+
+        // Destroy existing grid completely
+        var existingGrid = $("#auditgrid").data("kendoGrid");
+
+           if (existingGrid) {
+                existingGrid.destroy();
+            }
+
+            $("#auditgrid").empty();
+
+        var columns = [];
+
+        // ============================
+        // LOGIN AUDIT
+        // ============================
+        if (auditType === "login audit") {
+
+            columns = [
+                {
+                    field: "user_code",
+                    title: "User Code",
+                    width: 100
+                },
+                {
+                    field: "user_name",
+                    title: "User Name",
+                    width: 120
+                },
+                {
+                    field: "browser_name",
+                    title: "Browser Name",
+                    width: 120
+                },
+                {
+                    field: "ip_address",
+                    title: "IP Address",
+                    width: 130
+                },
+                {
+                    field: "failure_reason",
+                    title: "Remarks",
+                    width: 150
+                },
+                {
+                    field: "login_date",
+                    title: "Login Date",
+                    width: 130,
+                    template: function (dataItem) {
+
+                        if (!dataItem.login_date) {
+                            return "";
+                        }
+
+                        var date = new Date(dataItem.login_date);
+
+                        if (isNaN(date.getTime())) {
+                            return "";
+                        }
+
+                        return kendo.toString(date, "dd-MM-yyyy hh:mm:ss");
+                    }
+                },
+                {
+                    field: "login_status",
+                    title: "Status",
+                    width: 100
+                }
+            ];
+        }
+
+        // ============================
+        // PAGE AUDIT
+        // ============================
+        else if (auditType === "auditlog") {
+
+            columns = [               
+                {
+                    field: "user_name",
+                    title: "User Name",
+                    width: 120
+                },               
+                {
+                    field: "controller_name",
+                    title: "Menu",
+                    width: 130
+                },
+                {
+                    field: "action_method_name",
+                    title: "Action",
+                    width: 130
+                },              
+                {
+                    field: "request_url",
+                    title: "Request URL",
+                    width: 250
+                },
+                {
+                    field: "ip_address",
+                    title: "IP Address",
+                    width: 130
+                },
+                {
+                    field: "timestamp",
+                    title: "Date",
+                    width: 160,
+                    template: function (dataItem) {
+
+                        if (!dataItem.timestamp) {
+                            return "";
+                        }
+
+                        var date = new Date(dataItem.timestamp);
+
+                        if (isNaN(date.getTime())) {
+                            return dataItem.timestamp;
+                        }
+
+                        return kendo.toString(date, "dd-MM-yyyy hh:mm:ss");
+                    }
+                },
+                {
+                    field: "response_status_code",
+                    title: "Response",
+                    width: 100
+                },
+                {
+                    field: "is_success",
+                    title: "Success",
+                    width: 90,
+                    template: function (dataItem) {
+                        return dataItem.is_success ? "Yes" : "No";
+                    }
+                },             
+                {
+                    field: "exception_message",
+                    title: "Exception",
+                    width: 100
+                },
+                {
+                    field: "action_parameters_json",
+                    title: "Parameters",
+                    width: 200
+                }
+            ];
+        }
+
+        // Create grid
+        $("#auditgrid").kendoGrid({
+            autoGenerate: false,
+
+            dataSource: {
+                data: auditRows || [],
+                pageSize: 10
+            },
+
+            pageable: true,
+            height: 340,
+            sortable: true,
+            filterable: true,
+            resizable: true,
+            scrollable: true,
+
+            columns: columns
+        });
+    }
+ </script>

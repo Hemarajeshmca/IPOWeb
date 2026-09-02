@@ -1,0 +1,503 @@
+﻿@{
+    Layout = "~/Views/Shared/_LayoutNew.cshtml";    
+}
+<!DOCTYPE html>
+<html>   
+<head>    
+    <meta name="viewport" content="width=device-width" />
+    <title>Role Management</title>    
+    <style>
+        #Maingrid .k-grid-content tr.k-alt td {
+            background-color: #5997bb !important;
+            color: #ffffff;
+        }
+
+        /* Normal rows – White */
+        /* #dividendGrid .k-grid-content tr td {
+                                background-color: #ffffff;
+                            }      */
+
+        /* Cell borders */
+        #Maingrid td {
+            border: 1px solid #cfd8dc;
+        }
+
+        /* Compact row height */
+        #Maingrid .k-grid-content td {
+            padding-top: 4px;
+            padding-bottom: 4px;
+        }
+
+        /* Fixed layout */
+        #Maingrid .k-grid-header table,
+        #Maingrid .k-grid-content table {
+            table-layout: fixed;
+            width: 100%;
+        }
+
+        /* Prevent wrapping */
+        #Maingrid .k-grid-header th,
+        #Maingrid .k-grid-content td {
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        #Maingrid .k-grid-content td {
+            padding-top: 4px;
+            padding-bottom: 4px;
+            line-height: 18px;
+            font-size: 13px;
+            color: #000;
+        }
+
+        #Maingrid .k-grid-header th {
+            padding-top: 4px;
+            padding-bottom: 4px;
+            line-height: 18px;
+            font-size: 13px;
+        }
+
+        #attach .modal-dialog {
+            max-width: 80%;
+        }
+
+        #attach .modal-content {
+            height: 41vh;
+        }
+
+        #attach .modal-body {
+            overflow-y: auto;
+        }
+    </style>
+</head>
+
+<body class="hold-transition skin-blue sidebar-mini fixed">
+    <div class="content-wrapper">
+        <div class="container-xxl flex-grow-1 container-p-y">
+            <div class="card-body">
+                <form id="formAccountSettings" method="POST" onsubmit="return false">
+                    <div class="row">
+                        <div class="col-sm-12">
+                            <button type="button" class="btn btn-sm btn-info me-2" data-bs-toggle="modal" data-bs-target="#attach" style="background: #1061b1;border-color: #1061b1;margin-top:-27px;" id=" btn_new">Add</button>
+                        </div>
+                    </div>
+                    <div class="col-sm-12">
+                        <div id="Maingrid" class="col-md-9" style="margin:auto;height:auto;top:10px;width:100%;overflow:hidden">                         
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-8">
+                            <div class="row">
+                                <div class="col-sm-4">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-sm-4">
+                        </div>
+                    </div>
+                </form>
+             </div>
+        </div>
+    </div>
+
+
+    <div class="modal fade" id="attach" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+
+                <div class="modal-body">
+
+                    <!-- Header -->
+                    <div class="text-center mb-3">
+                        <h5 style="color:#1a9950; font-weight:600;">Add Role</h5>
+                    </div>
+
+                    <hr />
+
+                    <!-- All inputs in one row -->
+                    <div class="row g-3 align-items-end">
+
+                        <div class="col-md-3">
+                            <label class="form-label">Role Code</label>
+                            <input type="text" id="txtrole_code" class="form-control">
+                            <input type="hidden" id="hdn_role_id">
+                        </div>
+
+                        <div class="col-md-3">
+                            <label class="form-label">Role Name</label>
+                            <input type="text" id="txtrole_name" class="form-control">
+                        </div>
+
+                        <div class="col-md-3">
+                            <label class="form-label">Application</label>
+                            <select id="app_list" class="form-select">
+                                <option value="">Select</option>
+                            </select>
+                            <span id="queryErrorUserrole"
+                                  class="text-danger small"
+                                  size="3"
+                                  style="overflow-y:auto;"></span>
+                        </div>
+
+                        <div class="col-md-3">
+                            <label class="form-label">Status</label>
+                            <select id="role_status" class="form-select">
+                                <option value="">-- Select Status --</option>
+                                <option value="Y">Active</option>
+                                <option value="N">Inactive</option>
+                            </select>
+                            <span id="queryErrorUserstatus"
+                                  class="text-danger small"></span>
+                        </div>
+
+                    </div>
+
+                </div>
+
+                <!-- Buttons row (left aligned) -->
+                <div class="modal-footer d-flex justify-content-end">
+                    <button type="button"
+                            class="btn btn-sm btn-primary"
+                            id="btn_submit"
+                            onclick="return CreateUserGroups(0)">
+                        Save
+                    </button>
+
+                    <button type="button"
+                            class="btn btn-sm btn-danger"
+                            data-bs-dismiss="modal">
+                        Close
+                    </button>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+
+</body>
+
+</html>
+
+<script>
+    $(document).ready(function () {
+         $('#navhead').text('Role Management');
+         loadgrid();
+         load_application();
+    });
+
+
+        function CreateUserGroups(usergroup_id) {
+
+        var role_id = $("#hdn_role_id").val() || "0";
+        var role_code = $("#txtrole_code").val();
+        var role_name = $("#txtrole_name").val();
+        var app_code = $("#app_list").val();
+        var role_status = $("#role_status").val();
+
+        $.ajax({
+            type: "POST",
+            dataType: "json",
+            url: '@Url.Action("CreateUserGroupsNew", "UserGroupsMapping")',
+            data: {
+                role_id: role_id,
+                role_name: role_name,
+                role_code: role_code,
+                app_code: app_code,
+                role_status: role_status
+            },
+            success: function (data) {
+                if (data.authExpired) {
+                    $.alert({
+                        title: 'Unauthorized',
+                        content: data.msg || 'Unauthorized User',
+                        type: 'red',
+                        buttons: {
+                            ok: {
+                                text: 'OK',
+                                action: function () {
+                                    window.location.href = '/login/logout';
+                                }
+                            }
+                        }
+                    });
+                    return; // ⛔ stop further execution
+                }
+                $.alert({
+                    title: 'STA Web',
+                    content: data.msg,
+                    type: data.result ? 'green' : 'red'
+                });
+
+                if (data.result) {
+                    setTimeout(function () {
+                        window.location.reload();
+                    }, 2000);
+                }
+            },
+            error: function () {
+                alert("Something went wrong");
+            }
+        });
+    }
+
+
+    function CreateUserGroups_ols(usergroup_id) {
+        debugger;     
+        $("#hdn_role_id").val(0);      
+        var role_id = $("#hdn_role_id").val();
+        var role_code = $("#txtrole_code").val();
+        var role_name = $("#txtrole_name").val();
+        var app_code = document.getElementById("app_list").value;
+        var role_status = document.getElementById("role_status").value;
+        debugger;
+        $.ajax({
+            type: "Post",           
+            //async: false,
+            dataType: "json",
+            url: '@Url.Action("CreateUserGroupsNew", "UserGroupsMapping")',            
+            data: { 'usergroup_gid': role_id, 'usergroup_name': role_name, 'usergroup_code': ugrp_code, 'app_code': app_code, 'usrgrpstatus': role_status },
+            success: function (data) {
+                var message = data.msg;
+                $.alert({
+                    title: 'STA  Web',
+                    content:message,
+                    type: 'green',
+
+                });
+                setTimeout(function () {
+                    window.location.reload(1);
+                }, 2500);
+                return false;
+            },
+            error: function (data) {              
+            }
+        });
+        $("#btn_submit").show();
+        $("#btn_update").hide();
+        $("#title").text("Create New User Groups");
+    }
+
+    function loadgrid() {
+        $.ajax({
+            url: '@Url.Action("UserGroups", "UserGroupsMapping")',
+            type: "Post",
+            dataType: "json",
+            contentType: "application/json; charset=utf-8",
+            data: {},
+            success: function (result) {
+                debugger
+                var columns = [];
+                var data = JSON.parse(result._data);           
+                var i = 0;
+                debugger;
+                var entryIndex = "entries[" + i + "]";              
+                columns.push({                  
+                    title: 'Action',                 
+                    template: '<img style="cursor:pointer;" src="../Assets/images/editicons.png" onclick="edit_(' + "'E'" + ')"> <img style="cursor:pointer;margin-left:10px" src="../Assets/images/viewicons.png" onclick="edit_(' + "'V'" + ')">',
+                    editable: true,
+                    width: '100px'
+                });
+                for (var key in data[0]) {
+                    debugger;                
+                        try {
+                             if (key == "role_code") {
+                                columns.push({
+                                    field: entryIndex,
+                                    title: "Role Code",
+                                    type: 'string',
+                                });
+                            }
+                            else if (key == "role_name") {
+                                columns.push({
+                                    field: entryIndex,
+                                    title: "Role Name",
+                                    type: 'string',                                  
+                                });
+                            }else if (key == "app_code") {
+                                columns.push({
+                                    field: entryIndex,
+                                    title: "Application Code",
+                                    type: 'string',
+                                });
+                            }else if (key == "app_name") {
+                                columns.push({
+                                    field: entryIndex,
+                                    title: "Application Name",
+                                    type: 'string',
+                                });
+                            } 
+                            else if (key == "role_id") {
+                                columns.push({
+                                    field: entryIndex,
+                                    title: key,
+                                    type: 'number',
+                                    hidden:true                                  
+                                });
+                            }
+                        }
+                        catch (e) {
+                            columns.push({
+                                field: entryIndex,
+                                title: key,
+                                type: 'string'
+                            });
+                        }
+
+                    i = i + 1;
+                    entryIndex = "entries[" + i + "]";
+                }
+
+                debugger;
+                var rows = [];
+                var data1 = JSON.parse(result._data);
+                $.each(data1, function (i, e) {
+                    var entryArray = [];
+                    $.each(e, function (key, val) {                     
+                            entryArray.push(val);
+                    });
+                    rows.push(kendo.observable({
+
+                        entries: entryArray
+                    }));                  
+                });
+
+                var viewModel = kendo.observable({
+                    gridRows: rows
+                });
+
+                var configuration = {                   
+                    editable: false,
+                    sortable: true,
+                    scrollable: false,                  
+                    filterable: false,
+                    pagable: false,
+                    resizable: true,                   
+                    selectable: "false",
+                    columns: columns,                   
+                    rows: viewModel
+                };
+
+                $("#example").remove();             
+                $('#Maingrid').append('<div id="example" class="table-responsive text-nowrap" id="chk1"><table id="grid" data-bind="source: gridRows" class="table table-sm" style="width:100%;height:auto;line-height:1em;font-size:12px;border:1px solid #d9d1d1;"></table></div>');
+                var timeEditGrid = $("#grid").kendoGrid(configuration).data("kendoGrid");
+                kendo.bind($("#grid"), viewModel);
+                var grid = $("#grid").data("kendoGrid");               
+            },
+            error: function (result) {
+                $.alert({
+                    title: ' ',
+                    content: "Failed to fetch.!",
+                    type: 'red',
+                });
+            }
+        });
+    }
+
+    function edit_(sel) {
+        debugger;
+        $("#attach").show();       
+       var grid = $("#grid").data("kendoGrid");
+        model = grid.dataItem($(event.target).closest("tr"));
+        var role_code = model.entries[1];
+        var app_code = model.entries[3];
+        var role_name = model.entries[2];
+        var app_name = model.entries[4];
+        $("#btn_submit").hide();
+        $("#btn_update").show();
+        $("#title").text("Update User Group");
+        $("#hdn_role_id").val(role_code);
+        $("#hdn_grpname").val(app_code);
+        Edit(role_code,role_name,app_code,app_name,sel);
+    }
+
+     function Edit_old(role_code,role_name,app_code,app_name,sel) {
+        window.location.href = '../UserGroupsMapping/RoleMapping?role_code=' + role_code + '&role_name=' + role_name  + '&app_code=' + app_code  + '&app_name=' + app_name  + '&mode_=' + sel;
+    }
+        function Edit(role_code, role_name, app_code, app_name, sel) {
+
+        var form = $('<form>', {
+            action: '../UserGroupsMapping/RoleMapping',
+            method: 'POST'
+        });
+
+        form.append($('<input>', { type: 'hidden', name: 'role_code', value: role_code }));
+        form.append($('<input>', { type: 'hidden', name: 'role_name', value: role_name }));
+        form.append($('<input>', { type: 'hidden', name: 'app_code', value: app_code }));
+        form.append($('<input>', { type: 'hidden', name: 'app_name', value: app_name }));
+        form.append($('<input>', { type: 'hidden', name: 'mode_', value: sel }));
+
+        $('body').append(form);
+        form.submit();
+    }
+
+    function View(usergroup_gid) {
+        modal.load('../UserGroupsMapping/TreeViewPartial?usergroup_gid=' + usergroup_gid);
+        $("#hdn_title").val("View UserGroups");
+        modal.show();
+        $("#btn_submit").show();
+        return false;
+    }
+
+     function Close() {
+        debugger;
+        modal.hide();
+        $("#btn_submit").hide();
+        $("#btn_update").hide();
+        $("#title").text("Create New User Group");
+        $("#txtrole_name").prop("disabled", false);      
+        setTimeout(function () {
+            window.location.reload(0);
+        }, 0);
+    }
+
+</script>
+
+<script>
+    function load_application()
+    {
+         $.ajax({
+             type: "GET",
+             url: '../UserGroupsMapping/Application_List',
+             dataType: 'json',
+             success: function (response) {
+
+                 if (response.authExpired) {
+                     $.alert({
+                         title: 'Unauthorized',
+                         content: response.message,
+                         type: 'red',
+                         buttons: {
+                             ok: function () {
+                                 window.location.href = '../login/logout';
+                             }
+                         }
+                     });
+                     return;
+                 }
+
+                 $("#app_list").empty()
+                     .append('<option value="">Select</option>');
+
+                 $.each(response, function (index, item) {
+                     $("#app_list").append(
+                         $('<option>', {
+                              value: item.app_code,
+                             text: item.app_name
+                         })
+                     );
+                 });
+             },
+             error: function (er) {
+                 console.log(er);
+                   $.alert({
+                    title: ' ',
+                    content: "Error loading Applications!",
+                    type: 'red',
+                });
+                
+             }
+         });
+     }
+</script>

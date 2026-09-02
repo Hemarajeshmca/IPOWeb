@@ -1,0 +1,1831 @@
+﻿@{
+    Layout = "~/Views/Shared/_LayoutNew.cshtml";
+    var userRole = Context.Session.GetString("user_role");
+}
+<!DOCTYPE html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>User Management</title>
+    <style>
+
+        #userGrid .k-grid-content {
+            height: 188.182px;
+        }
+        #userGrid .k-grid-content tr.k-alt td {
+            background-color: #5997bb !important;
+            color: #ffffff;
+        }
+
+        /* Normal rows – White */
+        /* #dividendGrid .k-grid-content tr td {
+                            background-color: #ffffff;
+                        }      */
+
+        /* Cell borders */
+        #userGrid td {
+            border: 1px solid #cfd8dc;
+        }
+
+        /* Compact row height */
+        #userGrid .k-grid-content td {
+            padding-top: 4px;
+            padding-bottom: 4px;
+        }
+
+        /* Fixed layout */
+        #userGrid .k-grid-header table,
+        #userGrid .k-grid-content table {
+            table-layout: fixed;
+            width: 100%;
+        }
+
+        /* Prevent wrapping */
+        #userGrid .k-grid-header th,
+        #userGrid .k-grid-content td {
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        #userGrid .k-grid-content td {
+            padding-top: 4px;
+            padding-bottom: 4px;
+            line-height: 18px;
+            font-size: 13px;
+            color: #000;
+        }
+
+        #userGrid .k-grid-header th {
+            padding-top: 4px;
+            padding-bottom: 4px;
+            line-height: 18px;
+            font-size: 13px;
+        }
+    </style>
+
+    <style>
+        #userrole_grid .k-grid-content tr.k-alt td {
+            background-color: #5997bb !important;
+            color: #ffffff;
+        }
+
+        /* Normal rows – White */
+        /* #dividendGrid .k-grid-content tr td {
+                                            background-color: #ffffff;
+                                        }      */
+
+        /* Cell borders */
+        #userrole_grid td {
+            border: 1px solid #cfd8dc;
+        }
+
+        /* Compact row height */
+        #userrole_grid .k-grid-content td {
+            padding-top: 4px;
+            padding-bottom: 4px;
+        }
+
+        /* Fixed layout */
+        #userrole_grid .k-grid-header table,
+        #userrole_grid .k-grid-content table {
+            table-layout: fixed;
+            width: 100%;
+        }
+
+        /* Prevent wrapping */
+        #userrole_grid .k-grid-header th,
+        #userrole_grid .k-grid-content td {
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        #userrole_grid .k-grid-content td {
+            padding-top: 4px;
+            padding-bottom: 4px;
+            line-height: 18px;
+            font-size: 13px;
+            color: #000;
+        }
+
+        #userrole_grid .k-grid-header th {
+            padding-top: 4px;
+            padding-bottom: 4px;
+            line-height: 18px;
+            font-size: 13px;
+        }
+    </style>
+
+    <style>
+        .password-wrapper {
+            position: relative;
+        }
+
+            .password-wrapper input {
+                padding-right: 40px; /* create space for icon */
+            }
+
+            .password-wrapper i {
+                position: absolute;
+                right: 25px;
+                top: 38px; /* adjust if needed */
+                cursor: pointer;
+                color: #6c757d;
+            }
+    </style>
+    <style>
+        #passwordRequirements {
+            line-height: 20px;
+        }
+
+            #passwordRequirements .req-icon {
+                display: inline-block;
+                width: 18px;
+                font-weight: bold;
+            }
+
+            #passwordRequirements .req-valid {
+                color: green;
+            }
+
+            #passwordRequirements .req-invalid {
+                color: #dc3545;
+            }
+
+        .k-grid-content {
+            height:233px !important;
+        }
+
+        .k-grid.k-widget {
+            height: 304px !important;
+        }
+    </style>
+</head>
+
+<body class="hold-transition skin-blue sidebar-mini fixed">
+    <div class="content-wrapper">
+        <div class="container-xxl flex-grow-1 container-p-y">            
+                <div class="card-body" style="margin-top:15px;height: 400px;width: 103%;margin-left: -18px;box-shadow: 0px 6px 7px -1px rgba(67, 89, 113, 0.12);">
+                <form id="formAccountSettings" method="POST" onsubmit="return false" autocomplete="off">
+                    <div class="row" id="listSection">
+                        <div class="col-sm-12">
+                            <img id="plusIcon" style="width:11px; height:11px;margin-bottom:12px;cursor:pointer" src="~/Assets/images/plus.png" />
+                            @* <a href="../Registration/Registration"><img id="plusIcon" style="width:15px; height:15px;margin-bottom:12px;cursor:pointer;float:right;" src="~/Assets/images/toplist.png" /></a> *@
+                            <div id="userGrid"></div>
+                        </div>
+                    </div>
+
+                    <div id="NewSection" style="display:none;">
+                        <div class="row">
+                            <div class="col-sm-12">
+                                <img id="listIcon1" style="width:16px; height:16px;margin-bottom:12px;float:right;cursor:pointer" src="~/Assets/images/toplist.png" />
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-3">
+                                <label class="form-label" for="userid">
+                                    User Code&nbsp;<span style="font-size: 12px;color: red;font-weight: bold;">*</span>
+                                </label>
+                                <input type="text" id="usercode" value="" class="form-control"  maxlength="15"/>
+                                <span id="queryErrorucode" style="color: red; font-size: 12px;position:relative;"></span>
+                            </div>
+                            <div class="col-sm-3">
+                                <label class="form-label" for="userid">
+                                    Name&nbsp;<span style="font-size: 12px;color: red;font-weight: bold;">*</span>
+                                </label>
+                                <input type="text" id="username" value="" class="form-control" />
+                                <span id="queryErroruname" style="color: red; font-size: 12px;position:relative;"></span>
+                            </div>
+                            <div class="col-sm-3">
+                                <label class="form-label" for="userid">
+                                    Email ID&nbsp;<span style="font-size: 12px;color: red;font-weight: bold;">*</span>
+                                </label>
+                                <input type="email" id="email" value="" class="form-control" />
+                                <span id="queryErroremail" style="color: red; font-size: 12px;position:relative;"></span>
+                            </div>
+                            <div class="col-sm-3">
+                                <label class="form-label" for="userid">
+                                    Mobile no&nbsp;<span style="font-size: 12px;color: red;font-weight: bold;">*</span>
+                                </label>
+                                <input type="text" id="usermobile" value="" class="form-control" maxlength="10" />
+                                <span id="queryErrormobile" style="color: red; font-size: 12px;position:relative;"></span>
+                            </div>
+
+                        </div>
+
+                        <div class="row" style="margin-top:20px;">
+
+                            <div class="col-sm-2 password-wrapper">
+                                <label class="form-label" for="userid">
+                                    Password&nbsp;<span style="font-size:12px;color:red;font-weight:bold;">*</span>
+                                </label>
+
+                                @* <input type="password" id="userpwd" value="" class="form-control" autocomplete="new-password" name="new-password-field" />
+                                <i class="fa fa-eye" id="eyeIcon"></i>
+                                <span id="queryErrorpwd" style="color:red;font-size:12px;"></span> *@
+
+                                <input type="password" id="userpwd" value="" class="form-control" autocomplete="new-password" name="new-password-field" />
+                                <i class="fa fa-eye" id="eyeIcon"></i>
+                                <span id="queryErrorpwd" style="color:red;font-size:12px;"></span>
+
+                                <div id="passwordRequirements" style="font-size:12px; margin-top:5px;">
+
+                                    <div id="reqLength">
+                                        <span class="req-icon">○</span>
+                                        <span class="req-text"></span>
+                                    </div>
+
+                                    <div id="reqUppercase">
+                                        <span class="req-icon">○</span>
+                                        <span class="req-text">One uppercase letter</span>
+                                    </div>
+
+                                    <div id="reqLowercase">
+                                        <span class="req-icon">○</span>
+                                        <span class="req-text">One lowercase letter</span>
+                                    </div>
+
+                                    <div id="reqNumber">
+                                        <span class="req-icon">○</span>
+                                        <span class="req-text">One number</span>
+                                    </div>
+
+                                    <div id="reqSpecial">
+                                        <span class="req-icon">○</span>
+                                        <span class="req-text">One special character</span>
+                                    </div>
+
+                                </div>
+                            
+                            </div>
+                            <div class="col-sm-1">
+                                <div style="width:88px;">
+                                    <label class="form-label" for="expiredDays">
+                                        ExpiredDays <span style="font-size:12px;color:red;font-weight:bold;">*</span>
+                                    </label>
+
+                                    <input type="number"
+                                           id="userpwdexpdays"
+                                           name="userpwdexpdays"
+                                           class="form-control"
+                                           value="" />
+                                </div>
+                                <span id="queryErrordays" style="color:red;font-size:12px;"></span>
+                            </div>
+                            
+                            <div class="col-sm-1" style="display:none" id="lock_status">
+                                <label class="form-label" for="status">
+                                    Lock Status
+                                </label>
+                                <div class="form-check form-switch"
+                                     style="margin-top: 5px;">
+
+                                    <input class="form-check-input"
+                                           type="checkbox"
+                                           role="switch"
+                                           id="lock_flag"
+                                           onchange="toggleUserLock(this)">
+
+                                    <label class="form-check-label"
+                                           for="lock_flag"
+                                           id="lockLabel"
+                                           style="font-size:14px;color:#566a7f">
+                                        Unlocked
+                                    </label>
+
+                                </div>
+                            </div>
+                            <div class="col-sm-2" id="divstatus">
+
+                                <label class="form-label" for="status">
+                                    Status
+                                </label>
+
+                                <div style="display:flex; align-items:center;">
+
+                                    <select id="status"
+                                            class="form-select form-select-sm"
+                                            style="width:200px;">
+                                        <option value="">-- Select --</option>
+                                        <option value="Y">Active</option>
+                                        <option value="N">InActive</option>
+                                    </select>
+
+                                  
+
+                                </div>
+
+                                <span id="queryErrorUserstatus"
+                                      style="color:red; font-size:12px;">
+                                </span>
+
+                            </div>
+                           
+                            <div class="col-sm-3" id="userrole_mapping"> 
+                                <div id="userrole_grid"></div>
+
+                                <button class="btn btn-sm btn-primary me-2" id="btnrolemap" style="
+                                    margin-top: 23px;" onclick="showDynamicTreeView()">Role Mapping</button>
+                               
+                                <div id="userrole_popup">
+                                    <div id="userrole_tree" style="max-height:400px; overflow:auto;"></div>
+
+                                    <div style="text-align:right; margin-top:10px;">
+                                        <button class="k-button k-primary" onclick="SaveRoles()">Save</button>
+                                    </div>
+                                </div>
+                                <button type="button" id="btnSubmit" class="btn btn-sm btn-primary me-2" style="width:29%;margin-top:22px;">Submit</button>
+                                <button type="button" id="btnUpdate" class="btn btn-sm btn-primary me-2" style="width:36%;margin-top:24px;display:none;">Update</button>
+                            </div>
+                            <div class="col-sm-3">
+                                <center>
+                                   
+                                </center>
+                            </div>
+                        </div>
+                       
+                        <div class="row" style="visibility:hidden;">
+                            <div class="col-sm-4">
+                                <input type="hidden" id="user_id" value="" /> 
+                            </div>
+                           
+                           
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+</body>
+
+</html>
+
+<script type="text/javascript">
+       var id = ""; 
+       var minPwdLength = '@((Context.Session.GetInt32("min_pwd_length") ?? 0))';
+       var maxPwdLength = '@((Context.Session.GetInt32("max_pwd_length") ?? 0))';
+
+       var requireUppercase = '@(Context.Session.GetString("require_uppercase") ?? "N")';
+       var requireLowercase = '@(Context.Session.GetString("require_lowercase") ?? "N")';
+       var requireNumber = '@(Context.Session.GetString("require_number") ?? "N")';
+       var requireSpecialChar = '@(Context.Session.GetString("require_special_char") ?? "N")';
+
+       var passwordConfig = {};
+    $( document ).ready(function() 
+    {
+        getPwdConfigValues();
+
+        var label = document.getElementById("lockLabel");
+        label.innerText = "Unlocked";
+        $('#navhead').text('User Management');
+        loadrole();
+        showgrid();
+        $('#btnSubmit').on('click', function () {
+            var isValid = true;
+            queryErrorucode.textContent = "";
+            queryErroruname.textContent = "";
+            queryErroremail.textContent = "";
+            queryErrormobile.textContent = "";
+            queryErrorpwd.textContent = "";
+            //queryErrorIsclient.textContent = "";
+            queryErrorUserstatus.textContent = "";
+            queryErrordays.textContent = "";
+            //queryErrorUserrole.textContent = "";
+            var ucode = document.getElementById("usercode").value.trim();
+            var uname = document.getElementById("username").value.trim();
+            var email = document.getElementById("email").value.trim();
+            var usermobile = document.getElementById("usermobile").value.trim();
+            var userpwd = document.getElementById("userpwd").value.trim();
+            var userpwdexpdays=document.getElementById("userpwdexpdays").value.trim();
+            // var userLock = document.getElementById("userLockToggle").checked;
+            var lock_flag = document.getElementById("lock_flag").checked ? 'L' : 'R';
+            var userrole = "";
+
+
+            //var userrole ="Y";// document.getElementById("userrole").value.trim();
+            if (ucode === "") {
+                queryErrorucode.textContent = "Enter Usercode";
+                isValid = false;
+            }
+
+            if (uname === "") {
+                queryErroruname.textContent = "Enter Username";
+                isValid = false;
+            }
+            if (email === "" ) {
+            queryErroremail.textContent = "Enter email";
+            isValid = false;
+            }
+            if (email !== "" && !validateEmail(email)) {
+                queryErroremail.textContent = "Invalid email format";
+                isValid = false;
+            }  
+            if (usermobile === "") {
+                    queryErrormobile.textContent = "Enter mobile";
+                isValid = false;
+            }
+                   
+            if (userpwd ==="") { 
+                    queryErrorpwd.textContent = "Enter Password";
+                    isValid = false;
+            }
+            if(userpwdexpdays ===""){
+                    queryErrordays.textContent = "Enter expired days";
+                    isValid = false;
+            } 
+
+            if (!validatePassword()) {
+                isValid = false;
+            }
+
+
+            if (!validateMobileField()) {
+                isValid = false;
+                e.preventDefault(); // Stop form submit
+            }
+            if(isValid){
+                var mymodel = {
+                    empcode: ucode,
+                    name: uname,
+                    email: email,
+                    role_code: "",
+                    usermobile:usermobile,
+                    userpwd:userpwd,
+                    userpwdexpdays:userpwdexpdays,
+                    lock_flag:lock_flag,
+                    userrole:userrole
+            };
+                $.ajax({
+                type: "POST",
+                contentType: 'application/json; charset=utf-8',
+                url: '@Url.Action("InsUser", "UserManagement")',
+                data: JSON.stringify(mymodel),
+                success: function (response) {
+                    if (response.authExpired) {
+                        $.alert({
+                            title: 'Unauthorized',
+                            content: response.message || 'Unauthorized User',
+                            type: 'red',
+                            buttons: {
+                                ok: {
+                                    text: 'OK',
+                                    action: function () {
+                                        window.location.href = '/login/logout';
+                                    }
+                                }
+                            }
+                        });
+                        return;
+                    }
+
+                    console.log(response);
+                    var res = JSON.parse(response._data);
+                    if (res.length > 0) {
+                        const dup = res[0];
+                        if(dup.status=="Success" && dup.user_id>0){
+                            $.alert({
+                                title: 'IPO Web',
+                                content: dup.message,
+                                type: 'green',
+                                buttons: {
+                                    ok: {
+                                        text: 'OK',
+                                        action: function () {
+                                            location.reload();
+                                        }
+                                    }
+                                }
+                            });
+                            $("#user_id").val(dup.user_id);
+                            $("#usercode").prop("readonly", true);
+                            //$('#userrole_mapping').show();  
+                            $("#btnrolemap").prop("disabled", false);
+                            $('#btnSubmit').hide();
+                            $('#btnUpdate').show();
+                        }
+                        else{
+                            $.alert({
+                                title: 'IPO Web',
+                                content: dup.message,
+                                type: 'red',
+                            });
+                        $("#user_id").val(0);
+                        $("#btnrolemap").prop("disabled", true);
+                        $("#usercode").prop("readonly", false);
+                        $('#btnSubmit').show();
+                        $('#btnUpdate').hide();
+                        }
+                                  
+                    }
+                },
+                error: function (xhr) {
+                    console.error(xhr);
+                    alert("Error: " + xhr.status + " - " + xhr.statusText);
+                }
+                });
+            }
+        });
+
+        $("#userpwd").on("input", function () {
+            validatePassword();
+        });
+    });
+
+    function setRequirement(selector, isValid) {
+
+        var element = $(selector);
+
+        if (isValid) {
+
+            element.removeClass("req-invalid");
+            element.addClass("req-valid");
+
+            element.find(".req-icon").text("✓");
+
+        } else {
+
+            element.removeClass("req-valid");
+            element.addClass("req-invalid");
+
+            element.find(".req-icon").text("○");
+        }
+    }
+
+    function resetPasswordRequirements() {
+
+        $("#reqLength").removeClass("req-valid req-invalid");
+        $("#reqLength .req-icon").text("○");
+
+        $("#reqUppercase").removeClass("req-valid req-invalid");
+        $("#reqUppercase .req-icon").text("○");
+
+        $("#reqLowercase").removeClass("req-valid req-invalid");
+        $("#reqLowercase .req-icon").text("○");
+
+        $("#reqNumber").removeClass("req-valid req-invalid");
+        $("#reqNumber .req-icon").text("○");
+
+        $("#reqSpecial").removeClass("req-valid req-invalid");
+        $("#reqSpecial .req-icon").text("○");
+    }
+
+    function getPwdConfigValues() {
+        debugger
+        $.ajax({
+            url: '@Url.Action("GetPwdConfigValues", "UserManagement")',
+            type: 'GET',
+            dataType: 'json',
+            success: function (response) {
+
+                console.log("Password Config Response:", response);
+
+                if (response && response.success && response.data) {
+
+                    passwordConfig = response.data;
+                    loadPasswordRequirements();
+                }
+            },
+            error: function (xhr, status, error) {
+
+                console.log("Error:", error);
+
+                kendo.alert("Unable to load password configuration.");
+            }
+        });
+    }
+
+    function loadPasswordRequirements() {
+
+        var minLength = parseInt(passwordConfig.password_min_len);
+        var maxLength = parseInt(passwordConfig.password_max_len);
+
+        // Length
+        $("#reqLength .req-text").text(
+            minLength + "-" + maxLength + " characters"
+        );
+
+
+        // Uppercase
+        if (passwordConfig.pwd_require_uppercase === "Y") {
+            $("#reqUppercase").show();
+        }
+        else {
+            $("#reqUppercase").hide();
+        }
+
+
+        // Lowercase
+        if (passwordConfig.pwd_require_lowercase === "Y") {
+            $("#reqLowercase").show();
+        }
+        else {
+            $("#reqLowercase").hide();
+        }
+
+
+        // Number
+        if (passwordConfig.pwd_require_number === "Y") {
+            $("#reqNumber").show();
+        }
+        else {
+            $("#reqNumber").hide();
+        }
+
+
+        // Special character
+        if (passwordConfig.pwd_require_special_char === "Y") {
+            $("#reqSpecial").show();
+        }
+        else {
+            $("#reqSpecial").hide();
+        }
+    }
+
+    // function validatePassword() {
+    //     debugger
+    //     var userpwd = document.getElementById("userpwd").value.trim();
+    //     var missingRules = [];
+
+    //     if (userpwd != "" && passwordConfig.pwd_require_uppercase === "Y" && !/[A-Z]/.test(userpwd))
+    //         missingRules.push("A-Z");
+
+    //     if (userpwd != "" && passwordConfig.pwd_require_lowercase === "Y" && !/[a-z]/.test(userpwd))
+    //         missingRules.push("a-z");
+
+    //     if (userpwd != "" && passwordConfig.pwd_require_number === "Y" && !/[0-9]/.test(userpwd))
+    //         missingRules.push("0-9");
+
+    //     if (userpwd != "" && passwordConfig.pwd_require_special_char === "Y" && !/[^A-Za-z0-9]/.test(userpwd))
+    //         missingRules.push("special character");
+
+    //     // Password empty
+    //     if (userpwd === "") {
+    //         queryErrorpwd.textContent =
+    //             "Use " + passwordConfig.password_min_len + "-" + passwordConfig.password_max_len +
+    //             " characters with " + rules.join(", ") + ".";
+
+    //         return false;
+    //     }
+
+    //     var message = "";
+
+    //     // Length
+    //     if (userpwd.length < passwordConfig.password_min_len  ||
+    //         userpwd.length > passwordConfig.password_max_len) {
+
+    //         message = "Use " + passwordConfig.password_min_len  + "-" +
+    //                   passwordConfig.password_max_len + " characters";
+    //     }
+
+    //     // Missing requirements
+    //     if (missingRules.length > 0) {
+    //         if (message !== "")
+    //             message += " with ";
+    //         else
+    //             message = "Include ";
+    //         message += missingRules.join(", ");
+    //     }
+
+    //     if (message !== "") {
+    //         queryErrorpwd.textContent = message + ".";
+    //         return false;
+    //     }
+
+    //     // Everything is valid
+    //     queryErrorpwd.textContent = "";
+    //     return true;
+    // }
+
+    function validatePassword() {
+
+        var userpwd = $("#userpwd").val().trim();
+
+        var minLength = parseInt(passwordConfig.password_min_len);
+        var maxLength = parseInt(passwordConfig.password_max_len);
+
+        // Empty password
+        if (userpwd === "") {
+            queryErrorpwd.textContent = "Enter Password";
+            resetPasswordRequirements();
+            return false;
+        }else if(userpwd != ""){
+            queryErrorpwd.textContent = "";
+        }
+
+        // Length
+        var lengthValid =
+            userpwd.length >= minLength &&
+            userpwd.length <= maxLength;
+
+        setRequirement("#reqLength", lengthValid);
+
+
+        // Uppercase
+        if (passwordConfig.pwd_require_uppercase === "Y") {
+
+            var uppercaseValid = /[A-Z]/.test(userpwd);
+
+            setRequirement("#reqUppercase", uppercaseValid);
+        }
+
+
+        // Lowercase
+        if (passwordConfig.pwd_require_lowercase === "Y") {
+
+            var lowercaseValid = /[a-z]/.test(userpwd);
+
+            setRequirement("#reqLowercase", lowercaseValid);
+        }
+
+
+        // Number
+        if (passwordConfig.pwd_require_number === "Y") {
+
+            var numberValid = /[0-9]/.test(userpwd);
+
+            setRequirement("#reqNumber", numberValid);
+        }
+
+
+        // Special character
+        if (passwordConfig.pwd_require_special_char === "Y") {
+
+            var specialValid = /[^A-Za-z0-9]/.test(userpwd);
+
+            setRequirement("#reqSpecial", specialValid);
+        }
+
+
+        // Check whether all required rules are satisfied
+        var isValid = lengthValid;
+
+        if (passwordConfig.pwd_require_uppercase === "Y" &&
+            !/[A-Z]/.test(userpwd)) {
+            isValid = false;
+        }
+
+        if (passwordConfig.pwd_require_lowercase === "Y" &&
+            !/[a-z]/.test(userpwd)) {
+            isValid = false;
+        }
+
+        if (passwordConfig.pwd_require_number === "Y" &&
+            !/[0-9]/.test(userpwd)) {
+            isValid = false;
+        }
+
+        if (passwordConfig.pwd_require_special_char === "Y" &&
+            !/[^A-Za-z0-9]/.test(userpwd)) {
+            isValid = false;
+        }
+
+        return isValid;
+    }
+ 
+     function loadrole() {
+         $.ajax({
+             type: "GET",
+             url: '../UserManagement/RoleList',
+             dataType: 'json',
+             success: function (response) {
+
+                 if (response.authExpired) {
+                     $.alert({
+                         title: 'Unauthorized',
+                         content: response.message,
+                         type: 'red',
+                         buttons: {
+                             ok: function () {
+                                 window.location.href = '/login/logout';
+                             }
+                         }
+                     });
+                     return;
+                 }
+
+                 // $("#userrole").empty()
+                 //     .append('<option value="">Select</option>');
+
+                 // $.each(response, function (index, item) {
+                 //     $("#userrole").append(
+                 //         $('<option>', {
+                 //              value: item.role_code,
+                 //             text: item.role_name
+                 //         })
+                 //     );
+                 // });
+             },
+             error: function (er) {
+                 console.log(er);
+                 alert("Error loading roles");
+             }
+         });
+     }
+     
+
+      $('#plusIcon').on('click', function () 
+      {
+        $("#user_id").val(0);
+        $("#usercode").val("").prop("readonly", false);
+        $('#listSection').hide();
+        $('#NewSection').show();
+        $('#btnSubmit').show();
+        $('#btnUpdate').hide();
+        $('#divstatus').hide();
+        //$('#userrole_mapping').hide(); 
+        $("#btnrolemap").prop("disabled", true);
+        $("#usercode").val("");
+        $("#username").val("");
+        $("#email").val("");
+        $("#userrole").val("");
+        $("#usermobile").val("");
+        $("#userpwd").val("");
+     //   $("#userotp").val("");
+
+            queryErrorucode.textContent = "";
+            queryErroruname.textContent = "";
+            queryErroremail.textContent = "";
+           // queryErrorUserrole.textContent = "";
+            queryErrormobile.textContent = "";
+      });
+       $('#listIcon1').on('click', function () {
+              $('#listSection').show();
+              $('#NewSection').hide();
+        });
+
+        function showgrid() {
+          $.ajax({
+              url: '@Url.Action("UsersList", "UserManagement")',
+              type: "POST",
+              dataType: "json",
+               success: function (response) {                  
+                    if (response.authExpired) {
+                                  $.alert({
+                                       title: 'Unauthorized',
+                                      content: response.message || 'Unauthorized User',
+                                      type: 'red',
+                                      buttons: {
+                                          ok: {
+                                              text: 'OK',
+                                              action: function () {
+                                                  window.location.href = '/login/logout';
+                                              }
+                                          }
+                                      }
+                                  });
+                                  return; // ⛔ stop further execution
+                              }
+                  let data = response.data;
+                  let columns = [
+                      {
+                          field: "id",
+                          title: "ID",
+                          hidden: true
+                      },
+                      {
+                          field: "empcode",
+                          title: "User Code"
+                      },
+                      {
+                          field: "name",
+                          title: "Name"
+                      },
+                      {
+                          field: "email",
+                          title: "Email"
+                      },
+                      {
+                           field: "usermobile",
+                          title: "User Mobile"
+                       },
+                      {
+                          field: "status",
+                          title: "Status"
+                      },
+                      {
+                           field: "userpwdexpdays",
+                            title: "Expired days"
+                       },
+                       {
+                             field: "lock_flag",
+                              title: "Lock flag"
+                       },
+                         {
+                             field: "userpwd",
+                             title: "userpwd",
+                            hidden: true
+                        },
+                      {
+                          field: "action",
+                          title: "Action",
+                          template: '<center><img src="../Assets/images/editicons.png" name="Edit" id="Edit" value="Edit" onclick="editGrid(this);" style="height:15px;width:15px;cursor:pointer;"></center>',
+                          filterable: false,
+                          sortable: false,
+                          width: 100
+                      }
+                  ];
+                   $('#userGrid').append('<div id="example" class="table-responsive text-nowrap" id="chk1"><table id="grid" data-bind="source: gridRows" class="table table-sm" style="width:100%;height: 303px !important;line-height:1em;font-size:12px;border-bottom: 1px solid #e1e1e1;"></table></div>');
+
+                  $("#grid").kendoGrid({
+                      dataSource: {
+                           data: data,
+                          pageSize: 10
+                      },
+                      height: 341,
+                      pageable: {
+                          pageSizes: [10, 20, 30],
+                          refresh: true
+                      },
+                      sortable: true,
+                      filterable: true,
+                      resizable: true,
+                      columns: columns
+                  });
+              },
+              error: function (xhr) {
+                  console.log("Error: ", xhr.responseText);
+              }
+          });
+      }
+
+       function editGrid(e) {
+            $('#listSection').hide();
+            $('#NewSection').show();
+            $('#btnSubmit').hide();
+            $('#btnUpdate').show();
+            $('#divstatus').show();
+            $('#lock_status').show();
+          //  $('#userrole_mapping').show();
+            $("#btnrolemap").prop("disabled", false);
+            queryErrorucode.textContent = "";
+            queryErroruname.textContent = "";
+            queryErroremail.textContent = ""; 
+            var grid = $("#grid").data("kendoGrid");
+            var model = grid.dataItem($(e).closest("tr"));
+             id = model.id;
+
+            $("#user_id").val(model.id);
+            $("#usercode").val(model.empcode);
+            $("#usercode").val(model.empcode).prop("readonly", true);
+            $("#username").val(model.name);
+            $("#email").val(model.email);
+            $("#usermobile").val(model.usermobile);
+            $("#userpwdexpdays").val(model.userpwdexpdays);
+            $("#userpwd").val(model.userpwd);
+            var dbStatus = model.status; // from API
+            $("#status").val(dbStatus === "Active" ? "Y" : "N");
+           var lock_flag = model.lock_flag; 
+               if (lock_flag === 'Y') {
+                    document.getElementById("lock_flag").checked = true;
+                    document.getElementById("lockLabel").innerText = "Locked";
+                } else {
+                    document.getElementById("lock_flag").checked = false;
+                    document.getElementById("lockLabel").innerText = "Unlocked";
+                }
+          //  $("#userotp").val(model.userotp);
+        //    $('input[name="isclient"][value="' + model.isclient + '"]').prop('checked', true);
+         //    $('#userrole').val(model.role_code);
+          
+               
+       }
+         
+
+         $('#btnUpdate').on('click', function (e) {
+                   var isValid = true;
+                    queryErrorucode.textContent = "";
+                    queryErroruname.textContent = "";
+                    queryErroremail.textContent = "";
+                //    queryErrorUserrole.textContent = "";
+                    queryErrormobile.textContent = "";
+                    var ucode = document.getElementById("usercode").value.trim();
+                    var uname = document.getElementById("username").value.trim();
+                     var email = document.getElementById("email").value.trim();
+                    var usermobile = document.getElementById("usermobile").value.trim();
+                    var userpwd = document.getElementById("userpwd").value.trim();
+                   var userpwdexpdays=document.getElementById("userpwdexpdays").value.trim();
+                    var status = document.getElementById("status").value.trim();
+                   // var userLock = document.getElementById("userLockToggle").checked;
+                   var lock_flag = document.getElementById("lock_flag").checked ? 'Y' : 'N';
+                   var userrole ="";
+                   
+                   if (ucode === "") {
+                     queryErrorucode.textContent = "Enter Usercode";
+                      isValid = false;
+                 }
+
+                 if (uname === "") {
+                     queryErroruname.textContent = "Enter Username";
+                     isValid = false;
+                 }
+                 if (email === "" ) {
+                    queryErroremail.textContent = "Enter email";
+                    isValid = false;
+                }
+                if (email !== "" && !validateEmail(email)) {
+                    queryErroremail.textContent = "Invalid email format";
+                    isValid = false;
+                }
+                 // if (userrole === "") {
+                 //     queryErrorUserrole.textContent = "Select User Role";
+                 //     isValid = false;
+                 // }
+                  if (usermobile === "") {
+                          queryErrormobile.textContent = "Enter mobile";
+                        isValid = false;
+                   }
+                   
+                   if (status === "") {
+                     queryErrorUserstatus.textContent = "Select status";
+                     isValid = false;
+                 }
+                    if (userpwd ==="") {
+                           queryErrorpwd.textContent = "Enter Password";
+                         isValid = false;
+                    }
+                    if(userpwdexpdays ===""){
+                         queryErrordays.textContent = "Enter expired days";
+                         isValid = false;
+                    }
+                       var minPwdLength = @((Context.Session.GetInt32("min_pwd_length") ?? 0));
+                    var maxPwdLength = @((Context.Session.GetInt32("max_pwd_length") ?? 0));
+
+                    var requireUppercase = '@(Context.Session.GetString("require_uppercase") ?? "N")';
+                    var requireLowercase = '@(Context.Session.GetString("require_lowercase") ?? "N")';
+                    var requireNumber = '@(Context.Session.GetString("require_number") ?? "N")';
+                    var requireSpecialChar = '@(Context.Session.GetString("require_special_char") ?? "N")';
+                    // if (userpwd.length < minPwdLength) {
+                    //     queryErrorpwd.textContent ="Password must be at least " + minPwdLength + " characters.";
+                    //     isValid = false;
+                    // }
+
+                    // if (userpwd.length > maxPwdLength) {
+                    //     queryErrorpwd.textContent ="Password must not exceed " + maxPwdLength + " characters.";
+                    //     isValid = false;
+                    // }
+
+                    // if (requireUppercase === "Y" && !/[A-Z]/.test(userpwd)) {
+                    //     queryErrorpwd.textContent ="Password must contain at least one uppercase letter.";
+                    //     isValid = false;
+                    // }
+
+                    // if (requireLowercase === "Y" && !/[a-z]/.test(userpwd)) {
+                    //     queryErrorpwd.textContent ="Password must contain at least one lowercase letter.";
+                    //     isValid = false;
+                    // }
+
+                    // if (requireNumber === "Y" && !/[0-9]/.test(userpwd)) {
+                    //     queryErrorpwd.textContent ="Password must contain at least one number.";
+                    //     isValid = false;
+                    // }
+
+                    // if (requireSpecialChar === "Y" && !/[^A-Za-z0-9]/.test(userpwd)) {
+                    //     queryErrorpwd.textContent ="Password must contain at least one special character.";
+                    //     isValid = false;
+                    // }
+                    if (!validateMobileField()) {
+                       isValid = false;
+                        e.preventDefault(); // Stop form submit
+                    }
+                  
+                    if(isValid) {
+                          var status = $("#status").val();
+                           myModel = {
+                              id: id,
+                              empcode: ucode,
+                              name: uname,
+                              email: email,
+                              status: status,
+                              usermobile:usermobile,
+                              userpwd:userpwd,
+                              userpwdexpdays:userpwdexpdays,
+                              lock_flag:lock_flag,
+                                userrole:userrole
+                           };
+                            $.ajax({
+                                  type: "POST",
+                                   contentType: "application/json",
+                                   url: '@Url.Action("UpdUser", "UserManagement")',
+                                   data: JSON.stringify(myModel),
+                                   success: function (response) 
+                                   {
+                                        if (response.authExpired) {
+                                              $.alert({
+                                                  title: 'Unauthorized',
+                                                  content: response.message || 'Unauthorized User',
+                                                  type: 'red',
+                                                  buttons: {
+                                                      ok: {
+                                                          text: 'OK',
+                                                          action: function () {
+                                                              window.location.href = '/login/logout';
+                                                          }
+                                                      }
+                                                  }
+                                              });
+                                              return; 
+                                          }
+                                        console.log(response);
+                                        var res = JSON.parse(response._data);
+                                         if (res.length > 0) {
+                                              const dup = res[0];
+                                              if (dup.status === "Failure") {
+                                                    $.alert({
+                                                        title: 'STA Web',
+                                                        content: dup.message,
+                                                        type: 'red'
+                                                    });
+                                                    return;
+                                              }
+                                                if (dup.get_empcode != null && dup.get_empcode !== "") {
+                                                    document.getElementById("queryErrorucode").textContent = "User Code already exists.";
+                                               } else {
+                                                    document.getElementById("queryErrorucode").textContent = ""; // Clear previous error
+                                               }
+                                                if (dup.get_email != null && dup.get_email !== "") {
+                                                    document.getElementById("queryErroremail").textContent = "Email ID already exists.";
+                                               } else {
+                                                    document.getElementById("queryErroremail").textContent = ""; // Clear previous error
+                                               }
+                                                if (!dup.get_empcode && !dup.get_email) 
+                                                {
+
+                                                   let selected = [];
+                                                    $("#userrole_grid .cellCheckbox:checked").each(function () {
+                                                        selected.push({
+                                                            app_code: $(this).data("appcode"),
+                                                            role_code: $(this).data("rolecode")
+                                                        });
+                                                    });
+                                                    let payload = {
+                                                        user_code: $("#usercode").val(),
+                                                        roles: selected
+                                                    };
+                                                     if(selected.length>0)
+                                                     { 
+                                                        $.ajax({
+                                                        url: '@Url.Action("SaveUserRoles", "RoleMaster")',
+                                                        type: "POST",
+                                                        contentType: "application/json",
+                                                         data: JSON.stringify(payload),
+                                                        success: function (res) { 
+                                                           $.alert({
+                                                               title: 'STA Web',
+                                                               content: "User updated successfully!",
+                                                               type: 'green',
+                                                           });
+                                                           setTimeout(() => window.location.href = "../UserManagement/UserManagement", 3000);
+                                                        
+                                                    },
+                                                        error: function (xhr, status, error) {
+                                                           $.dialog({
+                                                               title: 'STA Web',
+                                                               content: "User updated & Role mapping Error: " + xhr.responseText,
+                                                               type: 'red',
+                                                           });
+                                                       }
+                                                    });
+                                                    
+                                                    }
+                                                    else
+                                                    {
+                                                        $.alert({
+                                                                title: 'STA Web',
+                                                                content: "User updated successfully!",
+                                                                type: 'green',
+                                                            });
+                                                            setTimeout(() => window.location.href = "../UserManagement/UserManagement", 3000);
+                                                    }
+                                                }
+                                         }
+                                   },
+                                    error: function (xhr, status, error) {
+                                       $.dialog({
+                                           title: 'STA Web',
+                                           content: "Error: " + xhr.responseText,
+                                           type: 'red',
+                                       });
+                                   }
+                            });
+                   }
+             });
+</script>
+ 
+<script type="text/javascript">
+        function validateEmail(email) {
+        var pattern = /^[a-zA-Z0-9._%+-]+@@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+        return pattern.test(email);
+    }
+
+        function validateMobile(mobile) {
+        var regex = /^[6-9][0-9]{9}$/;
+        return regex.test(mobile);
+    }
+
+    // Allow only numbers while typing
+    $("#usermobile").on("input", function () {
+        this.value = this.value.replace(/[^0-9]/g, '');
+    });
+
+    // Validate on blur
+    $("#usermobile").on("blur", function () {
+         validateMobileField();
+    });
+
+        function validateMobileField() {
+
+        var mobile = $("#usermobile").val().trim();
+
+        if (mobile === "") {
+            $("#queryErrormobile").text("Enter mobile");
+            return false;
+        }
+        else if (!validateMobile(mobile)) {
+            $("#queryErrormobile").text("Enter valid 10-digit mobile number starting with 6-9.");
+            return false;
+        }
+        else {
+            $("#queryErrormobile").text("");
+            return true;
+        }
+    }
+</script>
+<script type="text/javascript">
+         
+      
+        var wnd = $("#userrole_popup").data("kendoWindow");
+
+    $(document).on("click", ".k-overlay", function () {
+        wnd.close();
+    });
+
+
+    // 🔹 Global storage for selected roles
+  
+
+    // ==========================================
+    // Load Dynamic Grid
+    // ==========================================
+    function showDynamicGrid_old() {
+
+        $.ajax({
+            url: '@Url.Action("UserRoleList", "RoleMaster")',
+            type: "GET",
+            dataType: "json",
+            success: function (response) {
+
+                if (!response.success) {
+                    alert("Error loading data");
+                    return;
+                }
+
+                var data = response.data;
+
+                if (!data || data.length === 0) {
+                    alert("No data found");
+                    return;
+                }
+
+                // Destroy old grid if exists
+                if ($("#userrole_grid").data("kendoGrid")) {
+                    $("#userrole_grid").data("kendoGrid").destroy();
+                    $("#userrole_grid").empty();
+                }
+
+                var columns = [];
+                var firstRow = data[0];
+
+                for (let key in firstRow) {
+
+                    columns.push({
+                        field: key,
+                        title: key,
+                        width: 200,
+                        template: function (dataItem) {
+
+                            let cell = dataItem[key];
+
+                            if (!cell) return "";
+
+                            if (typeof cell === "string") {
+                                try {
+                                    cell = JSON.parse(cell);
+                                } catch {
+                                    return "";
+                                }
+                            }
+
+                            if (!cell.role_name) return "";
+
+                            let checkboxKey = (cell.app_code + "|" + cell.role_code).toUpperCase();
+                            let isChecked = selectedRoles.has(checkboxKey) ? "checked" : "";
+
+                            return `
+                                <div style="display:flex; align-items:center; gap:6px;">
+                                    <input type="checkbox"
+                                           class="cellCheckbox"
+                                           data-appcode="${cell.app_code}"
+                                           data-rolecode="${cell.role_code}"
+                                           ${isChecked} />
+                                    <span>${cell.role_name}</span>
+                                </div>
+                            `;
+                        }
+                    });
+                }
+
+                // $("#userrole_grid").kendoGrid({
+                //     dataSource: {
+                //         data: data
+                //         //,pageSize: 10
+                //     },
+                //     // pageable: true,
+                //     // sortable: true,
+                //     // filterable: true,
+                //     resizable: true,
+                //     height: 215,
+                //     columns: columns,
+
+                //     // 🔹 Restore checkbox state after every render
+                //     dataBound: function () {
+                //         $("#userrole_grid .cellCheckbox").each(function () {
+
+                //             let key = (
+                //                 $(this).data("appcode") + "|" +
+                //                 $(this).data("rolecode")
+                //             ).toUpperCase();
+
+                //             if (selectedRoles.has(key)) {
+                //                 $(this).prop("checked", true);
+                //             }
+                //         });
+                //     }
+                // });
+
+            }
+        });
+    }
+
+     
+
+     
+    // ==========================================
+    // Track Checkbox Changes (Delegated Event)
+    // ==========================================
+    $(document).on("change", ".cellCheckbox", function () {
+
+        let app = $(this).data("appcode");
+        let role = $(this).data("rolecode");
+        let key = (app + "|" + role).toUpperCase();
+
+        if ($(this).is(":checked")) {
+            selectedRoles.add(key);
+        } else {
+            selectedRoles.delete(key);
+        }
+
+        console.log("Selected Roles:", Array.from(selectedRoles));
+    });
+
+    // ==========================================
+    // Load User Roles (Edit Mode)
+    // ==========================================
+
+    function loadUserRoles(userCode) {
+
+        $.ajax({
+            url: '@Url.Action("GetUserRole", "RoleMaster")',
+            type: 'GET',
+            data: { userCode: userCode },
+            success: function (response) {
+
+                if (!response.success) return;
+
+                var tree = $("#userrole_tree").data("kendoTreeView");
+                if (!tree) return;
+
+                var data = response.data;
+
+                // Create a Set for quick lookup
+                let selectedSet = new Set();
+
+                data.forEach(x => {
+                    let key = (x.app_code + "|" + x.role_code).toUpperCase();
+                    selectedSet.add(key);
+                });
+
+                // Uncheck everything first
+                tree.dataSource.view().forEach(function clear(nodes) {
+                    uncheckNodes(nodes);
+                });
+
+                function uncheckNodes(nodes) {
+                    for (var i = 0; i < nodes.length; i++) {
+                        nodes[i].set("checked", false);
+                        if (nodes[i].hasChildren) {
+                            uncheckNodes(nodes[i].children.view());
+                        }
+                    }
+                }
+
+                // Now check matching nodes
+                function checkNodes(nodes) {
+                    for (var i = 0; i < nodes.length; i++) {
+
+                        if (nodes[i].role_code) {
+
+                            let key = (nodes[i].app_code + "|" + nodes[i].role_code).toUpperCase();
+
+                            if (selectedSet.has(key)) {
+                                nodes[i].set("checked", true);
+                            }
+                        }
+
+                        if (nodes[i].hasChildren) {
+                            checkNodes(nodes[i].children.view());
+                        }
+                    }
+                }
+
+                checkNodes(tree.dataSource.view());
+            }
+        });
+    }
+
+    function loadUserRoles_old(userCode) {
+
+        selectedRoles.clear(); // reset first
+
+        $.ajax({
+            url: '@Url.Action("GetUserRole", "RoleMaster")',
+            type: 'GET',
+            data: { userCode: userCode },
+            success: function (response) {
+
+                if (!response.success) return;
+
+                let data = response.data;
+
+                data.forEach(x => {
+                    let key = (x.app_code + "|" + x.role_code).toUpperCase();
+                    selectedRoles.add(key);
+                });
+
+                // Rebind grid to apply checks
+                var grid = $("#userrole_grid").data("kendoGrid");
+                if (grid) {
+                    grid.refresh();
+                }
+            }
+        });
+    }
+
+   
+
+
+    function saveRoles_old() {
+
+        let selected = [];
+
+        selectedRoles.forEach(function (value) {
+
+            let parts = value.split("|");
+
+            selected.push({
+                app_code: parts[0],
+                role_code: parts[1]
+            });
+        });
+
+        let payload = {
+            user_code: $("#user_code").val(),
+            roles: selected
+        };
+
+        $.ajax({
+            url: '@Url.Action("SaveUserRoles", "RoleMaster")',
+            type: "POST",
+            contentType: "application/json",
+            data: JSON.stringify(payload),
+            success: function (res) {
+                alert("Saved successfully");
+            },
+            error: function () {
+                alert("Error saving roles");
+            }
+        });
+    }
+
+</script>
+<script>
+        // ===============================
+    // Global Selected Roles Storage
+    // ===============================
+    let selectedRoles = new Set();
+              let treeData = [];
+
+    // Example preselected roles
+    // selectedRoles.add("APPO|APPO_MKR");
+    // selectedRoles.add("STA|STA_OPE");
+
+
+    // ===============================
+    // Initialize Window Once
+    // ===============================
+    $(document).ready(function () {
+
+        $("#userrole_popup").kendoWindow({ 
+            width: "350px",
+            resizable: true,
+            // height: "150px",
+            title: "Role Mapping",
+            modal: true,
+            visible: false,
+            closeOnEscape: true,
+            actions: ["Close"]
+        });
+
+        $("#btnUserRole").click(function () {
+            showDynamicTreeView();
+        });
+
+    });
+
+
+    // ===============================
+    // Load Tree Data
+    // ===============================
+    function showDynamicTreeView() {
+            selectedRoles.clear();
+            var existingTree = $("#userrole_tree").data("kendoTreeView");
+            if (existingTree) {
+                existingTree.dataSource.data([]); // clear data
+                existingTree.destroy();
+                $("#userrole_tree").empty();
+            }
+        $.ajax({
+            url: '@Url.Action("UserRoleList", "RoleMaster")',
+            type: "GET",
+            dataType: "json",
+            success: function (response) {
+                 if (response.authExpired) {
+                     $.alert({
+                         title: 'Session Expired',
+                         content: response.message,
+                         type: 'red',
+                         buttons: {
+                             ok: function () {
+                                 window.location.href = '../login/logout';
+                             }
+                         }
+                     });
+                     return;
+                 }
+                 
+                var treeData = [];
+
+                response.data.forEach(function (row) {
+
+                    Object.keys(row).forEach(function (key) {
+
+                        let cell = row[key];
+
+                        if (!cell) return;
+
+                        if (typeof cell === "object" && Object.keys(cell).length === 0)
+                            return;
+
+                        if (typeof cell === "string") {
+                            try {
+                                cell = JSON.parse(cell);
+                            } catch {
+                                return;
+                            }
+                        }
+
+                        if (!cell.app_code) return;
+
+                        // Find parent app
+                        let parent = treeData.find(x => x.app_code === cell.app_code);
+
+                        if (!parent) {
+                            parent = {
+                                text: cell.app_name,
+                                app_code: cell.app_code,
+                                expanded: false,
+                                items: []
+                            };
+                            treeData.push(parent);
+                        }
+
+                        let roleKey = (cell.app_code + "|" + cell.role_code).toUpperCase();
+
+                        parent.items.push({
+                            text: cell.role_name,
+                            app_code: cell.app_code,
+                            role_code: cell.role_code,
+                            checked: selectedRoles.has(roleKey)
+                        });
+
+                    });
+
+                });
+
+                console.log("Final treeData:", treeData);
+
+                // Destroy old tree if exists
+                var existingTree = $("#userrole_tree").data("kendoTreeView");
+                if (existingTree) {
+                    existingTree.destroy();
+                    $("#userrole_tree").empty();
+                }
+
+                // Create TreeView ONLY ONCE
+                $("#userrole_tree").kendoTreeView({
+                    checkboxes: {
+                        checkChildren: true
+                    },
+                    dataSource: treeData,
+                    check: onTreeCheck,
+                     dataBound: function () {
+                        applyCheckedRoles($("#usercode").val());
+                        this.expand(".k-item");
+                    }
+                }); 
+                $("#userrole_popup").data("kendoWindow").center().open();
+            },
+            error: function (err) {
+                console.log("AJAX Error:", err);
+            }
+        });
+    }
+
+        function applyCheckedRoles(userCode) {
+
+        $.ajax({
+            url: '@Url.Action("GetUserRole", "RoleMaster")',
+            type: 'GET',
+            data: { userCode: userCode },
+            success: function (response) {
+
+                if (!response.success) return;
+
+                var tree = $("#userrole_tree").data("kendoTreeView");
+                if (!tree) return;
+
+                // 🔥 Reset global set
+                selectedRoles.clear();
+
+                response.data.forEach(x => {
+                    let key = (x.app_code + "|" + x.role_code)
+                        .toUpperCase()
+                        .trim();
+
+                    selectedRoles.add(key);
+                });
+
+                checkNodes(tree.dataSource.view());
+
+                function checkNodes(nodes) {
+                    for (var i = 0; i < nodes.length; i++) {
+
+                        if (nodes[i].role_code) {
+
+                            let key = (nodes[i].app_code + "|" + nodes[i].role_code)
+                                .toUpperCase()
+                                .trim();
+
+                            if (selectedRoles.has(key)) {
+                                nodes[i].set("checked", true);
+                            }
+                        }
+
+                        if (nodes[i].hasChildren) {
+                            checkNodes(nodes[i].children.view());
+                        }
+                    }
+                }
+            }
+        });
+    }
+
+    // ===============================
+    // Checkbox Change Event
+    // ===============================
+    function onTreeCheck(e) {
+
+        var tree = $("#userrole_tree").data("kendoTreeView");
+        var node = tree.dataItem(e.node);
+
+        // Only handle child roles
+        if (node.role_code) {
+
+            let key = (node.app_code + "|" + node.role_code).toUpperCase();
+
+            if (node.checked) {
+                selectedRoles.add(key);
+            } else {
+                selectedRoles.delete(key);
+            }
+
+            console.log("Selected Roles:", Array.from(selectedRoles));
+        }
+    }
+
+         // ==========================================
+        // Save Roles
+        // ==========================================
+
+        function SaveRoles() {
+
+        var tree = $("#userrole_tree").data("kendoTreeView");
+
+        let selected = [];
+
+        function getCheckedNodes(nodes) {
+
+            for (var i = 0; i < nodes.length; i++) {
+
+                if (nodes[i].checked && nodes[i].role_code) {
+
+                    selected.push({
+                        app_code: nodes[i].app_code,
+                        role_code: nodes[i].role_code
+                    });
+                }
+
+                if (nodes[i].hasChildren) {
+                    getCheckedNodes(nodes[i].children.view());
+                }
+            }
+        }
+
+        getCheckedNodes(tree.dataSource.view());
+
+        let payload = {
+                user_code: $("#usercode").val(),
+            roles: selected
+        };
+
+        $.ajax({
+            url: '@Url.Action("SaveUserRoles", "RoleMaster")',
+            type: "POST",
+            contentType: "application/json",
+            data: JSON.stringify(payload),
+            success: function (res) {
+                if (res.authExpired) {
+                        $.alert({
+                            title: 'Unauthorized',
+                            content: res.message || 'Unauthorized User',
+                            type: 'red',
+                            buttons: {
+                                ok: {
+                                    text: 'OK',
+                                    action: function () {
+                                        window.location.href = '/login/logout';
+                                    }
+                                }
+                            }
+                        });
+                        return;
+                    }
+                      $.alert({
+                            title: 'STA Web',
+                            content: "Role created successfully",
+                            type: 'green'
+                        });
+                        $("#userrole_popup").data("kendoWindow").close();
+                         setTimeout(() => window.location.href = "../UserManagement/UserManagement", 3000);
+            },
+            error: function () {
+                alert("Error saving roles");
+            }
+        });
+    }
+
+       $("#eyeIcon").on("click", function () {
+
+        var input = $("#userpwd");
+
+        if (input.attr("type") === "password") {
+            input.attr("type", "text");
+            $(this).removeClass("fa-eye").addClass("fa-eye-slash");
+        } else {
+            input.attr("type", "password");
+            $(this).removeClass("fa-eye-slash").addClass("fa-eye");
+        }
+
+    });
+        function toggleUserLock(toggle) {
+
+        var label = document.getElementById("lockLabel");
+
+        if (toggle.checked) {
+            label.innerText = "Locked";
+        }
+        else {
+            label.innerText = "Unlocked";
+        }
+    }
+</script>

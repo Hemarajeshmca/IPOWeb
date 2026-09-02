@@ -1,0 +1,792 @@
+﻿@{
+    Layout = "~/Views/Shared/_LayoutNew.cshtml";    
+}
+<!DOCTYPE html>
+<html>   
+<head>    
+    <meta name="viewport" content="width=device-width" />
+    <title>Role Management</title>
+    <style>
+        #Maingrid .k-grid-content tr.k-alt td {
+            background-color: #5997bb !important;
+            color: #ffffff;
+        }
+
+        /* Normal rows – White */
+        /* #dividendGrid .k-grid-content tr td {
+                                        background-color: #ffffff;
+                                    }      */
+
+        /* Cell borders */
+        #Maingrid td {
+            border: 1px solid #cfd8dc;
+        }
+
+        /* Compact row height */
+        #Maingrid .k-grid-content td {
+            padding-top: 4px;
+            padding-bottom: 4px;
+        }
+
+        /* Fixed layout */
+        #Maingrid .k-grid-header table,
+        #Maingrid .k-grid-content table {
+            table-layout: fixed;
+            width: 100%;
+        }
+
+        /* Prevent wrapping */
+        #Maingrid .k-grid-header th,
+        #Maingrid .k-grid-content td {
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        #Maingrid .k-grid-content td {
+            padding-top: 4px;
+            padding-bottom: 4px;
+            line-height: 18px;
+            font-size: 13px;
+            color: #000;
+        }
+
+        #Maingrid .k-grid-header th {
+            padding-top: 4px;
+            padding-bottom: 4px;
+            line-height: 18px;
+            font-size: 13px;
+        } 
+      
+    </style>
+</head>
+
+<body class="hold-transition skin-blue sidebar-mini fixed">
+    <div class="content-wrapper">
+        <div class="container-xxl flex-grow-1 container-p-y">
+            <div class="card-body">
+                <form id="formAccountSettings" method="POST" onsubmit="return false">
+                    <div class="row" id="header">
+                        <div class="mb-3 col-md-5">
+                            <div class="row">
+                                <div class="mb-3 col-md-5">
+                                    <label class="form-label" for="appname">Application Name</label>
+                                    <input class="form-control"
+                                           type="text"
+                                           id="usrgrpName"
+                                           name="usrgrpName"
+                                           value="@ViewBag.app_name"
+                                           readonly
+                                           style="text-align:center" />
+                                </div>
+                                <div class="mb-3 col-md-5">
+                                    <label class="form-label" for="rolename">Role Name</label>
+                                    <input class="form-control"
+                                           type="text"
+                                           id="usrgrpStat"
+                                           name="usrgrpStat"
+                                           value="@ViewBag.role_name"
+                                           readonly
+                                           style="text-align:center" />
+                                </div>
+                                <div class="mb-3 col-md-2">
+                                    <label class="form-label" for="mode">Mode</label>
+                                    <input class="form-control"
+                                           type="text"
+                                           id="modeflag"
+                                           name="modeflag"
+                                           value="@(ViewBag.mode_flag == "E" ? "Edit" :
+                                                          ViewBag.mode_flag == "V" ? "View" : "")"
+                                           style="text-align:center"
+                                           readonly />
+                                </div>
+                            </div>
+                        </div>
+                        <div class="mb-3 col-md-5">
+                        </div>
+                        <div class="mb-3 col-md-2">
+                            <div class="icons"><a href="~/UserGroupsMapping/UserGroupsMapping"><img src="../Assets/images/toplist.png" data-bs-toggle="tooltip" data-bs-placement="bottom" title="List"></a>&nbsp;&nbsp;&nbsp;&nbsp;<img style="cursor:pointer;" src="../Assets/images/topsave.png" data-bs-toggle="modal" data-bs-target="#attach" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Save" id="saverole"></div>
+                        </div>
+                    </div>
+                    <div class="row" style="margin-top:10px;">
+                        <div class="col-sm-12">
+                            <div id="Maingrid" class="col-md-9" style="margin:auto;top:10px;width:100%;">
+                            </div>
+                        </div>
+                    </div>
+
+                </form>
+             </div>
+        </div>
+    </div>
+     
+</body>
+
+</html>
+
+<script>
+    function CreateUserGroups(usergroup_id) {
+        
+        if ($("#hdn_role_id").val() == "") {
+            $("#hdn_role_id").val(0);
+        }
+        var ugrp_id = $("#hdn_role_id").val();
+        var usergrp = $("#txtusergroup").val();
+        var menuchecked = sessionStorage.getItem("checkedmenu");
+        var menunotchecked = sessionStorage.getItem("notcheckedmenu");
+        
+        $.ajax({
+            type: "POST",           
+            contentType: "application/json; charset=utf-8",
+            async: false,
+            //dataType: "json",
+            url: '@Url.Action("CreateUserGroups", "UserGroupsMapping")',
+            data: "{ usergroup_gid:'" + ugrp_id + "',usergroup_name:'" + usergrp + "',menuchecked:'" + menuchecked + "',menunotchecked:'" + menunotchecked + "'}",
+            success: function (data) {
+                if (data.authExpired) {
+                     $.alert({
+                         title: 'Unauthorized',
+                         content: response.message,
+                         type: 'red',
+                         buttons: {
+                             ok: function () {
+                                 window.location.href = '../login/logout';
+                             }
+                         }
+                     });
+                     return;
+                 }
+                var message = data.msg;
+                var resultnew = data.result;
+                $(".errormessage").html('<span class="errormessage" id="mess">' + message + '</span>');
+                setTimeout(function () {
+                    window.location.reload(1);
+                }, 1500);
+                return false;
+            },
+            error: function (data) {
+                //alert("failed to load");
+                //var message = data.msg;
+                //var resultnew = data.result;
+                //$(".errormessage").html('<span class="errormessage" id="mess">' + message + '</span>');
+            }
+        });
+        $("#btn_submit").show();
+        $("#btn_update").hide();
+        $("#title").text("Create New User Groups");
+    }
+
+    // $(document).ready(function () {
+    //     $(".treeview li>ul").css('display', 'none');
+    //     $(".collapsible1").click(function (e) {
+    //         e.preventDefault();
+    //         $(this).toggleClass("collapse1 expand1");
+    //         $(this).closest('li').children('ul').slideToggle();
+    //     });
+    //     $(function () {
+    //         $("#datepicker, #datepicker1").datepicker({
+    //             autoclose: true,
+    //             todayHighlight: true,
+    //         }).datepicker('update', new Date());
+    //     });
+
+    // });
+    // function onDataBound() {
+    //     var grid = $("#usergrp_list").data("kendoGrid");
+    //     grid.autoFitColumn(1);
+    //     grid.autoFitColumn(2);
+    // }
+</script>
+
+<script type="text/javascript">
+    var checkedIds = {};
+    $(document).off('click', '#usergrp_list tbody tr .ob-edit').on("click", "#usergrp_list tbody tr .ob-edit", function (e) {
+        
+        var item = $("#usergrp_list").data("kendoGrid").dataItem($(this).closest("tr"));
+        var usergroup_gid = item.usergroup_gid;
+        var usergroup_name = item.usergroup_name;
+        $("#btn_submit").hide();
+        $("#btn_update").show();
+        $("#title").text("Update User Group");
+        $("#hdn_role_id").val(usergroup_gid);
+        $("#hdn_grpname").val(usergroup_name);
+        Edit(usergroup_gid);
+    });
+
+    $(document).on("click", "#usergrp_list tbody tr .ob-view", function (e) {
+        
+        e.preventDefault();
+        var item = $("#usergrp_list").data("kendoGrid").dataItem($(this).closest("tr"));
+        var usergroup_gid = item.usergroup_gid;
+        var usergroup_name = item.usergroup_name;
+        $("#btn_submit").hide();
+        $("#btn_update").show();
+        $("#title").text("Update User Group");
+        $("#hdn_role_id").val(usergroup_gid);
+        $("#hdn_grpname").val(usergroup_name);
+        $("#txtusergroup").prop("disabled", true);
+        View(usergroup_gid);
+        var disableprop = null;
+        sessionStorage.setItem("disable", disableprop);
+    });
+   
+
+    $(document).off('click', '#usergrp_list tbody tr .ob-delete').on("click", "#usergrp_list tbody tr .ob-delete", function (e) {
+        
+        var item = $("#usergrp_list").data("kendoGrid").dataItem($(this).closest("tr"));
+        var usergroup_gid = item.usergroup_gid;
+
+        $.ajax({
+            type: "POST",
+            contentType: "application/json; charset=utf-8",
+            async: false,
+            url: '@Url.Action("DeleteUserGroups", "UserGroupsMapping")',
+            data: "{ usergroup_gid:'" + usergroup_gid + "'}",
+            success: function (data) {
+                
+                var message = data;
+                $.dialog({
+                    title: 'DMS',
+                    content: message,
+                    icon: 'fa fa-success',
+                    type: 'blue',
+                })
+                //$(".messagedisplay").html('<span class="errormessage" id="mess">' + message + '</span>');
+                setTimeout(function () {
+                    window.location.reload(1);
+                }, 1500);
+                return false;
+            },
+        });
+    });
+
+    var modal;
+    $(document).ready(function () {
+        
+        $("#navhead").text("Role Mapping");
+        loadgrid_();
+        if ("@ViewBag.mode_flag" == "V") {
+            $("#saverole").attr('hidden', true);
+        }
+        modal = $("[id$='user-modal']");
+         
+    });
+    // function Add() {
+    //     
+    //     modal.load('../UserGroupsMapping/TreeViewPartial?usergroup_gid=0');
+    //     //window.location = "../UserGroupsMapping/TreeViewPartial?usergroup_gid=0";
+    //     $("#hdn_title").val("Create New UserGroups");
+    //     modal.show();
+    //     return false;
+    // }
+    // function Edit(usergroup_gid) {
+    //     modal.load('../UserGroupsMapping/TreeViewPartial?usergroup_gid=' + usergroup_gid);
+    //     $("#hdn_title").val("Update UserGroups");
+    //     modal.show();
+    //     modal.dialog("open");
+    //     return false;
+    // }
+    // function View(usergroup_gid) {
+    //     modal.load('../UserGroupsMapping/TreeViewPartial?usergroup_gid=' + usergroup_gid);
+    //     $("#hdn_title").val("View UserGroups");
+    //     modal.show();
+    //     $("#btn_submit").show();
+    //     return false;
+    // }
+    function Close() {
+        
+        modal.hide();
+        $("#btn_submit").hide();
+        $("#btn_update").hide();
+        $("#title").text("Create New User Group");
+        $("#txtusergroup").prop("disabled", false);
+        //var item = $("#usergrp_list").data("kendoGrid")
+        setTimeout(function () {
+            window.location.reload(0);
+        }, 0);
+    }
+
+      function loadgrid_() {
+
+            var role_code = "@ViewBag.role_code";
+            var app_code = "@ViewBag.app_code";
+            var modeFlag = "@ViewBag.mode_flag";
+
+            $.ajax({
+                url: '@Url.Action("RoleMappingData_", "UserGroupsMapping")',
+                type: "POST",
+                dataType: "json",
+                data: {
+                    role_code: role_code,
+                    app_code: app_code
+                },
+                success: function (result) {
+                    if (result.authExpired) {
+                         $.alert({
+                             title: 'Unauthorized',
+                             content: result.message,
+                             type: 'red',
+                             buttons: {
+                                 ok: function () {
+                                     window.location.href = '../login/logout';
+                                 }
+                             }
+                         });
+                         return;
+                     }
+                    console.log("FULL RESULT:", result);
+                    console.log("TYPE:", typeof result);
+                    console.log("Table:", result.Table);
+                    console.log("Length:", result.Table ? result.Table.length : "NO TABLE");
+
+
+                    var data = result.Table;
+                    var permissions = result.Table1 || [];
+
+                    var allowedColumns = new Set(
+                        permissions.map(p => p.permission_code)
+                    );
+
+                    console.log("Allowed Columns:", allowedColumns);
+
+
+                    if (!Array.isArray(data)) {
+                        data = Object.values(data); // Convert object with numeric keys to array
+                    }
+
+                        console.log("DATA ARRAY:", data);
+                        console.log("Is array now?", Array.isArray(data));
+                    console.log(data);
+                    if (!data || data.length === 0) {
+                        alert("No data found");
+                        return;
+                    }
+                    if ($("#Maingrid").data("kendoGrid")) {
+                        $("#Maingrid").data("kendoGrid").destroy();
+                        $("#Maingrid").empty();
+                    }
+                    console.log("Before grid creation");
+                        $("#Maingrid").kendoGrid({
+                        height: 400,
+                        dataSource: {
+                            data: data,
+                            schema: { model: { id: "menu_code" } }
+                        },
+                        sortable: true,
+                       // filterable: true,
+                        filterable: {
+                            multi: true,
+                            search: true
+                        },
+                        scrollable: true,
+                        pageable: false,
+                        resizable: false,
+                        editable: false,
+                        columns: [
+                            { field: "Menu", title: "Menu", width: 160 },
+                                        checkboxColumn("Add","Add/Addition", modeFlag, allowedColumns),
+                                    checkboxColumn("Modify","Modify", modeFlag, allowedColumns),
+                                    checkboxColumn("Delete","Delete/Rejection", modeFlag, allowedColumns),
+                                checkboxColumn("View","View", modeFlag, allowedColumns),
+                                checkboxColumn("Download","Download", modeFlag, allowedColumns),
+                            //    checkboxColumn("Link","Link", modeFlag, allowedColumns),
+                              checkboxColumn("Mail","Mail", modeFlag, allowedColumns),
+                            //checkboxColumn("RetReq", modeFlag, allowedColumns),
+                                checkboxColumn("Approve","Approve/Reject", modeFlag, allowedColumns),
+                                checkboxColumn("Boachecklist","BOA Checklist", modeFlag, allowedColumns),
+                                checkboxColumn("Deny","Deny", modeFlag, allowedColumns)
+                        ]
+                    });
+
+                },
+                error: function () {
+                    alert("Failed to fetch.");
+                }
+            });
+        }
+
+
+function loadgrid_old() {
+
+        var role_code = "@ViewBag.role_code";
+        var app_code = "@ViewBag.app_code";
+        var modeFlag = "@ViewBag.mode_flag"; 
+
+        $.ajax({
+            url: '@Url.Action("RoleMappingData_", "UserGroupsMapping")',
+            type: "POST",
+            dataType: "json",
+            data: {
+                role_code: role_code,
+                app_code: app_code
+            },
+            success: function (result) {
+                if (result.authExpired) {
+                     $.alert({
+                         title: 'Unauthorized',
+                         content: result.message,
+                         type: 'red',
+                         buttons: {
+                             ok: function () {
+                                 window.location.href = '../login/logout';
+                             }
+                         }
+                     });
+                     return;
+                 }
+                console.log("FULL RESULT:", result);
+                console.log("TYPE:", typeof result);
+                console.log("Table:", result.Table);
+                console.log("Length:", result.Table ? result.Table.length : "NO TABLE");
+              
+
+                var data = result.Table;
+                var permissions = result.Table1 || [];
+
+                var allowedColumns = new Set(
+                    permissions.map(p => p.permission_code)
+                );
+
+                console.log("Allowed Columns:", allowedColumns);
+
+
+                if (!Array.isArray(data)) {
+                    data = Object.values(data); // Convert object with numeric keys to array
+                }
+
+                    console.log("DATA ARRAY:", data);
+                    console.log("Is array now?", Array.isArray(data));
+                console.log(data);
+                if (!data || data.length === 0) {
+                    alert("No data found");
+                    return;
+                } 
+                if ($("#Maingrid").data("kendoGrid")) {
+                    $("#Maingrid").data("kendoGrid").destroy();
+                    $("#Maingrid").empty();
+                }
+                console.log("Before grid creation");
+                    $("#Maingrid").kendoGrid({
+                    height: 400,
+                    dataSource: {
+                        data: data,
+                        schema: { model: { id: "menu_code" } }
+                    },
+                    sortable: false,
+                    filterable: false,
+                    scrollable: true,
+                    pageable: false,
+                    resizable: false,
+                    editable: false,
+                    columns: [ 
+                        { field: "Menu", title: "Menu", width: 160 },
+                            checkboxColumn("Add","Add", modeFlag, allowedColumns),
+                            checkboxColumn("Modify","Modify", modeFlag, allowedColumns),
+                            checkboxColumn("Delete","Delete", modeFlag, allowedColumns),
+                            checkboxColumn("View","View", modeFlag, allowedColumns),
+                            checkboxColumn("Download","Download", modeFlag, allowedColumns),
+                        //    checkboxColumn("Link","Link", modeFlag, allowedColumns),
+                          checkboxColumn("Mail","Mail", modeFlag, allowedColumns),
+                        //checkboxColumn("RetReq", modeFlag, allowedColumns),
+                            checkboxColumn("Approve","Approve/Reject", modeFlag, allowedColumns),
+                            checkboxColumn("Boachecklist","BOA Checklist", modeFlag, allowedColumns),
+                            checkboxColumn("Deny","Deny", modeFlag, allowedColumns)
+                    ]
+                });
+
+            },
+            error: function () {
+                alert("Failed to fetch.");
+            }
+        });
+    }
+
+
+         function checkboxColumn(fieldName,displayname, modeFlag,allowedColumns) {
+            var ss=fieldName;
+            var dd=modeFlag;
+            var columnExists = allowedColumns.has(fieldName);
+            return {
+                field: fieldName,
+                title: displayname,
+                width: 110,
+                filterable: false,
+                template: function (d) {
+                    var value = d[fieldName];
+                    var checked = value === "Y" ? "checked" : "";
+                   var disabled = (modeFlag === "V" || !columnExists)
+                    ? "disabled"
+                    : "";
+                    if(value=="Deny"){
+                        disabled="";
+                    }
+
+                return '<input type="checkbox" ' +
+                       'class="permCheckbox" ' +
+                       'data-field="' + fieldName + '" ' +
+                       checked + ' ' +
+                       disabled + ' />';
+                }
+            };
+        }
+
+    function checkboxColumn_old(fieldName,displayname, modeFlag,allowedColumns) {
+        var ss=fieldName;
+        var dd=modeFlag;
+        var columnExists = allowedColumns.has(fieldName);
+        return {
+            field: fieldName,
+            title: displayname,
+            width: 100,
+            template: function (d) { 
+                var value = d[fieldName]; 
+                var checked = value === "Y" ? "checked" : ""; 
+               var disabled = (modeFlag === "V" || !columnExists)
+                ? "disabled"
+                : "";
+                if(value=="Deny"){
+                    disabled="";
+                }
+
+            return '<input type="checkbox" ' +
+                   'class="permCheckbox" ' +
+                   'data-field="' + fieldName + '" ' +
+                   checked + ' ' +
+                   disabled + ' />';
+            }
+        };
+    }
+    // $(document).on("change", ".permCheckbox", function () {
+
+    //     var grid = $("#Maingrid").data("kendoGrid");
+    //     var row = $(this).closest("tr");
+    //     var dataItem = grid.dataItem(row);
+
+    //     var field = $(this).data("field");
+    //     var isChecked = this.checked;
+    //             console.log("field in  ischecked");
+    //             console.log(field);
+    //     if (field === "Deny" && isChecked) {
+
+    //         dataItem.set("Add", "N");
+    //         dataItem.set("Modify", "N");
+    //         dataItem.set("Delete", "N");
+    //         dataItem.set("View", "N");
+    //         dataItem.set("Download", "N");
+    //        dataItem.set("Link", "N");
+    //         dataItem.set("Mail", "N");
+    //        dataItem.set("RetReq", "N");
+    //         dataItem.set("Approve", "N");
+    //             dataItem.set("Boachecklist", "N");
+    //             dataItem.set("Deny", "Y");
+
+    //     } else { 
+    //         dataItem.set(field, isChecked ? "Y" : "N"); 
+    //         if (field !== "Deny") {
+    //             dataItem.set("Deny", "N");
+    //         }
+    //     } 
+    //     grid.refresh();
+    // });
+
+        $(document).on("change", ".permCheckbox", function () {
+
+        var grid = $("#Maingrid").data("kendoGrid");
+        var row = $(this).closest("tr");
+        var dataItem = grid.dataItem(row);
+
+        var field = $(this).data("field");
+        var isChecked = this.checked;
+
+        if (field === "Deny" && isChecked) {
+
+            dataItem.set("Add", "N");
+            dataItem.set("Modify", "N");
+            dataItem.set("Delete", "N");
+            dataItem.set("View", "N");
+            dataItem.set("Download", "N");
+            dataItem.set("Mail", "N");
+            dataItem.set("Approve", "N");
+            dataItem.set("Boachecklist", "N");
+            dataItem.set("Deny", "Y");
+
+        } else {
+
+            dataItem.set(field, isChecked ? "Y" : "N");
+
+            var hasPermission =
+                dataItem.Add === "Y" ||
+                dataItem.Modify === "Y" ||
+                dataItem.Delete === "Y" ||
+                dataItem.View === "Y" ||
+                dataItem.Download === "Y" ||
+                dataItem.Mail === "Y" ||
+                dataItem.Approve === "Y" ||
+                dataItem.Boachecklist === "Y";
+
+            dataItem.set("Deny", hasPermission ? "N" : "Y");
+        }
+
+        grid.refresh();
+    });
+
+    $("#saverole").click(function () {
+        var dataToSave = getGridDataToSave();
+
+        if (dataToSave.length === 0) {
+             $.alert({
+                    title: ' ',
+                    content: "No permissions selected to save!",
+                    type: 'red',
+                }); 
+            return;
+        }
+
+        $.ajax({
+            url: '@Url.Action("SaveRolePermissions", "UserGroupsMapping")',
+            type: "POST",
+            contentType: "application/json",
+            data: JSON.stringify(dataToSave),
+            success: function (result) {
+                if (result.authExpired) {
+                     $.alert({
+                         title: 'Unauthorized',
+                         content: response.message,
+                         type: 'red',
+                         buttons: {
+                             ok: function () {
+                                 window.location.href = '../login/logout';
+                             }
+                         }
+                     });
+                     return;
+                 }
+                if (result.status) {
+                    $.alert({
+                        title: 'STA Web',
+                        content: "Permissions saved successfully!",
+                        type: 'green'
+                    }); 
+                        setTimeout(function () {
+                            window.location.href='../UserGroupsMapping/UserGroupsMapping'
+                        }, 2000); 
+                } else {
+                    $.alert({
+                        title: 'STA Web',
+                        content: result.message,
+                        type: 'red'
+                    }); 
+                }
+            },
+            error: function (err) {
+                alert("Failed to save permissions.");
+            }
+        });
+    });
+    function getGridDataToSave() {
+        var grid = $("#Maingrid").data("kendoGrid");
+        var data = grid.dataSource.data(); // All rows
+        var saveData = [];
+
+        data.forEach(function (item) {
+            // If at least one permission is Y and Deny is not the only one
+            if (
+                        (item.Add === "Y" || item.Modify === "Y"|| item.Delete === "Y" || item.View === "Y" ||
+                 item.Download === "Y" || item.Mail === "Y" ||
+                             item.Approve === "Y" ||
+                                 item.Boachecklist === "Y"  ) &&
+                            // item.RetReq === "Y" || item.Link === "Y" ) &&
+                item.Deny !== "Y"
+            ) {
+                saveData.push({
+                    menu_code: item.menu_code,
+                    Add: item.Add,
+                    Modify: item.Modify,
+                    Delete: item.Delete,
+                    View: item.View,
+                    Download: item.Download,
+                  //  Link: item.Link,
+                    Mail: item.Mail,
+                    // RetReq: item.RetReq,
+                    Approve: item.Approve,
+                    Boachecklist: item.Boachecklist,
+                    role_code: "@ViewBag.role_code",
+                    app_code: "@ViewBag.app_code"
+                });
+            }
+        });
+
+        return saveData;
+    }
+
+    function save_rollmap_old() {        
+        var modelobj = {};
+        var modelArr = [];
+        var displayedData = $("#grid").data().kendoGrid.dataSource.view();
+
+        for (var i = 0; i < displayedData.length; i++) {
+            modelobj = {
+                rolemenu_rowid: displayedData[i].entries[0],
+                menu_gid: displayedData[i].entries[1],
+                menu_name: displayedData[i].entries[2],
+             //   add_perm: displayedData[i].entries[3],
+                add_perm: displayedData[i].entries[4],
+                    mod_perm: displayedData[i].entries[5],
+                    mod_perm: displayedData[i].entries[6],
+                view_perm: displayedData[i].entries[7],
+                download_perm: displayedData[i].entries[8],
+               // link_perm: displayedData[i].entries[9],
+                mail_perm: displayedData[i].entries[10],
+                //retreq_perm: displayedData[i].entries[11],
+                approve_perm: displayedData[i].entries[11],
+                backtomaker_perm: displayedData[i].entries[12],
+                deny_flag: displayedData[i].entries[13],
+                role_code: "@ViewBag.usergrp_gid"
+
+            }
+            modelArr.push(modelobj);
+        }
+        var displayedDataAsJSON = JSON.stringify(modelArr);
+        //alert(displayedDataAsJSON);
+        $.ajax({
+            url: '@Url.Action("SaveUserRoleMap", "UserGroupsMapping")',
+            type: "post",
+            //data: { "jsondata_": JSON.stringify(jsondata_1) },
+            data: displayedDataAsJSON,
+            contentType: "application/json",
+           // dataType: "json",
+            success: function (result) {
+                
+                //alert(result);
+                if (result == 1 || result == "1") {
+                    $.alert({
+                        title: 'DMS',
+                        content: 'Role Mapping Updated Successfully.!',
+                        type: 'green',
+                    });
+                    setTimeout(function () {
+                        
+                        window.location.reload(1);
+                    }, 2500);
+                } else {
+                    $.alert({
+                        title: 'DMS',
+                        content: 'Role Mapping Updated Successfully.!',
+                        type: 'green',
+                    });
+                    setTimeout(function () {
+                        
+                        window.location.reload(1);
+                    }, 2500);
+                }
+            },
+            error: function (er) {
+                $.alert({
+                    title: 'DMS',
+                    content: 'Role Mapping Failed.!',
+                    type: 'green',
+                });
+            }
+        });
+    }     
+</script>

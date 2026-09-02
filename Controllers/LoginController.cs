@@ -147,12 +147,12 @@ namespace IPOWeb.Controllers
             string userAgent = _clientInfoService.GetUserAgent();
             string LoginSessionId = Guid.NewGuid().ToString();
 
-            app_code = _configuration.GetSection("AppSettings")["App_code"];
-            urlstring = Convert.ToString(_configuration.GetSection("Appsettings")["cumsapiurl"]) + "/ChkLogin";
+            //app_code = _configuration.GetSection("AppSettings")["App_code"];
+            urlstring = Convert.ToString(_configuration.GetSection("Appsettings")["apiurl"]) + "ChkLogin";
 
 
-            string preTokenUrl = _configuration["Appsettings:cumsapiurl"] + "/auth/generate-token";
-            string loginApiUrl = _configuration["Appsettings:cumsapiurl"] + "/ChkLogin";
+            string preTokenUrl = _configuration["Appsettings:apiurl"] + "auth/generate-token";
+            string loginApiUrl = _configuration["Appsettings:apiurl"] + "ChkLogin";
 
             using var clients = new HttpClient
             {
@@ -304,6 +304,7 @@ namespace IPOWeb.Controllers
                             HttpContext.Session.SetString("password_expiry_days", Convert.ToString(firstRow["password_expiry_days"]));
                             HttpContext.Session.SetString("lock_flag", Convert.ToString(firstRow["lock_flag"]));
                             HttpContext.Session.SetString("password_attempt_count", Convert.ToString(firstRow["password_attempt_count"]));
+                            HttpContext.Session.SetString("screen_session_timeout", Convert.ToString(firstRow["screen_session_timeout"]));
                         }
                         HttpContext.Session.SetString("LoginSessionId", LoginSessionId);
                         // Build Menu List
@@ -349,6 +350,7 @@ namespace IPOWeb.Controllers
                         string password_expiry_days = Convert.ToString(result.Tables[0].Rows[0]["password_expiry_days"]);
                         string lock_flag = Convert.ToString(result.Tables[0].Rows[0]["lock_flag"]);
                         string password_attempt_count = Convert.ToString(result.Tables[0].Rows[0]["password_attempt_count"]);
+                        string screen_session_timeout = Convert.ToString(result.Tables[0].Rows[0]["screen_session_timeout"]);
                         // 🔹 Step 5: Cookie authentication for website
                         var claims = new List<Claim>
                       {
@@ -380,7 +382,7 @@ namespace IPOWeb.Controllers
         [HttpPost]
         public JsonResult ChangePassword([FromBody] ChangePasswordModel mymodel)
         {
-            var apiUrl = _configuration.GetSection("Appsettings")["cumsapiurl"] + "/UpdUser";
+            var apiUrl = _configuration.GetSection("Appsettings")["apiurl"] + "UpdUser";
 
             try
             {

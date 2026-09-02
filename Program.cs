@@ -5,6 +5,7 @@ using IPOWeb.Services;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Http.Features;
 using Microsoft.AspNetCore.HttpOverrides;
+using IPOWeb.Extensions;
 
 var builder = WebApplication.CreateBuilder(args);
 var sessionTimeout = builder.Configuration.GetValue<int>(
@@ -37,13 +38,22 @@ builder.Services.AddSession(options =>
    // options.Cookie.Name = ".STA.Session";
 
 });
+// Register AuditFilter so it can be applied globally and still use DI
+builder.Services.AddScoped<IPOWeb.Filters.AuditFilter>();
 builder.Services.AddControllersWithViews()
     .AddFluentValidation(fv =>
     {
         fv.RegisterValidatorsFromAssemblyContaining<UserManagementModelValidator>();
-    });
+    })
+        .AddMvcOptions(options => options.Filters.AddService<IPOWeb.Filters.AuditFilter>());
+// Register Razor Pages without re-adding the audit filter (it's already added to MVC options above).
+builder.Services.AddRazorPages();
+// Configure audit logging options from configuration (appsettings.json) under "AuditLogging"
+builder.Services.Configure<IPOWeb.Models.AuditLoggingOptions>(builder.Configuration.GetSection("AuditLogging"));
 
 builder.Services.AddHttpContextAccessor();
+// Register audit services (ApiAuditStore) and middleware to capture correlation id
+builder.Services.AddAuditLogging();
 
 
 builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)

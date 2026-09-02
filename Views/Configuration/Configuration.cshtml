@@ -49,133 +49,144 @@
                                             data-bs-target="#navs-top-home"
                                             aria-controls="navs-top-home"
                                             aria-selected="true">
-                                        Password Policy
+                                        Configuration Details
                                     </button>
-                                </li>
-                                <li class="nav-item">
-                                    <button type="button"
-                                            class="nav-link"
-                                            role="tab"
-                                            data-bs-toggle="tab"
-                                            data-bs-target="#navs-top-profile"
-                                            aria-controls="navs-top-profile"
-                                            aria-selected="false">
-                                        Session
-                                    </button>
-                                </li>
-                                <li class="nav-item">
-                                    <button type="button"
-                                            class="nav-link"
-                                            role="tab"
-                                            data-bs-toggle="tab"
-                                            data-bs-target="#navs-top-messages"
-                                            aria-controls="navs-top-messages"
-                                            aria-selected="false">
-                                        DB Backup
-                                    </button>
-                                </li>
+                                </li>                                
                             </ul>
                             <div class="tab-content">
-                                <div class="tab-pane fade show active" id="navs-top-home" role="tabpanel">
-                                    <div class="row">
-                                        <div class="col-sm-2">
-                                            <label class="form-label" for="ReferredBy" data-field="ReferredBy">Min. Password Length</label>
-                                            <input type="text" id="password_min_len" class="form-control">
+                                <div class="tab-pane fade show active" id="navs-top-home" role="tabpanel" style="margin-top: -34px;">
+                                    <div class="accordion mt-3" id="accordionExample">
+                                        <div class="card accordion-item active">
+                                            <h2 class="accordion-header" id="headingOne">
+                                                <button type="button"
+                                                        class="accordion-button"
+                                                        data-bs-toggle="collapse"
+                                                        data-bs-target="#accordionOne"
+                                                        aria-expanded="true"
+                                                        aria-controls="accordionOne">
+                                                   Password Policy
+                                                </button>
+                                            </h2>
+                                            <div id="accordionOne"
+                                                 class="accordion-collapse collapse show">
+                                                <div class="accordion-body">
+                                                    <div class="row">                                                        
+                                                        <div class="col-sm-2">
+                                                            <label class="form-label" for="ReferredBy" data-field="ReferredBy">Min. Password Length</label>
+                                                            <input type="text" id="password_min_len" class="form-control">
+                                                        </div>
+                                                        <div class="col-sm-2">
+                                                            <label class="form-label" for="ReferredBy" data-field="ReferredBy">Max. Password Length</label>
+                                                            <input type="text" id="password_max_len" class="form-control">
+                                                        </div>
+                                                        <div class="col-sm-2 radio-group" style="position: relative;left: 20px;">
+                                                            <label class="form-label" for="ReferredBy" data-field="ReferredBy">Req. Uppercase</label><br />
+                                                            <label>
+                                                                <input type="radio" name="pwd_require_uppercase" value="Y">
+                                                                Yes
+                                                            </label>
+                                                            <label>
+                                                                <input type="radio" name="pwd_require_uppercase" value="N">
+                                                                No
+                                                            </label>
+                                                        </div>
+                                                        <div class="col-sm-2 radio-group">
+                                                            <label class="form-label" for="ReferredBy" data-field="ReferredBy">Req. Lowercase</label><br />
+                                                            <label>
+                                                                <input type="radio" name="pwd_require_lowercase" value="Y">
+                                                                Yes
+                                                            </label>
+                                                            <label>
+                                                                <input type="radio" name="pwd_require_lowercase" value="N">
+                                                                No
+                                                            </label>
+                                                        </div>
+                                                        <div class="col-sm-2 radio-group">
+                                                            <label class="form-label" for="ReferredBy" data-field="ReferredBy">Req. Number</label><br />
+                                                            <label>
+                                                                <input type="radio" name="pwd_require_number" value="Y">
+                                                                Yes
+                                                            </label>
+                                                            <label>
+                                                                <input type="radio" name="pwd_require_number" value="N">
+                                                                No
+                                                            </label>
+                                                        </div>
+                                                        <div class="col-sm-2 radio-group">
+                                                            <label class="form-label" for="ReferredBy" data-field="ReferredBy">Req. Spl. Character</label><br />
+                                                            <label>
+                                                                <input type="radio" name="pwd_require_special_char" value="Y">
+                                                                Yes
+                                                            </label>
+                                                            <label>
+                                                                <input type="radio" name="pwd_require_special_char" value="N">
+                                                                No
+                                                            </label>
+                                                        </div>
+                                                    </div>
+                                                    <div class="row" style="margin-top:10px;">
+                                                        <div class="col-sm-2">
+                                                            <label class="form-label" for="ReferredBy" data-field="ReferredBy">Password History Count</label>
+                                                            <input type="text" id="pwd_history_count" class="form-control">
+                                                        </div>
+                                                        <div class="col-sm-2">
+                                                            <label class="form-label" for="ReferredBy" data-field="ReferredBy">Max. Failed Login Attempts</label>
+                                                            <input type="text" id="password_attempt_count" class="form-control">
+                                                        </div>
+                                                        <div class="col-sm-2" style="position: relative;left: 20px;">
+                                                            <label class="form-label" for="ReferredBy" data-field="ReferredBy">Lock Duration Mins.</label>
+                                                            <input type="text" id="pwd_lockout_duration_minutes" class="form-control">
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
                                         </div>
-                                        <div class="col-sm-2">
-                                            <label class="form-label" for="ReferredBy" data-field="ReferredBy">Max. Password Length</label>
-                                            <input type="text" id="password_max_len" class="form-control">
-                                        </div>
-                                        <div class="col-sm-2 radio-group" style="position: relative;left: 20px;">
-                                            <label class="form-label" for="ReferredBy" data-field="ReferredBy">Req. Uppercase</label><br />
-                                            <label>
-                                                <input type="radio" name="pwd_require_uppercase" value="Y">
-                                                Yes
-                                            </label>
-                                            <label>
-                                                <input type="radio" name="pwd_require_uppercase" value="N">
-                                                No
-                                            </label>
-                                        </div>
-                                        <div class="col-sm-2 radio-group">
-                                            <label class="form-label" for="ReferredBy" data-field="ReferredBy">Req. Lowercase</label><br />
-                                            <label>
-                                                <input type="radio" name="pwd_require_lowercase" value="Y">
-                                                Yes
-                                            </label>
-                                            <label>
-                                                <input type="radio" name="pwd_require_lowercase" value="N">
-                                                No
-                                            </label>
-                                        </div>
-                                        <div class="col-sm-2 radio-group">
-                                            <label class="form-label" for="ReferredBy" data-field="ReferredBy">Req. Number</label><br />
-                                            <label>
-                                                <input type="radio" name="pwd_require_number" value="Y">
-                                                Yes
-                                            </label>
-                                            <label>
-                                                <input type="radio" name="pwd_require_number" value="N">
-                                                No
-                                            </label>
-                                        </div>
-                                        <div class="col-sm-2 radio-group">
-                                            <label class="form-label" for="ReferredBy" data-field="ReferredBy">Req. Spl. Character</label><br />
-                                            <label>
-                                                <input type="radio" name="pwd_require_special_char" value="Y">
-                                                Yes
-                                            </label>
-                                            <label>
-                                                <input type="radio" name="pwd_require_special_char" value="N">
-                                                No
-                                            </label>
-                                        </div>
-                                    </div>
-                                    <div class="row" style="margin-top:10px;">
-                                        <div class="col-sm-2">
-                                            <label class="form-label" for="ReferredBy" data-field="ReferredBy">Password History Count</label>
-                                            <input type="text" id="pwd_history_count" class="form-control">
-                                        </div>
-                                        <div class="col-sm-2">
-                                            <label class="form-label" for="ReferredBy" data-field="ReferredBy">Max. Failed Login Attempts</label>
-                                            <input type="text" id="password_attempt_count" class="form-control">
-                                        </div>
-                                        <div class="col-sm-2" style="position: relative;left: 20px;">
-                                            <label class="form-label" for="ReferredBy" data-field="ReferredBy">Lock Duration Mins.</label>
-                                            <input type="text" id="pwd_lockout_duration_minutes" class="form-control">
-                                        </div>
-                                        <div class="col-sm-3" style="margin-left:43px;">
-                                            <button type="button" class="btn btn-primary" id="btnSave" onclick="savepwdpolicy()" style="padding: 3px 25px;margin-top:28px;width:40%">Save</button>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="tab-pane fade" id="navs-top-profile" role="tabpanel">
-                                    <p>
-                                        Donut dragée jelly pie halvah. Danish gingerbread bonbon cookie wafer candy oat cake ice
-                                        cream. Gummies halvah tootsie roll muffin biscuit icing dessert gingerbread. Pastry ice cream
-                                        cheesecake fruitcake.
-                                    </p>
-                                    <p class="mb-0">
-                                        Jelly-o jelly beans icing pastry cake cake lemon drops. Muffin muffin pie tiramisu halvah
-                                        cotton candy liquorice caramels.
-                                    </p>
-                                </div>
-                                <div class="tab-pane fade" id="navs-top-messages" role="tabpanel">
-                                    <p>
-                                        Oat cake chupa chups dragée donut toffee. Sweet cotton candy jelly beans macaroon gummies
-                                        cupcake gummi bears cake chocolate.
-                                    </p>
-                                    <p class="mb-0">
-                                        Cake chocolate bar cotton candy apple pie tootsie roll ice cream apple pie brownie cake. Sweet
-                                        roll icing sesame snaps caramels danish toffee. Brownie biscuit dessert dessert. Pudding jelly
-                                        jelly-o tart brownie jelly.
-                                    </p>
-                                </div>
+                                        <div class="card accordion-item">
+                                            <h2 class="accordion-header" id="headingTwo">
+                                                <button type="button"
+                                                        class="accordion-button collapsed"
+                                                        data-bs-toggle="collapse"
+                                                        data-bs-target="#accordionTwo"
+                                                        aria-expanded="true"
+                                                        aria-controls="accordionTwo">
+                                                   Session Settings
+                                                </button>
+                                            </h2>
+                                            <div id="accordionTwo"
+                                                 class="accordion-collapse collapse show"
+                                                 aria-labelledby="headingTwo">
+                                                <div class="accordion-body">
+                                                    <div class="row">                                                       
+                                                        <div class="col-sm-2">
+                                                            <label class="form-label" for="ReferredBy" data-field="ReferredBy">Session Timeout (Min)</label>
+                                                            <select id="timeout" class="form-select">
+                                                                <option value="20">20</option>
+                                                                <option value = "30">30</option>
+                                                                <option value="45">45</option>
+                                                                <option value="60">60</option>
+                                                            </select>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>                                        
+                                    </div>                                    
+                                </div>                         
+                          
                             </div>
                         </div>
                     </div>
               </div>      
-               
+               <div class="row">
+                   <div class="col-sm-4">
+
+                   </div>
+                    <div class="col-sm-4">
+                        <center><button type="button" class="btn btn-primary" id="btnSave" onclick="savepwdpolicy()" style="padding: 3px 25px;margin-top:28px;width:40%">Save</button></center>
+                   </div>
+                    <div class="col-sm-4">
+                    </div>
+               </div>
                 
             </div>
         </div>
@@ -201,10 +212,12 @@
                  var configList = JSON.parse(data.data);
                  var configRow = configList[0];
                  var passwordConfig = JSON.parse(configRow.password_config);
+                 console.log("CRES : ", passwordConfig);
                  var requireUpper = passwordConfig.pwd_require_uppercase;
                  var requireLower = passwordConfig.pwd_require_lowercase;
                   var requireNumber = passwordConfig.pwd_require_number;   
                   var requireSplChar = passwordConfig.pwd_require_special_char;
+                  var sessionTimeout = passwordConfig.screen_session_timeout;
 
                  $("#password_min_len").val(passwordConfig.password_min_len);
                  $("#password_max_len").val(passwordConfig.password_max_len);
@@ -214,7 +227,8 @@
                  $("input[name='pwd_require_special_char'][value='" + requireSplChar + "']") .prop("checked", true);
                  $("#pwd_history_count").val(passwordConfig.pwd_history_count);
                  $("#password_attempt_count").val(passwordConfig.password_attempt_count);
-                 $("#pwd_lockout_duration_minutes").val(passwordConfig.pwd_lockout_duration_minutes);
+                 $("#pwd_lockout_duration_minutes").val(passwordConfig.pwd_lockout_duration_minutes);                    
+                 $("#timeout").val(sessionTimeout);
              }
          });
     }
@@ -232,7 +246,8 @@
         pwd_require_special_char: $("input[name='pwd_require_special_char']:checked").val(),
 
         pwd_history_count: $("#pwd_history_count").val(),
-        pwd_lockout_duration_minutes: $("#pwd_lockout_duration_minutes").val()
+        pwd_lockout_duration_minutes: $("#pwd_lockout_duration_minutes").val(),
+        screen_session_timeout: $("#timeout").val()
     };
 
     console.log("UPDATE DATA:", requestData);
