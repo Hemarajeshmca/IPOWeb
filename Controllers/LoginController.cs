@@ -203,171 +203,172 @@ namespace IPOWeb.Controllers
                     result = JsonConvert.DeserializeObject<DataSet>(_data);
 
                     _data = JsonConvert.SerializeObject(result);
-                    int success = Convert.ToInt32(result.Tables[0].Rows[0]["success"]);
-
+                    int success = Convert.ToInt32(result.Tables[0].Rows[0]["success"]);                   
 
 
                     //if (result != null && result.Tables.Count > 0 && result.Tables[0].Rows.Count > 0)
                     if (success == 1)
                     {
-                        // Validate dataset
-                        if (result == null || result.Tables.Count < 2)
                         {
-                            throw new Exception("Expected 2 tables in dataset.");
-                        }
-
-                        DataTable dtPermission = result.Tables[0];
-                        DataTable dtMenu = result.Tables[1];
-
-                        // Add menu columns if not exist
-                        if (!dtPermission.Columns.Contains("menu_gid"))
-                            dtPermission.Columns.Add("menu_gid", typeof(string));
-
-                        if (!dtPermission.Columns.Contains("menu_name"))
-                            dtPermission.Columns.Add("menu_name", typeof(string));
-
-                        if (!dtPermission.Columns.Contains("menu_url"))
-                            dtPermission.Columns.Add("menu_url", typeof(string));
-
-                        if (!dtPermission.Columns.Contains("menu_order"))
-                            dtPermission.Columns.Add("menu_order", typeof(string));
-
-                        if (!dtPermission.Columns.Contains("parent_menu_code"))
-                            dtPermission.Columns.Add("parent_menu_code", typeof(string));
-
-                        if (!dtPermission.Columns.Contains("icon_path"))
-                            dtPermission.Columns.Add("icon_path", typeof(string));
-
-                        var rows = dtMenu.AsEnumerable()
-                         .Where(r => string.IsNullOrWhiteSpace(Convert.ToString(r["parent_menu_code"])))
-                          .OrderBy(r => Convert.ToInt32(r["menu_order"]));
-
-                        foreach (DataRow menuRow in rows)
-                        {
-                            DataRow newRow = dtPermission.NewRow();
-
-                            newRow["menu_gid"] = menuRow["menu_gid"];
-                            newRow["menu_code"] = menuRow["menu_code"];
-                            newRow["menu_name"] = menuRow["menu_name"];
-                            newRow["menu_url"] = menuRow["menu_url"];
-                            newRow["menu_order"] = menuRow["menu_order"];
-                            newRow["parent_menu_code"] = menuRow["parent_menu_code"];
-                            newRow["icon_path"] = menuRow["icon_path"];
-
-                            dtPermission.Rows.Add(newRow);
-                        }
-                        // Create lookup from menu table
-                        var menuLookup = dtMenu.AsEnumerable()
-                            .GroupBy(r => Convert.ToString(r["menu_code"]))
-                            .ToDictionary(
-                                g => g.Key,
-                                g => new
-                                {
-                                    MenuGid = Convert.ToString(g.First()["menu_gid"]),
-                                    MenuName = Convert.ToString(g.First()["menu_name"]),
-                                    MenuUrl = Convert.ToString(g.First()["menu_url"]),
-                                    MenuOrder = Convert.ToString(g.First()["menu_order"]),
-                                    ParentMenuCode = Convert.ToString(g.First()["parent_menu_code"]),
-                                    IconPath = Convert.ToString(g.First()["icon_path"])
-                                }
-                            );
-
-                        // Merge menu information into permission table
-                        foreach (DataRow row in dtPermission.Rows)
-                        {
-                            string menuCode = Convert.ToString(row["menu_code"]);
-
-                            if (!string.IsNullOrEmpty(menuCode) &&
-                                menuLookup.TryGetValue(menuCode, out var menu))
+                            // Validate dataset
+                            if (result == null || result.Tables.Count < 2)
                             {
-                                row["menu_gid"] = menu.MenuGid;
-                                row["menu_name"] = menu.MenuName;
-                                row["menu_url"] = menu.MenuUrl;
-                                row["menu_order"] = menu.MenuOrder;
-                                row["parent_menu_code"] = menu.ParentMenuCode;
-                                row["icon_path"] = menu.IconPath;
+                                throw new Exception("Expected 2 tables in dataset.");
                             }
-                        }
 
-                        // Store session values
-                        if (dtPermission.Rows.Count > 0)
-                        {
-                            DataRow firstRow = dtPermission.Rows[0];
+                            DataTable dtPermission = result.Tables[0];
+                            DataTable dtMenu = result.Tables[1];
 
-                            HttpContext.Session.SetString("user_role", Convert.ToString(firstRow["role_code"]));
-                            HttpContext.Session.SetString("user_id", Convert.ToString(firstRow["user_id"]));
-                            HttpContext.Session.SetString("user_name", Convert.ToString(firstRow["user_name"]));
-                            HttpContext.Session.SetString("user_code", Convert.ToString(firstRow["user_code"]));
-                            HttpContext.Session.SetString("user_email", Convert.ToString(firstRow["email"]));
-                            HttpContext.Session.SetString("role_name", Convert.ToString(firstRow["role_name"]));
-                            HttpContext.Session.SetString("force_password_change_flag", Convert.ToString(firstRow["force_password_change_flag"]));
-                            HttpContext.Session.SetString("password_expiry_days", Convert.ToString(firstRow["password_expiry_days"]));
-                            HttpContext.Session.SetString("lock_flag", Convert.ToString(firstRow["lock_flag"]));
-                            HttpContext.Session.SetString("password_attempt_count", Convert.ToString(firstRow["password_attempt_count"]));
-                            HttpContext.Session.SetString("screen_session_timeout", Convert.ToString(firstRow["screen_session_timeout"]));
-                        }
-                        HttpContext.Session.SetString("LoginSessionId", LoginSessionId);
-                        // Build Menu List
-                        List<MenuModel> menuList = new List<MenuModel>();
+                            // Add menu columns if not exist
+                            if (!dtPermission.Columns.Contains("menu_gid"))
+                                dtPermission.Columns.Add("menu_gid", typeof(string));
 
-                        foreach (DataRow row in dtPermission.Rows)
-                        {
-                            menuList.Add(new MenuModel
+                            if (!dtPermission.Columns.Contains("menu_name"))
+                                dtPermission.Columns.Add("menu_name", typeof(string));
+
+                            if (!dtPermission.Columns.Contains("menu_url"))
+                                dtPermission.Columns.Add("menu_url", typeof(string));
+
+                            if (!dtPermission.Columns.Contains("menu_order"))
+                                dtPermission.Columns.Add("menu_order", typeof(string));
+
+                            if (!dtPermission.Columns.Contains("parent_menu_code"))
+                                dtPermission.Columns.Add("parent_menu_code", typeof(string));
+
+                            if (!dtPermission.Columns.Contains("icon_path"))
+                                dtPermission.Columns.Add("icon_path", typeof(string));
+
+                            var rows = dtMenu.AsEnumerable()
+                             .Where(r => string.IsNullOrWhiteSpace(Convert.ToString(r["parent_menu_code"])))
+                              .OrderBy(r => Convert.ToInt32(r["menu_order"]));
+
+                            foreach (DataRow menuRow in rows)
                             {
-                                menu_id = Convert.ToString(row["menu_gid"]),
-                                menu_code = Convert.ToString(row["menu_code"]),
-                                menu_name = Convert.ToString(row["menu_name"]),
-                                menu_url = Convert.ToString(row["menu_url"]),
-                                menu_order = Convert.ToString(row["menu_order"]),
-                                parent_menu_code = Convert.ToString(row["parent_menu_code"]),
-                                icon_path = Convert.ToString(row["icon_path"]),
+                                DataRow newRow = dtPermission.NewRow();
 
-                                add_perm = Convert.ToString(row["add_perm"]),
-                                mod_perm = Convert.ToString(row["mod_perm"]),
-                                view_perm = Convert.ToString(row["view_perm"]),
-                                delete_perm = Convert.ToString(row["delete_perm"]),
-                                download_perm = Convert.ToString(row["download_perm"]),
-                                link_perm = Convert.ToString(row["link_perm"]),
-                                mail_perm = Convert.ToString(row["mail_perm"]),
-                                retreq_perm = Convert.ToString(row["retreq_perm"]),
-                                Approve_perm = Convert.ToString(row["Approve_perm"]),
-                                Boachecklist_perm = Convert.ToString(row["Boachecklist_perm"]),
-                                deny_perm = Convert.ToString(row["deny_perm"]),
-                                menu_type = Convert.ToString(row["menu_type"])
-                            });
-                        }
+                                newRow["menu_gid"] = menuRow["menu_gid"];
+                                newRow["menu_code"] = menuRow["menu_code"];
+                                newRow["menu_name"] = menuRow["menu_name"];
+                                newRow["menu_url"] = menuRow["menu_url"];
+                                newRow["menu_order"] = menuRow["menu_order"];
+                                newRow["parent_menu_code"] = menuRow["parent_menu_code"];
+                                newRow["icon_path"] = menuRow["icon_path"];
 
-                        var menuJson = JsonConvert.SerializeObject(menuList);
-                        HttpContext.Session.SetString("UserMenus", menuJson);
-                        set_Apitoken = Convert.ToString(result.Tables[0].Rows[0]["user_code"] + "_" + Convert.ToString(result.Tables[0].Rows[0]["role_code"]));
+                                dtPermission.Rows.Add(newRow);
+                            }
+                            // Create lookup from menu table
+                            var menuLookup = dtMenu.AsEnumerable()
+                                .GroupBy(r => Convert.ToString(r["menu_code"]))
+                                .ToDictionary(
+                                    g => g.Key,
+                                    g => new
+                                    {
+                                        MenuGid = Convert.ToString(g.First()["menu_gid"]),
+                                        MenuName = Convert.ToString(g.First()["menu_name"]),
+                                        MenuUrl = Convert.ToString(g.First()["menu_url"]),
+                                        MenuOrder = Convert.ToString(g.First()["menu_order"]),
+                                        ParentMenuCode = Convert.ToString(g.First()["parent_menu_code"]),
+                                        IconPath = Convert.ToString(g.First()["icon_path"])
+                                    }
+                                );
 
-                        string id = Convert.ToString(result.Tables[0].Rows[0]["user_id"]);
-                        string name = Convert.ToString(result.Tables[0].Rows[0]["user_name"]);
-                        string email = Convert.ToString(result.Tables[0].Rows[0]["email"]);
-                        string role = Convert.ToString(result.Tables[0].Rows[0]["role_code"]);
-                        string user_code = Convert.ToString(result.Tables[0].Rows[0]["user_code"]);
-                        string force_password_change_flag = Convert.ToString(result.Tables[0].Rows[0]["force_password_change_flag"]);
-                        string password_expiry_days = Convert.ToString(result.Tables[0].Rows[0]["password_expiry_days"]);
-                        string lock_flag = Convert.ToString(result.Tables[0].Rows[0]["lock_flag"]);
-                        string password_attempt_count = Convert.ToString(result.Tables[0].Rows[0]["password_attempt_count"]);
-                        string screen_session_timeout = Convert.ToString(result.Tables[0].Rows[0]["screen_session_timeout"]);
-                        // 🔹 Step 5: Cookie authentication for website
-                        var claims = new List<Claim>
+                            // Merge menu information into permission table
+                            foreach (DataRow row in dtPermission.Rows)
+                            {
+                                string menuCode = Convert.ToString(row["menu_code"]);
+
+                                if (!string.IsNullOrEmpty(menuCode) &&
+                                    menuLookup.TryGetValue(menuCode, out var menu))
+                                {
+                                    row["menu_gid"] = menu.MenuGid;
+                                    row["menu_name"] = menu.MenuName;
+                                    row["menu_url"] = menu.MenuUrl;
+                                    row["menu_order"] = menu.MenuOrder;
+                                    row["parent_menu_code"] = menu.ParentMenuCode;
+                                    row["icon_path"] = menu.IconPath;
+                                }
+                            }
+
+                            // Store session values
+                            if (dtPermission.Rows.Count > 0)
+                            {
+                                DataRow firstRow = dtPermission.Rows[0];
+
+                                HttpContext.Session.SetString("user_role", Convert.ToString(firstRow["role_code"]));
+                                HttpContext.Session.SetString("user_id", Convert.ToString(firstRow["user_id"]));
+                                HttpContext.Session.SetString("user_name", Convert.ToString(firstRow["user_name"]));
+                                HttpContext.Session.SetString("user_code", Convert.ToString(firstRow["user_code"]));
+                                HttpContext.Session.SetString("user_email", Convert.ToString(firstRow["email"]));
+                                HttpContext.Session.SetString("role_name", Convert.ToString(firstRow["role_name"]));
+                                HttpContext.Session.SetString("force_password_change_flag", Convert.ToString(firstRow["force_password_change_flag"]));
+                                HttpContext.Session.SetString("password_expiry_days", Convert.ToString(firstRow["password_expiry_days"]));
+                                HttpContext.Session.SetString("lock_flag", Convert.ToString(firstRow["lock_flag"]));
+                                HttpContext.Session.SetString("password_attempt_count", Convert.ToString(firstRow["password_attempt_count"]));
+                                HttpContext.Session.SetString("screen_session_timeout", Convert.ToString(firstRow["screen_session_timeout"]));
+                            }
+                            HttpContext.Session.SetString("LoginSessionId", LoginSessionId);
+                            // Build Menu List
+                            List<MenuModel> menuList = new List<MenuModel>();
+
+                            foreach (DataRow row in dtPermission.Rows)
+                            {
+                                menuList.Add(new MenuModel
+                                {
+                                    menu_id = Convert.ToString(row["menu_gid"]),
+                                    menu_code = Convert.ToString(row["menu_code"]),
+                                    menu_name = Convert.ToString(row["menu_name"]),
+                                    menu_url = Convert.ToString(row["menu_url"]),
+                                    menu_order = Convert.ToString(row["menu_order"]),
+                                    parent_menu_code = Convert.ToString(row["parent_menu_code"]),
+                                    icon_path = Convert.ToString(row["icon_path"]),
+
+                                    add_perm = Convert.ToString(row["add_perm"]),
+                                    mod_perm = Convert.ToString(row["mod_perm"]),
+                                    view_perm = Convert.ToString(row["view_perm"]),
+                                    delete_perm = Convert.ToString(row["delete_perm"]),
+                                    download_perm = Convert.ToString(row["download_perm"]),
+                                    link_perm = Convert.ToString(row["link_perm"]),
+                                    mail_perm = Convert.ToString(row["mail_perm"]),
+                                    retreq_perm = Convert.ToString(row["retreq_perm"]),
+                                    Approve_perm = Convert.ToString(row["Approve_perm"]),
+                                    Boachecklist_perm = Convert.ToString(row["Boachecklist_perm"]),
+                                    deny_perm = Convert.ToString(row["deny_perm"]),
+                                    menu_type = Convert.ToString(row["menu_type"])
+                                });
+                            }
+
+                            var menuJson = JsonConvert.SerializeObject(menuList);
+                            HttpContext.Session.SetString("UserMenus", menuJson);
+                            set_Apitoken = Convert.ToString(result.Tables[0].Rows[0]["user_code"] + "_" + Convert.ToString(result.Tables[0].Rows[0]["role_code"]));
+
+                            string id = Convert.ToString(result.Tables[0].Rows[0]["user_id"]);
+                            string name = Convert.ToString(result.Tables[0].Rows[0]["user_name"]);
+                            string email = Convert.ToString(result.Tables[0].Rows[0]["email"]);
+                            string role = Convert.ToString(result.Tables[0].Rows[0]["role_code"]);
+                            string user_code = Convert.ToString(result.Tables[0].Rows[0]["user_code"]);
+                            string force_password_change_flag = Convert.ToString(result.Tables[0].Rows[0]["force_password_change_flag"]);
+                            string password_expiry_days = Convert.ToString(result.Tables[0].Rows[0]["password_expiry_days"]);
+                            string lock_flag = Convert.ToString(result.Tables[0].Rows[0]["lock_flag"]);
+                            string password_attempt_count = Convert.ToString(result.Tables[0].Rows[0]["password_attempt_count"]);
+                            string screen_session_timeout = Convert.ToString(result.Tables[0].Rows[0]["screen_session_timeout"]);
+                            // 🔹 Step 5: Cookie authentication for website
+                            var claims = new List<Claim>
                       {
                           new Claim(ClaimTypes.NameIdentifier, id.ToString()),
                           new Claim(ClaimTypes.Role, role.ToString()),
                           new Claim(ClaimTypes.Name, user_code.ToString()),
 
                       };
-                        var identity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
-                        await HttpContext.SignInAsync(
-                            CookieAuthenticationDefaults.AuthenticationScheme,
-                            new ClaimsPrincipal(identity)
-                        );
+                            var identity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
+                            await HttpContext.SignInAsync(
+                                CookieAuthenticationDefaults.AuthenticationScheme,
+                                new ClaimsPrincipal(identity)
+                            );
+                        }
+                        ApiTokenRefreshMiddleware.TokenUpdate(HttpContext, response, set_Apitoken);
                     }
-                    ApiTokenRefreshMiddleware.TokenUpdate(HttpContext, response, set_Apitoken);
+                    return Json(_data);
                 }
-                return Json(_data);
             }
             catch (Exception ex)
             {
