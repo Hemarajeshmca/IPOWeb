@@ -233,7 +233,7 @@
                                     $.each(masterRules, function (i, item) {
 
                                     item.enabled = true;
-                                    item.status = "NotApplied";
+                                    item.status = "Applied";
 
                                     for (var j = 0; j < appliedRuleCodes.length; j++) {
 
@@ -261,17 +261,16 @@
                                         console.log(appliedRules);
                                      
                                     item.enabled = true;
+                                    item.status = "Applied";
                                     if (rule) {
                                        //  item.enabled = true;
                                          item.status = "Applied";       // Radio enabled
-                                    } else {
-                                       // item.enabled = false;
-                                        item.status = "NotApplied";     // Default selection
-                                    }
-                                    if(masterRules[i].rule_disable=="Y"){
-                                        item.enabled = false;
-                                        item.status = "Applied";
-                                    }
+                                    } 
+                                    
+                                    if (item.rule_disable == "Y") {
+                                            item.enabled = false;
+                                            item.status = "Applied";
+                                        }
                                 });
 
                                 rulemaster_grid(masterRules);

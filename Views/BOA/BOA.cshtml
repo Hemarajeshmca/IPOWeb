@@ -2448,7 +2448,7 @@
                         style: "text-align:center;"
                     },
                     template:
-                        "<input type='radio' class='status-radio' name='status_#=id#' value='Verified' #= status == 'Verified' ? 'checked' : '' # />"
+                        "<input type='radio' disabled class='status-radio' name='status_#=id#' value='Verified' #= status == 'Verified' ? 'checked' : '' # />"
                 },
                 {
                     title: "Not Verified",
@@ -2457,7 +2457,11 @@
                         style: "text-align:center;"
                     },
                     template:
-                        "<input type='radio' class='status-radio' name='status_#=id#' value='NotVerified' #= status == 'NotVerified' ? 'checked' : '' # />"
+                            "<input type='radio' class='status-radio' " +
+                            "name='status_#=id#' " +
+                            "value='NotVerified' " +
+                            "#= status == 'NotVerified' ? 'checked' : '' # " +
+                            "#= status == 'Verified' ? 'disabled' : '' # />"
                 }
         ]
     });
@@ -2582,7 +2586,8 @@
                                 {
                                     id: 1,
                                     process_name: "Offer Setup",
-                                    status: row.visited_offersetup == "Y" ? "Verified" : "NotVerified"
+                                    status: row.visited_offersetup == "Y" ? "Verified" : "NotVerified",
+                                    verified: row.visited_offersetup == "Y"
                                 },
                                 {
                                     id: 2,
